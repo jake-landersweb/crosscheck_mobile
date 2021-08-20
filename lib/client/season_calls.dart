@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+
 import 'root.dart';
 
 import '../data/root.dart';
@@ -40,6 +44,46 @@ extension SeasonCalls on DataModel {
         completion(users);
       } else {
         setError("There was an issue getting the season roster", true);
+        print(response['message']);
+      }
+    });
+  }
+
+  Future<void> seasonUserUpdate(
+      String teamId,
+      String seasonId,
+      String email,
+      String firstName,
+      String lastName,
+      String phone,
+      String nickName,
+      VoidCallback completion,
+      {bool? showMessages}) async {
+    Map<String, dynamic> body = {
+      "email": email,
+      "userFields": {
+        "firstName": firstName,
+        "lastName": lastName,
+        "phone": phone,
+      },
+      "seasonFields": {
+        "nickName": nickName,
+      }
+    };
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .put("/teams/$teamId/seasons/$seasonId/users/$email/update", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue updating your user record", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully updated user record", true);
+        completion();
+      } else {
+        setError("There was an issue updating your user record", true);
         print(response['message']);
       }
     });

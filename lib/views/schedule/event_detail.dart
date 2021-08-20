@@ -141,8 +141,9 @@ class _EventDetailState extends State<EventDetail> {
                 Row(
                   children: [
                     // user avatar cell
-                    UserCell(user: i),
-                    const Spacer(),
+                    Expanded(
+                      child: UserCell(user: i),
+                    ),
                     // show a message icon if the user left a message
                     if (!i.eventFields!.message.isEmpty())
                       Padding(

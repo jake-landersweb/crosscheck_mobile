@@ -120,6 +120,57 @@ class SeasonUser extends Equatable {
     }
   }
 
+  String teamUserType() {
+    if (teamFields == null) {
+      return "";
+    } else {
+      switch (teamFields!.teamUserType) {
+        case 1:
+          return "Player";
+        case 2:
+          return "Admin";
+        case 3:
+          return "Owner";
+        case 0:
+          return "Recruit";
+        default:
+          return "Innactive";
+      }
+    }
+  }
+
+  String seasonUserType() {
+    if (seasonFields == null) {
+      return "";
+    } else {
+      switch (seasonFields!.seasonUserType) {
+        case 1:
+          return "Player";
+        case 2:
+          return "Manager";
+        case 0:
+          return "Recruit";
+        default:
+          return "Innactive";
+      }
+    }
+  }
+
+  String seasonUserStatus() {
+    if (seasonFields == null) {
+      return "";
+    } else {
+      switch (seasonFields!.userStatus) {
+        case 1:
+          return "Active";
+        case -1:
+          return "Innactive";
+        default:
+          return "Unknown";
+      }
+    }
+  }
+
   // values to compare
   @override
   List<Object> get props => [email];

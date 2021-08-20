@@ -33,19 +33,22 @@ class _SeasonRosterState extends State<SeasonRoster> {
     } else {
       return cv.NativeList(
         children: [
-          for (SeasonUser i in dmodel.seasonRoster!) _rosterCell(context, i),
+          for (SeasonUser i in dmodel.seasonRoster!)
+            _rosterCell(context, i, dmodel),
         ],
       );
     }
   }
 
-  Widget _rosterCell(BuildContext context, SeasonUser user) {
+  Widget _rosterCell(BuildContext context, SeasonUser user, DataModel dmodel) {
     return cv.BasicButton(
       onTap: () {
         cv.Navigate(
           context,
           SeasonUserDetail(
             user: user,
+            teamId: dmodel.tus!.team.teamId,
+            seasonId: dmodel.currentSeason!.seasonId,
           ),
         );
       },
