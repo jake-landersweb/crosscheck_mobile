@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+import 'root.dart';
 
 class Event extends Equatable {
   String? eDescription;
@@ -84,6 +85,30 @@ class Event extends Equatable {
     undecidedCount = event.undecidedCount;
     noResponse = event.noResponse;
     userStatus = event.userStatus;
+  }
+
+  Event.fromRaw(EventRaw event) {
+    eDescription = event.eDescription;
+    eventId = event.eventId;
+    eTitle = event.eTitle;
+    eLocation = event.eLocation;
+    hasAttendance = event.hasAttendance;
+    teamId = event.teamId;
+    seasonId = event.seasonId;
+    eType = event.eType;
+    if (event.homeTeam != null) {
+      homeTeam = EventTeam.of(event.homeTeam!);
+    }
+    eDate = event.eDate;
+    eLink = event.eLink;
+    if (event.awayTeam != null) {
+      awayTeam = EventTeam.of(event.awayTeam!);
+    }
+    inCount = 0;
+    outCount = 0;
+    undecidedCount = 0;
+    noResponse = 0;
+    userStatus = 0;
   }
 
   // object from json

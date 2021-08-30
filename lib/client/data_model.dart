@@ -142,6 +142,18 @@ class DataModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<SeasonUser>? teamRoster;
+  void setTeamRoster(List<SeasonUser> users) {
+    teamRoster = users;
+    notifyListeners();
+  }
+
+  List<CalendarEvent>? calendar;
+  void setCalendar(List<CalendarEvent> calendar) {
+    this.calendar = calendar;
+    notifyListeners();
+  }
+
   // for showing error popup
   String errorText = "";
   void setError(String message, bool? showMessage) {

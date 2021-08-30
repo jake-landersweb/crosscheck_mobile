@@ -14,11 +14,13 @@ class SeasonUserEdit extends StatefulWidget {
     required this.teamId,
     required this.seasonId,
     required this.completion,
+    this.editNickname,
   }) : super(key: key);
   final SeasonUser user;
   final String teamId;
   final String seasonId;
   final VoidCallback completion;
+  final bool? editNickname;
 
   @override
   _SeasonUserEditState createState() => _SeasonUserEditState();
@@ -121,29 +123,30 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
                 ),
               ],
             ),
-            Stack(
-              alignment: AlignmentDirectional.centerEnd,
-              children: [
-                cv.TextField(
-                  labelText: "Nickname",
-                  showBackground: false,
-                  initialvalue: _nickName,
-                  keyboardType: TextInputType.name,
-                  validator: (value) {},
-                  onChanged: (value) {
-                    _nickName = value;
-                  },
-                ),
-                Text(
-                  "Nickname",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: CustomColors.textColor(context).withOpacity(0.7),
+            if (widget.editNickname ?? true)
+              Stack(
+                alignment: AlignmentDirectional.centerEnd,
+                children: [
+                  cv.TextField(
+                    labelText: "Nickname",
+                    showBackground: false,
+                    initialvalue: _nickName,
+                    keyboardType: TextInputType.name,
+                    validator: (value) {},
+                    onChanged: (value) {
+                      _nickName = value;
+                    },
                   ),
-                ),
-              ],
-            ),
+                  Text(
+                    "Nickname",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: CustomColors.textColor(context).withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
         cv.Section(
@@ -176,11 +179,20 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     } else if (_lastName == "") {
       dmodel.setError("Last name cannot be blank", true);
     } else {
-      await dmodel.seasonUserUpdate(widget.teamId, widget.seasonId,
-          widget.user.email, _firstName, _lastName, _phone, _nickName, () {
-        Navigator.of(context).pop();
-        widget.completion();
-      });
+      if (widget.user.seasonFields == null) {
+        await dmodel.teamUserUpdate(
+            widget.teamId, widget.user.email, _firstName, _lastName, _phone,
+            () {
+          Navigator.of(context).pop();
+          widget.completion();
+        });
+      } else {
+        await dmodel.seasonUserUpdate(widget.teamId, widget.seasonId,
+            widget.user.email, _firstName, _lastName, _phone, _nickName, () {
+          Navigator.of(context).pop();
+          widget.completion();
+        });
+      }
     }
   }
 }

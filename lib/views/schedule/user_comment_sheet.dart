@@ -40,7 +40,9 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
     return cv.Sheet(
+      color: dmodel.color,
       title: "Comments",
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 500),

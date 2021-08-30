@@ -41,6 +41,16 @@ DateTime stringToDate(String date) {
   return DateTime.parse(date);
 }
 
+bool generalSameDate(DateTime day1, DateTime day2) {
+  if (day1.day == day2.day &&
+      day1.month == day2.month &&
+      day1.year == day2.year) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 int intFromString(String char) {
   switch (char) {
     case "a":

@@ -56,7 +56,7 @@ class _MenuHostState extends State<MenuHost> {
                 ),
                 // keep view out of top safe area
                 child: cv.AppBar(
-                  title: _getTitle(_menu.selectedPage),
+                  title: _getTitle(_menu.selectedPage, dmodel),
                   refreshable: _isRefreshable(_menu.selectedPage),
                   onRefresh: () => _refreshAction(_menu.selectedPage, dmodel),
                   isLarge: true,
@@ -380,11 +380,19 @@ class _MenuHostState extends State<MenuHost> {
   Widget _getView(Pages _selection, DataModel dmodel) {
     switch (_selection) {
       case Pages.team:
-        return Text('Team');
+        if (dmodel.tus == null) {
+          return Container();
+        } else {
+          return Team(teamId: dmodel.tus!.team.teamId);
+        }
       case Pages.schedule:
-        return Schedule();
+        return const Schedule();
       case Pages.calendar:
-        return Text('Calendar');
+        if (dmodel.tus == null) {
+          return Container();
+        } else {
+          return Calendar(teamId: dmodel.tus!.team.teamId);
+        }
       case Pages.seasonRoster:
         if (dmodel.currentSeason == null) {
           return Container();
@@ -392,7 +400,14 @@ class _MenuHostState extends State<MenuHost> {
           return const SeasonRoster();
         }
       case Pages.seasonSettings:
-        return Text('Season Settings');
+        if (dmodel.currentSeason == null) {
+          return Container();
+        } else {
+          return SeasonSelect(
+              email: dmodel.user!.email,
+              tus: dmodel.tus!,
+              currentSeason: dmodel.currentSeason!);
+        }
       case Pages.settings:
         return Settings();
       default:
@@ -401,10 +416,14 @@ class _MenuHostState extends State<MenuHost> {
   }
 
   // for getting title
-  String _getTitle(Pages _selection) {
+  String _getTitle(Pages _selection, DataModel dmodel) {
     switch (_selection) {
       case Pages.team:
-        return 'Team';
+        if (dmodel.tus == null) {
+          return 'Team';
+        } else {
+          return dmodel.tus!.team.title;
+        }
       case Pages.schedule:
         return 'Schedule';
       case Pages.calendar:
@@ -412,7 +431,7 @@ class _MenuHostState extends State<MenuHost> {
       case Pages.seasonRoster:
         return 'Roster';
       case Pages.seasonSettings:
-        return 'Season Settings';
+        return 'Season Select';
       case Pages.settings:
         return 'Settings';
       default:
@@ -444,13 +463,19 @@ class _MenuHostState extends State<MenuHost> {
   Future<void> _refreshAction(Pages _selection, DataModel dmodel) async {
     switch (_selection) {
       case Pages.schedule:
-        await dmodel.scheduleGet(dmodel.tus!.team.teamId,
-            dmodel.currentSeason!.seasonId, dmodel.user!.email, (schedule) {
-          dmodel.setSchedule(schedule);
-        });
+        if (dmodel.currentSeason != null) {
+          await dmodel.scheduleGet(dmodel.tus!.team.teamId,
+              dmodel.currentSeason!.seasonId, dmodel.user!.email, (schedule) {
+            dmodel.setSchedule(schedule);
+          });
+        }
         break;
       case Pages.calendar:
-        print("calendar");
+        if (dmodel.tus != null) {
+          await dmodel.getCalendar(dmodel.tus!.team.teamId, (calendar) {
+            dmodel.setCalendar(calendar);
+          });
+        }
         break;
       case Pages.seasonRoster:
         if (dmodel.currentSeason != null) {
@@ -490,8 +515,8 @@ class _MenuHostState extends State<MenuHost> {
       page: Pages.seasonRoster,
     ),
     const MenuItem(
-      title: 'Season Settings',
-      icon: Icons.settings,
+      title: 'Season Select',
+      icon: Icons.fact_check,
       page: Pages.seasonSettings,
     ),
     const MenuItem(
