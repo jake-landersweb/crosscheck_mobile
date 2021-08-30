@@ -6,3 +6,6 @@ export 'settings/root.dart';
 export 'schedule/root.dart';
 export 'shared/root.dart';
 export 'roster/root.dart';
+export 'season/root.dart';
+export 'calendar/root.dart';
+export 'team/root.dart';

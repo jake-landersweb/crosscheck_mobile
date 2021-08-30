@@ -6,14 +6,19 @@ import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 
-class SeasonRoster extends StatefulWidget {
-  const SeasonRoster({Key? key}) : super(key: key);
+class TeamRoster extends StatefulWidget {
+  const TeamRoster({
+    Key? key,
+    required this.teamId,
+  }) : super(key: key);
+
+  final String teamId;
 
   @override
-  _SeasonRosterState createState() => _SeasonRosterState();
+  _TeamRosterState createState() => _TeamRosterState();
 }
 
-class _SeasonRosterState extends State<SeasonRoster> {
+class _TeamRosterState extends State<TeamRoster> {
   @override
   void initState() {
     super.initState();
@@ -23,7 +28,20 @@ class _SeasonRosterState extends State<SeasonRoster> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    if (dmodel.seasonRoster == null) {
+    return cv.AppBar(
+        title: "Team Roster",
+        isLarge: true,
+        refreshable: true,
+        color: dmodel.color,
+        onRefresh: () => _refresh(dmodel),
+        leading: cv.BackButton(color: dmodel.color),
+        children: [
+          _roster(context, dmodel),
+        ]);
+  }
+
+  Widget _roster(BuildContext context, DataModel dmodel) {
+    if (dmodel.teamRoster == null) {
       // show loading
       return cv.NativeList(
         children: [
@@ -33,7 +51,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
     } else {
       return cv.NativeList(
         children: [
-          for (SeasonUser i in dmodel.seasonRoster!)
+          for (SeasonUser i in dmodel.teamRoster!)
             _rosterCell(context, i, dmodel),
         ],
       );
@@ -60,13 +78,18 @@ class _SeasonRosterState extends State<SeasonRoster> {
   }
 
   void _checkRoster(DataModel dmodel) async {
-    if (dmodel.seasonRoster == null) {
-      await dmodel.getSeasonRoster(
-          dmodel.tus!.team.teamId, dmodel.currentSeason!.seasonId, (users) {
-        dmodel.setSeasonRoster(users);
+    if (dmodel.teamRoster == null) {
+      await dmodel.getTeamRoster(widget.teamId, (users) {
+        dmodel.setTeamRoster(users);
       });
     } else {
-      print('already have roster');
+      print('already have team roster');
     }
+  }
+
+  Future<void> _refresh(DataModel dmodel) async {
+    await dmodel.getTeamRoster(widget.teamId, (users) {
+      dmodel.setTeamRoster(users);
+    });
   }
 }

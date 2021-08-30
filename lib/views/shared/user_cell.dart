@@ -9,8 +9,10 @@ class UserCell extends StatelessWidget {
   const UserCell({
     Key? key,
     required this.user,
+    this.isClickable,
   }) : super(key: key);
   final SeasonUser user;
+  final bool? isClickable;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,10 @@ class UserCell extends StatelessWidget {
           user.seasonName(),
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
+        const Spacer(),
+        if (isClickable ?? false)
+          Icon(Icons.chevron_right,
+              color: CustomColors.textColor(context).withOpacity(0.5)),
       ],
     );
   }

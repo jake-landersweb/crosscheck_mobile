@@ -42,6 +42,7 @@ dependencies:
   flutter_switch: ^0.3.2
   intl: ^0.17.0 # for date format
   pull_to_refresh: ^2.0.0
+  table_calendar: ^3.0.2 # for calendar functionality
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

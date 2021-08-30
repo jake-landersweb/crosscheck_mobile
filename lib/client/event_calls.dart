@@ -133,4 +133,23 @@ extension EventCalls on DataModel {
       }
     });
   }
+
+  Future<void> getCalendar(
+      String teamId, Function(List<CalendarEvent>) completion) async {
+    await client.fetch("/teams/$teamId/calendar").then((response) {
+      if (response == null) {
+        setError("There was an issue fetching the calendar", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully fetched calendar", false);
+        List<CalendarEvent> list = [];
+        for (var i in response['body']) {
+          list.add(CalendarEvent.fromJson(i));
+        }
+        completion(list);
+      } else {
+        setError("There was an issue fetching the calendar", true);
+        print(response['message']);
+      }
+    });
+  }
 }

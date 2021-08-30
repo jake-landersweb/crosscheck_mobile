@@ -137,10 +137,18 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
               user: widget.user,
               teamId: widget.teamId,
               seasonId: widget.seasonId,
+              editNickname: widget.user.seasonFields != null ? true : false,
               completion: () {
-                dmodel.getSeasonRoster(widget.teamId, widget.seasonId, (users) {
-                  dmodel.setSeasonRoster(users);
-                });
+                if (widget.user.seasonFields == null) {
+                  dmodel.getTeamRoster(widget.teamId, (users) {
+                    dmodel.setTeamRoster(users);
+                  });
+                } else {
+                  dmodel.getSeasonRoster(widget.teamId, widget.seasonId,
+                      (users) {
+                    dmodel.setSeasonRoster(users);
+                  });
+                }
                 Navigator.of(context).pop();
               },
             ),

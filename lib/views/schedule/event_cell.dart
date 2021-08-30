@@ -18,6 +18,7 @@ class EventCell extends StatefulWidget {
     required this.teamId,
     required this.seasonId,
     this.isExpaded = false,
+    this.showStatus,
   }) : super(key: key);
 
   final Event event;
@@ -25,6 +26,7 @@ class EventCell extends StatefulWidget {
   final String teamId;
   final String seasonId;
   final bool? isExpaded;
+  final bool? showStatus;
 
   @override
   _EventCellState createState() => _EventCellState();
@@ -193,38 +195,39 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
       children: [
         if (widget.event.eType == 1) SizedBox(height: 8),
         if (widget.event.eType == 1)
-          Row(
-            children: [
-              // status select
-              EventUserStatus(
-                status: widget.event.userStatus ?? 0,
-                email: dmodel.user!.email,
-                onTap: () {
-                  cv.showFloatingSheet(
-                    context: context,
-                    builder: (context) {
-                      return StatusSelectSheet(
-                        email: widget.email,
-                        teamId: widget.teamId,
-                        seasonId: widget.seasonId,
-                        eventId: widget.event.eventId,
-                      );
-                    },
-                  );
-                },
-              ),
-              Spacer(),
-              // status indicators
-              _countCell(widget.event.inCount, Colors.green),
-              SizedBox(width: 16),
-              _countCell(widget.event.outCount, Colors.red),
-              SizedBox(width: 16),
-              _countCell(widget.event.undecidedCount,
-                  const Color.fromRGBO(235, 197, 9, 1)),
-              SizedBox(width: 16),
-              _countCell(widget.event.noResponse, Colors.grey),
-            ],
-          ),
+          if (widget.showStatus ?? true)
+            Row(
+              children: [
+                // status select
+                EventUserStatus(
+                  status: widget.event.userStatus ?? 0,
+                  email: dmodel.user!.email,
+                  onTap: () {
+                    cv.showFloatingSheet(
+                      context: context,
+                      builder: (context) {
+                        return StatusSelectSheet(
+                          email: widget.email,
+                          teamId: widget.teamId,
+                          seasonId: widget.seasonId,
+                          eventId: widget.event.eventId,
+                        );
+                      },
+                    );
+                  },
+                ),
+                Spacer(),
+                // status indicators
+                _countCell(widget.event.inCount, Colors.green),
+                SizedBox(width: 16),
+                _countCell(widget.event.outCount, Colors.red),
+                SizedBox(width: 16),
+                _countCell(widget.event.undecidedCount,
+                    const Color.fromRGBO(235, 197, 9, 1)),
+                SizedBox(width: 16),
+                _countCell(widget.event.noResponse, Colors.grey),
+              ],
+            ),
         // metadata
         cv.SpacedColumn(
           spacing: 16,

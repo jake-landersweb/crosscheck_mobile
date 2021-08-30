@@ -2,13 +2,13 @@ import 'package:equatable/equatable.dart';
 
 import 'root.dart';
 
-class Eventraw extends Equatable {
+class EventRaw extends Equatable {
   String? eDescription;
   late String eventId;
   late String eTitle;
   String? eLocation;
   late bool hasAttendance;
-  late String teamId;
+  String? teamId;
   late String seasonId;
   late int eType;
   EventTeam? homeTeam;
@@ -17,7 +17,7 @@ class Eventraw extends Equatable {
   EventTeam? awayTeam;
   String? color;
 
-  Eventraw({
+  EventRaw({
     this.eDescription,
     required this.eventId,
     required this.eTitle,
@@ -34,7 +34,7 @@ class Eventraw extends Equatable {
   });
 
   // empty object
-  Eventraw.empty() {
+  EventRaw.empty() {
     eDescription = "";
     eventId = "";
     eTitle = "";
@@ -51,7 +51,7 @@ class Eventraw extends Equatable {
   }
 
   // for creating a copy
-  Eventraw.of(Eventraw event) {
+  EventRaw.of(EventRaw event) {
     eDescription = event.eDescription;
     eventId = event.eventId;
     eTitle = event.eTitle;
@@ -72,7 +72,7 @@ class Eventraw extends Equatable {
   }
 
   // object from json
-  Eventraw.fromJson(Map<String, dynamic> json) {
+  EventRaw.fromJson(Map<String, dynamic> json) {
     eDescription = json['eDescription'];
     eventId = json['eventId'];
     eTitle = json['eTitle'];
@@ -80,7 +80,7 @@ class Eventraw extends Equatable {
     hasAttendance = json['hasAttendance'];
     teamId = json['teamId'];
     seasonId = json['seasonId'];
-    eType = json['eType'];
+    eType = json['eType']?.round();
     homeTeam =
         json['homeTeam'] != null ? EventTeam.fromJson(json['homeTeam']) : null;
     eDate = json['eDate'];
@@ -137,5 +137,5 @@ class Eventraw extends Equatable {
 
   // values to compare
   @override
-  List<Object> get props => [eventId, eTitle, seasonId, teamId];
+  List<Object> get props => [eventId, eTitle, seasonId];
 }
