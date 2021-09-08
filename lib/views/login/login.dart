@@ -21,48 +21,56 @@ class _LoginState extends State<Login> {
   String _email = "";
   String _password = "";
 
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Scaffold(
-      body: cv.AppBar(
-        title: "Login",
-        isLarge: true,
-        leading: cv.BackButton(
-          color: Colors.blue,
-        ),
+      body: Stack(
+        alignment: AlignmentDirectional.center,
         children: [
-          if (kIsWeb)
-            Column(
-              children: _form(context),
-            )
-          else if (Platform.isIOS || Platform.isMacOS)
-            cv.NativeList(
-              children: _form(context),
-            )
-          else
-            Column(
-              children: _form(context),
+          cv.AppBar(
+            title: "Login",
+            isLarge: true,
+            leading: cv.BackButton(
+              color: Colors.blue,
             ),
-          cv.Section('',
-              child: cv.BasicButton(
-                onTap: () {
-                  dismissKeyboard(context);
-                  if (_formIsValid(dmodel)) {
-                    _login(dmodel);
-                  }
-                },
-                child: const cv.NativeList(
-                  itemPadding: EdgeInsets.all(16),
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child:
-                          Text("Login", style: TextStyle(color: Colors.blue)),
-                    ),
-                  ],
+            children: [
+              if (kIsWeb)
+                Column(
+                  children: _form(context),
+                )
+              else if (Platform.isIOS || Platform.isMacOS)
+                cv.NativeList(
+                  children: _form(context),
+                )
+              else
+                Column(
+                  children: _form(context),
                 ),
-              ))
+              cv.Section('',
+                  child: cv.BasicButton(
+                    onTap: () {
+                      dismissKeyboard(context);
+                      if (_formIsValid(dmodel)) {
+                        _login(dmodel);
+                      }
+                    },
+                    child: const cv.NativeList(
+                      itemPadding: EdgeInsets.all(16),
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: Text("Login",
+                              style: TextStyle(color: Colors.blue)),
+                        ),
+                      ],
+                    ),
+                  ))
+            ],
+          ),
+          if (_isLoading) cv.LoadingIndicator()
         ],
       ),
     );
@@ -105,12 +113,18 @@ class _LoginState extends State<Login> {
   }
 
   void _login(DataModel dmodel) async {
+    setState(() {
+      _isLoading = true;
+    });
     // log the user in and set the variable to show the home screen
-    dmodel.login(_email, _password, (user) {
+    await dmodel.login(_email, _password, (user) {
       setState(() {
         dmodel.setUser(user);
       });
       Navigator.of(context).pop();
+    });
+    setState(() {
+      _isLoading = false;
     });
   }
 }

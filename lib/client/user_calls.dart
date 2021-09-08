@@ -24,7 +24,8 @@ extension UserCalls on DataModel {
     }
   }
 
-  void login(String email, String password, Function(User) completion) async {
+  Future<void> login(
+      String email, String password, Function(User) completion) async {
     print("logging in...");
     loadingStatus = LoadingStatus.loading;
 
@@ -46,6 +47,41 @@ extension UserCalls on DataModel {
       print(response['message']);
       setError("There was an error logging in", true);
     }
+  }
+
+  Future<int> createUser(String email, String firstName, String lastName,
+      String password, Function(User) completion) async {
+    Map<String, dynamic> body = {
+      'email': email.toLowerCase(),
+      'password': password,
+      "firstName": firstName,
+      "lastName": lastName,
+    };
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client.post("path", headers, jsonEncode(body)).then((response) {
+      if (response == null) {
+        setError("There was an unknown issue creating the user", true);
+        return 400;
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully created user", true);
+        completion(User.fromJson(response['body']));
+        return 200;
+      } else {
+        print(response['message']);
+        switch (response['message']) {
+          case 410:
+            setError("A user with this email address already exists", true);
+            return 410;
+          default:
+            setError("There was an unkown issue creating the user", true);
+            return 400;
+        }
+      }
+    });
+
+    return 400;
   }
 
   void updateUser(
