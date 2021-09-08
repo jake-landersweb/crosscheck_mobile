@@ -24,41 +24,49 @@ class _CreateUserState extends State<CreateUser> {
   String _email = "";
   String _password = "";
 
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Scaffold(
-      body: cv.AppBar(
-        title: "Create Account",
-        isLarge: true,
-        actions: [
-          _loginButton(context),
-        ],
+      body: Stack(
+        alignment: AlignmentDirectional.center,
         children: [
-          cv.NativeList(
-            children: _form(context),
-          ),
-          cv.Section(
-            '',
-            child: cv.BasicButton(
-              onTap: () {
-                dismissKeyboard(context);
-                if (_formIsValid(dmodel)) {
-                  _createAccount(dmodel);
-                }
-              },
-              child: const cv.NativeList(
-                itemPadding: EdgeInsets.all(16),
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text("Create Account",
-                        style: TextStyle(color: Colors.blue)),
-                  ),
-                ],
+          cv.AppBar(
+            title: "Create Account",
+            isLarge: true,
+            actions: [
+              _loginButton(context),
+            ],
+            children: [
+              cv.NativeList(
+                children: _form(context),
               ),
-            ),
+              cv.Section(
+                '',
+                child: cv.BasicButton(
+                  onTap: () {
+                    dismissKeyboard(context);
+                    if (_formIsValid(dmodel)) {
+                      _createAccount(dmodel);
+                    }
+                  },
+                  child: const cv.NativeList(
+                    itemPadding: EdgeInsets.all(16),
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text("Create Account",
+                            style: TextStyle(color: Colors.blue)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
+          if (_isLoading) cv.LoadingIndicator()
         ],
       ),
     );
