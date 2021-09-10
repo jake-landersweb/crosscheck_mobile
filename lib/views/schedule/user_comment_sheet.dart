@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sprung/sprung.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
@@ -46,37 +50,41 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
       title: "Comments",
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 500),
-        child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.all(8),
-          children: [
-            cv.Section(
-              "Message",
-              child: cv.NativeList(
-                color: CustomColors.textColor(context).withOpacity(0.1),
-                itemPadding: const EdgeInsets.all(16),
-                children: [
-                  Text(
-                    widget.user.eventFields?.message ?? "",
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-            cv.Section(
-              "Comments",
-              child: cv.NativeList(
-                itemPadding: const EdgeInsets.all(8),
-                color: CustomColors.textColor(context).withOpacity(0.1),
-                children: [
-                  for (StatusReply i in _replies) _userCommentCell(i),
-                ],
-              ),
-            ),
-            cv.Section("", child: _replyCell(context)),
-          ],
-        ),
+        child: _body(context),
       ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(8),
+      children: [
+        cv.Section(
+          "Message",
+          child: cv.NativeList(
+            color: CustomColors.textColor(context).withOpacity(0.1),
+            itemPadding: const EdgeInsets.all(16),
+            children: [
+              Text(
+                widget.user.eventFields?.message ?? "",
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+        ),
+        cv.Section(
+          "Comments",
+          child: cv.NativeList(
+            itemPadding: const EdgeInsets.all(8),
+            color: CustomColors.textColor(context).withOpacity(0.1),
+            children: [
+              for (StatusReply i in _replies) _userCommentCell(i),
+            ],
+          ),
+        ),
+        cv.Section("", child: _replyCell(context)),
+      ],
     );
   }
 
@@ -138,7 +146,9 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
           },
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 12, 8, 12),
+          padding: Platform.isIOS || Platform.isMacOS
+              ? const EdgeInsets.fromLTRB(0, 12, 8, 12)
+              : const EdgeInsets.fromLTRB(0, 0, 8, 0),
           child: cv.BasicButton(
             onTap: () {
               _replyToStatus(context, dmodel);

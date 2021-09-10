@@ -20,11 +20,16 @@ class UserCell extends StatelessWidget {
       children: [
         UserAvatar(user: user),
         const SizedBox(width: 16),
-        Text(
-          user.seasonName(),
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+        Expanded(
+          child: Text(
+            user.seasonName(),
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                color: CustomColors.textColor(context)),
+          ),
         ),
-        const Spacer(),
+        // const Spacer(),
         if (isClickable ?? false)
           Icon(Icons.chevron_right,
               color: CustomColors.textColor(context).withOpacity(0.5)),
@@ -98,7 +103,7 @@ class UserAvatar extends StatelessWidget {
       children: [
         cv.Circle(diameter, CustomColors.random(user.email)),
         Text(
-          user.seasonName()[0],
+          user.seasonName()[0].toUpperCase(),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,

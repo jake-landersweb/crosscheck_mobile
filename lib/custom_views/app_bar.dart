@@ -205,16 +205,30 @@ class _AppBarState extends State<AppBar> {
                 opacity: _loadAmount > 0 ? 1 : 0,
                 duration: const Duration(milliseconds: 250),
                 child: _showLoad
-                    ? CircularProgressIndicator(
-                        value: _loadAmount,
-                        color: widget.color ??
-                            Theme.of(context).colorScheme.primary)
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                            top: _indicatorPadding(
+                                MediaQuery.of(context).padding.top)),
+                        child: CircularProgressIndicator(
+                            value: _loadAmount,
+                            color: widget.color ??
+                                Theme.of(context).colorScheme.primary),
+                      )
                     : Container(),
               ),
             ),
         ],
       ),
     );
+  }
+
+  double _indicatorPadding(double safeAreaHeight) {
+    print(safeAreaHeight);
+    if (safeAreaHeight < 50) {
+      return 20;
+    } else {
+      return 0;
+    }
   }
 
   Widget _body(BuildContext context) {

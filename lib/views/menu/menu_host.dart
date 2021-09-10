@@ -409,7 +409,7 @@ class _MenuHostState extends State<MenuHost> {
               currentSeason: dmodel.currentSeason!);
         }
       case Pages.settings:
-        return Settings();
+        return const Settings();
       default:
         return Text('Home');
     }

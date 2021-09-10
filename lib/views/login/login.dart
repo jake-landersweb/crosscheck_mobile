@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,22 +31,13 @@ class _LoginState extends State<Login> {
           cv.AppBar(
             title: "Login",
             isLarge: true,
-            leading: cv.BackButton(
-              color: Colors.blue,
-            ),
+            // leading: cv.BackButton(
+            //   color: Colors.blue,
+            // ),
             children: [
-              if (kIsWeb)
-                Column(
-                  children: _form(context),
-                )
-              else if (Platform.isIOS || Platform.isMacOS)
-                cv.NativeList(
-                  children: _form(context),
-                )
-              else
-                Column(
-                  children: _form(context),
-                ),
+              cv.NativeList(
+                children: _form(context),
+              ),
               cv.Section('',
                   child: cv.BasicButton(
                     onTap: () {
@@ -62,14 +51,20 @@ class _LoginState extends State<Login> {
                       children: [
                         SizedBox(
                           width: double.infinity,
-                          child: Text("Login",
-                              style: TextStyle(color: Colors.blue)),
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18),
+                          ),
                         ),
                       ],
                     ),
                   ))
             ],
           ),
+          // for showing that the view is actually doing something
           if (_isLoading) cv.LoadingIndicator()
         ],
       ),
@@ -121,7 +116,8 @@ class _LoginState extends State<Login> {
       setState(() {
         dmodel.setUser(user);
       });
-      Navigator.of(context).pop();
+      // for when user is able to create an account in the app
+      // Navigator.of(context).pop();
     });
     setState(() {
       _isLoading = false;

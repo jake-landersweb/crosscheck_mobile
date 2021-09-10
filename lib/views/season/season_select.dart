@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pnflutter/extras/root.dart';
 import 'package:provider/provider.dart';
 
 import '../../client/root.dart';
@@ -26,7 +30,11 @@ class _SeasonSelectState extends State<SeasonSelect> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.NativeList(
-      itemPadding: EdgeInsets.all(16),
+      itemPadding: kIsWeb
+          ? const EdgeInsets.all(8)
+          : Platform.isIOS || Platform.isMacOS
+              ? const EdgeInsets.all(16)
+              : const EdgeInsets.all(8),
       children: [
         for (Season i in widget.tus.seasons)
           _seasonSelectCell(context, i, dmodel),
@@ -44,11 +52,22 @@ class _SeasonSelectState extends State<SeasonSelect> {
       },
       child: Row(
         children: [
-          Icon(widget.currentSeason.seasonId == season.seasonId
-              ? Icons.radio_button_checked
-              : Icons.radio_button_unchecked),
+          Icon(
+            widget.currentSeason.seasonId == season.seasonId
+                ? Icons.radio_button_checked
+                : Icons.radio_button_unchecked,
+            color: CustomColors.textColor(context).withOpacity(
+                season.seasonId == widget.currentSeason.seasonId ? 1 : 0.5),
+          ),
           const SizedBox(width: 16),
-          Text(season.title),
+          Text(season.title,
+              style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  color: CustomColors.textColor(context).withOpacity(
+                      season.seasonId == widget.currentSeason.seasonId
+                          ? 1
+                          : 0.5))),
         ],
       ),
     );
