@@ -92,29 +92,35 @@ class _CalendarState extends State<Calendar> {
             },
           ),
         ),
+        // list of the events for that current calendar day
         ListView.builder(
           shrinkWrap: true,
           itemCount: _selectedEvents.length,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            return Stack(
-              alignment: AlignmentDirectional.topEnd,
+            return Column(
               children: [
-                EventCell(
-                  event: Event.fromRaw(_selectedEvents[index]),
-                  email: dmodel.user!.email,
-                  teamId: dmodel.tus!.team.teamId,
-                  seasonId: _selectedEvents[index].seasonId,
-                  showStatus: false,
+                Stack(
+                  alignment: AlignmentDirectional.topEnd,
+                  children: [
+                    EventCell(
+                      event: Event.fromRaw(_selectedEvents[index]),
+                      email: dmodel.user!.email,
+                      teamId: dmodel.tus!.team.teamId,
+                      seasonId: _selectedEvents[index].seasonId,
+                      showStatus: false,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: cv.Circle(
+                        10,
+                        CustomColors.fromHex(
+                            _selectedEvents[index].color ?? "FFFFFF"),
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: cv.Circle(
-                    10,
-                    CustomColors.fromHex(
-                        _selectedEvents[index].color ?? "FFFFFF"),
-                  ),
-                ),
+                const SizedBox(height: 16),
               ],
             );
           },

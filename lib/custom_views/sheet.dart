@@ -120,7 +120,7 @@ class _SheetState extends State<Sheet> {
           duration: const Duration(milliseconds: 650),
           child: SizedBox(
             height: MediaQuery.of(context).viewInsets.bottom > 0
-                ? MediaQuery.of(context).viewInsets.bottom - 40
+                ? MediaQuery.of(context).viewInsets.bottom
                 : 0,
           ),
         ),

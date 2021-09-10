@@ -118,12 +118,8 @@ class _TextFieldState extends State<TextField> {
           ),
       decoration: InputDecoration(
         hintText: widget.labelText,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              color:
-                  MediaQuery.of(context).platformBrightness == Brightness.light
-                      ? Colors.black.withOpacity(0.5)
-                      : Colors.white.withOpacity(0.5)),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.transparent),
         ),
         icon: widget.icon,
         hintStyle: TextStyle(

@@ -44,10 +44,11 @@ class Home extends StatelessWidget {
       darkTheme: darkTheme,
       highContrastTheme: lightTheme,
       highContrastDarkTheme: darkTheme,
+      debugShowCheckedModeBanner: false,
       home: dmodel.showSplash
           ? const SplashScreen()
           : dmodel.user == null
-              ? const CreateUser()
+              ? const Login()
               : const Dashboard(),
       builder: (context, child) {
         return Index(

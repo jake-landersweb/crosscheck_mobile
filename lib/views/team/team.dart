@@ -22,14 +22,14 @@ class Team extends StatefulWidget {
 class _TeamState extends State<Team> {
   @override
   Widget build(BuildContext context) {
-    return cv.NativeList(
-      itemPadding: const EdgeInsets.all(16),
-      children: [
-        cv.BasicButton(
-          onTap: () {
-            cv.Navigate(context, TeamRoster(teamId: widget.teamId));
-          },
-          child: Row(
+    return cv.BasicButton(
+      onTap: () {
+        cv.Navigate(context, TeamRoster(teamId: widget.teamId));
+      },
+      child: cv.NativeList(
+        itemPadding: const EdgeInsets.all(16),
+        children: [
+          Row(
             children: [
               const Text(
                 "Full Team Roster",
@@ -40,8 +40,8 @@ class _TeamState extends State<Team> {
                   color: CustomColors.textColor(context).withOpacity(0.5)),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

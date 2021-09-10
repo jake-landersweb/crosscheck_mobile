@@ -25,12 +25,14 @@ class EventMetaDataCell extends StatelessWidget {
           Icon(icon, color: CustomColors.textColor(context)),
           const SizedBox(width: 16),
           child ??
-              Text(
-                title,
-                style: TextStyle(
-                  color: CustomColors.textColor(context),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: CustomColors.textColor(context),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                  ),
                 ),
               ),
         ],

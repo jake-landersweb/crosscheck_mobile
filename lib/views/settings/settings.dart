@@ -34,14 +34,14 @@ class _SettingsState extends State<Settings> {
         ),
         cv.Section(
           "",
-          child: cv.NativeList(
-            itemPadding: const EdgeInsets.all(16),
-            children: [
-              cv.BasicButton(
-                onTap: () {
-                  _showAlert(context, dmodel);
-                },
-                child: const Align(
+          child: cv.BasicButton(
+            onTap: () {
+              _showAlert(context, dmodel);
+            },
+            child: const cv.NativeList(
+              itemPadding: EdgeInsets.all(16),
+              children: [
+                Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: Text(
                     "Log Out",
@@ -52,8 +52,8 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

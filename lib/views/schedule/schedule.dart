@@ -22,10 +22,11 @@ class _ScheduleState extends State<Schedule> {
           _previous(context, dmodel),
           _next(context, dmodel),
           _upcoming(context, dmodel),
+          const SizedBox(height: 16),
         ],
       );
     } else {
-      return Container();
+      return const ScheduleLoading();
     }
   }
 

@@ -75,32 +75,44 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
     return Material(
       color: CustomColors.cellColor(context),
       shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // main header cell
-            _header(context),
-            SizeTransition(
-              sizeFactor: _animation,
-              axis: Axis.vertical,
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 300),
-                opacity: _isOpen ? 1 : 0,
-                child: Column(
-                  children: [
-                    SizedBox(height: 8),
-                    Divider(
-                      height: 0.5,
-                      indent: 0,
+      child: Stack(
+        alignment: AlignmentDirectional.topEnd,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // main header cell
+                _header(context),
+                SizeTransition(
+                  sizeFactor: _animation,
+                  axis: Axis.vertical,
+                  child: AnimatedOpacity(
+                    duration: Duration(milliseconds: 300),
+                    opacity: _isOpen ? 1 : 0,
+                    child: Column(
+                      children: [
+                        SizedBox(height: 8),
+                        Divider(
+                          height: 0.5,
+                          indent: 0,
+                        ),
+                        _details(context),
+                      ],
                     ),
-                    _details(context),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          // indicator for status
+          if (widget.event.hasAttendance)
+            Padding(
+              padding: EdgeInsets.all(8),
+              child:
+                  cv.Circle(7, _getStatusColor(widget.event.userStatus ?? 0)),
+            )
+        ],
       ),
     );
   }
@@ -193,8 +205,8 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        if (widget.event.eType == 1) SizedBox(height: 8),
-        if (widget.event.eType == 1)
+        if (widget.event.hasAttendance) SizedBox(height: 8),
+        if (widget.event.hasAttendance)
           if (widget.showStatus ?? true)
             Row(
               children: [
@@ -256,5 +268,20 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
         fontWeight: FontWeight.w700,
       ),
     );
+  }
+
+  Color _getStatusColor(int status) {
+    switch (status) {
+      case -1:
+        return Colors.red;
+      case 0:
+        return Colors.transparent;
+      case 1:
+        return Colors.green;
+      case 2:
+        return Colors.yellow;
+      default:
+        return Colors.transparent;
+    }
   }
 }
