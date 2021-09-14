@@ -48,6 +48,7 @@ class _SeasonSelectState extends State<SeasonSelect> {
       onTap: () {
         if (widget.currentSeason.seasonId != season.seasonId) {
           dmodel.setSeason(season);
+          dmodel.seasonRoster = null;
         }
       },
       child: Row(
@@ -60,14 +61,15 @@ class _SeasonSelectState extends State<SeasonSelect> {
                 season.seasonId == widget.currentSeason.seasonId ? 1 : 0.5),
           ),
           const SizedBox(width: 16),
-          Text(season.title,
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                  color: CustomColors.textColor(context).withOpacity(
-                      season.seasonId == widget.currentSeason.seasonId
-                          ? 1
-                          : 0.5))),
+          Text(
+            season.title,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+              color: CustomColors.textColor(context).withOpacity(
+                  season.seasonId == widget.currentSeason.seasonId ? 1 : 0.5),
+            ),
+          ),
         ],
       ),
     );

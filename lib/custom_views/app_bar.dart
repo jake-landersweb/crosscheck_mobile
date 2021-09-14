@@ -207,12 +207,14 @@ class _AppBarState extends State<AppBar> {
                 child: _showLoad
                     ? Padding(
                         padding: EdgeInsets.only(
-                            top: _indicatorPadding(
-                                MediaQuery.of(context).padding.top)),
+                          top: _indicatorPadding(
+                              MediaQuery.of(context).padding.top),
+                        ),
                         child: CircularProgressIndicator(
-                            value: _loadAmount,
-                            color: widget.color ??
-                                Theme.of(context).colorScheme.primary),
+                          value: _loadAmount,
+                          color: widget.color ??
+                              Theme.of(context).colorScheme.primary,
+                        ),
                       )
                     : Container(),
               ),
@@ -223,8 +225,7 @@ class _AppBarState extends State<AppBar> {
   }
 
   double _indicatorPadding(double safeAreaHeight) {
-    print(safeAreaHeight);
-    if (safeAreaHeight < 50) {
+    if (safeAreaHeight < 40) {
       return 20;
     } else {
       return 0;

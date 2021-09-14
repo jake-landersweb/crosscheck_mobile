@@ -71,7 +71,57 @@ class Index extends StatefulWidget {
   _IndexState createState() => _IndexState();
 }
 
-class _IndexState extends State<Index> {
+class _IndexState extends State<Index> with WidgetsBindingObserver {
+  DateTime? _closedTime;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("app in resumed");
+        // reload the data if app was in background for overg 5 minutes
+        if (_closedTime!
+            .isBefore(DateTime.now().subtract(const Duration(minutes: 5)))) {
+          _resetData(context.read<DataModel>());
+        }
+        break;
+      case AppLifecycleState.inactive:
+        print("app in inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("app in paused");
+        _closedTime = DateTime.now();
+        break;
+      case AppLifecycleState.detached:
+        print("app in detached");
+        break;
+    }
+  }
+
+  void _resetData(DataModel dmodel) {
+    dmodel.currentSchedule = null;
+    dmodel.seasonRoster = null;
+    dmodel.teamRoster = null;
+    dmodel.calendar = null;
+    if (dmodel.user != null) {
+      dmodel.getUser(dmodel.user!.email, (user) {
+        dmodel.setUser(user);
+      });
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

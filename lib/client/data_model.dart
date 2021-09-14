@@ -70,11 +70,18 @@ class DataModel extends ChangeNotifier {
     }
   }
 
+  bool hasSeasons = true;
+
   TeamUserSeasons? tus;
   Color color = Colors.blue;
   void setTus(TeamUserSeasons tus) {
     prefs.setString('teamId', tus.team.teamId);
     this.tus = tus;
+    // set color if applicable
+    if (!tus.team.color.isEmpty()) {
+      color = CustomColors.fromHex(tus.team.color!);
+    }
+
     // set the current season
     if (prefs.containsKey('seasonId')) {
       print('user has a saved seasonId');
@@ -86,11 +93,8 @@ class DataModel extends ChangeNotifier {
         }
       }
       if (season != null) {
+        hasSeasons = true;
         setSeason(season);
-        // set color if applicable
-        if (!tus.team.color.isEmpty()) {
-          color = CustomColors.fromHex(tus.team.color!);
-        }
       } else {
         print("invalid season id, removing from cache and trying again...");
         prefs.remove("seasonId");
@@ -98,10 +102,12 @@ class DataModel extends ChangeNotifier {
       }
     } else if (tus.seasons.isNotEmpty) {
       print('using first season from call to set current season');
+      hasSeasons = true;
       setSeason(tus.seasons.first);
     } else {
       print("there are no seasons for this team");
       loadingStatus = LoadingStatus.success;
+      hasSeasons = false;
       notifyListeners();
     }
   }

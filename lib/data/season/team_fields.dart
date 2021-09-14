@@ -53,8 +53,8 @@ class SeasonUserTeamFields {
 }
 
 class LastSeason {
-  late String title;
-  late String seasonId;
+  String? title;
+  String? seasonId;
 
   LastSeason({
     required this.title,

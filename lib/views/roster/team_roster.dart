@@ -29,15 +29,16 @@ class _TeamRosterState extends State<TeamRoster> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
-        title: "Team Roster",
-        isLarge: true,
-        refreshable: true,
-        color: dmodel.color,
-        onRefresh: () => _refresh(dmodel),
-        leading: cv.BackButton(color: dmodel.color),
-        children: [
-          _roster(context, dmodel),
-        ]);
+      title: "Team Roster",
+      isLarge: true,
+      refreshable: true,
+      color: dmodel.color,
+      onRefresh: () => _refresh(dmodel),
+      leading: cv.BackButton(color: dmodel.color),
+      children: [
+        _roster(context, dmodel),
+      ],
+    );
   }
 
   Widget _roster(BuildContext context, DataModel dmodel) {
@@ -49,12 +50,15 @@ class _TeamRosterState extends State<TeamRoster> {
         ],
       );
     } else {
-      return cv.NativeList(
-        children: [
-          for (SeasonUser i in dmodel.teamRoster!)
-            _rosterCell(context, i, dmodel),
-        ],
-      );
+      return Column(children: [
+        cv.NativeList(
+          children: [
+            for (SeasonUser i in dmodel.teamRoster!)
+              _rosterCell(context, i, dmodel),
+          ],
+        ),
+        const SizedBox(height: 30),
+      ]);
     }
   }
 

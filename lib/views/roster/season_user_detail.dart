@@ -49,10 +49,20 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
           ),
         ),
         const SizedBox(height: 16),
+        _email(context),
         if (widget.user.userFields != null) _userInfo(context),
         if (widget.user.teamFields != null) _teamInfo(context),
         if (widget.user.seasonFields != null) _seasonInfo(context),
         const SizedBox(height: 30),
+      ],
+    );
+  }
+
+  Widget _email(BuildContext context) {
+    return cv.NativeList(
+      itemPadding: const EdgeInsets.all(16),
+      children: [
+        UserInfoCell(label: "Email", value: widget.user.email),
       ],
     );
   }

@@ -100,7 +100,7 @@ extension EventCalls on DataModel {
     });
   }
 
-  void replyToStatus(
+  Future<void> replyToStatus(
       String teamId,
       String seasonId,
       String eventId,
