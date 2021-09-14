@@ -31,12 +31,28 @@ class _SeasonRosterState extends State<SeasonRoster> {
         ],
       );
     } else {
-      return cv.NativeList(
-        children: [
-          for (SeasonUser i in dmodel.seasonRoster!)
-            _rosterCell(context, i, dmodel),
-        ],
-      );
+      if (dmodel.seasonRoster!.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: Text(
+            "There are no users a part of this season",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
+            ),
+          ),
+        );
+      } else {
+        return Column(children: [
+          cv.NativeList(
+            children: [
+              for (SeasonUser i in dmodel.seasonRoster!)
+                _rosterCell(context, i, dmodel),
+            ],
+          ),
+          const SizedBox(height: 30),
+        ]);
+      }
     }
   }
 

@@ -36,6 +36,8 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
 
   String _reply = "";
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -155,14 +157,17 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
             },
             child: Row(
               children: [
-                Text(
-                  "Reply",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: dmodel.color,
+                if (_isLoading)
+                  cv.LoadingIndicator()
+                else
+                  Text(
+                    "Reply",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: dmodel.color,
+                    ),
                   ),
-                ),
                 const Spacer(),
               ],
             ),
@@ -173,19 +178,28 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
   }
 
   void _replyToStatus(BuildContext context, DataModel dmodel) async {
-    if (_reply == "") {
-      dmodel.setError("Reply cannot be empty", true);
-    } else {
-      dmodel.replyToStatus(
-          widget.teamId,
-          widget.seasonId,
-          widget.event.eventId,
-          widget.user.email,
-          dmodel.currentSeasonUser!.seasonName(),
-          _reply, () {
-        Navigator.of(context).pop();
-        widget.completion();
-      });
+    if (!_isLoading) {
+      if (_reply == "") {
+        dmodel.setError("Reply cannot be empty", true);
+      } else {
+        setState(() {
+          _isLoading = true;
+        });
+        await dmodel.replyToStatus(
+            widget.teamId,
+            widget.seasonId,
+            widget.event.eventId,
+            widget.user.email,
+            dmodel.currentSeasonUser!.seasonName(),
+            _reply, () {
+          Navigator.of(context).pop();
+          widget.completion();
+        }).then((value) {
+          setState(() {
+            _isLoading = false;
+          });
+        });
+      }
     }
   }
 }

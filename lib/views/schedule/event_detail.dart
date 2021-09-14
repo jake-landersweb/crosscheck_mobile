@@ -66,6 +66,7 @@ class _EventDetailState extends State<EventDetail> {
         // event details
         _details(context),
         _userList(context, dmodel),
+        const SizedBox(height: 30),
       ],
     );
   }

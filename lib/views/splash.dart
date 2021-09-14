@@ -8,7 +8,16 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: cv.LoadingIndicator()),
+      body: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white,
+          ),
+          Center(child: Image.asset("assets/launch/PNTM_icon.png")),
+        ],
+      ),
     );
   }
 }

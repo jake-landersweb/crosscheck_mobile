@@ -26,7 +26,11 @@ class _ScheduleState extends State<Schedule> {
         ],
       );
     } else {
-      return const ScheduleLoading();
+      if (dmodel.hasSeasons) {
+        return const ScheduleLoading();
+      } else {
+        return const Center(child: Text("There are no seasons for this team."));
+      }
     }
   }
 
