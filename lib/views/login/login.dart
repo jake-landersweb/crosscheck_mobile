@@ -77,6 +77,7 @@ class _LoginState extends State<Login> {
         showBackground: false,
         labelText: "Email",
         keyboardType: TextInputType.emailAddress,
+        textCapitalization: TextCapitalization.none,
         validator: (value) {},
         onChanged: (value) {
           _email = value;
@@ -87,6 +88,7 @@ class _LoginState extends State<Login> {
         obscureText: true,
         labelText: "Password",
         keyboardType: TextInputType.visiblePassword,
+        textCapitalization: TextCapitalization.none,
         validator: (value) {},
         onChanged: (value) {
           _password = value;

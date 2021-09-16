@@ -169,6 +169,10 @@ class _CalendarState extends State<Calendar> {
     if (dmodel.calendar == null) {
       dmodel.getCalendar(widget.teamId, (calendar) {
         dmodel.setCalendar(calendar);
+        setState(() {
+          _selectedEvents =
+              _getEventsFromDay(_selectedDay, context.read<DataModel>());
+        });
       });
     }
   }

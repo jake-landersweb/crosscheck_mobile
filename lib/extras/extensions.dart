@@ -72,7 +72,7 @@ extension CustomColors on Colors {
   static Color random(String seed) {
     double num = 0;
     for (int i = 0; i < seed.length; i++) {
-      num += intFromString(seed[i].toLowerCase()) / 2;
+      num += intFromString(seed[i].toLowerCase()) / 3.2;
     }
     return Color((math.Random(num.toInt()).nextDouble() * 0xFFFFFF).toInt())
         .withOpacity(1.0);

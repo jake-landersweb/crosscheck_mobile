@@ -45,7 +45,21 @@ extension UserCalls on DataModel {
       completion(User.fromJson(response['body']));
     } else {
       print(response['message']);
-      setError("There was an error logging in", true);
+      switch (response['status']) {
+        case 440:
+          setError("Your email or password was incorrect", true);
+          break;
+        case 420:
+          setError("Your email or password was incorrect", true);
+          break;
+        case 430:
+          setError(
+              "Your account is not set up yet, contact your team admin or check your email inbox",
+              true);
+          break;
+        default:
+          setError("There was an error logging in", true);
+      }
     }
   }
 

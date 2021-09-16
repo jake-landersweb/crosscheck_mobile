@@ -170,22 +170,25 @@ class _MenuHostState extends State<MenuHost> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (dmodel.tus?.team.image != null && dmodel.tus?.team.image != "")
-              Image.network(
-                dmodel.tus!.team.image!,
-                width: (_size.width / _menu.sizeThreashold) - 16,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Text("");
-                },
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-                  return SizedBox(
-                    width: (_size.width / _menu.sizeThreashold) - 16,
-                    height: (_size.width / _menu.sizeThreashold) - 16,
-                    child: cv.LoadingIndicator(),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Image.network(
+                  dmodel.tus!.team.image!,
+                  width: (_size.width / _menu.sizeThreashold) - 32,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Text("");
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return SizedBox(
+                      width: (_size.width / _menu.sizeThreashold) - 32,
+                      height: (_size.width / _menu.sizeThreashold) - 32,
+                      child: cv.LoadingIndicator(),
+                    );
+                  },
+                ),
               ),
             const SizedBox(height: 16),
             _menuRow(context, _menuItems[0], _menu, _size),
@@ -467,6 +470,10 @@ class _MenuHostState extends State<MenuHost> {
           await dmodel.scheduleGet(dmodel.tus!.team.teamId,
               dmodel.currentSeason!.seasonId, dmodel.user!.email, (schedule) {
             dmodel.setSchedule(schedule);
+            // invalidate old data
+            dmodel.calendar = null;
+            dmodel.seasonRoster = null;
+            dmodel.teamRoster = null;
           });
         }
         break;

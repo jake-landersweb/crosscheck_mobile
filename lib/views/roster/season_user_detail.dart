@@ -138,7 +138,8 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
   }
 
   Widget _edit(BuildContext context, DataModel dmodel) {
-    if (widget.user.email == dmodel.user!.email) {
+    if (widget.user.email == dmodel.user!.email ||
+        dmodel.currentSeasonUser!.isSeasonAdmin()) {
       return cv.BasicButton(
         onTap: () {
           cv.Navigate(

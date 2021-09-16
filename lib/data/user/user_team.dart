@@ -24,13 +24,15 @@ class UserTeam extends Equatable {
   // converting from json
   static List<UserTeam> fromJson(dynamic json) {
     List<UserTeam> list = [];
-    for (var i in json) {
-      list.add(
-        UserTeam(
-          title: i['title'],
-          teamId: i['teamId'],
-        ),
-      );
+    if (json != null) {
+      for (var i in json) {
+        list.add(
+          UserTeam(
+            title: i['title'],
+            teamId: i['teamId'],
+          ),
+        );
+      }
     }
     return list;
   }

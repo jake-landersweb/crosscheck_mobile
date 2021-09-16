@@ -80,7 +80,13 @@ class _ScheduleState extends State<Schedule> {
             seasonId: dmodel.currentSeason!.seasonId),
       );
     } else {
-      return Container();
+      return const Padding(
+        padding: EdgeInsets.only(top: 20),
+        child: Text(
+          "There are no future events for this season.",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+        ),
+      );
     }
   }
 
