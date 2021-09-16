@@ -138,14 +138,14 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
               children: [
                 // date
                 Expanded(
-                  flex: 30,
+                  flex: 35,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.event.getDate(),
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: CustomColors.textColor(context)
                                 .withOpacity(0.7)),
@@ -155,7 +155,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                         widget.event.getTime(),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: CustomColors.textColor(context)),
                       )
@@ -165,7 +165,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                 // SizedBox(width: 8),
                 // title
                 Expanded(
-                  flex: 70,
+                  flex: 65,
                   child: Text(
                     widget.event.getTitle(),
                     style: TextStyle(
@@ -215,17 +215,22 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                   status: widget.event.userStatus ?? 0,
                   email: dmodel.user!.email,
                   onTap: () {
-                    cv.showFloatingSheet(
-                      context: context,
-                      builder: (context) {
-                        return StatusSelectSheet(
-                          email: widget.email,
-                          teamId: widget.teamId,
-                          seasonId: widget.seasonId,
-                          eventId: widget.event.eventId,
-                        );
-                      },
-                    );
+                    // make sure this event has not passed
+                    if (stringToDate(widget.event.eDate)
+                            .isAfter(DateTime.now()) ||
+                        dmodel.currentSeasonUser!.isSeasonAdmin()) {
+                      cv.showFloatingSheet(
+                        context: context,
+                        builder: (context) {
+                          return StatusSelectSheet(
+                            email: widget.email,
+                            teamId: widget.teamId,
+                            seasonId: widget.seasonId,
+                            eventId: widget.event.eventId,
+                          );
+                        },
+                      );
+                    }
                   },
                 ),
                 Spacer(),

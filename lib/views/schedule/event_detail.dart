@@ -180,12 +180,15 @@ class _EventDetailState extends State<EventDetail> {
                       status: i.eventFields!.eStatus,
                       showTitle: false,
                       onTap: () {
-                        if (i.email == widget.email) {
+                        if ((i.email == widget.email &&
+                                stringToDate(widget.event.eDate)
+                                    .isAfter(DateTime.now())) ||
+                            dmodel.currentSeasonUser!.isSeasonAdmin()) {
                           cv.showFloatingSheet(
                             context: context,
                             builder: (context) {
                               return StatusSelectSheet(
-                                email: widget.email,
+                                email: i.email,
                                 teamId: widget.teamId,
                                 seasonId: widget.seasonId,
                                 eventId: widget.event.eventId,
