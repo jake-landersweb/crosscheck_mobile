@@ -138,7 +138,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
               children: [
                 // date
                 Expanded(
-                  flex: 35,
+                  flex: 25,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -165,7 +165,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                 // SizedBox(width: 8),
                 // title
                 Expanded(
-                  flex: 65,
+                  flex: 75,
                   child: Text(
                     widget.event.getTitle(),
                     style: TextStyle(
