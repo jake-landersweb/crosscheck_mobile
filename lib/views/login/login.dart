@@ -98,7 +98,11 @@ class _LoginState extends State<Login> {
   }
 
   bool _formIsValid(DataModel dmodel) {
-    if (!_email.contains("@") || !_email.contains(".co")) {
+    if (!_email.contains("@") ||
+        !_email.contains(".co") ||
+        !_email.contains(".edu") ||
+        !_email.contains(".net") ||
+        !_email.contains(".ca")) {
       dmodel.setError("Please enter a valid email", true);
       return false;
     } else if (_password == "") {
