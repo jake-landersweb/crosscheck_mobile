@@ -35,6 +35,8 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
 
   bool _isLoaded = false;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -100,19 +102,29 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
             ),
             const SizedBox(height: 16),
             cv.BasicButton(
-              onTap: () => _setStatus(context, dmodel),
+              onTap: () {
+                if (!_isLoading) {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  _setStatus(context, dmodel);
+                }
+              },
               child: cv.NativeList(
                 color: CustomColors.textColor(context).withOpacity(0.1),
                 itemPadding: const EdgeInsets.all(16),
                 children: [
-                  Text(
-                    "Confirm Status",
-                    style: TextStyle(
-                      color: dmodel.color,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  if (!_isLoading)
+                    Text(
+                      "Confirm Status",
+                      style: TextStyle(
+                        color: dmodel.color,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  else
+                    cv.LoadingIndicator(),
                 ],
               ),
             ),
@@ -135,6 +147,9 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
       if (widget.completion != null) {
         widget.completion!();
       }
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 

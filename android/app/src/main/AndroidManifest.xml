@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.landersweb.pnflutter">
    <application
-        android:label="PNTM"
+        android:label="Crosscheck"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"

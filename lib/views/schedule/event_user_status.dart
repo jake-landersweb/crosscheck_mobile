@@ -69,7 +69,7 @@ class _EventUserStatusState extends State<EventUserStatus> {
   String _getTitle() {
     switch (widget.status) {
       case 0:
-        return "no response";
+        return "no info";
       case -1:
         return "out";
       case 1:

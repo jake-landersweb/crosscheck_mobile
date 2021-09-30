@@ -175,31 +175,34 @@ class _EventDetailState extends State<EventDetail> {
                         ),
                       ),
                     // show their status, and only let the model open if it is them
-                    EventUserStatus(
-                      email: i.email,
-                      status: i.eventFields!.eStatus,
-                      showTitle: false,
-                      onTap: () {
-                        if ((i.email == widget.email &&
-                                stringToDate(widget.event.eDate)
-                                    .isAfter(DateTime.now())) ||
-                            dmodel.currentSeasonUser!.isSeasonAdmin()) {
-                          cv.showFloatingSheet(
-                            context: context,
-                            builder: (context) {
-                              return StatusSelectSheet(
-                                email: i.email,
-                                teamId: widget.teamId,
-                                seasonId: widget.seasonId,
-                                eventId: widget.event.eventId,
-                                completion: () {
-                                  _getUsers(dmodel);
-                                },
-                              );
-                            },
-                          );
-                        }
-                      },
+                    Opacity(
+                      opacity: dmodel.user!.email == i.email ? 1 : 0.5,
+                      child: EventUserStatus(
+                        email: i.email,
+                        status: i.eventFields!.eStatus,
+                        showTitle: false,
+                        onTap: () {
+                          if ((i.email == widget.email &&
+                                  stringToDate(widget.event.eDate)
+                                      .isAfter(DateTime.now())) ||
+                              dmodel.currentSeasonUser!.isSeasonAdmin()) {
+                            cv.showFloatingSheet(
+                              context: context,
+                              builder: (context) {
+                                return StatusSelectSheet(
+                                  email: i.email,
+                                  teamId: widget.teamId,
+                                  seasonId: widget.seasonId,
+                                  eventId: widget.event.eventId,
+                                  completion: () {
+                                    _getUsers(dmodel);
+                                  },
+                                );
+                              },
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ],
                 )
