@@ -15,7 +15,7 @@ class SplashScreen extends StatelessWidget {
             height: double.infinity,
             color: Colors.white,
           ),
-          Center(child: Image.asset("assets/launch/PNTM_icon.png")),
+          Center(child: Image.asset("assets/launch/crosscheck.png")),
         ],
       ),
     );

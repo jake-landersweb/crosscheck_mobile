@@ -4,6 +4,8 @@ import 'dart:math' as math;
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../extras/root.dart';
+import 'package:provider/provider.dart';
+import '../../client/root.dart';
 
 class UserCell extends StatelessWidget {
   const UserCell({
@@ -16,17 +18,27 @@ class UserCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
     return Row(
       children: [
         UserAvatar(user: user),
         const SizedBox(width: 16),
         Expanded(
-          child: Text(
-            user.seasonName(),
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
-                color: CustomColors.textColor(context)),
+          child: Row(
+            children: [
+              Text(
+                user.seasonName(),
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    color: CustomColors.textColor(context)),
+              ),
+              if (dmodel.user!.email == user.email)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: cv.Circle(7, CustomColors.textColor(context)),
+                ),
+            ],
           ),
         ),
         // const Spacer(),

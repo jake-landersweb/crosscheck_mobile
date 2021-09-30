@@ -40,6 +40,7 @@ class _CalendarState extends State<Calendar> {
         TableCalendar(
           firstDay: DateTime.utc(2010, 10, 16),
           lastDay: DateTime.utc(2030, 3, 14),
+          availableCalendarFormats: const {CalendarFormat.month: 'Month'},
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) {
             return isSameDay(_selectedDay, day);
@@ -64,11 +65,13 @@ class _CalendarState extends State<Calendar> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: dmodel.color,
+                        color: dmodel.color.withOpacity(0.3),
                         shape: BoxShape.circle,
                       ),
                     ),
-                    Text("${day.day}")
+                    Text("${day.day}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: dmodel.color)),
                   ],
                 ),
               );
@@ -81,11 +84,71 @@ class _CalendarState extends State<Calendar> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: dmodel.color.withOpacity(0.3),
+                        color: CustomColors.textColor(context).withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
                     ),
-                    Text("${day.day}")
+                    Text("${day.day}",
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                  ],
+                ),
+              );
+            },
+            singleMarkerBuilder: (context, date, object) {
+              return Transform.translate(
+                offset: const Offset(0, -3),
+                child: cv.Circle(
+                  7,
+                  CustomColors.textColor(context).withOpacity(0.5),
+                ),
+              );
+            },
+            defaultBuilder: (context, day, day2) {
+              return Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Text("${day.day}",
+                        style: const TextStyle(fontWeight: FontWeight.w600))
+                  ],
+                ),
+              );
+            },
+            dowBuilder: (context, date) {
+              return SizedBox(
+                width: MediaQuery.of(context).size.width / 7,
+                child: Center(
+                  child: Text(_getWeekday(date.weekday),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 12)),
+                ),
+              );
+            },
+            outsideBuilder: (context, day, day2) {
+              return Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Opacity(
+                      opacity: 0.5,
+                      child: Text(
+                        "${day.day}",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w400, fontSize: 12),
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -127,6 +190,25 @@ class _CalendarState extends State<Calendar> {
         ),
       ],
     );
+  }
+
+  String _getWeekday(int i) {
+    switch (i) {
+      case 1:
+        return "M";
+      case 2:
+        return "T";
+      case 3:
+        return "W";
+      case 4:
+        return "T";
+      case 5:
+        return "F";
+      case 6:
+        return "S";
+      default:
+        return "S";
+    }
   }
 
   List<CalendarEvent> _getBubbles(DateTime day, DataModel dmodel) {

@@ -138,7 +138,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
               children: [
                 // date
                 Expanded(
-                  flex: 25,
+                  flex: MediaQuery.of(context).size.width > 400 ? 25 : 32,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -165,7 +165,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                 // SizedBox(width: 8),
                 // title
                 Expanded(
-                  flex: 75,
+                  flex: MediaQuery.of(context).size.width > 400 ? 75 : 68,
                   child: Text(
                     widget.event.getTitle(),
                     style: TextStyle(

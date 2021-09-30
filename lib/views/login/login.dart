@@ -46,26 +46,26 @@ class _LoginState extends State<Login> {
                         _login(dmodel);
                       }
                     },
-                    child: const cv.NativeList(
+                    child: cv.NativeList(
                       itemPadding: EdgeInsets.all(16),
                       children: [
                         SizedBox(
                           width: double.infinity,
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 18),
-                          ),
+                          child: _isLoading
+                              ? cv.LoadingIndicator()
+                              : const Text(
+                                  "Login",
+                                  style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
                         ),
                       ],
                     ),
                   ))
             ],
           ),
-          // for showing that the view is actually doing something
-          if (_isLoading) cv.LoadingIndicator()
         ],
       ),
     );
@@ -99,10 +99,9 @@ class _LoginState extends State<Login> {
 
   bool _formIsValid(DataModel dmodel) {
     if (!_email.contains("@") ||
-        !_email.contains(".co") ||
-        !_email.contains(".edu") ||
-        !_email.contains(".net") ||
-        !_email.contains(".ca")) {
+        _email.endsWith(".") ||
+        _email.endsWith("@") ||
+        !_email.contains(".")) {
       dmodel.setError("Please enter a valid email", true);
       return false;
     } else if (_password == "") {
