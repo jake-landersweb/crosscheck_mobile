@@ -46,7 +46,9 @@ class Home extends StatelessWidget {
       highContrastDarkTheme: darkTheme,
       debugShowCheckedModeBanner: false,
       home: dmodel.showSplash
-          ? const SplashScreen()
+          ? dmodel.showUpdate
+              ? const Update()
+              : const SplashScreen()
           : dmodel.user == null
               ? const Login()
               : const Dashboard(),
