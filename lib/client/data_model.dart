@@ -8,7 +8,7 @@ import 'root.dart';
 import '../data/root.dart';
 import '../extras/root.dart';
 
-String appVersion = "1.3.1";
+double appVersion = 1.3;
 
 class DataModel extends ChangeNotifier {
   // constructor init
@@ -18,9 +18,9 @@ class DataModel extends ChangeNotifier {
   init() async {
     print("init");
     // check the version
-    String currentVersion = await getVersion();
-    if (currentVersion != appVersion) {
-      print("versions do not match");
+    double currentVersion = await getVersion();
+    if (currentVersion > appVersion) {
+      print("app version is lower than api version");
       showUpdate = true;
       notifyListeners();
       return;
