@@ -8,6 +8,8 @@ import 'root.dart';
 import '../data/root.dart';
 import '../extras/root.dart';
 
+String appVersion = "1.3.1";
+
 class DataModel extends ChangeNotifier {
   // constructor init
   DataModel() {
@@ -15,6 +17,14 @@ class DataModel extends ChangeNotifier {
   }
   init() async {
     print("init");
+    // check the version
+    String currentVersion = await getVersion();
+    if (currentVersion != appVersion) {
+      print("versions do not match");
+      showUpdate = true;
+      notifyListeners();
+      return;
+    }
     // load chached data
     prefs = await SharedPreferences.getInstance();
     // logout();
@@ -37,6 +47,8 @@ class DataModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  bool showUpdate = false;
 
   bool showSplash = true;
 

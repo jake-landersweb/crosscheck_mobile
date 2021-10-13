@@ -9,3 +9,4 @@ export 'roster/root.dart';
 export 'season/root.dart';
 export 'calendar/root.dart';
 export 'team/root.dart';
+export 'update.dart';
