@@ -151,7 +151,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           _UserTextField(
             label: "First Name",
             initialValue: _firstName,
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
             onChanged: (value) {
               _firstName = value;
             },

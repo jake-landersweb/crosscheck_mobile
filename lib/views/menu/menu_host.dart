@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 
@@ -60,25 +61,7 @@ class _MenuHostState extends State<MenuHost> {
                   title: _getTitle(_menu.selectedPage, dmodel),
                   refreshable: _isRefreshable(_menu.selectedPage),
                   onRefresh: () => _refreshAction(_menu.selectedPage, dmodel),
-                  actions: [
-                    if (_menu.selectedPage == Pages.seasonRoster)
-                      cv.BasicButton(
-                        onTap: () {
-                          cv.Navigate(
-                            context,
-                            SeasonUserEdit(
-                              team: dmodel.tus!.team,
-                              user: SeasonUser.empty(),
-                              teamId: dmodel.tus!.team.teamId,
-                              seasonId: dmodel.currentSeason!.seasonId,
-                              completion: () {},
-                              isAdd: true,
-                            ),
-                          );
-                        },
-                        child: Icon(Icons.add, color: dmodel.color),
-                      ),
-                  ],
+                  actions: _actions(context, dmodel, _menu),
                   isLarge: true,
                   leading: _menuButton(context, _menu, _size),
                   children: [
@@ -159,6 +142,44 @@ class _MenuHostState extends State<MenuHost> {
         ),
       ],
     );
+  }
+
+  List<Widget> _actions(
+      BuildContext context, DataModel dmodel, MenuModel _menu) {
+    return [
+      if (_menu.selectedPage == Pages.seasonRoster)
+        if (dmodel.currentSeasonUser != null &&
+            dmodel.currentSeasonUser!.isSeasonAdmin())
+          cv.BasicButton(
+            onTap: () {
+              cv.Navigate(
+                context,
+                SeasonUserEdit(
+                  team: dmodel.tus!.team,
+                  user: SeasonUser.empty(),
+                  teamId: dmodel.tus!.team.teamId,
+                  seasonId: dmodel.currentSeason!.seasonId,
+                  completion: () {},
+                  isAdd: true,
+                ),
+              );
+            },
+            child: Icon(Icons.add, color: dmodel.color),
+          ),
+      if (_menu.selectedPage == Pages.schedule)
+        if (dmodel.currentSeasonUser != null &&
+            dmodel.currentSeasonUser!.isSeasonAdmin())
+          cv.BasicButton(
+            onTap: () {
+              cv.Navigate(
+                context,
+                EventCreateEdit(
+                    isCreate: true, teamId: dmodel.tus!.team.teamId),
+              );
+            },
+            child: Icon(Icons.add, color: dmodel.color),
+          ),
+    ];
   }
 
   Widget _menuButton(BuildContext context, MenuModel _menu, Size _size) {
