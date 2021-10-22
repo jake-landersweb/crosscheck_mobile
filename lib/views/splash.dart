@@ -10,12 +10,15 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
+          const SizedBox(
             width: double.infinity,
             height: double.infinity,
-            color: Colors.white,
           ),
-          Center(child: Image.asset("assets/launch/crosscheck.png")),
+          Center(
+              child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image.asset("assets/launch/x.png"),
+          )),
         ],
       ),
     );

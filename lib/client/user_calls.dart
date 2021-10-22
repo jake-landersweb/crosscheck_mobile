@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 
 import 'root.dart';
 import '../data/root.dart';
+import '../extras/root.dart';
 
 extension UserCalls on DataModel {
-  void getUser(String email, Function(User) completion) async {
+  Future<void> getUser(String email, Function(User) completion) async {
     print('fetching user');
-    loadingStatus = LoadingStatus.loading;
     var response = await client.fetch('/users/$email');
 
     if (response == null) {
@@ -27,16 +27,15 @@ extension UserCalls on DataModel {
   Future<void> login(
       String email, String password, Function(User) completion) async {
     print("logging in...");
-    loadingStatus = LoadingStatus.loading;
 
     Map<String, dynamic> body = {
-      'email': email.toLowerCase(),
       'password': password,
     };
 
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    var response = await client.put("/loginUser", headers, jsonEncode(body));
+    var response =
+        await client.put("/users/$email/login", headers, jsonEncode(body));
 
     if (response == null) {
       setError("There was an error logging in", true);
@@ -113,6 +112,35 @@ extension UserCalls on DataModel {
     } else {
       print(response['message']);
       setError("There was an issue updaing your user record", true);
+    }
+  }
+
+  Future<void> getUserTUS(String email, String? teamId, String? seasonId,
+      Function(UserTUS) completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    dynamic response;
+
+    if (teamId != null) {
+      // send as put
+      Map<String, dynamic> body = {'teamId': teamId};
+      if (seasonId != null) {
+        body['seasonId'] = seasonId;
+        body['date'] = dateToString(DateTime.now());
+      }
+      response =
+          await client.put("/users/$email/tus", headers, jsonEncode(body));
+    } else {
+      response = await client.fetch("/users/$email/tus");
+    }
+    if (response == null) {
+      setError("There was an issue getting your information", true);
+    } else if (response['status'] == 200) {
+      setSuccess("Logged in as $email", true);
+      completion(UserTUS.fromJson(response['body']));
+    } else {
+      print(response['message']);
+      setError("There was an issue getting your information", true);
     }
   }
 }

@@ -24,7 +24,7 @@ class _TeamState extends State<Team> {
   Widget build(BuildContext context) {
     return cv.BasicButton(
       onTap: () {
-        cv.Navigate(context, TeamRoster(teamId: widget.teamId));
+        // cv.Navigate(context, TeamRoster(teamId: widget.teamId));
       },
       child: cv.NativeList(
         itemPadding: const EdgeInsets.all(16),

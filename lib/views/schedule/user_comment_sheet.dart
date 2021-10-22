@@ -190,7 +190,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
             widget.seasonId,
             widget.event.eventId,
             widget.user.email,
-            dmodel.currentSeasonUser!.seasonName(),
+            dmodel.currentSeasonUser!.name(),
             _reply, () {
           Navigator.of(context).pop();
           widget.completion();

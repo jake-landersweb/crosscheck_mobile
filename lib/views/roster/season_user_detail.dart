@@ -42,7 +42,7 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
         ),
         const SizedBox(height: 16),
         Text(
-          widget.user.seasonName(),
+          widget.user.name(),
           style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w700,
@@ -95,11 +95,10 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
           UserInfoCell(
               label: "Org id", value: widget.user.teamFields?.orgId ?? ""),
           UserInfoCell(
-              label: "Team User Type", value: widget.user.teamUserType()),
-          UserInfoCell(
-              label: "Is Goalie",
-              value:
-                  widget.user.teamFields?.isGoalie ?? false ? "True" : "False"),
+              label: "Team Position",
+              value: widget.user
+                  .getPosition(widget.user.teamFields?.tPosition ?? 0)),
+          UserInfoCell(label: "User Type", value: widget.user.teamUserType()),
           UserInfoCell(
               label: "Team Note",
               value: widget.user.teamFields?.teamUserNote ?? "")
@@ -114,21 +113,18 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
       child: cv.NativeList(
         itemPadding: const EdgeInsets.all(16),
         children: [
-          UserInfoCell(
-              label: "Nickname",
-              value: widget.user.seasonFields?.nickName ?? ""),
-          UserInfoCell(
-              label: "Jersey Number",
-              value: widget.user.seasonFields?.jerseyNumber ?? ""),
-          UserInfoCell(
-              label: "Jersey Size",
-              value: widget.user.seasonFields?.jerseySize ?? ""),
+          UserInfoCell(label: "Stats", value: widget.user.getSeasonStats()),
           UserInfoCell(
               label: "Season Position",
-              value: widget.user.seasonFields?.userPosition ?? ""),
-          UserInfoCell(label: "User Type", value: widget.user.seasonUserType()),
+              value: widget.user
+                  .getPosition(widget.user.seasonFields?.sPosition ?? 0)),
           UserInfoCell(
-              label: "User Status", value: widget.user.seasonUserStatus()),
+              label: "Jersey Number", value: widget.user.jerseyNumber()),
+          UserInfoCell(label: "Jersey Size", value: widget.user.jersyeSize()),
+          UserInfoCell(
+              label: "User Status",
+              value: widget.user.seasonUserStatus(
+                  widget.user.seasonFields?.seasonUserStatus ?? 0)),
           UserInfoCell(
               label: "Season Note",
               value: widget.user.seasonFields?.seasonUserNote ?? ""),
@@ -145,21 +141,15 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
           cv.Navigate(
             context,
             SeasonUserEdit(
+              team: dmodel.tus!.team,
               user: widget.user,
               teamId: widget.teamId,
               seasonId: widget.seasonId,
-              editNickname: widget.user.seasonFields != null ? true : false,
               completion: () {
-                if (widget.user.seasonFields == null) {
-                  dmodel.getTeamRoster(widget.teamId, (users) {
-                    dmodel.setTeamRoster(users);
-                  });
-                } else {
-                  dmodel.getSeasonRoster(widget.teamId, widget.seasonId,
-                      (users) {
-                    dmodel.setSeasonRoster(users);
-                  });
-                }
+                // do not need to fetch roster, getting returned value and replacing in list
+                // dmodel.getSeasonRoster(widget.teamId, widget.seasonId, (users) {
+                //   dmodel.setSeasonUsers(users);
+                // });
                 Navigator.of(context).pop();
               },
             ),

@@ -17,6 +17,7 @@ class DataModel extends ChangeNotifier {
   }
   init() async {
     print("init");
+
     // check the version
     double currentVersion = await getVersion();
     if (currentVersion > appVersion) {
@@ -25,158 +26,187 @@ class DataModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
+
     // load chached data
     prefs = await SharedPreferences.getInstance();
-    // logout();
-    // prefs.setString("seasonId", "Sab1280d9d47a42c5a33ce6f0e379957d");
+
+    prefs.setString("email", "me@jakelanders.com");
+    // prefs.remove("teamId");
+    // prefs.remove("seasonId");
+    // prefs.remove("teamId");
+
     if (prefs.containsKey('email')) {
-      print("has saved email");
-
-      // get the user
-      getUser(
-        prefs.getString('email')!,
-        (user) {
-          showSplash = false;
-          notifyListeners();
+      // check if there is a teamId and seasonId to use faster call,
+      // or else just use basic pathway to get that information
+      if (prefs.containsKey("teamId") && prefs.containsKey("seasonId")) {
+        // get tus with fast call
+        print("attempting to getall info with fast call");
+        await getUserTUS(prefs.getString("email")!, prefs.getString("teamId"),
+            prefs.getString("seasonId"), (utus) {
+          if (utus.tus != null && utus.schedule != null) {
+            print("successfully got fast data");
+            // successfully found all information
+            user = utus.user;
+            tus = utus.tus!;
+            // set the color
+            if (tus!.team.teamStyle.color != null) {
+              color = CustomColors.fromHex(tus!.team.teamStyle.color!);
+            }
+            Season? tempSeason;
+            for (var i in utus.tus!.seasons) {
+              if (i.seasonId == prefs.getString("seasonId")) {
+                tempSeason = i;
+                break;
+              }
+            }
+            if (tempSeason != null) {
+              currentSeason = tempSeason;
+              setSchedule(utus.schedule!);
+              notifyListeners();
+            } else {
+              // there was an issue with the season data, reget all data (this will not happen often)
+              setUser(utus.user);
+            }
+          } else {
+            print(utus.schedule);
+            // there was some issues getting the data, use basic pathway
+            setUser(utus.user);
+          }
+        });
+      } else {
+        // use basic pathway
+        await getUser(prefs.getString("email")!, (user) {
           setUser(user);
-        },
-      );
+        });
+      }
     } else {
-      loadingStatus = LoadingStatus.success;
-      showSplash = false;
-      notifyListeners();
+      print("user does not have saved email, going to login");
     }
+    showSplash = false;
+    notifyListeners();
   }
-
-  bool showUpdate = false;
-
-  bool showSplash = true;
 
   // client for api requests
   Client client = Client(client: http.Client());
-
+  bool showUpdate = false;
+  bool showSplash = true;
   late SharedPreferences prefs;
 
-  LoadingStatus loadingStatus = LoadingStatus.loading;
+  Color color = Colors.blue;
 
   User? user;
-  void setUser(User user) {
-    prefs.setString('email', user.email);
+  void setUser(User user) async {
     this.user = user;
-    // check if user has a team saved
-    if (prefs.containsKey('teamId')) {
-      print("user has a saved team id");
-      // get tus
-      teamUserSeasonsGet(prefs.getString('teamId')!, user.email, (tus) {
-        setTus(tus);
-      });
-    } else if (user.teams.isNotEmpty) {
-      print("user has a team in user record, using that to get tus");
-      teamUserSeasonsGet(user.teams.first.teamId, user.email, (tus) {
-        setTus(tus);
+    showSplash = false;
+    notifyListeners();
+    prefs.setString("email", user.email);
+    setSuccess("Logged in as ${user.email}", true);
+    print("set user");
+    // get the user tus
+    if (prefs.containsKey("teamId")) {
+      print("user has team id, using that to get tus");
+      // get the tus
+      await teamUserSeasonsGet(prefs.getString("teamId")!, user.email, (tus) {
+        setTUS(tus);
+        return;
       });
     } else {
-      print("user is not part of any teams");
-      loadingStatus = LoadingStatus.success;
-      notifyListeners();
+      // check the user list for a team
+      if (user.teams.isNotEmpty) {
+        print("getting tus with first team in team list");
+        // fetch tus with first team
+        await teamUserSeasonsGet(user.teams.first.teamId, user.email, (tus) {
+          setTUS(tus);
+          return;
+        });
+      } else {
+        // user has no teams
+        print("user has no saved teams");
+        noTeam = true;
+        noSeason = true;
+        notifyListeners();
+      }
     }
   }
 
-  bool hasSeasons = true;
-
   TeamUserSeasons? tus;
-  Color color = Colors.blue;
-  void setTus(TeamUserSeasons tus) {
-    prefs.setString('teamId', tus.team.teamId);
+  void setTUS(TeamUserSeasons tus) {
     this.tus = tus;
-    // set color if applicable
-    if (!tus.team.color.isEmpty()) {
-      color = CustomColors.fromHex(tus.team.color!);
+    prefs.setString("teamId", tus.team.teamId);
+    print("set tus");
+    // set the color
+    if (tus.team.teamStyle.color != null) {
+      color = CustomColors.fromHex(tus.team.teamStyle.color!);
     }
-
-    // set the current season
-    if (prefs.containsKey('seasonId')) {
-      print('user has a saved seasonId');
-      Season? season;
-      for (Season i in tus.seasons) {
-        if (i.seasonId == prefs.getString('seasonId')) {
-          season = i;
-          break;
+    if (tus.seasons.isNotEmpty) {
+      // check for saved seasonId
+      if (prefs.containsKey("seasonId")) {
+        for (var i in tus.seasons) {
+          if (i.seasonId == prefs.getString("seasonId")) {
+            // set the current season with this item
+            setCurrentSeason(i);
+            break;
+          }
         }
-      }
-      if (season != null) {
-        hasSeasons = true;
-        setSeason(season);
       } else {
-        print("invalid season id, removing from cache and trying again...");
-        prefs.remove("seasonId");
-        setTus(tus);
+        setCurrentSeason(tus.seasons.first);
+        return;
       }
-    } else if (tus.seasons.isNotEmpty) {
-      print('using first season from call to set current season');
-      hasSeasons = true;
-      setSeason(tus.seasons.first);
     } else {
-      print("there are no seasons for this team");
-      loadingStatus = LoadingStatus.success;
-      hasSeasons = false;
+      // there are no seasons
+      print("this team has no seasons");
+      noSeason = true;
       notifyListeners();
     }
   }
 
   Season? currentSeason;
-  void setSeason(Season season) {
-    prefs.setString('seasonId', season.seasonId);
+  void setCurrentSeason(Season season) {
     currentSeason = season;
-
-    // get schedule
+    prefs.setString("seasonId", season.seasonId);
+    notifyListeners();
+    print("set the current season");
+    // get the schedule with this season
     scheduleGet(tus!.team.teamId, season.seasonId, user!.email, (schedule) {
       setSchedule(schedule);
     });
+  }
 
-    // get the season user
-    setCurrentSeasonUser(tus!.user);
-    seasonUserGet(tus!.team.teamId, season.seasonId, user!.email, (user) {
-      setCurrentSeasonUser(user);
+  bool noTeam = false;
+  bool noSeason = false;
+
+  Schedule? schedule;
+  void setSchedule(Schedule schedule) {
+    this.schedule = schedule;
+    print("set schedule");
+    notifyListeners();
+    // get the season users
+    getSeasonRoster(tus!.team.teamId, currentSeason!.seasonId, (seasonUsers) {
+      setSeasonUsers(seasonUsers);
     });
   }
 
-  Schedule? currentSchedule;
-  void setSchedule(Schedule schedule) {
-    currentSchedule = schedule;
-    loadingStatus = LoadingStatus.success;
+  List<SeasonUser>? seasonUsers;
+  void setSeasonUsers(List<SeasonUser> seasonUsers) {
+    this.seasonUsers = seasonUsers;
     notifyListeners();
+    print("set season users");
+    for (var i in seasonUsers) {
+      if (i.email == user!.email) {
+        currentSeasonUser = i;
+        print("set current season user");
+        notifyListeners();
+        return;
+      }
+    }
   }
 
   SeasonUser? currentSeasonUser;
-  void setCurrentSeasonUser(SeasonUser user) {
-    currentSeasonUser = user;
-    notifyListeners();
-  }
-
-  List<SeasonUser>? seasonRoster;
-  void setSeasonRoster(List<SeasonUser> users) {
-    seasonRoster = users;
-    notifyListeners();
-  }
-
-  List<SeasonUser>? teamRoster;
-  void setTeamRoster(List<SeasonUser> users) {
-    teamRoster = users;
-    notifyListeners();
-  }
-
-  List<CalendarEvent>? calendar;
-  void setCalendar(List<CalendarEvent> calendar) {
-    this.calendar = calendar;
-    notifyListeners();
-  }
 
   // for showing error popup
   String errorText = "";
   void setError(String message, bool? showMessage) {
     print(message);
-    loadingStatus = LoadingStatus.error;
     if (showMessage ?? true) {
       errorText = message;
       notifyListeners();
@@ -201,6 +231,6 @@ class DataModel extends ChangeNotifier {
     tus = null;
     currentSeason = null;
     currentSeasonUser = null;
-    currentSchedule = null;
+    seasonUsers = null;
   }
 }

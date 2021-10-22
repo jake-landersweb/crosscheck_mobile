@@ -28,6 +28,10 @@ extension DateFormater on String {
     DateFormat format = DateFormat('hh:mm a');
     return format.format(date);
   }
+
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1)}";
+  }
 }
 
 extension CustomColors on Colors {

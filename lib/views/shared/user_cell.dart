@@ -27,7 +27,7 @@ class UserCell extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                user.seasonName(),
+                user.name(),
                 style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
@@ -115,7 +115,7 @@ class UserAvatar extends StatelessWidget {
       children: [
         cv.Circle(diameter, CustomColors.random(user.email)),
         Text(
-          user.seasonName()[0].toUpperCase(),
+          user.name()[0].toUpperCase(),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,

@@ -1,34 +1,51 @@
+import 'package:pnflutter/data/root.dart';
+
 class SeasonUserEventFields {
   String? teamId;
   String? message;
-  late int eStatus;
   late List<StatusReply> statusReplies;
+  // new fields
+  String? email;
+  late int eStatus;
+  late bool isPlaying;
+  List<SUStats>? stats;
+  int? ePosition;
 
-  SeasonUserEventFields({
-    this.teamId,
-    this.message,
-    required this.eStatus,
-    required this.statusReplies,
-  });
+  SeasonUserEventFields(
+      {this.teamId,
+      this.message,
+      required this.statusReplies,
+      this.email,
+      required this.eStatus,
+      required this.isPlaying,
+      this.stats,
+      this.ePosition});
 
   SeasonUserEventFields.empty() {
     teamId = "";
     message = "";
-    eStatus = 1;
     statusReplies = [];
+    email = "empty";
+    eStatus = 0;
+    isPlaying = true;
+    stats = [];
+    ePosition = 0;
   }
 
   SeasonUserEventFields.of(SeasonUserEventFields user) {
     teamId = user.teamId;
     message = user.message;
-    eStatus = user.eStatus;
     statusReplies = user.statusReplies;
+    email = user.email;
+    eStatus = user.eStatus;
+    isPlaying = user.isPlaying;
+    stats = user.stats;
+    ePosition = user.ePosition;
   }
 
   SeasonUserEventFields.fromJson(Map<String, dynamic> json) {
     teamId = json['teamId'];
     message = json['message'];
-    eStatus = json['eStatus']?.round();
     statusReplies = [];
     if (json['statusReplies'] != null) {
       json['statusReplies'].forEach((v) {
@@ -37,14 +54,23 @@ class SeasonUserEventFields {
     } else {
       statusReplies = [];
     }
+    email = json['email'];
+    eStatus = json['eStatus']?.round() ?? 0;
+    isPlaying = json['isPlaying'] ?? true;
+    stats = SUStats.fromJson(json['stats']);
+    ePosition = json['ePosition']?.round() ?? 0;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['teamId'] = teamId;
     data['message'] = message;
-    data['eStatus'] = eStatus;
     data['statusReplies'] = statusReplies.map((v) => v.toJson()).toList();
+    data['email'] = email;
+    data['eStatus'] = eStatus.round();
+    data['isPlaying'] = isPlaying;
+    data['stats'] = stats?.map((v) => v.toJson()).toList();
+    data['ePosition'] = ePosition;
     return data;
   }
 }

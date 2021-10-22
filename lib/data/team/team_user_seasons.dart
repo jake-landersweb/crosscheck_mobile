@@ -4,7 +4,7 @@ import '../season/root.dart';
 class TeamUserSeasons {
   late Team team;
   late List<Season> seasons;
-  late SeasonUser user;
+  late SeasonUserTeamFields user;
 
   TeamUserSeasons({
     required this.team,
@@ -18,6 +18,6 @@ class TeamUserSeasons {
     json['seasons'].forEach((v) {
       seasons.add(Season.fromJson(v));
     });
-    user = SeasonUser.fromJson(json['user']);
+    user = SeasonUserTeamFields.fromJson(json['user']);
   }
 }

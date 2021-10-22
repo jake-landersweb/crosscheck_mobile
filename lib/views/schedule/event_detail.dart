@@ -31,6 +31,7 @@ class EventDetail extends StatefulWidget {
 
 class _EventDetailState extends State<EventDetail> {
   List<SeasonUser>? _users;
+  List<SeasonUser>? _inactiveUsers;
 
   @override
   void initState() {
@@ -65,8 +66,8 @@ class _EventDetailState extends State<EventDetail> {
         ),
         // event details
         _details(context),
-        _userList(context, dmodel),
-        const SizedBox(height: 30),
+        if (widget.event.hasAttendance) _userList(context, dmodel),
+        const SizedBox(height: 48),
       ],
     );
   }
@@ -80,11 +81,11 @@ class _EventDetailState extends State<EventDetail> {
           EventMetaDataCell(
               title: "${widget.event.getDate()}  ${widget.event.getTime()}",
               icon: Icons.calendar_today),
-          if (widget.event.eType == 1)
+          if (widget.event.eventType == 1)
             EventMetaDataCell(
                 title: widget.event.getOpponentTitle(widget.teamId),
                 icon: Icons.person),
-          if (widget.event.eType == 1)
+          if (widget.event.eventType == 1)
             EventMetaDataCell(
               title: "",
               icon: Icons.sports_score,
@@ -134,12 +135,38 @@ class _EventDetailState extends State<EventDetail> {
     );
   }
 
+  Widget _userStatusCounts(BuildContext context, DataModel dmodel) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _userStatusCountCell(context, -1, widget.event.outCount),
+        _userStatusCountCell(context, 1, widget.event.inCount),
+        _userStatusCountCell(context, 2, widget.event.undecidedCount),
+        _userStatusCountCell(context, 0, widget.event.noResponse),
+      ],
+    );
+  }
+
+  Widget _userStatusCountCell(BuildContext context, int status, int value) {
+    return Row(
+      children: [
+        Icon(_getIcon(status), color: _getColor(status)),
+        const SizedBox(width: 8),
+        Text(
+          "$value",
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+      ],
+    );
+  }
+
   Widget _userList(BuildContext context, DataModel dmodel) {
     if (widget.event.hasAttendance) {
       return cv.Section(
         "Attendance",
         child: cv.NativeList(
           children: [
+            if (_users != null) _userStatusCounts(context, dmodel),
             if (_users != null)
               for (SeasonUser i in _users!)
                 Row(
@@ -207,7 +234,7 @@ class _EventDetailState extends State<EventDetail> {
                   ],
                 )
             else
-              for (int i = 0; i < 10; i++) const UserCellLoading(),
+              for (int i = 0; i < 25; i++) const UserCellLoading(),
           ],
         ),
       );
@@ -216,12 +243,65 @@ class _EventDetailState extends State<EventDetail> {
     }
   }
 
+  Widget _inacticeList(BuildContext context, DataModel dmodel) {
+    return Container();
+  }
+
   Future<void> _getUsers(DataModel dmodel) async {
     await dmodel.getEventUsers(
-        widget.teamId, widget.seasonId, widget.event.eventId, (users) {
+        widget.teamId, widget.seasonId, widget.event.eventId, (eventUsers) {
+      List<SeasonUser> seasonUsers = List.from(dmodel.seasonUsers!);
+
+      List<SeasonUser> activeUsers = [];
+      List<SeasonUser> inactiveUsers = [];
+
+      // loop through season users and compose list
+      for (var i in eventUsers) {
+        SeasonUser seasonUser = seasonUsers
+            .firstWhere((element) => element.email == i.email, orElse: () {
+          return SeasonUser.empty();
+        });
+        seasonUser.updateEventFields(i);
+        if (seasonUser.eventFields!.isPlaying) {
+          activeUsers.add(seasonUser);
+        } else {
+          inactiveUsers.add(seasonUser);
+        }
+      }
       setState(() {
-        _users = users;
+        _users = activeUsers;
+        _inactiveUsers = inactiveUsers;
       });
     });
+  }
+
+  IconData _getIcon(int status) {
+    switch (status) {
+      case 0:
+        return Icons.remove_circle_outline;
+      case -1:
+        return Icons.cancel;
+      case 1:
+        return Icons.check_circle;
+      case 2:
+        return Icons.help_outline;
+      default:
+        return Icons.remove_circle_outline;
+    }
+  }
+
+  Color _getColor(int status) {
+    switch (status) {
+      case 0:
+        return Colors.grey;
+      case -1:
+        return Colors.red;
+      case 1:
+        return Colors.green;
+      case 2:
+        return const Color.fromRGBO(235, 197, 9, 1);
+      default:
+        return Colors.grey;
+    }
   }
 }

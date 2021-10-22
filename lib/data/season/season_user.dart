@@ -72,12 +72,12 @@ class SeasonUser extends Equatable {
     return data;
   }
 
-  void updateEventFields() {
-    // TODO - implement
+  void updateEventFields(SeasonUserEventFields fields) {
+    eventFields = SeasonUserEventFields.of(fields);
   }
 
   // for team user name
-  String teamName() {
+  String name() {
     if (userFields == null) {
       return email;
     } else if (userFields!.firstName.isEmpty()) {
@@ -89,31 +89,24 @@ class SeasonUser extends Equatable {
     }
   }
 
-  // for painting the correct seasonName
-  String seasonName() {
-    if (seasonFields == null) {
-      return teamName();
-    } else if (seasonFields!.nickName.isEmpty()) {
-      return teamName();
-    } else {
-      return seasonFields!.nickName!;
-    }
-  }
-
   // checking if admin on a season or team owner
   bool isSeasonAdmin() {
-    if ((teamFields?.teamUserType ?? 1) > 2) {
-      return true;
-    } else if ((seasonFields!.seasonUserType ?? 1) > 1) {
+    if (seasonFields?.isManager ?? false) {
       return true;
     } else {
-      return false;
+      if (isTeamAdmin()) {
+        return true;
+      } else if ((seasonFields!.seasonUserType ?? 1) > 1) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
   // for checking if user is a team admin
   bool isTeamAdmin() {
-    if ((teamFields?.teamUserType ?? 1) > 2) {
+    if ((teamFields?.teamUserType ?? 1) > 1) {
       return true;
     } else {
       return false;
@@ -133,41 +126,129 @@ class SeasonUser extends Equatable {
           return "Owner";
         case 0:
           return "Recruit";
-        default:
-          return "Innactive";
-      }
-    }
-  }
-
-  String seasonUserType() {
-    if (seasonFields == null) {
-      return "";
-    } else {
-      switch (seasonFields!.seasonUserType) {
-        case 1:
-          return "Player";
-        case 2:
-          return "Manager";
-        case 0:
-          return "Recruit";
-        default:
-          return "Innactive";
-      }
-    }
-  }
-
-  String seasonUserStatus() {
-    if (seasonFields == null) {
-      return "";
-    } else {
-      switch (seasonFields!.userStatus) {
-        case 1:
-          return "Active";
         case -1:
-          return "Innactive";
+          return "Inactive";
         default:
           return "Unknown";
       }
+    }
+  }
+
+  String seasonUserStatus(int status) {
+    switch (status) {
+      case 1:
+        return "Active";
+      case 2:
+        return "Sub";
+      case 3:
+        return "Recruit";
+      case 4:
+        return "Invited";
+      case 5:
+        return "Sub Recruit";
+      case 6:
+        return "Sub Invited";
+      case -1:
+        return "Innactive";
+      default:
+        return "Unknown";
+    }
+  }
+
+  String jersyeSize() {
+    if (seasonFields?.jersey != null) {
+      if (seasonFields!.jersey!.size != null) {
+        return seasonFields!.jersey!.size.toString();
+      } else if (seasonFields?.jerseySize.isEmpty() ?? true) {
+        return '';
+      } else {
+        return seasonFields!.jerseySize!;
+      }
+    } else {
+      if (seasonFields?.jerseySize.isEmpty() ?? true) {
+        return '';
+      } else {
+        return seasonFields!.jerseySize!;
+      }
+    }
+  }
+
+  String jerseyNumber() {
+    if (seasonFields?.jersey != null) {
+      if (seasonFields!.jersey!.number != null) {
+        return seasonFields!.jersey!.number.toString();
+      } else if (seasonFields?.jerseyNumber.isEmpty() ?? true) {
+        return '';
+      } else {
+        return seasonFields!.jerseyNumber!;
+      }
+    } else {
+      if (seasonFields?.jerseyNumber.isEmpty() ?? true) {
+        return '';
+      } else {
+        return seasonFields!.jerseyNumber!;
+      }
+    }
+  }
+
+  String getPosition(int status) {
+    switch (status) {
+      case 0:
+        return "Forward";
+      case 1:
+        return "Defense";
+      case 2:
+        return "Goalie";
+      default:
+        return "Unknown";
+    }
+  }
+
+  String getTeamUserNote() {
+    if (teamFields?.teamUserNote == null) {
+      return "";
+    } else {
+      return teamFields!.teamUserNote!;
+    }
+  }
+
+  /// Composes stat fields line by line
+  String getSeasonStats() {
+    if (seasonFields?.stats == null) {
+      return "";
+    } else {
+      if (seasonFields!.stats!.isEmpty) {
+        return "";
+      } else {
+        String stat = "";
+        for (var i in seasonFields!.stats!) {
+          stat = stat + "${i.title.capitalize()}: ${i.value}";
+          if (i != seasonFields!.stats!.last) {
+            stat = stat + "\n";
+          }
+        }
+        return stat;
+      }
+    }
+  }
+
+  String getEventStats() {
+    if (eventFields?.stats == null) {
+      return "";
+    } else {
+      String stat = "";
+      for (var i in eventFields!.stats!) {
+        stat = stat + "${i.title}: ${i.value} ";
+      }
+      return stat;
+    }
+  }
+
+  bool isPlayingSeason() {
+    if (seasonFields?.isPlaying == null) {
+      return false;
+    } else {
+      return seasonFields!.isPlaying;
     }
   }
 
