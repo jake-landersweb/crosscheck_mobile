@@ -115,17 +115,21 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                 color: CustomColors.textColor(context).withOpacity(0.1),
                 itemPadding: const EdgeInsets.all(16),
                 children: [
-                  if (!_isLoading)
-                    Text(
-                      "Confirm Status",
-                      style: TextStyle(
-                        color: dmodel.color,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    )
-                  else
-                    cv.LoadingIndicator(),
+                  SizedBox(
+                    height: 20,
+                    child: Center(
+                      child: (!_isLoading)
+                          ? Text(
+                              "Set Status",
+                              style: TextStyle(
+                                color: dmodel.color,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                          : cv.LoadingIndicator(),
+                    ),
+                  )
                 ],
               ),
             ),

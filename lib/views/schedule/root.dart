@@ -6,3 +6,4 @@ export 'status_select_sheet.dart';
 export 'event_detail.dart';
 export 'user_comment_sheet.dart';
 export 'schedule_loading.dart';
+export 'event_edit/root.dart';

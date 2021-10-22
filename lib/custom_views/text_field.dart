@@ -26,6 +26,8 @@ class TextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
   final bool showBackground;
+  final bool isLabeled;
+  final EdgeInsets fieldPadding;
 
   TextField({
     Key? key,
@@ -42,6 +44,8 @@ class TextField extends StatefulWidget {
     this.keyboardType,
     this.textCapitalization = TextCapitalization.sentences,
     this.showBackground = true,
+    this.isLabeled = false,
+    this.fieldPadding = const EdgeInsets.only(left: 16),
   })  : assert(
           validator != null,
         ),
@@ -78,19 +82,22 @@ class _TextFieldState extends State<TextField> {
         alignment: AlignmentDirectional.topEnd,
         children: [
           if (kIsWeb)
-            _materialTextField(context)
+            _getLabeledMaterial(context)
           else if (Platform.isIOS || Platform.isMacOS)
             if (widget.showBackground)
               Material(
                 color: ViewColors.cellColor(context),
                 shape: ContinuousRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
-                child: _cupertinoTextField(context),
+                child: Padding(
+                  padding: widget.fieldPadding,
+                  child: _getLabeledCupertino(context),
+                ),
               )
             else
-              _cupertinoTextField(context)
+              _getLabeledCupertino(context)
           else
-            _materialTextField(context),
+            _getLabeledMaterial(context),
           if (widget.showCharacters)
             Text(
               '${_inputText.length} / ${widget.charLimit}',
@@ -98,6 +105,46 @@ class _TextFieldState extends State<TextField> {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _getLabeledMaterial(BuildContext context) {
+    if (widget.isLabeled) {
+      return _labelWrapper(context, _materialTextField(context));
+    } else {
+      return _materialTextField(context);
+    }
+  }
+
+  Widget _getLabeledCupertino(BuildContext context) {
+    if (widget.isLabeled) {
+      return _labelWrapper(context, _cupertinoTextField(context));
+    } else {
+      return _cupertinoTextField(context);
+    }
+  }
+
+  Widget _labelWrapper(BuildContext context, Widget child) {
+    return Stack(
+      alignment: AlignmentDirectional.centerEnd,
+      children: [
+        child,
+        Padding(
+          padding: widget.showBackground
+              ? EdgeInsets.only(right: widget.fieldPadding.left)
+              : const EdgeInsets.all(0),
+          child: Text(
+            widget.labelText,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black.withOpacity(0.7)
+                  : Colors.white.withOpacity(0.7),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

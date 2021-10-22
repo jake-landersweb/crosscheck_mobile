@@ -15,7 +15,6 @@ class Calendar extends StatefulWidget {
     required this.seasonId,
     required this.email,
   }) : super(key: key);
-
   final String teamId;
   final String seasonId;
   final String email;
@@ -76,15 +75,19 @@ class _CalendarState extends State<Calendar> {
                 child: Stack(
                   alignment: AlignmentDirectional.center,
                   children: [
-                    Material(
-                      color: dmodel.color.withOpacity(0.7),
-                      shape: ContinuousRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Container(),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: dmodel.color,
+                      ),
                     ),
-                    Text("${day.day}",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white)),
+                    Text(
+                      "${day.day}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -95,14 +98,15 @@ class _CalendarState extends State<Calendar> {
                 child: Stack(
                   alignment: AlignmentDirectional.center,
                   children: [
-                    Material(
-                      color: CustomColors.textColor(context).withOpacity(0.1),
-                      shape: ContinuousRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Container(),
+                    Container(),
+                    Text(
+                      "${day.day}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: dmodel.color,
+                        fontSize: 15,
+                      ),
                     ),
-                    Text("${day.day}",
-                        style: TextStyle(fontWeight: FontWeight.bold))
                   ],
                 ),
               );

@@ -30,7 +30,7 @@ class DataModel extends ChangeNotifier {
     // load chached data
     prefs = await SharedPreferences.getInstance();
 
-    prefs.setString("email", "me@jakelanders.com");
+    // prefs.setString("email", "me@jakelanders.com");
     // prefs.remove("teamId");
     // prefs.remove("seasonId");
     // prefs.remove("teamId");
@@ -92,7 +92,8 @@ class DataModel extends ChangeNotifier {
   bool showSplash = true;
   late SharedPreferences prefs;
 
-  Color color = Colors.blue;
+  Color color = CustomColors.fromHex("00a1ff");
+  Color accentColor = CustomColors.fromHex("00a1ff");
 
   User? user;
   void setUser(User user) async {
