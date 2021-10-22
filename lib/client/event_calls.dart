@@ -14,6 +14,8 @@ extension EventCalls on DataModel {
       {bool? showLoads}) async {
     if (showLoads ?? false) {}
 
+    print("Fetching Schedule");
+
     Map<String, dynamic> body = {
       'email': email.toLowerCase(),
       "date": dateToString(DateTime.now()),

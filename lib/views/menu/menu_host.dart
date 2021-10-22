@@ -9,6 +9,7 @@ import '../../custom_views/root.dart' as cv;
 import '../../extras/root.dart';
 import '../../client/root.dart';
 import '../root.dart';
+import '../../data/season/root.dart';
 
 class MenuHost extends StatefulWidget {
   @override
@@ -59,6 +60,25 @@ class _MenuHostState extends State<MenuHost> {
                   title: _getTitle(_menu.selectedPage, dmodel),
                   refreshable: _isRefreshable(_menu.selectedPage),
                   onRefresh: () => _refreshAction(_menu.selectedPage, dmodel),
+                  actions: [
+                    if (_menu.selectedPage == Pages.seasonRoster)
+                      cv.BasicButton(
+                        onTap: () {
+                          cv.Navigate(
+                            context,
+                            SeasonUserEdit(
+                              team: dmodel.tus!.team,
+                              user: SeasonUser.empty(),
+                              teamId: dmodel.tus!.team.teamId,
+                              seasonId: dmodel.currentSeason!.seasonId,
+                              completion: () {},
+                              isAdd: true,
+                            ),
+                          );
+                        },
+                        child: Icon(Icons.add, color: dmodel.color),
+                      ),
+                  ],
                   isLarge: true,
                   leading: _menuButton(context, _menu, _size),
                   children: [

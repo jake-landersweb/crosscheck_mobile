@@ -53,7 +53,7 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
         if (widget.user.userFields != null) _userInfo(context),
         if (widget.user.teamFields != null) _teamInfo(context),
         if (widget.user.seasonFields != null) _seasonInfo(context),
-        const SizedBox(height: 30),
+        const SizedBox(height: 48),
       ],
     );
   }
@@ -125,6 +125,11 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
               label: "User Status",
               value: widget.user.seasonUserStatus(
                   widget.user.seasonFields?.seasonUserStatus ?? 0)),
+          UserInfoCell(
+              label: "Is Manager",
+              value: (widget.user.seasonFields?.isManager ?? false)
+                  ? "True"
+                  : "False"),
           UserInfoCell(
               label: "Season Note",
               value: widget.user.seasonFields?.seasonUserNote ?? ""),

@@ -4,11 +4,11 @@ import 'package:sprung/sprung.dart';
 import 'core/root.dart' as cv;
 
 class CancelButton extends StatelessWidget {
-  const CancelButton({
-    Key? key,
-    this.color = Colors.blue,
-  }) : super(key: key);
+  const CancelButton(
+      {Key? key, this.color = Colors.blue, this.closeText = "Cancel"})
+      : super(key: key);
   final Color color;
+  final String closeText;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class CancelButton extends StatelessWidget {
         Navigator.of(context).pop();
       },
       child: Text(
-        "Cancel",
+        closeText,
         style: TextStyle(
           color: color,
           fontSize: 20,
@@ -34,11 +34,13 @@ class SheetHeader extends StatelessWidget {
     required this.title,
     this.height = 50,
     this.color = Colors.blue,
+    this.closeText = "Cancel",
   }) : super(key: key);
 
   final String title;
   final double height;
   final Color color;
+  final String closeText;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,7 @@ class SheetHeader extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8.0),
               child: CancelButton(
                 color: color,
+                closeText: closeText,
               ),
             ),
           ])
@@ -74,18 +77,20 @@ class SheetHeader extends StatelessWidget {
 }
 
 class Sheet extends StatefulWidget {
-  const Sheet({
-    Key? key,
-    required this.title,
-    required this.child,
-    this.headerHeight = 50,
-    this.color = Colors.blue,
-  }) : super(key: key);
+  const Sheet(
+      {Key? key,
+      required this.title,
+      required this.child,
+      this.headerHeight = 50,
+      this.color = Colors.blue,
+      this.closeText = "Cancel"})
+      : super(key: key);
 
   final String title;
   final Widget child;
   final double headerHeight;
   final Color color;
+  final String closeText;
 
   @override
   _SheetState createState() => _SheetState();
@@ -103,9 +108,11 @@ class _SheetState extends State<Sheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SheetHeader(
-                  title: widget.title,
-                  height: widget.headerHeight,
-                  color: widget.color),
+                title: widget.title,
+                height: widget.headerHeight,
+                color: widget.color,
+                closeText: widget.closeText,
+              ),
               const Divider(
                 height: 0.5,
                 indent: 0,

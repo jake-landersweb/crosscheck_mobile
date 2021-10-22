@@ -58,12 +58,32 @@ extension SeasonCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue updating your user record", true);
+        setError("There was an issue updating the user record", true);
       } else if (response['status'] == 200) {
         setSuccess("Successfully updated user record", true);
         completion(SeasonUser.fromJson(response['body']));
       } else {
-        setError("There was an issue updating your user record", true);
+        setError("There was an issue updating the user record", true);
+        print(response['message']);
+      }
+    });
+  }
+
+  Future<void> seasonUserAdd(String teamId, String seasonId,
+      Map<String, dynamic> body, Function(SeasonUser) completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .post("/teams/$teamId/seasons/$seasonId/createUser", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue adding the user", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully added user", true);
+        completion(SeasonUser.fromJson(response['body']));
+      } else {
+        setError("There was an issue adding the user", true);
         print(response['message']);
       }
     });

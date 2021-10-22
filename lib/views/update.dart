@@ -13,7 +13,7 @@ class Update extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset("assets/launch/crosscheck.png"),
+            Image.asset("assets/launch/x.png"),
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
@@ -43,7 +43,8 @@ class Update extends StatelessWidget {
               onTap: () {
                 LaunchReview.launch(
                     iOSAppId: "1585600361",
-                    androidAppId: "com.landersweb.pnflutter");
+                    androidAppId: "com.landersweb.pnflutter",
+                    writeReview: false);
               },
             ),
           ],

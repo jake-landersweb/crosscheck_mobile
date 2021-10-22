@@ -52,9 +52,9 @@ class _SeasonRosterState extends State<SeasonRoster> {
             element.seasonFields!.seasonUserStatus == 5);
         Iterable<SeasonUser> invited = dmodel.seasonUsers!.where((element) =>
             element.seasonFields!.seasonUserStatus == 4 ||
-            element.seasonFields!.seasonUserStatus == 5);
+            element.seasonFields!.seasonUserStatus == 6);
         Iterable<SeasonUser> inactive = dmodel.seasonUsers!
-            .where((element) => element.seasonFields!.seasonUserStatus == 2);
+            .where((element) => element.seasonFields!.seasonUserStatus == -1);
         Iterable<SeasonUser> unknown = dmodel.seasonUsers!
             .where((element) => element.seasonFields!.seasonUserStatus == null);
         return Column(children: [
