@@ -35,6 +35,8 @@ class SeasonUserEdit extends StatefulWidget {
 class _SeasonUserEditState extends State<SeasonUserEdit> {
   bool _isLoading = false;
 
+  late String _email;
+
   // user fields
   late String _firstName;
   late String _lastName;
@@ -56,6 +58,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
   @override
   void initState() {
     super.initState();
+    _email = widget.user.email;
     _firstName = widget.user.userFields?.firstName ?? "";
     _lastName = widget.user.userFields?.lastName ?? "";
     _phone = widget.user.userFields?.phone ?? "";
@@ -79,13 +82,36 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
-      title: "Edit User",
+      title: widget.isAdd ? "Add User" : "Edit User",
       titlePadding: const EdgeInsets.only(left: 8),
       leading: cv.BackButton(
         color: dmodel.color,
       ),
       children: [
         const SizedBox(height: 16),
+        cv.NativeList(
+          children: [
+            if (widget.isAdd)
+              _UserTextField(
+                label: "Email",
+                initialValue: _email,
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) {
+                  setState(() {
+                    _email = value;
+                  });
+                },
+              )
+            else
+              Opacity(
+                opacity: 0.5,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: UserInfoCell(label: "Email", value: _email),
+                ),
+              ),
+          ],
+        ),
         _userFields(context),
         _teamFields(context),
         _seasonFields(context, dmodel),
@@ -351,6 +377,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
                 context: context,
                 builder: (context) {
                   return UserStatusSelect(
+                      isAdd: widget.isAdd,
                       onSelect: (value) {
                         setState(() {
                           _seasonUserStatus = value;
@@ -389,41 +416,11 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     );
   }
 
-  Widget _userStatusCell(
-      BuildContext context, int status, String title, Color color) {
-    return cv.BasicButton(
-      onTap: () {
-        setState(() {
-          _seasonUserStatus = status;
-        });
-      },
-      child: Material(
-        color: status == _seasonUserStatus ? color : Colors.transparent,
-        shape:
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(40)),
-        child: SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: status == _seasonUserStatus
-                    ? Colors.white
-                    : CustomColors.textColor(context),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   void _function(BuildContext context, DataModel dmodel) async {
     if (!_isLoading) {
-      if (_firstName == "") {
+      if (_email == "") {
+        dmodel.setError("Email cannot be blank", true);
+      } else if (_firstName == "") {
         dmodel.setError("First name cannot be blank", true);
       } else if (_lastName == "") {
         dmodel.setError("Last name cannot be blank", true);
@@ -433,7 +430,8 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
         });
         // create stats
         Map<String, dynamic> body = {
-          "email": widget.user.email,
+          "date": dateToString(DateTime.now()),
+          "email": _email,
           "userFields": {
             "firstName": _firstName,
             "lastName": _lastName,
@@ -454,7 +452,13 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           }
         };
         if (widget.isAdd) {
-          // write add function
+          await dmodel.seasonUserAdd(widget.teamId, widget.seasonId, body,
+              (seasonUser) {
+            // add returned user to the list
+            dmodel.seasonUsers!.add(seasonUser);
+            Navigator.of(context).pop();
+            widget.completion();
+          });
         } else {
           await dmodel.seasonUserUpdate(
               widget.teamId, widget.seasonId, widget.user.email, body,
@@ -462,7 +466,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             // replace the user with the returned one
             for (var i in dmodel.seasonUsers!) {
               if (i.email == seasonUser.email) {
-                i = seasonUser;
+                i.set(seasonUser);
                 break;
               }
             }
@@ -470,6 +474,9 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             widget.completion();
           });
         }
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }

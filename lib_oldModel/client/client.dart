@@ -1,10 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'env.dart';
+// import 'env.dart';
 
 class Client {
   // base url that entire app will run off
-  static const host = HOST;
+  static const host = "";
 
   // http client, needed for all requests
   final http.Client client;

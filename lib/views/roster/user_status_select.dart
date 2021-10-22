@@ -40,6 +40,7 @@ class _UserStatusSelectState extends State<UserStatusSelect> {
     return cv.Sheet(
       title: "User Status",
       color: dmodel.color,
+      closeText: "Done",
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -77,6 +78,7 @@ class _UserStatusSelectState extends State<UserStatusSelect> {
         setState(() {
           _selection = status;
         });
+        widget.onSelect(_selection);
       },
       child: Material(
         color: status == _selection ? color : Colors.transparent,

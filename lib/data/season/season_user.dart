@@ -76,6 +76,23 @@ class SeasonUser extends Equatable {
     eventFields = SeasonUserEventFields.of(fields);
   }
 
+  // for creating a copy
+  void set(SeasonUser user) {
+    email = user.email;
+    if (user.userFields != null) {
+      userFields = SeasonUserUserFields.of(user.userFields!);
+    }
+    if (user.teamFields != null) {
+      teamFields = SeasonUserTeamFields.of(user.teamFields!);
+    }
+    if (user.seasonFields != null) {
+      seasonFields = SeasonUserSeasonFields.of(user.seasonFields!);
+    }
+    if (user.eventFields != null) {
+      eventFields = SeasonUserEventFields.of(user.eventFields!);
+    }
+  }
+
   // for team user name
   String name() {
     if (userFields == null) {
@@ -250,6 +267,18 @@ class SeasonUser extends Equatable {
     } else {
       return seasonFields!.isPlaying;
     }
+  }
+
+  @override
+  String toString() {
+    Map<String, dynamic> body = {
+      "email": email,
+      "userFields": userFields?.toJson(),
+      "teamFields": teamFields?.toJson(),
+      "seasonFields": seasonFields?.toJson(),
+      "eventFields": eventFields?.toJson(),
+    };
+    return body.toString();
   }
 
   // values to compare

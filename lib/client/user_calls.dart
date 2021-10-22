@@ -121,6 +121,8 @@ extension UserCalls on DataModel {
 
     dynamic response;
 
+    print("Getting auto tus");
+
     if (teamId != null) {
       // send as put
       Map<String, dynamic> body = {'teamId': teamId};
