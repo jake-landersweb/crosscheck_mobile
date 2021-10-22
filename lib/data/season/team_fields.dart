@@ -1,53 +1,60 @@
 class SeasonUserTeamFields {
   String? teamUserNote;
-  bool? isGoalie;
   String? orgId;
   LastSeason? lastSeason;
   late int teamUserType;
+  // new fields
+  int? rank;
+  int? tPosition;
 
   SeasonUserTeamFields({
     this.teamUserNote,
-    this.isGoalie,
     this.orgId,
     this.lastSeason,
     required this.teamUserType,
+    this.rank,
+    this.tPosition,
   });
 
   SeasonUserTeamFields.empty() {
     teamUserNote = "";
-    isGoalie = false;
     orgId = "";
     lastSeason = LastSeason.empty();
     teamUserType = 1;
+    rank = 0;
+    tPosition = 0;
   }
 
   SeasonUserTeamFields.of(SeasonUserTeamFields user) {
     teamUserNote = user.teamUserNote;
-    isGoalie = user.isGoalie;
     orgId = user.orgId;
     lastSeason = user.lastSeason;
     teamUserType = user.teamUserType;
+    rank = user.rank;
+    tPosition = user.tPosition;
   }
 
   SeasonUserTeamFields.fromJson(Map<String, dynamic> json) {
     teamUserNote = json['teamUserNote'];
-    isGoalie = json['isGoalie'];
     orgId = json['orgId'];
     lastSeason = json['lastSeason'] != null
         ? LastSeason.fromJson(json['lastSeason'])
         : null;
     teamUserType = json['teamUserType']?.round();
+    rank = json['rank']?.round();
+    tPosition = json['tPosition']?.round();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['teamUserNote'] = teamUserNote;
-    data['isGoalie'] = isGoalie;
     data['orgId'] = orgId;
     if (lastSeason != null) {
       data['lastSeason'] = lastSeason!.toJson();
     }
     data['teamUserType'] = teamUserType;
+    data['rank'] = rank;
+    data['tPosition'] = tPosition;
     return data;
   }
 }

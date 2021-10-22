@@ -49,28 +49,8 @@ extension SeasonCalls on DataModel {
     });
   }
 
-  Future<void> seasonUserUpdate(
-      String teamId,
-      String seasonId,
-      String email,
-      String firstName,
-      String lastName,
-      String phone,
-      String nickName,
-      VoidCallback completion,
-      {bool? showMessages}) async {
-    Map<String, dynamic> body = {
-      "email": email,
-      "userFields": {
-        "firstName": firstName,
-        "lastName": lastName,
-        "phone": phone,
-      },
-      "seasonFields": {
-        "nickName": nickName,
-      }
-    };
-
+  Future<void> seasonUserUpdate(String teamId, String seasonId, String email,
+      Map<String, dynamic> body, Function(SeasonUser) completion) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     await client
@@ -81,7 +61,7 @@ extension SeasonCalls on DataModel {
         setError("There was an issue updating your user record", true);
       } else if (response['status'] == 200) {
         setSuccess("Successfully updated user record", true);
-        completion();
+        completion(SeasonUser.fromJson(response['body']));
       } else {
         setError("There was an issue updating your user record", true);
         print(response['message']);

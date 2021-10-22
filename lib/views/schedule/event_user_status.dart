@@ -71,11 +71,11 @@ class _EventUserStatusState extends State<EventUserStatus> {
       case 0:
         return "no info";
       case -1:
-        return "out";
+        return "not going";
       case 1:
-        return "in";
+        return "going";
       case 2:
-        return "undecided";
+        return "unsure";
       default:
         return "no data";
     }

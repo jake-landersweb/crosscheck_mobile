@@ -12,3 +12,4 @@ export 'spaced_column.dart';
 export 'sheet.dart';
 export 'segmented_picker.dart';
 export 'circle.dart';
+export 'number_picker.dart';

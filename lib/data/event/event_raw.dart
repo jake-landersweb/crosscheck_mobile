@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:pnflutter/data/event/event_location.dart';
 
 import 'root.dart';
 
@@ -16,6 +17,10 @@ class EventRaw extends Equatable {
   String? eLink;
   EventTeam? awayTeam;
   String? color;
+  // new fields
+  EventLocation? eventLocation;
+  bool? showAttendance;
+  late int eventType;
 
   EventRaw({
     this.eDescription,
@@ -31,6 +36,9 @@ class EventRaw extends Equatable {
     this.eLink,
     this.awayTeam,
     this.color,
+    this.eventLocation,
+    this.showAttendance,
+    required this.eventType,
   });
 
   // empty object
@@ -48,6 +56,9 @@ class EventRaw extends Equatable {
     eLink = "";
     awayTeam = EventTeam.empty();
     color = '';
+    eventLocation = EventLocation();
+    showAttendance = true;
+    eventType = 0;
   }
 
   // for creating a copy
@@ -69,6 +80,9 @@ class EventRaw extends Equatable {
       awayTeam = EventTeam.of(event.awayTeam!);
     }
     color = event.color;
+    eventLocation = event.eventLocation;
+    showAttendance = event.showAttendance;
+    eventType = event.eventType;
   }
 
   // object from json
@@ -80,7 +94,7 @@ class EventRaw extends Equatable {
     hasAttendance = json['hasAttendance'];
     teamId = json['teamId'];
     seasonId = json['seasonId'];
-    eType = json['eType']?.round();
+    eType = json['eType']?.round() ?? 0;
     homeTeam =
         json['homeTeam'] != null ? EventTeam.fromJson(json['homeTeam']) : null;
     eDate = json['eDate'];
@@ -88,6 +102,9 @@ class EventRaw extends Equatable {
     awayTeam =
         json['awayTeam'] != null ? EventTeam.fromJson(json['awayTeam']) : null;
     color = json['color'];
+    eventLocation = EventLocation.fromJson(json['eventLocation']);
+    showAttendance = json['showAttendance'];
+    eventType = json['eventType']?.round() ?? 0;
   }
 
   // object to json
@@ -110,6 +127,9 @@ class EventRaw extends Equatable {
       data['awayTeam'] = awayTeam!.toJson();
     }
     data['color'] = color;
+    data['eventLocation'] = eventLocation?.toJson();
+    data['showAttendance'] = showAttendance;
+    data['eventType'] = eventType;
     return data;
   }
 

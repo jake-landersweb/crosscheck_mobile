@@ -47,8 +47,9 @@ class _SeasonSelectState extends State<SeasonSelect> {
     return cv.BasicButton(
       onTap: () {
         if (widget.currentSeason.seasonId != season.seasonId) {
-          dmodel.setSeason(season);
-          dmodel.seasonRoster = null;
+          // TODO - Add roster fetch
+          dmodel.setCurrentSeason(season);
+          dmodel.seasonUsers = null;
         }
       },
       child: Row(

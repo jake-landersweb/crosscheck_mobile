@@ -3,19 +3,19 @@ import 'package:sprung/sprung.dart';
 
 import 'core/root.dart' as cv;
 
-class SegmentedPicker extends StatefulWidget {
+class SegmentedPicker<T> extends StatefulWidget {
   const SegmentedPicker({
     Key? key,
     required this.titles,
     this.selections,
     required this.onSelection,
-    this.initialSelection,
+    required this.initialSelection,
   })  : assert(titles.length < 4),
         super(key: key);
   final List<String> titles;
-  final List<dynamic>? selections;
+  final List<T>? selections;
   final Function(dynamic) onSelection;
-  final dynamic initialSelection;
+  final T initialSelection;
 
   @override
   _SegmentedPickerState createState() => _SegmentedPickerState();
@@ -64,12 +64,22 @@ class _SegmentedPickerState extends State<SegmentedPicker> {
         }
       } else {
         if (widget.titles.contains(_currentSelection)) {
-          if (widget.titles.first == _currentSelection) {
-            _currentAlignment = AlignmentDirectional.centerStart;
-          } else if (widget.titles.last == _currentSelection) {
-            _currentAlignment = AlignmentDirectional.centerEnd;
+          if (widget.selections != null) {
+            if (widget.selections!.first == _currentSelection) {
+              _currentAlignment = AlignmentDirectional.centerStart;
+            } else if (widget.selections!.last == _currentSelection) {
+              _currentAlignment = AlignmentDirectional.centerEnd;
+            } else {
+              _currentAlignment = AlignmentDirectional.center;
+            }
           } else {
-            _currentAlignment = AlignmentDirectional.center;
+            if (widget.titles.first == _currentSelection) {
+              _currentAlignment = AlignmentDirectional.centerStart;
+            } else if (widget.titles.last == _currentSelection) {
+              _currentAlignment = AlignmentDirectional.centerEnd;
+            } else {
+              _currentAlignment = AlignmentDirectional.center;
+            }
           }
         } else {
           _showSelector = false;

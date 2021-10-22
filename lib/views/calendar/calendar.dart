@@ -12,9 +12,13 @@ class Calendar extends StatefulWidget {
   const Calendar({
     Key? key,
     required this.teamId,
+    required this.seasonId,
+    required this.email,
   }) : super(key: key);
 
   final String teamId;
+  final String seasonId;
+  final String email;
 
   @override
   _CalendarState createState() => _CalendarState();
@@ -24,12 +28,20 @@ class _CalendarState extends State<Calendar> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
 
-  List<EventRaw> _selectedEvents = [];
+  List<Event> _selectedEvents = [];
+
+  List<Event> _fullEventList = [];
 
   @override
   void initState() {
     super.initState();
-    _getCalendar(context.read<DataModel>());
+    _composeList(context.read<DataModel>());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _fullEventList = [];
   }
 
   @override
@@ -38,8 +50,9 @@ class _CalendarState extends State<Calendar> {
     return Column(
       children: [
         TableCalendar(
-          firstDay: DateTime.utc(2010, 10, 16),
-          lastDay: DateTime.utc(2030, 3, 14),
+          availableGestures: AvailableGestures.horizontalSwipe,
+          firstDay: DateTime.utc(2018, 10, 16),
+          lastDay: DateTime.utc(2024, 3, 14),
           availableCalendarFormats: const {CalendarFormat.month: 'Month'},
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) {
@@ -49,11 +62,11 @@ class _CalendarState extends State<Calendar> {
             setState(() {
               _selectedDay = selectedDay;
               _focusedDay = focusedDay; // update `_focusedDay` here as well
-              _selectedEvents = _getEventsFromDay(selectedDay, dmodel);
+              _selectedEvents = _getEventsFromDay(selectedDay);
             });
           },
           eventLoader: (day) {
-            return _getBubbles(day, dmodel);
+            return _getBubbles(day);
           },
           onFormatChanged: (format) {},
           calendarBuilders: CalendarBuilders(
@@ -63,15 +76,15 @@ class _CalendarState extends State<Calendar> {
                 child: Stack(
                   alignment: AlignmentDirectional.center,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: dmodel.color.withOpacity(0.3),
-                        shape: BoxShape.circle,
-                      ),
+                    Material(
+                      color: dmodel.color.withOpacity(0.7),
+                      shape: ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Container(),
                     ),
                     Text("${day.day}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: dmodel.color)),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
                   ],
                 ),
               );
@@ -82,11 +95,11 @@ class _CalendarState extends State<Calendar> {
                 child: Stack(
                   alignment: AlignmentDirectional.center,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: CustomColors.textColor(context).withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
+                    Material(
+                      color: CustomColors.textColor(context).withOpacity(0.1),
+                      shape: ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Container(),
                     ),
                     Text("${day.day}",
                         style: TextStyle(fontWeight: FontWeight.bold))
@@ -163,25 +176,11 @@ class _CalendarState extends State<Calendar> {
           itemBuilder: (context, index) {
             return Column(
               children: [
-                Stack(
-                  alignment: AlignmentDirectional.topEnd,
-                  children: [
-                    EventCell(
-                      event: Event.fromRaw(_selectedEvents[index]),
-                      email: dmodel.user!.email,
-                      teamId: dmodel.tus!.team.teamId,
-                      seasonId: _selectedEvents[index].seasonId,
-                      showStatus: false,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: cv.Circle(
-                        10,
-                        CustomColors.fromHex(
-                            _selectedEvents[index].color ?? "FFFFFF"),
-                      ),
-                    ),
-                  ],
+                EventCell(
+                  event: _selectedEvents[index],
+                  email: dmodel.user!.email,
+                  teamId: dmodel.tus!.team.teamId,
+                  seasonId: _selectedEvents[index].seasonId,
                 ),
                 const SizedBox(height: 16),
               ],
@@ -211,51 +210,33 @@ class _CalendarState extends State<Calendar> {
     }
   }
 
-  List<CalendarEvent> _getBubbles(DateTime day, DataModel dmodel) {
-    if (dmodel.calendar == null) {
-      return [];
-    } else {
-      List<CalendarEvent> list = [];
-      for (CalendarEvent i in dmodel.calendar!) {
-        var event = i.events.firstWhere(
-            (element) => generalSameDate(stringToDate(element.eDate), day),
-            orElse: () => EventRaw.empty());
-
-        if (event.eventId != '') {
-          list.add(i);
-        }
-      }
-      return list;
-    }
+  List<Event> _getBubbles(DateTime day) {
+    return _fullEventList
+        .where((element) => generalSameDate(stringToDate(element.eDate), day))
+        .toList();
   }
 
-  List<EventRaw> _getEventsFromDay(DateTime day, DataModel dmodel) {
-    if (dmodel.calendar != null) {
-      List<EventRaw> events = [];
-      for (CalendarEvent ce in dmodel.calendar!) {
-        for (EventRaw event in ce.events) {
-          DateTime eventDate = stringToDate(event.eDate);
-          if (eventDate.day == day.day && eventDate.month == day.month) {
-            event.color = ce.color;
-            events.add(event);
-          }
-        }
+  List<Event> _getEventsFromDay(DateTime day) {
+    List<Event> events = [];
+    for (Event event in _fullEventList) {
+      DateTime eventDate = stringToDate(event.eDate);
+      if (eventDate.day == day.day && eventDate.month == day.month) {
+        events.add(event);
       }
-      return events;
-    } else {
-      return [];
     }
+    events.sort((a, b) => a.eDate.compareTo(b.eDate));
+    return events;
   }
 
-  void _getCalendar(DataModel dmodel) {
-    if (dmodel.calendar == null) {
-      dmodel.getCalendar(widget.teamId, (calendar) {
-        dmodel.setCalendar(calendar);
-        setState(() {
-          _selectedEvents =
-              _getEventsFromDay(_selectedDay, context.read<DataModel>());
-        });
-      });
+  void _composeList(DataModel dmodel) {
+    if (dmodel.schedule != null) {
+      _fullEventList.addAll(dmodel.schedule!.previousEvents);
+      if (dmodel.schedule!.nextEvent != null) {
+        _fullEventList.add(dmodel.schedule!.nextEvent!);
+        _fullEventList.addAll(dmodel.schedule!.upcomingEvents);
+      }
+      _selectedEvents = _getEventsFromDay(_selectedDay);
     }
+    setState(() {});
   }
 }

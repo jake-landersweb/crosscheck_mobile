@@ -67,6 +67,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                       },
                     )
                   : cv.SegmentedPicker(
+                      initialSelection: "",
                       key: const ValueKey("not loaded picker status sheet"),
                       titles: const [""],
                       onSelection: (value) {},

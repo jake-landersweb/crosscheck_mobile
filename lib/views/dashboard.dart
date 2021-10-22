@@ -19,17 +19,18 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return MultiProvider(
-        providers: [ChangeNotifierProvider(create: (context) => MenuModel())],
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: (dmodel.tus?.team.color != null &&
-                          dmodel.tus?.team.color != "")
-                      ? CustomColors.fromHex(dmodel.tus!.team.color!)
-                      : Colors.blue,
-                ),
-          ),
-          child: MenuHost(),
-        ));
+      providers: [ChangeNotifierProvider(create: (context) => MenuModel())],
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: Theme.of(context).colorScheme.copyWith(
+                primary: (dmodel.tus?.team.teamStyle.color != null &&
+                        dmodel.tus?.team.teamStyle.color != "")
+                    ? CustomColors.fromHex(dmodel.tus!.team.teamStyle.color!)
+                    : Colors.blue,
+              ),
+        ),
+        child: MenuHost(),
+      ),
+    );
   }
 }

@@ -169,14 +169,21 @@ class _MenuHostState extends State<MenuHost> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (dmodel.tus?.team.image != null && dmodel.tus?.team.image != "")
+            if (dmodel.tus?.team.teamStyle.image != null &&
+                dmodel.tus?.team.teamStyle.image != "")
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Image.network(
-                  dmodel.tus!.team.image!,
+                  dmodel.tus!.team.teamStyle.image!,
                   width: (_size.width / _menu.sizeThreashold) - 32,
                   errorBuilder: (context, error, stackTrace) {
-                    return const Text("");
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Image.asset(
+                        "assets/launch/x.png",
+                        width: (_size.width / _menu.sizeThreashold) - 32,
+                      ),
+                    );
                   },
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) {
@@ -189,15 +196,25 @@ class _MenuHostState extends State<MenuHost> {
                     );
                   },
                 ),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Image.asset(
+                  "assets/launch/x.png",
+                  width: (_size.width / _menu.sizeThreashold) - 32,
+                ),
               ),
             const SizedBox(height: 16),
-            _menuRow(context, _menuItems[0], _menu, _size),
+            const Divider(height: 0.5),
             const SizedBox(height: 16),
-            Divider(
-                color: CustomColors.textColor(context).withOpacity(0.2),
-                indent: 0,
-                endIndent: 0,
-                height: 0.5),
+            _menuRow(context, _menuItems[0], _menu, _size),
+            // const SizedBox(height: 16),
+            // Divider(
+            //     color: CustomColors.textColor(context).withOpacity(0.2),
+            //     indent: 0,
+            //     endIndent: 0,
+            //     height: 0.5),
             const SizedBox(height: 16),
             _menuRow(context, _menuItems[1], _menu, _size),
             const SizedBox(height: 16),
@@ -206,8 +223,8 @@ class _MenuHostState extends State<MenuHost> {
             _menuRow(context, _menuItems[3], _menu, _size),
             const SizedBox(height: 16),
             _menuRow(context, _menuItems[4], _menu, _size),
-            const SizedBox(height: 16),
-            _menuRow(context, _menuItems[5], _menu, _size),
+            // const SizedBox(height: 16),
+            // _menuRow(context, _menuItems[5], _menu, _size),
           ],
         ),
       ),
@@ -394,7 +411,10 @@ class _MenuHostState extends State<MenuHost> {
         if (dmodel.tus == null) {
           return Container();
         } else {
-          return Calendar(teamId: dmodel.tus!.team.teamId);
+          return Calendar(
+              teamId: dmodel.tus!.team.teamId,
+              seasonId: dmodel.currentSeason!.seasonId,
+              email: dmodel.user!.email);
         }
       case Pages.seasonRoster:
         if (dmodel.currentSeason == null) {
@@ -471,16 +491,19 @@ class _MenuHostState extends State<MenuHost> {
               dmodel.currentSeason!.seasonId, dmodel.user!.email, (schedule) {
             dmodel.setSchedule(schedule);
             // invalidate old data
-            dmodel.calendar = null;
-            dmodel.seasonRoster = null;
-            dmodel.teamRoster = null;
+            dmodel.seasonUsers = null;
+            // dmodel.teamRoster = null;
           });
         }
         break;
       case Pages.calendar:
-        if (dmodel.tus != null) {
-          await dmodel.getCalendar(dmodel.tus!.team.teamId, (calendar) {
-            dmodel.setCalendar(calendar);
+        if (dmodel.currentSeason != null) {
+          await dmodel.scheduleGet(dmodel.tus!.team.teamId,
+              dmodel.currentSeason!.seasonId, dmodel.user!.email, (schedule) {
+            dmodel.setSchedule(schedule);
+            // invalidate old data
+            dmodel.seasonUsers = null;
+            // dmodel.teamRoster = null;
           });
         }
         break;
@@ -488,7 +511,7 @@ class _MenuHostState extends State<MenuHost> {
         if (dmodel.currentSeason != null) {
           await dmodel.getSeasonRoster(
               dmodel.tus!.team.teamId, dmodel.currentSeason!.seasonId, (users) {
-            dmodel.setSeasonRoster(users);
+            dmodel.setSeasonUsers(users);
           });
         }
         break;
@@ -501,11 +524,11 @@ class _MenuHostState extends State<MenuHost> {
   bool _animate = false;
 
   final List<MenuItem> _menuItems = [
-    const MenuItem(
-      title: 'Team',
-      icon: Icons.circle_outlined,
-      page: Pages.team,
-    ),
+    // const MenuItem(
+    //   title: 'Team',
+    //   icon: Icons.circle_outlined,
+    //   page: Pages.team,
+    // ),
     const MenuItem(
       title: 'Schedule',
       icon: Icons.list,

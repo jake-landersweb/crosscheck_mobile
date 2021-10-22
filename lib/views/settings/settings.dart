@@ -96,26 +96,26 @@ class _SettingsState extends State<Settings> {
         const Spacer(),
         SizedBox(
           height: 25,
-          child: FlutterSwitch(
-            value: dmodel.user!.mobileAppNotifications!,
-            height: 25,
-            width: 50,
-            toggleSize: 18,
-            activeColor: Theme.of(context).colorScheme.primary,
-            onToggle: (value) {
-              if (value) {
-                _phoneNotificationFunction(dmodel, value);
-              } else {
-                // user has turned off notifications, no need to do any permissions set up
-                dmodel.updateUser(
-                    dmodel.user!.email, {"mobileAppNotifications": value}, () {
-                  setState(() {
-                    dmodel.user!.mobileAppNotifications = value;
-                  });
-                });
-              }
-            },
-          ),
+          // child: FlutterSwitch(
+          //   value: dmodel.user!.mobileAppNotifications!,
+          //   height: 25,
+          //   width: 50,
+          //   toggleSize: 18,
+          //   activeColor: Theme.of(context).colorScheme.primary,
+          //   onToggle: (value) {
+          //     if (value) {
+          //       _phoneNotificationFunction(dmodel, value);
+          //     } else {
+          //       // user has turned off notifications, no need to do any permissions set up
+          //       dmodel.updateUser(
+          //           dmodel.user!.email, {"mobileAppNotifications": value}, () {
+          //         setState(() {
+          //           dmodel.user!.mobileAppNotifications = value;
+          //         });
+          //       });
+          //     }
+          //   },
+          // ),
         ),
       ],
     );
@@ -127,12 +127,12 @@ class _SettingsState extends State<Settings> {
       _registerNotification(dmodel);
     } else {
       // update to false
-      dmodel.updateUser(dmodel.user!.email, {"mobileAppNotifications": value},
-          () {
-        setState(() {
-          dmodel.user!.mobileAppNotifications = value;
-        });
-      });
+      // dmodel.updateUser(dmodel.user!.email, {"mobileAppNotifications": value},
+      //     () {
+      //   setState(() {
+      //     dmodel.user!.mobileAppNotifications = value;
+      //   });
+      // });
     }
   }
 
@@ -183,14 +183,14 @@ class _SettingsState extends State<Settings> {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
-      _messaging.getToken().then((token) {
-        dmodel.updateUser(dmodel.user!.email,
-            {"mobileAppNotifications": true, "mobileDeviceToken": token}, () {
-          setState(() {
-            dmodel.user!.mobileAppNotifications = true;
-          });
-        });
-      });
+      // _messaging.getToken().then((token) {
+      //   dmodel.updateUser(dmodel.user!.email,
+      //       {"mobileAppNotifications": true, "mobileDeviceToken": token}, () {
+      //     setState(() {
+      //       dmodel.user!.mobileAppNotifications = true;
+      //     });
+      //   });
+      // });
     } else {
       print('User declined or has not accepted permission');
       dmodel.setError("Configure notifications in settings", true);

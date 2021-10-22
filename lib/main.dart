@@ -101,14 +101,12 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
   }
 
   void _resetData(DataModel dmodel) {
-    dmodel.currentSchedule = null;
-    dmodel.seasonRoster = null;
-    dmodel.teamRoster = null;
-    dmodel.calendar = null;
+    dmodel.schedule = null;
+    dmodel.seasonUsers = null;
+    dmodel.tus = null;
+    setState(() {});
     if (dmodel.user != null) {
-      dmodel.getUser(dmodel.user!.email, (user) {
-        dmodel.setUser(user);
-      });
+      dmodel.init();
     }
   }
 
@@ -152,6 +150,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
     return Builder(
       builder: (context) {
         var _snackBar = SnackBar(
+          elevation: 1,
           content: Row(
             children: [
               Text(dmodel.successText,
@@ -200,17 +199,23 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
     return Builder(
       builder: (context) {
         var _snackBar = SnackBar(
+          elevation: 1,
           content: Row(
             children: [
-              Text(
-                dmodel.errorText,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white),
+              Expanded(
+                flex: 80,
+                child: Text(
+                  dmodel.errorText,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
-              const Spacer(),
-              const Icon(
-                Icons.warning_rounded,
-                color: Colors.white,
+              const Expanded(
+                flex: 20,
+                child: Icon(
+                  Icons.warning_rounded,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),

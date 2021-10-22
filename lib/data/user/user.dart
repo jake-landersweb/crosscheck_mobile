@@ -10,8 +10,7 @@ class User extends Equatable {
   String? lastName;
   late List<UserTeam> teams;
   bool? emailNotifications;
-  bool? mobileAppNotifications;
-  String? mobileDeviceToken;
+  late List<MobileNotifications> mobileNotifications;
 
   User({
     required this.email,
@@ -19,8 +18,7 @@ class User extends Equatable {
     this.lastName = "",
     required this.teams,
     this.emailNotifications = true,
-    this.mobileAppNotifications = false,
-    this.mobileDeviceToken = "",
+    this.mobileNotifications = const [],
   });
 
   // empty object
@@ -30,8 +28,7 @@ class User extends Equatable {
     lastName = "";
     teams = [];
     emailNotifications = true;
-    mobileAppNotifications = false;
-    mobileDeviceToken = "";
+    mobileNotifications = [];
   }
 
   // for creating a copy
@@ -41,20 +38,20 @@ class User extends Equatable {
     lastName = user.lastName;
     teams = user.teams;
     emailNotifications = user.emailNotifications;
-    mobileAppNotifications = user.mobileAppNotifications;
-    mobileDeviceToken = user.mobileDeviceToken;
+    mobileNotifications = user.mobileNotifications;
   }
 
   // converting from json
   static User fromJson(dynamic json) {
     User user = User(
-        email: json['email'],
-        firstName: json['firstName'],
-        lastName: json['lastName'],
-        teams: UserTeam.fromJson(json['teams']),
-        emailNotifications: json['emailNotifications'] ?? true,
-        mobileAppNotifications: json['mobileAppNotifications'] ?? false,
-        mobileDeviceToken: json['mobileDeviceToken'] ?? "");
+      email: json['email'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      teams: UserTeam.fromJson(json['teams']),
+      emailNotifications: json['emailNotifications'] ?? true,
+      mobileNotifications:
+          MobileNotifications.fromJson(json['mobileNotifications']),
+    );
     return user;
   }
 
@@ -66,8 +63,7 @@ class User extends Equatable {
       'lastName': lastName,
       'teams': teams,
       'emailNotifications': emailNotifications,
-      "mobileAppNotifications": mobileAppNotifications,
-      "mobileDeviceToken": mobileDeviceToken,
+      "mobileNotifications": mobileNotifications.map((v) => v.toJson()).toList()
     };
   }
 

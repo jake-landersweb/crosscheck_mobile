@@ -23,7 +23,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    if (dmodel.seasonRoster == null) {
+    if (dmodel.seasonUsers == null) {
       // show loading
       return cv.NativeList(
         children: [
@@ -31,7 +31,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
         ],
       );
     } else {
-      if (dmodel.seasonRoster!.isEmpty) {
+      if (dmodel.seasonUsers!.isEmpty) {
         return const Padding(
           padding: EdgeInsets.only(top: 20),
           child: Text(
@@ -43,14 +43,78 @@ class _SeasonRosterState extends State<SeasonRoster> {
           ),
         );
       } else {
+        Iterable<SeasonUser> active = dmodel.seasonUsers!
+            .where((element) => element.seasonFields!.seasonUserStatus == 1);
+        Iterable<SeasonUser> subs = dmodel.seasonUsers!
+            .where((element) => element.seasonFields!.seasonUserStatus == 2);
+        Iterable<SeasonUser> recruits = dmodel.seasonUsers!.where((element) =>
+            element.seasonFields!.seasonUserStatus == 3 ||
+            element.seasonFields!.seasonUserStatus == 5);
+        Iterable<SeasonUser> invited = dmodel.seasonUsers!.where((element) =>
+            element.seasonFields!.seasonUserStatus == 4 ||
+            element.seasonFields!.seasonUserStatus == 5);
+        Iterable<SeasonUser> inactive = dmodel.seasonUsers!
+            .where((element) => element.seasonFields!.seasonUserStatus == 2);
+        Iterable<SeasonUser> unknown = dmodel.seasonUsers!
+            .where((element) => element.seasonFields!.seasonUserStatus == null);
         return Column(children: [
-          cv.NativeList(
-            children: [
-              for (SeasonUser i in dmodel.seasonRoster!)
-                _rosterCell(context, i, dmodel),
-            ],
-          ),
-          const SizedBox(height: 30),
+          if (active.isNotEmpty)
+            cv.Section(
+              "Active",
+              child: cv.NativeList(
+                children: [
+                  for (SeasonUser i in active) _rosterCell(context, i, dmodel),
+                ],
+              ),
+            ),
+          if (subs.isNotEmpty)
+            cv.Section(
+              "Subs",
+              child: cv.NativeList(
+                children: [
+                  for (SeasonUser i in subs) _rosterCell(context, i, dmodel),
+                ],
+              ),
+            ),
+          if (recruits.isNotEmpty)
+            cv.Section(
+              "Recruits",
+              child: cv.NativeList(
+                children: [
+                  for (SeasonUser i in recruits)
+                    _rosterCell(context, i, dmodel),
+                ],
+              ),
+            ),
+          if (invited.isNotEmpty)
+            cv.Section(
+              "Invited",
+              child: cv.NativeList(
+                children: [
+                  for (SeasonUser i in invited) _rosterCell(context, i, dmodel),
+                ],
+              ),
+            ),
+          if (inactive.isNotEmpty)
+            cv.Section(
+              "Inactive",
+              child: cv.NativeList(
+                children: [
+                  for (SeasonUser i in inactive)
+                    _rosterCell(context, i, dmodel),
+                ],
+              ),
+            ),
+          if (unknown.isNotEmpty)
+            cv.Section(
+              "Unknown",
+              child: cv.NativeList(
+                children: [
+                  for (SeasonUser i in unknown) _rosterCell(context, i, dmodel),
+                ],
+              ),
+            ),
+          const SizedBox(height: 48),
         ]);
       }
     }
@@ -76,10 +140,10 @@ class _SeasonRosterState extends State<SeasonRoster> {
   }
 
   void _checkRoster(DataModel dmodel) async {
-    if (dmodel.seasonRoster == null) {
+    if (dmodel.seasonUsers == null) {
       await dmodel.getSeasonRoster(
           dmodel.tus!.team.teamId, dmodel.currentSeason!.seasonId, (users) {
-        dmodel.setSeasonRoster(users);
+        dmodel.setSeasonUsers(users);
       });
     } else {
       print('already have roster');

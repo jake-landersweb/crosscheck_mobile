@@ -93,10 +93,6 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                     child: Column(
                       children: [
                         SizedBox(height: 8),
-                        Divider(
-                          height: 0.5,
-                          indent: 0,
-                        ),
                         _details(context),
                       ],
                     ),
@@ -118,76 +114,71 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
   }
 
   Widget _header(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 90,
+          flex: 85,
           child: cv.BasicButton(
             onTap: () {
-              cv.Navigate(
-                context,
-                EventDetail(
-                  event: widget.event,
-                  email: widget.email,
-                  teamId: widget.teamId,
-                  seasonId: widget.seasonId,
-                ),
-              );
+              if (dmodel.seasonUsers != null) {
+                cv.Navigate(
+                  context,
+                  EventDetail(
+                    event: widget.event,
+                    email: widget.email,
+                    teamId: widget.teamId,
+                    seasonId: widget.seasonId,
+                  ),
+                );
+              } else {
+                dmodel.setError("Fetching user list ...", true);
+              }
             },
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // date
-                Expanded(
-                  flex: MediaQuery.of(context).size.width > 400 ? 25 : 32,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.event.getDate(),
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: CustomColors.textColor(context)
-                                .withOpacity(0.7)),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        widget.event.getTime(),
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: CustomColors.textColor(context)),
-                      )
-                    ],
+                // time
+                Text(
+                  widget.event.getTime()[0] == "0"
+                      ? widget.event.getTime().substring(1)
+                      : widget.event.getTime(),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                    color: CustomColors.textColor(context).withOpacity(0.7),
                   ),
                 ),
-                // SizedBox(width: 8),
                 // title
-                Expanded(
-                  flex: MediaQuery.of(context).size.width > 400 ? 75 : 68,
-                  child: Text(
-                    widget.event.getTitle(),
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: CustomColors.textColor(context)),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.event.getTitle(),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: CustomColors.textColor(context),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ),
-        // Spacer(),
         // expand button
         Expanded(
-          flex: 10,
+          flex: 15,
           child: cv.BasicButton(
             onTap: () {
               _toggleContainer();
             },
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+              padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
               child: AnimatedRotation(
                 duration: Duration(milliseconds: 550),
                 curve: Sprung.overDamped,
@@ -214,6 +205,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                 EventUserStatus(
                   status: widget.event.userStatus ?? 0,
                   email: dmodel.user!.email,
+                  showTitle: false,
                   onTap: () {
                     // make sure this event has not passed
                     if (stringToDate(widget.event.eDate)

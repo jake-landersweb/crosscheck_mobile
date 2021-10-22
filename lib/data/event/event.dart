@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+import 'package:pnflutter/data/event/event_location.dart';
 import 'root.dart';
+import '../../extras/root.dart';
 
 class Event extends Equatable {
   String? eDescription;
@@ -20,6 +22,10 @@ class Event extends Equatable {
   late int undecidedCount;
   late int noResponse;
   int? userStatus;
+  // new fields
+  EventLocation? eventLocation;
+  bool? showAttendance;
+  late int eventType;
 
   Event({
     this.eDescription,
@@ -39,6 +45,9 @@ class Event extends Equatable {
     required this.undecidedCount,
     required this.noResponse,
     this.userStatus,
+    this.eventLocation,
+    this.showAttendance,
+    required this.eventType,
   });
 
   // empty object
@@ -60,6 +69,9 @@ class Event extends Equatable {
     undecidedCount = 0;
     noResponse = 0;
     userStatus = 0;
+    eventLocation = EventLocation();
+    showAttendance = true;
+    eventType = 0;
   }
 
   // for creating a copy
@@ -85,6 +97,9 @@ class Event extends Equatable {
     undecidedCount = event.undecidedCount;
     noResponse = event.noResponse;
     userStatus = event.userStatus;
+    eventLocation = event.eventLocation;
+    showAttendance = event.showAttendance;
+    eventType = event.eventType;
   }
 
   Event.fromRaw(EventRaw event) {
@@ -109,6 +124,9 @@ class Event extends Equatable {
     undecidedCount = 0;
     noResponse = 0;
     userStatus = 0;
+    eventLocation = event.eventLocation;
+    showAttendance = event.showAttendance;
+    eventType = event.eventType;
   }
 
   // object from json
@@ -132,6 +150,11 @@ class Event extends Equatable {
     undecidedCount = json['undecidedCount'];
     noResponse = json['noResponse'];
     userStatus = json['userStatus']?.round();
+    if (json['eventLocation'] != null) {
+      eventLocation = EventLocation.fromJson(json['eventLocation']);
+    }
+    showAttendance = json['showAttendance'];
+    eventType = json['eventType']?.round() ?? 0;
   }
 
   // object to json
@@ -148,7 +171,7 @@ class Event extends Equatable {
     if (homeTeam != null) {
       data['homeTeam'] = homeTeam!.toJson();
     }
-    data['eDate'] = eDate;
+    data['eDate'] = dateToString(eventDate());
     data['eLink'] = eLink;
     if (awayTeam != null) {
       data['awayTeam'] = awayTeam!.toJson();
@@ -158,12 +181,15 @@ class Event extends Equatable {
     data['undecidedCount'] = undecidedCount;
     data['noResponse'] = noResponse;
     data['userStatus'] = userStatus;
+    data['eventLocation'] = eventLocation?.toJson();
+    data['showAttendance'] = showAttendance;
+    data['eventType'] = eventType;
     return data;
   }
 
   // for painting correct title
   String getTitle() {
-    if (eType == 1) {
+    if (eventType == 1) {
       return "${homeTeam!.title} vs ${awayTeam!.title}";
     } else {
       return eTitle;
@@ -171,7 +197,7 @@ class Event extends Equatable {
   }
 
   String getOpponentTitle(String teamId) {
-    if (eType == 1) {
+    if (eventType == 1) {
       if (teamId == homeTeam!.teamId) {
         return awayTeam!.title;
       } else {
@@ -201,6 +227,45 @@ class Event extends Equatable {
       } else {
         return false;
       }
+    } else {
+      return false;
+    }
+  }
+
+  DateTime eventDate() {
+    return DateTime.parse(eDate);
+  }
+
+  String day() {
+    return weekDayFromInt(eventDate().day);
+  }
+
+  String month() {
+    return monthFromInt(eventDate().month);
+  }
+
+  bool isSameDayAs(DateTime date) {
+    DateTime d1 = eventDate();
+    if (d1.day == date.day && d1.month == date.month && d1.year == date.year) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool isSameMonthAs(DateTime date) {
+    DateTime d1 = eventDate();
+    if (d1.month == date.month && d1.year == date.year) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool isSameYearAs(DateTime date) {
+    DateTime d1 = eventDate();
+    if (d1.year == date.year) {
+      return true;
     } else {
       return false;
     }

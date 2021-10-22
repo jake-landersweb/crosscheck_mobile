@@ -7,11 +7,9 @@ import 'root.dart';
 import '../data/root.dart';
 
 extension TeamCalls on DataModel {
-  void teamUserSeasonsGet(
+  Future<void> teamUserSeasonsGet(
       String teamId, String email, Function(TeamUserSeasons) completion) async {
-    loadingStatus = LoadingStatus.loading;
-
-    var response = await client.fetch("/teams/$teamId/users/$email/dashboard");
+    var response = await client.fetch("/teams/$teamId/users/$email/tusRaw");
 
     if (response == null) {
       setError("There was an issue fetching your team information", true);
@@ -21,6 +19,12 @@ extension TeamCalls on DataModel {
     } else {
       setError("There was an issue fetching your team information", true);
       print(response['message']);
+      if (response['status'] == 500) {
+        // the team was not found, remove from prefs
+        prefs.remove("teamId");
+        // reget the data if the team info failed
+        init();
+      }
     }
   }
 
@@ -43,18 +47,9 @@ extension TeamCalls on DataModel {
     });
   }
 
-  Future<void> teamUserUpdate(String teamId, String email, String firstName,
-      String lastName, String phone, VoidCallback completion,
+  Future<void> teamUserUpdate(String teamId, String email,
+      Map<String, dynamic> body, VoidCallback completion,
       {bool? showMessages}) async {
-    Map<String, dynamic> body = {
-      "email": email,
-      "userFields": {
-        "firstName": firstName,
-        "lastName": lastName,
-        "phone": phone,
-      },
-    };
-
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     await client
