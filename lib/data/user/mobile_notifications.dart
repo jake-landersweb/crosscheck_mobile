@@ -1,10 +1,12 @@
 class MobileNotifications {
   late String deviceId;
   late bool allow;
+  String? token;
 
   MobileNotifications({
     required this.deviceId,
     required this.allow,
+    this.token,
   });
 
   static List<MobileNotifications> fromJson(dynamic json) {
@@ -12,7 +14,12 @@ class MobileNotifications {
     if (json != null) {
       for (var i in json) {
         list.add(
-            MobileNotifications(deviceId: i['deviceId'], allow: i['allow']));
+          MobileNotifications(
+            deviceId: i['deviceId'],
+            allow: i['allow'],
+            token: i['token'],
+          ),
+        );
       }
     }
     return list;
@@ -22,6 +29,7 @@ class MobileNotifications {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['deviceId'] = deviceId;
     data['allow'] = allow;
+    data['token'] = token;
     return data;
   }
 }

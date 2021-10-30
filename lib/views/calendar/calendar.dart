@@ -31,6 +31,8 @@ class _CalendarState extends State<Calendar> {
 
   List<Event> _fullEventList = [];
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -173,24 +175,31 @@ class _CalendarState extends State<Calendar> {
           ),
         ),
         // list of the events for that current calendar day
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: _selectedEvents.length,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                EventCell(
-                  event: _selectedEvents[index],
-                  email: dmodel.user!.email,
-                  teamId: dmodel.tus!.team.teamId,
-                  seasonId: _selectedEvents[index].seasonId,
-                ),
-                const SizedBox(height: 16),
-              ],
-            );
-          },
-        ),
+        if (_isLoading)
+          Padding(
+              padding: const EdgeInsets.only(top: 32),
+              child: cv.LoadingIndicator())
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: _selectedEvents.length,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  EventCell(
+                    event: _selectedEvents[index],
+                    email: dmodel.user!.email,
+                    teamId: dmodel.tus!.team.teamId,
+                    seasonId: _selectedEvents[index].seasonId,
+                    isUpcoming: dmodel.upcomingEvents!.any((element) =>
+                        element.eventId == _selectedEvents[index].eventId),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              );
+            },
+          ),
       ],
     );
   }
@@ -232,15 +241,33 @@ class _CalendarState extends State<Calendar> {
     return events;
   }
 
-  void _composeList(DataModel dmodel) {
-    if (dmodel.schedule != null) {
-      _fullEventList.addAll(dmodel.schedule!.previousEvents);
-      if (dmodel.schedule!.nextEvent != null) {
-        _fullEventList.add(dmodel.schedule!.nextEvent!);
-        _fullEventList.addAll(dmodel.schedule!.upcomingEvents);
-      }
-      _selectedEvents = _getEventsFromDay(_selectedDay);
+  void _composeList(DataModel dmodel) async {
+    if (dmodel.upcomingEvents != null) {
+      _fullEventList.addAll(dmodel.upcomingEvents!);
     }
-    setState(() {});
+    if (!dmodel.hasLoadedAllEvents) {
+      await dmodel.getNextEvents(
+          widget.teamId, widget.seasonId, widget.email, true, (events) {
+        dmodel.upcomingEvents!.addAll(events);
+        dmodel.hasLoadedAllEvents = true;
+        _fullEventList.addAll(events);
+      });
+    }
+    if (dmodel.previousEvents != null) {
+      _fullEventList.addAll(dmodel.previousEvents!);
+    } else {
+      // fetch previous events and add to calendar
+      await dmodel.getPreviousEvents(
+          widget.teamId, widget.seasonId, widget.email, (events) {
+        dmodel.setPreviousEvents(events);
+        _fullEventList.addAll(events);
+      });
+    }
+
+    _selectedEvents = _getEventsFromDay(_selectedDay);
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

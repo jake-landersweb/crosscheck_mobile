@@ -12,7 +12,7 @@ extension EventCalls on DataModel {
   Future<void> scheduleGet(String teamId, String seasonId, String email,
       Function(Schedule) completion,
       {bool? showLoads}) async {
-    if (showLoads ?? false) {}
+    isLoadingSchedule = true;
 
     print("Fetching Schedule");
 
@@ -56,10 +56,10 @@ extension EventCalls on DataModel {
     }
   }
 
-  void updateUserStatus(String teamId, String seasonId, String eventId,
+  Future<void> updateUserStatus(String teamId, String seasonId, String eventId,
       String email, int status, String message, VoidCallback completion) async {
     Map<String, dynamic> body = {
-      'checkInStatus': status,
+      'eStatus': status,
       "message": message,
     };
 
@@ -109,20 +109,21 @@ extension EventCalls on DataModel {
       String email,
       String name,
       String message,
+      String title,
       VoidCallback completion) async {
     Map<String, dynamic> body = {
       'date': dateToString(DateTime.now()),
       "name": name,
       "message": message,
+      "email": email,
+      "title": title,
     };
 
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     await client
-        .put(
-            "/teams/$teamId/seasons/$seasonId/events/$eventId/users/$email/replyCheckIn",
-            headers,
-            jsonEncode(body))
+        .put("/teams/$teamId/seasons/$seasonId/events/$eventId/replyToStatus",
+            headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
         setError("There was an issue replying to this user", true);
@@ -148,6 +149,111 @@ extension EventCalls on DataModel {
         completion(CalendarEvent.fromJson(response['body']));
       } else {
         setError("There was an issue fetching the calendar", true);
+        print(response['message']);
+      }
+    });
+  }
+
+  Future<void> createEvent(String teamId, String seasonId,
+      Map<String, dynamic> body, VoidCallback completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .post("/teams/$teamId/seasons/$seasonId/createEvent", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue creating the event", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully created event", true);
+        completion();
+      } else {
+        setError("There was an issue creating the eventr", true);
+        print(response['message']);
+      }
+    });
+  }
+
+  Future<void> updateEvent(String teamId, String seasonId, String eventId,
+      Map<String, dynamic> body, VoidCallback completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .put("/teams/$teamId/seasons/$seasonId/events/$eventId/update", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue updating the event", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully updated event", true);
+        completion();
+      } else {
+        setError("There was an issue updating the event", true);
+        print(response['message']);
+      }
+    });
+  }
+
+  Future<void> getNextEvents(String teamId, String seasonId, String email,
+      bool fromIndex, Function(List<Event>) completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    print(fromIndex
+        ? "Getting upcoming events from index"
+        : "Getting upcoming events until index");
+
+    Map<String, dynamic> body = {
+      "email": email,
+      "date": dateToString(DateTime.now()),
+      "fromIndex": fromIndex,
+    };
+
+    await client
+        .put("/teams/$teamId/seasons/$seasonId/nextEvents", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue fetching the events", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully fetched events", false);
+        List<Event> list = [];
+        for (var i in response['body']) {
+          list.add(Event.fromJson(i));
+        }
+        completion(list);
+      } else {
+        setError("Successfully fetched events", false);
+        print(response['message']);
+      }
+    });
+  }
+
+  Future<void> getPreviousEvents(String teamId, String seasonId, String email,
+      Function(List<Event>) completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    print("getting previous events ...");
+
+    Map<String, dynamic> body = {
+      "email": email,
+      "date": dateToString(DateTime.now())
+    };
+
+    await client
+        .put("/teams/$teamId/seasons/$seasonId/previousEvents", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue fetching the events", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully fetched events", false);
+        List<Event> list = [];
+        for (var i in response['body']) {
+          list.add(Event.fromJson(i));
+        }
+        completion(list);
+      } else {
+        setError("Successfully fetched events", false);
         print(response['message']);
       }
     });

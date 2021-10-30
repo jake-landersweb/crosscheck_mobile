@@ -56,7 +56,7 @@ class Event extends Equatable {
     eventId = "";
     eTitle = "";
     eLocation = "";
-    hasAttendance = false;
+    hasAttendance = true;
     teamId = "";
     seasonId = "";
     eType = 2;
@@ -138,7 +138,7 @@ class Event extends Equatable {
     hasAttendance = json['hasAttendance'];
     teamId = json['teamId'];
     seasonId = json['seasonId'];
-    eType = json['eType']?.round();
+    eType = json['eType']?.round() ?? 0;
     homeTeam =
         json['homeTeam'] != null ? EventTeam.fromJson(json['homeTeam']) : null;
     eDate = json['eDate'];
@@ -189,15 +189,19 @@ class Event extends Equatable {
 
   // for painting correct title
   String getTitle() {
-    if (eventType == 1) {
-      return "${homeTeam!.title} vs ${awayTeam!.title}";
+    if (eventType == 1 || eType == 1) {
+      if (homeTeam != null && awayTeam != null) {
+        return "${homeTeam!.title} vs ${awayTeam!.title}";
+      } else {
+        return eTitle;
+      }
     } else {
       return eTitle;
     }
   }
 
   String getOpponentTitle(String teamId) {
-    if (eventType == 1) {
+    if (eventType == 1 || eType == 1) {
       if (teamId == homeTeam!.teamId) {
         return awayTeam!.title;
       } else {

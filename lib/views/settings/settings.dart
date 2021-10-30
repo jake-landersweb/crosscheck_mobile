@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'dart:io';
 
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
@@ -17,6 +19,19 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  String? _deviceId;
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    _deviceId = await _getId();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
@@ -66,24 +81,25 @@ class _SettingsState extends State<Settings> {
         const Text("Emails",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
         const Spacer(),
-        SizedBox(
-          height: 25,
-          child: FlutterSwitch(
-            value: dmodel.user!.emailNotifications!,
+        if (dmodel.user != null)
+          SizedBox(
             height: 25,
-            width: 50,
-            toggleSize: 18,
-            activeColor: Theme.of(context).colorScheme.primary,
-            onToggle: (value) {
-              dmodel.updateUser(
-                  dmodel.user!.email, {"emailNotifications": value}, () {
-                setState(() {
-                  dmodel.user!.emailNotifications = value;
+            child: FlutterSwitch(
+              value: dmodel.user!.emailNotifications!,
+              height: 25,
+              width: 50,
+              toggleSize: 18,
+              activeColor: Theme.of(context).colorScheme.primary,
+              onToggle: (value) {
+                dmodel.updateUser(
+                    dmodel.user!.email, {"emailNotifications": value}, () {
+                  setState(() {
+                    dmodel.user!.emailNotifications = value;
+                  });
                 });
-              });
-            },
+              },
+            ),
           ),
-        ),
       ],
     );
   }
@@ -96,44 +112,39 @@ class _SettingsState extends State<Settings> {
         const Spacer(),
         SizedBox(
           height: 25,
-          // child: FlutterSwitch(
-          //   value: dmodel.user!.mobileAppNotifications!,
-          //   height: 25,
-          //   width: 50,
-          //   toggleSize: 18,
-          //   activeColor: Theme.of(context).colorScheme.primary,
-          //   onToggle: (value) {
-          //     if (value) {
-          //       _phoneNotificationFunction(dmodel, value);
-          //     } else {
-          //       // user has turned off notifications, no need to do any permissions set up
-          //       dmodel.updateUser(
-          //           dmodel.user!.email, {"mobileAppNotifications": value}, () {
-          //         setState(() {
-          //           dmodel.user!.mobileAppNotifications = value;
-          //         });
-          //       });
-          //     }
-          //   },
-          // ),
+          child: FlutterSwitch(
+            value: dmodel.user!.mobileNotifications.any((element) =>
+                element.deviceId == _deviceId && element.allow == true),
+            height: 25,
+            width: 50,
+            toggleSize: 18,
+            activeColor: Theme.of(context).colorScheme.primary,
+            onToggle: (value) {
+              if (value) {
+                _registerNotification(dmodel);
+              } else {
+                // user has turned off notifications, no need to do any permissions set up
+                dmodel.updateUser(
+                    dmodel.user!.email, {"mobileAppNotifications": value}, () {
+                  Map<String, dynamic> body = {
+                    "allow": false,
+                    "deviceId": _deviceId ?? "",
+                    "token": null,
+                  };
+                  dmodel.updateUserNotifications(dmodel.user!.email, body,
+                      (user) {
+                    setState(() {
+                      dmodel.user!.mobileNotifications =
+                          user.mobileNotifications;
+                    });
+                  });
+                });
+              }
+            },
+          ),
         ),
       ],
     );
-  }
-
-  void _phoneNotificationFunction(DataModel dmodel, bool value) async {
-    if (value) {
-      // ask for permission for notification
-      _registerNotification(dmodel);
-    } else {
-      // update to false
-      // dmodel.updateUser(dmodel.user!.email, {"mobileAppNotifications": value},
-      //     () {
-      //   setState(() {
-      //     dmodel.user!.mobileAppNotifications = value;
-      //   });
-      // });
-    }
   }
 
   void _showAlert(BuildContext context, DataModel dmodel) {
@@ -183,17 +194,33 @@ class _SettingsState extends State<Settings> {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
-      // _messaging.getToken().then((token) {
-      //   dmodel.updateUser(dmodel.user!.email,
-      //       {"mobileAppNotifications": true, "mobileDeviceToken": token}, () {
-      //     setState(() {
-      //       dmodel.user!.mobileAppNotifications = true;
-      //     });
-      //   });
-      // });
+      _messaging.getToken().then((token) {
+        Map<String, dynamic> body = {
+          "allow": true,
+          "deviceId": _deviceId ?? "",
+          "token": token,
+        };
+        dmodel.updateUserNotifications(dmodel.user!.email, body, (user) {
+          setState(() {
+            dmodel.user!.mobileNotifications = user.mobileNotifications;
+          });
+        });
+      });
     } else {
       print('User declined or has not accepted permission');
-      dmodel.setError("Configure notifications in settings", true);
+      dmodel.setSuccess("Blocked notifications successfully", true);
+    }
+  }
+
+  Future<String?> _getId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      // import 'dart:io'
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+    } else {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.androidId; // unique ID on Android
     }
   }
 }

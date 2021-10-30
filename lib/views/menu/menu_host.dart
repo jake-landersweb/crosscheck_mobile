@@ -174,7 +174,19 @@ class _MenuHostState extends State<MenuHost> {
               cv.Navigate(
                 context,
                 EventCreateEdit(
-                    isCreate: true, teamId: dmodel.tus!.team.teamId),
+                  isCreate: true,
+                  teamId: dmodel.tus!.team.teamId,
+                  seasonId: dmodel.currentSeason!.seasonId,
+                  completion: () {
+                    // reload the schedule
+                    dmodel.reloadHomePage(
+                      dmodel.tus!.team.teamId,
+                      dmodel.currentSeason!.seasonId,
+                      dmodel.user!.email,
+                      true,
+                    );
+                  },
+                ),
               );
             },
             child: Icon(Icons.add, color: dmodel.color),
@@ -528,13 +540,12 @@ class _MenuHostState extends State<MenuHost> {
     switch (_selection) {
       case Pages.schedule:
         if (dmodel.currentSeason != null) {
-          await dmodel.scheduleGet(dmodel.tus!.team.teamId,
-              dmodel.currentSeason!.seasonId, dmodel.user!.email, (schedule) {
-            dmodel.setSchedule(schedule);
-            // invalidate old data
-            dmodel.seasonUsers = null;
-            // dmodel.teamRoster = null;
-          });
+          await dmodel.reloadHomePage(
+            dmodel.tus!.team.teamId,
+            dmodel.currentSeason!.seasonId,
+            dmodel.user!.email,
+            false,
+          );
         }
         break;
       case Pages.calendar:

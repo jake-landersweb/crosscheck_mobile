@@ -21,7 +21,7 @@ class _ScheduleState extends State<Schedule> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    if (dmodel.schedule != null) {
+    if (dmodel.upcomingEvents != null) {
       return Column(
         children: [
           cv.SegmentedPicker(
@@ -36,14 +36,48 @@ class _ScheduleState extends State<Schedule> {
           if (_currentTitle == "Upcoming")
             Column(
               children: [
-                _next(context, dmodel),
-                _scheduleList(
-                    context, dmodel, dmodel.schedule!.upcomingEvents, false),
+                EventList(
+                  list: dmodel.upcomingEvents!,
+                  isPrevious: false,
+                ),
+                const SizedBox(height: 32),
+                if (!dmodel.hasLoadedAllEvents)
+                  cv.BasicButton(
+                    onTap: () {
+                      dmodel.getRestEvents(dmodel.tus!.team.teamId,
+                          dmodel.currentSeason!.seasonId, dmodel.user!.email);
+                    },
+                    child: Material(
+                      color: CustomColors.cellColor(context),
+                      shape: ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: SizedBox(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: dmodel.isFetchingRestEvents
+                            ? cv.LoadingIndicator()
+                            : const Opacity(
+                                opacity: 0.5,
+                                child: Center(
+                                  child: Text(
+                                    "Get More",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
               ],
             )
           else
-            _scheduleList(context, dmodel,
-                List.from(dmodel.schedule!.previousEvents.reversed), true),
+            PreviousEvents(
+                teamId: dmodel.tus!.team.teamId,
+                seasonId: dmodel.currentSeason!.seasonId,
+                email: dmodel.user!.email),
           const SizedBox(height: 48),
         ],
       );
@@ -51,91 +85,140 @@ class _ScheduleState extends State<Schedule> {
       if (!dmodel.noSeason) {
         return const ScheduleLoading();
       } else {
-        return const Center(child: Text("There are no seasons for this team."));
+        if (dmodel.noTeam) {
+          return const Center(child: Text("You are not a member of any teams"));
+        } else {
+          return const Center(
+              child: Text("There are no seasons for this team."));
+        }
       }
     }
   }
+}
 
-  Widget _next(BuildContext context, DataModel dmodel) {
-    if (dmodel.schedule!.nextEvent != null) {
-      DateTime eventDate = stringToDate(dmodel.schedule!.nextEvent!.eDate);
-      return Column(
-        children: [
-          const SizedBox(height: 15),
-          Row(
-            children: [
-              Text(
-                monthFromInt(eventDate.month).capitalize(),
-                style: TextStyle(
-                    color: CustomColors.textColor(context).withOpacity(0.5),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400),
-              ),
-              Divider(),
-            ],
-          ),
-          const SizedBox(height: 15),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 15,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: _withDateSide(
-                    weekDayFromInt(eventDate.weekday),
-                    eventDate.day,
-                    dmodel,
-                    generalSameDate(
-                      DateTime.now(),
-                      eventDate,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 85,
-                child: EventCell(
-                  event: dmodel.schedule!.nextEvent!,
-                  email: dmodel.user!.email,
-                  teamId: dmodel.tus!.team.teamId,
-                  seasonId: dmodel.currentSeason!.seasonId,
-                  isExpaded: true,
-                ),
-              ),
-            ],
-          ),
-          if (dmodel.schedule!.upcomingEvents.isNotEmpty)
-            const SizedBox(height: 10),
-        ],
-      );
+class PreviousEvents extends StatefulWidget {
+  const PreviousEvents({
+    Key? key,
+    required this.teamId,
+    required this.seasonId,
+    required this.email,
+  }) : super(key: key);
+  final String teamId;
+  final String seasonId;
+  final String email;
+
+  @override
+  _PreviousEventsState createState() => _PreviousEventsState();
+}
+
+class _PreviousEventsState extends State<PreviousEvents> {
+  @override
+  void initState() {
+    super.initState();
+    _getPreviousEvents(context.read<DataModel>());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
+    if (dmodel.previousEvents == null) {
+      return const ScheduleLoading();
     } else {
-      return const Padding(
-        padding: EdgeInsets.only(top: 20),
-        child: Text(
-          "There are no future events for this season.",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-        ),
-      );
+      return EventList(list: dmodel.previousEvents!, isPrevious: true);
     }
   }
 
-  Widget _scheduleList(BuildContext context, DataModel dmodel, List<Event> list,
-      bool isPrevious) {
-    if (list.isNotEmpty) {
+  Future<void> _getPreviousEvents(DataModel dmodel) async {
+    if (dmodel.previousEvents == null) {
+      dmodel.getPreviousEvents(widget.teamId, widget.seasonId, widget.email,
+          (events) {
+        dmodel.setPreviousEvents(events);
+      });
+    }
+  }
+}
+
+class EventList extends StatefulWidget {
+  EventList({
+    Key? key,
+    required this.list,
+    required this.isPrevious,
+  }) : super(key: key);
+  List<Event> list;
+  bool isPrevious;
+
+  @override
+  _EventListState createState() => _EventListState();
+}
+
+class _EventListState extends State<EventList> {
+  @override
+  Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
+    if (widget.list.isNotEmpty) {
       return ListView.builder(
         padding: const EdgeInsets.all(0),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: list.length,
+        itemCount: widget.list.length,
         itemBuilder: (context, index) {
-          DateTime eventDate = stringToDate(list[index].eDate);
+          DateTime eventDate = widget.list[index].eventDate();
           Widget child;
-          if (list[index].eventId == list.first.eventId) {
-            DateTime nextEventDate =
-                stringToDate(dmodel.schedule!.nextEvent!.eDate);
-            if (generalSameDate(nextEventDate, eventDate) && !isPrevious) {
+          if (widget.list[index].eventId == widget.list.first.eventId) {
+            child = Column(
+              children: [
+                Column(
+                  children: [
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        Text(
+                          monthFromInt(eventDate.month).capitalize(),
+                          style: TextStyle(
+                              color: CustomColors.textColor(context)
+                                  .withOpacity(0.5),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        const Divider(),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 15,
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: _withDateSide(
+                          weekDayFromInt(eventDate.weekday),
+                          eventDate.day,
+                          dmodel,
+                          false,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 85,
+                      child: EventCell(
+                        event: widget.list[index],
+                        email: dmodel.user!.email,
+                        teamId: dmodel.tus!.team.teamId,
+                        seasonId: dmodel.currentSeason!.seasonId,
+                        isExpaded: widget.isPrevious ? false : true,
+                        isUpcoming: !widget.isPrevious,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          } else {
+            DateTime previousDate = widget.list[index - 1].eventDate();
+            if (eventDate.day == previousDate.day) {
               child = Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -146,10 +229,11 @@ class _ScheduleState extends State<Schedule> {
                   Expanded(
                     flex: 85,
                     child: EventCell(
-                      event: list[index],
+                      event: widget.list[index],
                       email: dmodel.user!.email,
                       teamId: dmodel.tus!.team.teamId,
                       seasonId: dmodel.currentSeason!.seasonId,
+                      isUpcoming: !widget.isPrevious,
                     ),
                   ),
                 ],
@@ -157,7 +241,7 @@ class _ScheduleState extends State<Schedule> {
             } else {
               child = Column(
                 children: [
-                  if (eventDate.month != nextEventDate.month || isPrevious)
+                  if (eventDate.month != previousDate.month)
                     Column(
                       children: [
                         const SizedBox(height: 15),
@@ -171,7 +255,7 @@ class _ScheduleState extends State<Schedule> {
                                   fontSize: 20,
                                   fontWeight: FontWeight.w400),
                             ),
-                            Divider(),
+                            const Divider(),
                           ],
                         ),
                         const SizedBox(height: 15),
@@ -197,85 +281,12 @@ class _ScheduleState extends State<Schedule> {
                       Expanded(
                         flex: 85,
                         child: EventCell(
-                          event: list[index],
-                          email: dmodel.user!.email,
-                          teamId: dmodel.tus!.team.teamId,
-                          seasonId: dmodel.currentSeason!.seasonId,
-                        ),
+                            event: widget.list[index],
+                            email: dmodel.user!.email,
+                            teamId: dmodel.tus!.team.teamId,
+                            seasonId: dmodel.currentSeason!.seasonId,
+                            isUpcoming: !widget.isPrevious),
                       ),
-                    ],
-                  ),
-                ],
-              );
-            }
-          } else {
-            DateTime previousDate = stringToDate(list[index - 1].eDate);
-            if (eventDate.day == previousDate.day) {
-              child = Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 15,
-                    child: Container(),
-                  ),
-                  Expanded(
-                    flex: 85,
-                    child: EventCell(
-                      event: list[index],
-                      email: dmodel.user!.email,
-                      teamId: dmodel.tus!.team.teamId,
-                      seasonId: dmodel.currentSeason!.seasonId,
-                    ),
-                  ),
-                ],
-              );
-            } else {
-              child = Column(
-                children: [
-                  if (eventDate.month != previousDate.month)
-                    Column(
-                      children: [
-                        const SizedBox(height: 15),
-                        Row(
-                          children: [
-                            Text(
-                              monthFromInt(eventDate.month).capitalize(),
-                              style: TextStyle(
-                                  color: CustomColors.textColor(context)
-                                      .withOpacity(0.5),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Divider(),
-                          ],
-                        ),
-                        const SizedBox(height: 15),
-                      ],
-                    )
-                  else
-                    const SizedBox(height: 10),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 15,
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: _withDateSide(
-                            weekDayFromInt(eventDate.weekday),
-                            eventDate.day,
-                            dmodel,
-                            false,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                          flex: 85,
-                          child: EventCell(
-                              event: list[index],
-                              email: dmodel.user!.email,
-                              teamId: dmodel.tus!.team.teamId,
-                              seasonId: dmodel.currentSeason!.seasonId)),
                     ],
                   ),
                 ],
@@ -285,7 +296,8 @@ class _ScheduleState extends State<Schedule> {
           return Column(
             children: [
               child,
-              if (list[index] != list.last) const SizedBox(height: 10),
+              if (widget.list[index] != widget.list.last)
+                const SizedBox(height: 10),
             ],
           );
         },

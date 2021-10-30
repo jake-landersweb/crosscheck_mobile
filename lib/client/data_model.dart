@@ -38,47 +38,53 @@ class DataModel extends ChangeNotifier {
     if (prefs.containsKey('email')) {
       // check if there is a teamId and seasonId to use faster call,
       // or else just use basic pathway to get that information
-      if (prefs.containsKey("teamId") && prefs.containsKey("seasonId")) {
-        // get tus with fast call
-        print("attempting to getall info with fast call");
-        await getUserTUS(prefs.getString("email")!, prefs.getString("teamId"),
-            prefs.getString("seasonId"), (utus) {
-          if (utus.tus != null && utus.schedule != null) {
-            print("successfully got fast data");
-            // successfully found all information
-            user = utus.user;
-            tus = utus.tus!;
-            // set the color
-            if (tus!.team.teamStyle.color != null) {
-              color = CustomColors.fromHex(tus!.team.teamStyle.color!);
-            }
-            Season? tempSeason;
-            for (var i in utus.tus!.seasons) {
-              if (i.seasonId == prefs.getString("seasonId")) {
-                tempSeason = i;
-                break;
-              }
-            }
-            if (tempSeason != null) {
-              currentSeason = tempSeason;
-              setSchedule(utus.schedule!);
-              notifyListeners();
-            } else {
-              // there was an issue with the season data, reget all data (this will not happen often)
-              setUser(utus.user);
-            }
-          } else {
-            print(utus.schedule);
-            // there was some issues getting the data, use basic pathway
-            setUser(utus.user);
-          }
-        });
-      } else {
-        // use basic pathway
-        await getUser(prefs.getString("email")!, (user) {
-          setUser(user);
-        });
-      }
+
+      // TODO -- fix this call to use the faster new method. for now, using basic pathway
+      // use basic pathway
+      await getUser(prefs.getString("email")!, (user) {
+        setUser(user);
+      });
+      // if (prefs.containsKey("teamId") && prefs.containsKey("seasonId")) {
+      // get tus with fast call
+      //   print("attempting to getall info with fast call");
+      //   await getUserTUS(prefs.getString("email")!, prefs.getString("teamId"),
+      //       prefs.getString("seasonId"), (utus) {
+      //     if (utus.tus != null && utus.schedule != null) {
+      //       print("successfully got fast data");
+      //       // successfully found all information
+      //       user = utus.user;
+      //       tus = utus.tus!;
+      //       // set the color
+      //       if (tus!.team.teamStyle.color != null) {
+      //         color = CustomColors.fromHex(tus!.team.teamStyle.color!);
+      //       }
+      //       Season? tempSeason;
+      //       for (var i in utus.tus!.seasons) {
+      //         if (i.seasonId == prefs.getString("seasonId")) {
+      //           tempSeason = i;
+      //           break;
+      //         }
+      //       }
+      //       if (tempSeason != null) {
+      //         currentSeason = tempSeason;
+      //         setSchedule(utus.schedule!);
+      //         notifyListeners();
+      //       } else {
+      //         // there was an issue with the season data, reget all data (this will not happen often)
+      //         setUser(utus.user);
+      //       }
+      //     } else {
+      //       print(utus.schedule);
+      //       // there was some issues getting the data, use basic pathway
+      //       setUser(utus.user);
+      //     }
+      //   });
+      // } else {
+      //   // use basic pathway
+      //   await getUser(prefs.getString("email")!, (user) {
+      //     setUser(user);
+      //   });
+      // }
     } else {
       print("user does not have saved email, going to login");
     }
@@ -122,7 +128,7 @@ class DataModel extends ChangeNotifier {
         });
       } else {
         // user has no teams
-        print("user has no saved teams");
+        print("user has no valid teams");
         noTeam = true;
         noSeason = true;
         notifyListeners();
@@ -167,24 +173,86 @@ class DataModel extends ChangeNotifier {
     prefs.setString("seasonId", season.seasonId);
     notifyListeners();
     print("set the current season");
-    // get the schedule with this season
-    scheduleGet(tus!.team.teamId, season.seasonId, user!.email, (schedule) {
-      setSchedule(schedule);
+    // get the next 5 events
+    getNextEvents(tus!.team.teamId, season.seasonId, user!.email, false,
+        (events) {
+      setUpcomingEvents(events);
     });
   }
 
   bool noTeam = false;
   bool noSeason = false;
 
+  bool isLoadingSchedule = false;
+
+  List<Event>? upcomingEvents;
+  bool hasLoadedAllEvents = false;
+  void setUpcomingEvents(List<Event> events) {
+    upcomingEvents = events;
+    hasLoadedAllEvents = false;
+    notifyListeners();
+
+    // get the season user list
+    getSeasonRoster(tus!.team.teamId, currentSeason!.seasonId, (seasonUsers) {
+      setSeasonUsers(seasonUsers);
+    });
+  }
+
+  List<Event>? previousEvents;
+  void setPreviousEvents(List<Event> events) {
+    previousEvents = events;
+    notifyListeners();
+  }
+
   Schedule? schedule;
   void setSchedule(Schedule schedule) {
     this.schedule = schedule;
+    isLoadingSchedule = false;
     print("set schedule");
     notifyListeners();
     // get the season users
     getSeasonRoster(tus!.team.teamId, currentSeason!.seasonId, (seasonUsers) {
       setSeasonUsers(seasonUsers);
     });
+  }
+
+  Future<void> reloadSchedule(
+      String teamId, String seasonId, String email) async {
+    isLoadingSchedule = true;
+    schedule = null;
+    notifyListeners();
+
+    await scheduleGet(teamId, seasonId, email, (schedule) {
+      setSchedule(schedule);
+    });
+  }
+
+  bool isFetchingRestEvents = false;
+
+  Future<void> getRestEvents(
+      String teamId, String seasonId, String email) async {
+    isFetchingRestEvents = true;
+    notifyListeners();
+    // get the rest of the events
+    await getNextEvents(teamId, seasonId, email, true, (events) {
+      upcomingEvents!.addAll(events);
+      hasLoadedAllEvents = true;
+    });
+    isFetchingRestEvents = false;
+    notifyListeners();
+  }
+
+  Future<void> reloadHomePage(
+      String teamId, String seasonId, String email, bool getPrevious) async {
+    // get the first 5 events
+    await getNextEvents(teamId, seasonId, email, false, (events) {
+      setUpcomingEvents(events);
+    });
+    if (previousEvents != null && getPrevious) {
+      await getPreviousEvents(teamId, seasonId, email, (events) {
+        setPreviousEvents(events);
+      });
+    }
   }
 
   List<SeasonUser>? seasonUsers;
@@ -233,5 +301,7 @@ class DataModel extends ChangeNotifier {
     currentSeason = null;
     currentSeasonUser = null;
     seasonUsers = null;
+    upcomingEvents = null;
+    previousEvents = null;
   }
 }
