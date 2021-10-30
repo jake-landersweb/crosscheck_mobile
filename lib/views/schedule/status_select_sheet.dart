@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../extras/root.dart';
 import '../../client/root.dart';
+import '../../data/root.dart';
 
 class StatusSelectSheet extends StatefulWidget {
   const StatusSelectSheet({
@@ -15,6 +16,7 @@ class StatusSelectSheet extends StatefulWidget {
     this.status,
     this.message,
     this.completion,
+    required this.isUpcoming,
   }) : super(key: key);
 
   final String email;
@@ -24,18 +26,21 @@ class StatusSelectSheet extends StatefulWidget {
   final int? status;
   final String? message;
   final VoidCallback? completion;
+  final bool isUpcoming;
 
   @override
   _StatusSelectSheetState createState() => _StatusSelectSheetState();
 }
 
 class _StatusSelectSheetState extends State<StatusSelectSheet> {
-  late int _status = 0;
+  int _status = 0;
   late String _message = "";
 
   bool _isLoaded = false;
 
   bool _isLoading = false;
+
+  int _oldStatus = 0;
 
   @override
   void initState() {
@@ -140,21 +145,101 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
   }
 
   void _setStatus(BuildContext context, DataModel dmodel) async {
-    dmodel.updateUserStatus(widget.teamId, widget.seasonId, widget.eventId,
-        widget.email, _status, _message, () {
+    setState(() {
+      _isLoading = true;
+    });
+    await dmodel.updateUserStatus(widget.teamId, widget.seasonId,
+        widget.eventId, widget.email, _status, _message, () {
       // close the view
       Navigator.of(context).pop();
-      // update the schedule
-      dmodel.scheduleGet(widget.teamId, widget.seasonId, widget.email,
-          (schedule) {
-        dmodel.setSchedule(schedule);
-      });
+      // the specific event userStatus
+      if (widget.isUpcoming) {
+        for (var i in dmodel.upcomingEvents!) {
+          if (i.eventId == widget.eventId) {
+            // update any eventfields needed
+            setState(() {
+              if (widget.email == dmodel.user!.email) {
+                i.userStatus = _status;
+              }
+              switch (_oldStatus) {
+                case 0:
+                  i.noResponse -= 1;
+                  break;
+                case -1:
+                  i.outCount -= 1;
+                  break;
+                case 1:
+                  i.inCount -= 1;
+                  break;
+                case 2:
+                  i.undecidedCount -= 1;
+                  break;
+              }
+              switch (_status) {
+                case 0:
+                  i.noResponse += 1;
+                  break;
+                case -1:
+                  i.outCount += 1;
+                  break;
+                case 1:
+                  i.inCount += 1;
+                  break;
+                case 2:
+                  i.undecidedCount += 1;
+                  break;
+              }
+            });
+            break;
+          }
+        }
+      } else {
+        for (var i in dmodel.previousEvents!) {
+          if (i.eventId == widget.eventId) {
+            // update any event feilds needed
+            setState(() {
+              if (widget.email == dmodel.user!.email) {
+                i.userStatus = _status;
+              }
+              switch (_oldStatus) {
+                case 0:
+                  i.noResponse -= 1;
+                  break;
+                case -1:
+                  i.outCount -= 1;
+                  break;
+                case 1:
+                  i.inCount -= 1;
+                  break;
+                case 2:
+                  i.undecidedCount -= 1;
+                  break;
+              }
+              switch (_status) {
+                case 0:
+                  i.noResponse += 1;
+                  break;
+                case -1:
+                  i.outCount += 1;
+                  break;
+                case 1:
+                  i.inCount += 1;
+                  break;
+                case 2:
+                  i.undecidedCount += 1;
+                  break;
+              }
+            });
+            break;
+          }
+        }
+      }
       if (widget.completion != null) {
         widget.completion!();
       }
-      setState(() {
-        _isLoading = false;
-      });
+    });
+    setState(() {
+      _isLoading = false;
     });
   }
 
@@ -164,6 +249,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
         (status, message) {
       setState(() {
         _status = status;
+        _oldStatus = status;
         _message = message;
         _isLoaded = true;
       });

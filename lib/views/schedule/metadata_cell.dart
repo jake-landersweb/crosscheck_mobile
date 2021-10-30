@@ -26,7 +26,7 @@ class EventMetaDataCell extends StatelessWidget {
           const SizedBox(width: 16),
           child ??
               Expanded(
-                child: Text(
+                child: SelectableText(
                   title,
                   style: TextStyle(
                     color: CustomColors.textColor(context),

@@ -19,6 +19,7 @@ class EventCell extends StatefulWidget {
     required this.seasonId,
     this.isExpaded = false,
     this.showStatus,
+    required this.isUpcoming,
   }) : super(key: key);
 
   final Event event;
@@ -27,6 +28,7 @@ class EventCell extends StatefulWidget {
   final String seasonId;
   final bool? isExpaded;
   final bool? showStatus;
+  final bool isUpcoming;
 
   @override
   _EventCellState createState() => _EventCellState();
@@ -105,8 +107,10 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
           if (widget.event.hasAttendance)
             Padding(
               padding: EdgeInsets.all(8),
-              child:
-                  cv.Circle(7, _getStatusColor(widget.event.userStatus ?? 0)),
+              child: cv.Circle(
+                7,
+                _getStatusColor(widget.event.userStatus ?? 0),
+              ),
             )
         ],
       ),
@@ -130,6 +134,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                     email: widget.email,
                     teamId: widget.teamId,
                     seasonId: widget.seasonId,
+                    isUpcoming: widget.isUpcoming,
                   ),
                 );
               } else {
@@ -219,6 +224,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                             teamId: widget.teamId,
                             seasonId: widget.seasonId,
                             eventId: widget.event.eventId,
+                            isUpcoming: widget.isUpcoming,
                           );
                         },
                       );
@@ -242,9 +248,10 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
           spacing: 16,
           hasTopSpacing: true,
           children: [
-            if (!widget.event.eLocation.isEmpty())
+            if (!(widget.event.eventLocation?.name).isEmpty())
               EventMetaDataCell(
-                  title: widget.event.eLocation!, icon: Icons.near_me),
+                  title: widget.event.eventLocation!.name!,
+                  icon: Icons.near_me),
             if (!widget.event.eLink.isEmpty())
               EventMetaDataCell(title: widget.event.eLink!, icon: Icons.link),
             if (!widget.event.eDescription.isEmpty())

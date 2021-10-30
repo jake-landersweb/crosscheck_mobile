@@ -101,8 +101,8 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
   }
 
   void _resetData(DataModel dmodel) {
-    dmodel.schedule = null;
-    dmodel.seasonUsers = null;
+    dmodel.upcomingEvents = null;
+    dmodel.previousEvents = null;
     dmodel.tus = null;
     setState(() {});
     if (dmodel.user != null) {

@@ -26,18 +26,24 @@ class UserCell extends StatelessWidget {
         Expanded(
           child: Row(
             children: [
-              Text(
-                user.name(),
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: CustomColors.textColor(context)),
-              ),
               if (dmodel.user!.email == user.email)
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: cv.Circle(7, CustomColors.textColor(context)),
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: cv.Circle(
+                    7,
+                    CustomColors.textColor(context),
+                  ),
                 ),
+              Expanded(
+                child: Text(
+                  user.name(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -50,7 +56,7 @@ class UserCell extends StatelessWidget {
   }
 }
 
-class UserCellLoading extends StatelessWidget {
+class UserCellLoading extends StatefulWidget {
   const UserCellLoading({
     Key? key,
     this.hasTrailing = false,
@@ -58,30 +64,60 @@ class UserCellLoading extends StatelessWidget {
   final bool hasTrailing;
 
   @override
+  State<UserCellLoading> createState() => _UserCellLoadingState();
+}
+
+class _UserCellLoadingState extends State<UserCellLoading>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation _animation;
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _animationController.repeat(reverse: true);
+    _animation = Tween(begin: 0.3, end: 1.0).animate(_animationController)
+      ..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: Row(
-        children: [
-          _avatar(context),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Container(
-              height: 10,
-              color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black.withOpacity(0.3)
-                  : Colors.white.withOpacity(0.3),
+      child: Opacity(
+        opacity: _animation.value,
+        child: Row(
+          children: [
+            _avatar(context),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Container(
+                height: 10,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black.withOpacity(0.3)
+                    : Colors.white.withOpacity(0.3),
+              ),
             ),
-          ),
-          if (hasTrailing)
-            Container(
-              height: 20,
-              width: 100,
-              color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black.withOpacity(0.3)
-                  : Colors.white.withOpacity(0.3),
-            ),
-        ],
+            if (widget.hasTrailing)
+              Container(
+                height: 20,
+                width: 100,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black.withOpacity(0.3)
+                    : Colors.white.withOpacity(0.3),
+              ),
+          ],
+        ),
       ),
     );
   }

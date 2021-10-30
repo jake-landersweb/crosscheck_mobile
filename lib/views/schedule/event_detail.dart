@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom_views/root.dart' as cv;
@@ -18,12 +19,14 @@ class EventDetail extends StatefulWidget {
     required this.email,
     required this.teamId,
     required this.seasonId,
+    required this.isUpcoming,
   }) : super(key: key);
 
   final Event event;
   final String email;
   final String teamId;
   final String seasonId;
+  final bool isUpcoming;
 
   @override
   _EventDetailState createState() => _EventDetailState();
@@ -45,6 +48,7 @@ class _EventDetailState extends State<EventDetail> {
     return cv.AppBar(
       title: "",
       leading: cv.BackButton(color: dmodel.color),
+      actions: [_editButton(context, dmodel)],
       titlePadding: const EdgeInsets.only(left: 8),
       refreshable: true,
       onRefresh: () => _getUsers(dmodel),
@@ -122,9 +126,9 @@ class _EventDetailState extends State<EventDetail> {
                 ],
               ),
             ),
-          if (!widget.event.eLocation.isEmpty())
+          if (!((widget.event.eventLocation?.name).isEmpty()))
             EventMetaDataCell(
-                title: widget.event.eLocation!, icon: Icons.near_me),
+                title: widget.event.eventLocation!.name!, icon: Icons.near_me),
           if (!widget.event.eLink.isEmpty())
             EventMetaDataCell(title: widget.event.eLink!, icon: Icons.link),
           if (!widget.event.eDescription.isEmpty())
@@ -136,14 +140,17 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   Widget _userStatusCounts(BuildContext context, DataModel dmodel) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _userStatusCountCell(context, -1, widget.event.outCount),
-        _userStatusCountCell(context, 1, widget.event.inCount),
-        _userStatusCountCell(context, 2, widget.event.undecidedCount),
-        _userStatusCountCell(context, 0, widget.event.noResponse),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _userStatusCountCell(context, -1, widget.event.outCount),
+          _userStatusCountCell(context, 1, widget.event.inCount),
+          _userStatusCountCell(context, 2, widget.event.undecidedCount),
+          _userStatusCountCell(context, 0, widget.event.noResponse),
+        ],
+      ),
     );
   }
 
@@ -221,6 +228,7 @@ class _EventDetailState extends State<EventDetail> {
                                   teamId: widget.teamId,
                                   seasonId: widget.seasonId,
                                   eventId: widget.event.eventId,
+                                  isUpcoming: widget.isUpcoming,
                                   completion: () {
                                     _getUsers(dmodel);
                                   },
@@ -245,6 +253,38 @@ class _EventDetailState extends State<EventDetail> {
 
   Widget _inacticeList(BuildContext context, DataModel dmodel) {
     return Container();
+  }
+
+  Widget _editButton(BuildContext context, DataModel dmodel) {
+    if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) {
+      return cv.BasicButton(
+        onTap: () {
+          cv.Navigate(
+            context,
+            EventCreateEdit(
+              isCreate: false,
+              teamId: widget.teamId,
+              seasonId: widget.seasonId,
+              initialEvent: widget.event,
+              completion: () {
+                // reload the schedule
+                dmodel.reloadHomePage(
+                    widget.teamId, widget.seasonId, widget.email, true);
+                // go back a screen
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+        },
+        child: Text("Edit",
+            style: TextStyle(
+              fontSize: 18,
+              color: dmodel.color,
+            )),
+      );
+    } else {
+      return Container(height: 0);
+    }
   }
 
   Future<void> _getUsers(DataModel dmodel) async {

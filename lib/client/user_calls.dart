@@ -45,13 +45,16 @@ extension UserCalls on DataModel {
     } else {
       print(response['message']);
       switch (response['status']) {
-        case 440:
-          setError("Your email or password was incorrect", true);
+        case 410:
+          setError("There was an issue with the request client side.", true);
           break;
         case 420:
           setError("Your email or password was incorrect", true);
           break;
         case 430:
+          setError("Your email or password was incorrect", true);
+          break;
+        case 440:
           setError(
               "Your account is not set up yet, contact your team admin or check your email inbox",
               true);
@@ -109,6 +112,24 @@ extension UserCalls on DataModel {
     } else if (response['status'] == 200) {
       setSuccess("Successfully updated user record", true);
       completion();
+    } else {
+      print(response['message']);
+      setError("There was an issue updaing your user record", true);
+    }
+  }
+
+  Future<void> updateUserNotifications(String email, Map<String, dynamic> body,
+      Function(User) completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    final response = await client.put(
+        "/users/$email/updateNotifications", headers, jsonEncode(body));
+
+    if (response == null) {
+      setError("There was an issue updaing your user record", true);
+    } else if (response['status'] == 200) {
+      setSuccess("Successfully updated preferences", true);
+      completion(User.fromJson(response['body']));
     } else {
       print(response['message']);
       setError("There was an issue updaing your user record", true);

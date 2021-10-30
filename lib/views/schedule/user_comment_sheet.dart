@@ -49,6 +49,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.Sheet(
       color: dmodel.color,
+      closeText: "Close",
       title: "Comments",
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 500),
@@ -93,26 +94,31 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
   Widget _userCommentCell(StatusReply reply) {
     return Row(
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.subdirectory_arrow_right,
-                    color: CustomColors.textColor(context).withOpacity(0.7)),
-                const SizedBox(width: 8),
-                Text(reply.message, style: const TextStyle(fontSize: 18)),
-              ],
-            ),
-            Text(
-              reply.name,
-              style: TextStyle(
-                color: CustomColors.textColor(context).withOpacity(0.7),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.subdirectory_arrow_right,
+                      color: CustomColors.textColor(context).withOpacity(0.7)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(reply.message,
+                        style: const TextStyle(fontSize: 18)),
+                  ),
+                ],
               ),
-            ),
-          ],
+              Text(
+                reply.name,
+                style: TextStyle(
+                  color: CustomColors.textColor(context).withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
         ),
-        const Spacer(),
+        // const Spacer(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -141,35 +147,31 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
       children: [
         cv.TextField(
           labelText: "Reply Message ...",
+          charLimit: 50,
+          showCharacters: true,
           showBackground: false,
           validator: (value) {},
           onChanged: (value) {
             _reply = value;
           },
         ),
-        Padding(
-          padding: Platform.isIOS || Platform.isMacOS
-              ? const EdgeInsets.fromLTRB(0, 12, 8, 12)
-              : const EdgeInsets.fromLTRB(0, 0, 8, 0),
+        SizedBox(
+          height: 50,
           child: cv.BasicButton(
             onTap: () {
               _replyToStatus(context, dmodel);
             },
-            child: Row(
-              children: [
-                if (_isLoading)
-                  cv.LoadingIndicator()
-                else
-                  Text(
-                    "Reply",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: dmodel.color,
+            child: Center(
+              child: (_isLoading)
+                  ? cv.LoadingIndicator()
+                  : Text(
+                      "Reply",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: dmodel.color,
+                      ),
                     ),
-                  ),
-                const Spacer(),
-              ],
             ),
           ),
         ),
@@ -191,8 +193,18 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
             widget.event.eventId,
             widget.user.email,
             dmodel.currentSeasonUser!.name(),
-            _reply, () {
-          Navigator.of(context).pop();
+            _reply,
+            widget.event.getTitle(), () {
+          setState(() {
+            _replies.add(
+              StatusReply(
+                date: dateToString(DateTime.now()),
+                message: _reply,
+                name: dmodel.currentSeasonUser!.name(),
+              ),
+            );
+            _reply = "";
+          });
           widget.completion();
         }).then((value) {
           setState(() {

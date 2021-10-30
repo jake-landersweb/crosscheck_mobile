@@ -113,8 +113,8 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           ],
         ),
         _userFields(context),
-        _teamFields(context),
-        _seasonFields(context, dmodel),
+        if (widget.user.isSeasonAdmin()) _teamFields(context),
+        if (widget.user.isSeasonAdmin()) _seasonFields(context, dmodel),
         cv.Section(
           "",
           child: cv.BasicButton(
@@ -509,7 +509,7 @@ class _UserTextFieldState extends State<_UserTextField> {
           labelText: widget.label,
           showBackground: false,
           initialvalue: widget.initialValue,
-          keyboardType: TextInputType.phone,
+          keyboardType: widget.keyboardType,
           validator: (value) {},
           onChanged: widget.onChanged,
         ),
