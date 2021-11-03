@@ -113,8 +113,9 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           ],
         ),
         _userFields(context),
-        if (widget.user.isSeasonAdmin()) _teamFields(context),
-        if (widget.user.isSeasonAdmin()) _seasonFields(context, dmodel),
+        if (dmodel.currentSeasonUser!.isSeasonAdmin()) _teamFields(context),
+        if (dmodel.currentSeasonUser!.isSeasonAdmin())
+          _seasonFields(context, dmodel),
         cv.Section(
           "",
           child: cv.BasicButton(

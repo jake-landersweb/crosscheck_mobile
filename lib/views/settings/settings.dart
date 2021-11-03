@@ -42,8 +42,8 @@ class _SettingsState extends State<Settings> {
           child: cv.NativeList(
             itemPadding: const EdgeInsets.all(16),
             children: [
-              _emailNotifications(context, dmodel),
-              _phoneNotifications(context, dmodel),
+              if (dmodel.user != null) _emailNotifications(context, dmodel),
+              if (dmodel.user != null) _phoneNotifications(context, dmodel),
             ],
           ),
         ),

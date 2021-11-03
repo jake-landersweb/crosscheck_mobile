@@ -57,6 +57,12 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
     _isOpen = widget.isExpaded ?? false;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   _toggleContainer() {
     if (_animation.status != AnimationStatus.completed) {
       _controller.forward();
