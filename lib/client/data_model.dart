@@ -87,9 +87,11 @@ class DataModel extends ChangeNotifier {
       // }
     } else {
       print("user does not have saved email, going to login");
+      showSplash = false;
+      notifyListeners();
     }
-    showSplash = false;
-    notifyListeners();
+    // showSplash = false;
+    // notifyListeners();
   }
 
   // client for api requests
@@ -131,6 +133,7 @@ class DataModel extends ChangeNotifier {
         print("user has no valid teams");
         noTeam = true;
         noSeason = true;
+        showSplash = false;
         notifyListeners();
       }
     }
@@ -163,6 +166,7 @@ class DataModel extends ChangeNotifier {
       // there are no seasons
       print("this team has no seasons");
       noSeason = true;
+      showSplash = false;
       notifyListeners();
     }
   }
@@ -190,6 +194,7 @@ class DataModel extends ChangeNotifier {
   void setUpcomingEvents(List<Event> events) {
     upcomingEvents = events;
     hasLoadedAllEvents = false;
+    showSplash = false;
     notifyListeners();
 
     // get the season user list

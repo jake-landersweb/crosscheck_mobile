@@ -34,8 +34,7 @@ class _LoginState extends State<Login> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
-                end: Alignment
-                    .bottomRight, // 10% of the width, so there are ten blinds.
+                end: Alignment.bottomRight,
                 colors: [
                   CustomColors.fromHex("00a1ff"),
                   CustomColors.fromHex("00ff8f")
