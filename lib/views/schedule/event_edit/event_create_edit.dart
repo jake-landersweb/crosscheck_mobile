@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'dart:convert';
 
-import '../../root.dart';
-import 'root.dart';
 import '../../../data/root.dart';
 import '../../../client/root.dart';
 import '../../../custom_views/root.dart' as cv;
 import '../../../extras/root.dart';
+import '../../shared/root.dart';
 
 class EventCreateEdit extends StatefulWidget {
   const EventCreateEdit({
@@ -18,12 +18,14 @@ class EventCreateEdit extends StatefulWidget {
     required this.teamId,
     required this.seasonId,
     required this.completion,
+    this.users,
   }) : super(key: key);
   final bool isCreate;
   final Event? initialEvent;
   final String teamId;
   final String seasonId;
   final VoidCallback completion;
+  final List<SeasonUser>? users;
 
   @override
   _EventCreateEditState createState() => _EventCreateEditState();
@@ -38,6 +40,9 @@ class _EventCreateEditState extends State<EventCreateEdit> {
 
   bool _isLoading = false;
 
+  List<SeasonUser>? _users;
+  Map<String, dynamic> _changedUsers = {};
+
   @override
   void initState() {
     super.initState();
@@ -51,45 +56,66 @@ class _EventCreateEditState extends State<EventCreateEdit> {
       _eDate = DateTime.now();
       _isHome = true;
     }
+    if (widget.users != null) {
+      _users = widget.users!.map((e) => SeasonUser.of(e)).toList();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _users = null;
+    _changedUsers = {};
   }
 
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
-      title: widget.isCreate ? "Create Event" : "Edit Event",
-      isLarge: false,
-      leading: cv.BackButton(color: dmodel.color),
+    return Stack(
+      alignment: Alignment.bottomCenter,
       children: [
-        if (widget.isCreate)
-          Column(
-            children: [
-              // event type
-              cv.SegmentedPicker<int>(
-                initialSelection: _event.eType,
-                titles: const ["Game", "Practice", "Other"],
-                selections: const [1, 2, 0],
-                onSelection: (value) {
-                  setState(() {
-                    _event.eType = value;
-                  });
-                },
+        cv.AppBar(
+          title: widget.isCreate ? "Create Event" : "Edit Event",
+          isLarge: false,
+          leading: cv.BackButton(color: dmodel.color),
+          titlePadding: const EdgeInsets.only(left: 8),
+          actions: [if (!widget.isCreate) _editButton(context, dmodel)],
+          children: [
+            if (widget.isCreate)
+              Column(
+                children: [
+                  // event type
+                  cv.SegmentedPicker<int>(
+                    initialSelection: _event.eType,
+                    titles: const ["Game", "Practice", "Other"],
+                    selections: const [1, 2, 0],
+                    onSelection: (value) {
+                      setState(() {
+                        _event.eType = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        // event date
-        _eventDate(context, dmodel),
-        const SizedBox(height: 16),
-        // event title or opponent
-        _title(context),
-        const SizedBox(height: 16),
-        _details(context, dmodel),
-        const SizedBox(height: 16),
-        _location(context, dmodel),
-        const SizedBox(height: 16),
-        _actionButton(context, dmodel),
-        const SizedBox(height: 48),
+            // event date
+            _eventDate(context, dmodel),
+            const SizedBox(height: 16),
+            // event title or opponent
+            _title(context),
+            const SizedBox(height: 16),
+            _details(context, dmodel),
+            const SizedBox(height: 16),
+            _location(context, dmodel),
+            const SizedBox(height: 16),
+            if (widget.isCreate)
+              _actionButton(context, dmodel)
+            else if (_users != null)
+              _userList(context, dmodel),
+            const SizedBox(height: 48),
+          ],
+        ),
+        if (_users != null) _countOverlay(context),
       ],
     );
   }
@@ -418,6 +444,47 @@ class _EventCreateEditState extends State<EventCreateEdit> {
     );
   }
 
+  Widget _userList(BuildContext context, DataModel dmodel) {
+    return Column(
+      children: [
+        cv.Section(
+          "Users",
+          allowsCollapse: true,
+          initOpen: false,
+          child: cv.NativeList(
+            children: [for (var i in _users!) _userRow(context, dmodel, i)],
+          ),
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _userRow(BuildContext context, DataModel dmodel, SeasonUser user) {
+    return Row(
+      children: [
+        // user avatar cell
+        Expanded(
+          child: UserCell(user: user),
+        ),
+        // add toggle here
+        FlutterSwitch(
+          value: user.eventFields!.isParticipant,
+          height: 25,
+          width: 50,
+          toggleSize: 18,
+          activeColor: dmodel.color,
+          onToggle: (value) {
+            setState(() {
+              user.eventFields!.isParticipant = value;
+              _changedUsers[user.email] = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _actionButton(BuildContext context, DataModel dmodel) {
     return cv.NativeList(
       children: [
@@ -431,7 +498,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
               child: _isLoading
                   ? cv.LoadingIndicator()
                   : Text(
-                      widget.isCreate ? "Create Event" : "Edit Event",
+                      "Create Event",
                       style: TextStyle(
                         color: dmodel.color,
                         fontWeight: FontWeight.w600,
@@ -442,6 +509,103 @@ class _EventCreateEditState extends State<EventCreateEdit> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _editButton(BuildContext context, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        _action(context, dmodel);
+      },
+      child: SizedBox(
+        height: 20,
+        child: _isLoading
+            ? Center(
+                child: cv.LoadingIndicator(),
+              )
+            : Text(
+                "Confirm",
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                    color: dmodel.color),
+              ),
+      ),
+    );
+  }
+
+  Widget _countOverlay(BuildContext context) {
+    return Container(
+      height: 60,
+      width: double.infinity,
+      color: CustomColors.plainBackground(context).withOpacity(0.7),
+      child: Column(
+        children: [
+          const Divider(height: 0.5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.check,
+                      color: CustomColors.textColor(context).withOpacity(0.5),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 50,
+                      child: Text(
+                        _users!
+                            .where((element) =>
+                                element.eventFields!.isParticipant == true)
+                            .length
+                            .toString(),
+                        style: TextStyle(
+                          color:
+                              CustomColors.textColor(context).withOpacity(0.5),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.close,
+                      color: CustomColors.textColor(context).withOpacity(0.5),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 50,
+                      child: Text(
+                        _users!
+                            .where((element) =>
+                                element.eventFields!.isParticipant == false)
+                            .length
+                            .toString(),
+                        style: TextStyle(
+                          color:
+                              CustomColors.textColor(context).withOpacity(0.5),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -504,6 +668,13 @@ class _EventCreateEditState extends State<EventCreateEdit> {
           widget.teamId, widget.seasonId, _event.eventId, _eventBody, () {
         Navigator.of(context).pop();
         widget.completion();
+      });
+
+      // go through all edited users and change the status
+      _changedUsers.forEach((key, value) {
+        // update the event users
+        dmodel.updateEventUser(widget.teamId, widget.seasonId,
+            widget.initialEvent!.eventId, key, {"isParticipant": value}, () {});
       });
     }
     setState(() {

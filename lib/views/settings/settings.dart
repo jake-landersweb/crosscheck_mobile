@@ -35,7 +35,9 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return Column(
+    return cv.AppBar(
+      title: "Settings",
+      leading: const MenuButton(),
       children: [
         cv.Section(
           "Notifications",

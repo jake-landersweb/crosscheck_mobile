@@ -48,7 +48,11 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return Column(
+    return cv.AppBar(
+      title: "Calendar",
+      leading: const MenuButton(),
+      refreshable: true,
+      onRefresh: () => _refreshAction(dmodel),
       children: [
         TableCalendar(
           availableGestures: AvailableGestures.horizontalSwipe,
@@ -269,5 +273,17 @@ class _CalendarState extends State<Calendar> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> _refreshAction(DataModel dmodel) async {
+    if (dmodel.currentSeason != null) {
+      await dmodel.scheduleGet(dmodel.tus!.team.teamId,
+          dmodel.currentSeason!.seasonId, dmodel.user!.email, (schedule) {
+        dmodel.setSchedule(schedule);
+        // invalidate old data
+        dmodel.seasonUsers = null;
+        // dmodel.teamRoster = null;
+      });
+    }
   }
 }

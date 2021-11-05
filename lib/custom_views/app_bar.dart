@@ -28,6 +28,7 @@ class AppBar extends StatefulWidget {
     this.refreshable,
     this.onRefresh,
     this.color,
+    this.areaHeight = 40,
   });
 
   /// title of the view
@@ -56,6 +57,8 @@ class AppBar extends StatefulWidget {
   final AsyncCallback? onRefresh;
 
   final Color? color;
+
+  final double areaHeight;
 
   @override
   _AppBarState createState() => _AppBarState();
@@ -216,7 +219,7 @@ class _AppBarState extends State<AppBar> {
                               Theme.of(context).colorScheme.primary,
                         ),
                       )
-                    : Container(),
+                    : Container(height: 0),
               ),
             ),
         ],
@@ -235,8 +238,7 @@ class _AppBarState extends State<AppBar> {
   Widget _body(BuildContext context) {
     return ListView(
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 50,
-      ),
+          top: MediaQuery.of(context).padding.top + widget.areaHeight + 10),
       physics: const AlwaysScrollableScrollPhysics(),
       controller: _scrollController,
       children: [
@@ -273,8 +275,9 @@ class _AppBarState extends State<AppBar> {
       children: [
         GlassContainer(
           alignment: AlignmentDirectional.bottomCenter,
-          height:
-              MediaQuery.of(context).padding.top + (Platform.isIOS ? 40 : 50),
+          height: MediaQuery.of(context).padding.top +
+              (Platform.isIOS ? 0 : 10) +
+              widget.areaHeight,
           width: MediaQuery.of(context).size.width,
           borderRadius: BorderRadius.circular(0),
           backgroundColor:
@@ -287,22 +290,22 @@ class _AppBarState extends State<AppBar> {
             padding: EdgeInsets.fromLTRB(
                 widget.titlePadding.left, 0, widget.titlePadding.left, 8),
             child: Stack(
-              alignment: AlignmentDirectional.center,
               children: [
-                Row(
-                  children: [
-                    // leading widget
-                    widget.leading,
-                    const Spacer(),
-                    // all of the actions
-                    for (var i in widget.actions) i
-                  ],
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Row(
+                    children: [const Spacer(), for (var i in widget.actions) i],
+                  ),
                 ),
+                Align(alignment: Alignment.bottomLeft, child: widget.leading),
                 // title
-                AnimatedOpacity(
-                  opacity: _showSmallTitle ? 1 : 0,
-                  duration: const Duration(milliseconds: 150),
-                  child: _smallTitle(context),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: AnimatedOpacity(
+                    opacity: _showSmallTitle ? 1 : 0,
+                    duration: const Duration(milliseconds: 150),
+                    child: _smallTitle(context),
+                  ),
                 ),
               ],
             ),
