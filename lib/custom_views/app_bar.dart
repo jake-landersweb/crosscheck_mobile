@@ -291,12 +291,6 @@ class _AppBarState extends State<AppBar> {
                 widget.titlePadding.left, 0, widget.titlePadding.left, 8),
             child: Stack(
               children: [
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Row(
-                    children: [const Spacer(), for (var i in widget.actions) i],
-                  ),
-                ),
                 Align(alignment: Alignment.bottomLeft, child: widget.leading),
                 // title
                 Align(
@@ -305,6 +299,12 @@ class _AppBarState extends State<AppBar> {
                     opacity: _showSmallTitle ? 1 : 0,
                     duration: const Duration(milliseconds: 150),
                     child: _smallTitle(context),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Row(
+                    children: [const Spacer(), for (var i in widget.actions) i],
                   ),
                 ),
               ],

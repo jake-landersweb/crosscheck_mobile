@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sprung/sprung.dart';
 
 import 'client/root.dart';
 import 'theme/root.dart';
 import 'views/root.dart';
 import 'extras/root.dart';
+import 'custom_views/root.dart' as cv;
 
 void main() {
   runApp(MultiProvider(
@@ -138,8 +140,60 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
         children: [
           widget.child,
           // for showing custom messages
-          if (dmodel.successText != "") _showSuccess(context, dmodel),
-          if (dmodel.errorText != "") _showError(context, dmodel),
+          if (dmodel.successText != "")
+            StatusBar(
+                backgroundColor: CustomColors.textColor(context),
+                opacity: 0.1,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(dmodel.successText,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: CustomColors.textColor(context),
+                            )),
+                      ),
+                      Icon(
+                        Icons.check_circle_outline,
+                        color: CustomColors.textColor(context).withOpacity(0.7),
+                      )
+                    ],
+                  ),
+                ),
+                completion: () {
+                  setState(() {
+                    dmodel.successText = "";
+                  });
+                }),
+          if (dmodel.errorText != "")
+            StatusBar(
+                backgroundColor: Colors.red,
+                opacity: 0.7,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(dmodel.errorText,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            )),
+                      ),
+                      const Icon(
+                        Icons.warning_rounded,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+                completion: () {
+                  setState(() {
+                    dmodel.errorText = "";
+                  });
+                }),
         ],
       ),
     );
@@ -150,7 +204,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
     return Builder(
       builder: (context) {
         var _snackBar = SnackBar(
-          elevation: 1,
+          elevation: 0,
           content: Row(
             children: [
               Text(dmodel.successText,
@@ -199,7 +253,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
     return Builder(
       builder: (context) {
         var _snackBar = SnackBar(
-          elevation: 1,
+          elevation: 0,
           content: Row(
             children: [
               Expanded(
@@ -237,6 +291,77 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
         });
         return Container();
       },
+    );
+  }
+}
+
+class StatusBar extends StatefulWidget {
+  const StatusBar({
+    Key? key,
+    required this.backgroundColor,
+    required this.opacity,
+    required this.child,
+    required this.completion,
+  }) : super(key: key);
+
+  final Color backgroundColor;
+  final double opacity;
+  final Widget child;
+  final VoidCallback completion;
+
+  @override
+  _StatusBarState createState() => _StatusBarState();
+}
+
+class _StatusBarState extends State<StatusBar>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation<Offset> position;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 800));
+    position = Tween<Offset>(begin: const Offset(0.0, 200), end: Offset.zero)
+        .animate(CurvedAnimation(parent: controller, curve: Sprung.overDamped));
+
+    controller.forward();
+
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        controller.reverse();
+      });
+      Future.delayed(const Duration(milliseconds: 800), () {
+        widget.completion();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 32.0),
+        child: SlideTransition(
+          position: position,
+          child: cv.GlassContainer(
+            opacity: widget.opacity,
+            backgroundColor: widget.backgroundColor,
+            height: 50,
+            width: MediaQuery.of(context).size.width - 10,
+            child: widget.child,
+          ),
+        ),
+      ),
     );
   }
 }

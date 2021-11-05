@@ -535,10 +535,11 @@ class _EventCreateEditState extends State<EventCreateEdit> {
   }
 
   Widget _countOverlay(BuildContext context) {
-    return Container(
+    return cv.GlassContainer(
       height: 60,
       width: double.infinity,
-      color: CustomColors.plainBackground(context).withOpacity(0.7),
+      backgroundColor: CustomColors.plainBackground(context),
+      opacity: 0.7,
       child: Column(
         children: [
           const Divider(height: 0.5),

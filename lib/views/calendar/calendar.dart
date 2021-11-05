@@ -49,7 +49,7 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
-      title: "Calendar",
+      title: "",
       leading: const MenuButton(),
       refreshable: true,
       onRefresh: () => _refreshAction(dmodel),
