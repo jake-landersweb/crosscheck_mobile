@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pnflutter/extras/root.dart';
+import 'package:pnflutter/views/root.dart';
 import 'package:provider/provider.dart';
 
 import '../../client/root.dart';
@@ -29,15 +30,22 @@ class _SeasonSelectState extends State<SeasonSelect> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.NativeList(
-      itemPadding: kIsWeb
-          ? const EdgeInsets.all(8)
-          : Platform.isIOS || Platform.isMacOS
-              ? const EdgeInsets.all(16)
-              : const EdgeInsets.all(8),
+    return cv.AppBar(
+      title: "Season Select",
+      isLarge: true,
+      leading: const MenuButton(),
       children: [
-        for (Season i in widget.tus.seasons)
-          _seasonSelectCell(context, i, dmodel),
+        cv.NativeList(
+          itemPadding: kIsWeb
+              ? const EdgeInsets.all(8)
+              : Platform.isIOS || Platform.isMacOS
+                  ? const EdgeInsets.all(16)
+                  : const EdgeInsets.all(8),
+          children: [
+            for (Season i in widget.tus.seasons)
+              _seasonSelectCell(context, i, dmodel),
+          ],
+        ),
       ],
     );
   }

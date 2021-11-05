@@ -8,18 +8,21 @@ class SeasonUserEventFields {
   String? email;
   late int eStatus;
   late bool isPlaying;
+  late bool isParticipant;
   List<SUStats>? stats;
   int? ePosition;
 
-  SeasonUserEventFields(
-      {this.teamId,
-      this.message,
-      required this.statusReplies,
-      this.email,
-      required this.eStatus,
-      required this.isPlaying,
-      this.stats,
-      this.ePosition});
+  SeasonUserEventFields({
+    this.teamId,
+    this.message,
+    required this.statusReplies,
+    this.email,
+    required this.eStatus,
+    required this.isPlaying,
+    required this.isParticipant,
+    this.stats,
+    this.ePosition,
+  });
 
   SeasonUserEventFields.empty() {
     teamId = "";
@@ -28,6 +31,7 @@ class SeasonUserEventFields {
     email = "empty";
     eStatus = 0;
     isPlaying = true;
+    isParticipant = true;
     stats = [];
     ePosition = 0;
   }
@@ -39,6 +43,7 @@ class SeasonUserEventFields {
     email = user.email;
     eStatus = user.eStatus;
     isPlaying = user.isPlaying;
+    isParticipant = user.isParticipant;
     stats = user.stats;
     ePosition = user.ePosition;
   }
@@ -57,6 +62,7 @@ class SeasonUserEventFields {
     email = json['email'];
     eStatus = json['eStatus']?.round() ?? 0;
     isPlaying = json['isPlaying'] ?? true;
+    isParticipant = json['isParticipant'] ?? json['isPlaying'] ?? true;
     stats = SUStats.fromJson(json['stats']);
     ePosition = json['ePosition']?.round() ?? 0;
   }
@@ -69,6 +75,7 @@ class SeasonUserEventFields {
     data['email'] = email;
     data['eStatus'] = eStatus.round();
     data['isPlaying'] = isPlaying;
+    data['isParticipant'] = isParticipant;
     data['stats'] = stats?.map((v) => v.toJson()).toList();
     data['ePosition'] = ePosition;
     return data;

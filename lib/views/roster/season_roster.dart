@@ -23,6 +23,38 @@ class _SeasonRosterState extends State<SeasonRoster> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
+    return cv.AppBar(
+      title: "Roster",
+      isLarge: true,
+      refreshable: true,
+      leading: const MenuButton(),
+      actions: [
+        if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+          cv.BasicButton(
+            onTap: () {
+              cv.Navigate(
+                context,
+                SeasonUserEdit(
+                  team: dmodel.tus!.team,
+                  user: SeasonUser.empty(),
+                  teamId: dmodel.tus!.team.teamId,
+                  seasonId: dmodel.currentSeason!.seasonId,
+                  completion: () {},
+                  isAdd: true,
+                ),
+              );
+            },
+            child: Icon(Icons.add, color: dmodel.color),
+          ),
+      ],
+      onRefresh: () => _refreshAction(dmodel),
+      children: [
+        _body(context, dmodel),
+      ],
+    );
+  }
+
+  Widget _body(BuildContext context, DataModel dmodel) {
     if (dmodel.seasonUsers == null) {
       // show loading
       return cv.NativeList(
@@ -147,6 +179,15 @@ class _SeasonRosterState extends State<SeasonRoster> {
       });
     } else {
       print('already have roster');
+    }
+  }
+
+  Future<void> _refreshAction(DataModel dmodel) async {
+    if (dmodel.currentSeason != null) {
+      await dmodel.getSeasonRoster(
+          dmodel.tus!.team.teamId, dmodel.currentSeason!.seasonId, (users) {
+        dmodel.setSeasonUsers(users);
+      });
     }
   }
 }

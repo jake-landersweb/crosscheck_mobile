@@ -31,7 +31,7 @@ class _MenuHostState extends State<MenuHost> {
         menu(context, _menu, _size),
         // allow view to be in a container that can animate its relative position
         AnimatedPositioned(
-          duration: _animate
+          duration: _menu.animate
               ? const Duration(milliseconds: 800)
               : const Duration(milliseconds: 0),
           // custom curve
@@ -57,23 +57,13 @@ class _MenuHostState extends State<MenuHost> {
                   ),
                 ),
                 // keep view out of top safe area
-                child: cv.AppBar(
-                  title: _getTitle(_menu.selectedPage, dmodel),
-                  refreshable: _isRefreshable(_menu.selectedPage),
-                  onRefresh: () => _refreshAction(_menu.selectedPage, dmodel),
-                  actions: _actions(context, dmodel, _menu),
-                  isLarge: true,
-                  leading: _menuButton(context, _menu, _size),
-                  children: [
-                    _getView(_menu.selectedPage, dmodel),
-                  ],
-                ),
+                child: _getView(_menu.selectedPage, dmodel),
               ),
             ),
             // when the gesture starts
             onHorizontalDragStart: (value) {
               // turn off animation so dragging feels natural
-              _animate = false;
+              _menu.animate = false;
               // detext if a pan drag
               if (value.globalPosition.dx < 50) {
                 _menu.isPan = true;
@@ -113,7 +103,7 @@ class _MenuHostState extends State<MenuHost> {
             onHorizontalDragEnd: (value) {
               // allow menu movement to animate
               setState(() {
-                _animate = true;
+                _menu.animate = true;
               });
               // if menu was open or closed enough / velocity was high enough open / close it
               if (_menu.isOpen) {
@@ -141,74 +131,6 @@ class _MenuHostState extends State<MenuHost> {
           ),
         ),
       ],
-    );
-  }
-
-  List<Widget> _actions(
-      BuildContext context, DataModel dmodel, MenuModel _menu) {
-    return [
-      if (_menu.selectedPage == Pages.seasonRoster)
-        if (dmodel.currentSeasonUser != null &&
-            dmodel.currentSeasonUser!.isSeasonAdmin())
-          cv.BasicButton(
-            onTap: () {
-              cv.Navigate(
-                context,
-                SeasonUserEdit(
-                  team: dmodel.tus!.team,
-                  user: SeasonUser.empty(),
-                  teamId: dmodel.tus!.team.teamId,
-                  seasonId: dmodel.currentSeason!.seasonId,
-                  completion: () {},
-                  isAdd: true,
-                ),
-              );
-            },
-            child: Icon(Icons.add, color: dmodel.color),
-          ),
-      if (_menu.selectedPage == Pages.schedule)
-        if (dmodel.currentSeasonUser != null &&
-            dmodel.currentSeasonUser!.isSeasonAdmin())
-          cv.BasicButton(
-            onTap: () {
-              cv.Navigate(
-                context,
-                EventCreateEdit(
-                  isCreate: true,
-                  teamId: dmodel.tus!.team.teamId,
-                  seasonId: dmodel.currentSeason!.seasonId,
-                  completion: () {
-                    // reload the schedule
-                    dmodel.reloadHomePage(
-                      dmodel.tus!.team.teamId,
-                      dmodel.currentSeason!.seasonId,
-                      dmodel.user!.email,
-                      true,
-                    );
-                  },
-                ),
-              );
-            },
-            child: Icon(Icons.add, color: dmodel.color),
-          ),
-    ];
-  }
-
-  Widget _menuButton(BuildContext context, MenuModel _menu, Size _size) {
-    return cv.BasicButton(
-      child: Icon(_menu.isOpen ? Icons.close : Icons.menu,
-          color: Theme.of(context).colorScheme.primary),
-      // actionn of the button
-      onTap: () {
-        // allow for animation
-        _animate = true;
-        // toggle menu
-        if (_menu.isOpen) {
-          _menu.close();
-        } else {
-          _menu.open(_size);
-        }
-      },
     );
   }
 
@@ -283,115 +205,6 @@ class _MenuHostState extends State<MenuHost> {
       ),
     );
   }
-
-  // Widget menu2(BuildContext context, MenuModel _menu, Size _size) {
-  //   return Scaffold(
-  //     body: Stack(
-  //       children: [
-  //         Column(
-  //           // these two containers are to account for safe area spill over of the selected color
-  //           children: [
-  //             // for first menu item
-  //             Container(
-  //               color: _menu.selectedPage == Pages.team
-  //                   ? _selectedColor
-  //                   : _unselectedColor,
-  //               child: SizedBox(
-  //                   height: _size.height / 2,
-  //                   width: _size.width / _menu.sizeThreashold),
-  //             ),
-  //             // for last menu item
-  //             Container(
-  //               color: _menu.selectedPage == Pages.settings
-  //                   ? _selectedColor
-  //                   : _unselectedColor,
-  //               child: SizedBox(
-  //                   height: _size.height / 2,
-  //                   width: _size.width / _menu.sizeThreashold),
-  //             ),
-  //           ],
-  //         ),
-  //         // menu itself
-  //         ListView.builder(
-  //           // disable scroll
-  //           physics: const NeverScrollableScrollPhysics(),
-  //           itemCount: _menuItems.length,
-  //           itemBuilder: (context, _index) {
-  //             return Column(
-  //               children: [
-  //                 menuRow(_menuItems[_index], _menu, _size),
-  //                 // dividers for the views
-  //                 if (_index != _menuItems.length - 1)
-  //                   // my own custom divider that i like more
-  //                   const SizedBox(
-  //                     height: 1,
-  //                     width: double.infinity,
-  //                     child: ColoredBox(
-  //                       color: Color.fromRGBO(10, 10, 10, 1),
-  //                     ),
-  //                   ),
-  //               ],
-  //             );
-  //           },
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // menu row widget
-  // Widget menuRow(MenuItem _item, MenuModel _menu, Size _size) {
-  //   return Row(
-  //     children: [
-  //       // entire view is a button
-  //       cv.BasicButton(
-  //         onTap: () {
-  //           // set the selected page to this items page
-  //           setState(() {
-  //             _menu.selectedPage = _item.page;
-  //           });
-  //           // close the menu
-  //           Future.delayed(const Duration(milliseconds: 200), () {
-  //             _menu.close();
-  //           });
-  //         },
-  //         // styling for the button
-  //         child: Container(
-  //           color: _menu.selectedPage == _item.page
-  //               ? _selectedColor
-  //               : _unselectedColor,
-  //           height: _size.width / 3,
-  //           width: _size.width / _menu.sizeThreashold,
-  //           // center the entire view
-  //           child: Center(
-  //             // column so icon is on top of text
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               children: [
-  //                 // icon
-  //                 Padding(
-  //                   padding: const EdgeInsets.only(bottom: 10),
-  //                   child: Icon(_item.icon, color: Colors.white, size: 30),
-  //                 ),
-  //                 // title
-  //                 Text(
-  //                   _item.title,
-  //                   textAlign: TextAlign.center,
-  //                   style: const TextStyle(
-  //                       color: Colors.white,
-  //                       fontSize: 18,
-  //                       fontWeight: FontWeight.bold),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       // spacer so view is on left side of screen
-  //       const Spacer(),
-  //     ],
-  //   );
-  // }
 
   Widget _menuRow(
       BuildContext context, MenuItem _item, MenuModel _menu, Size _size) {
@@ -490,90 +303,6 @@ class _MenuHostState extends State<MenuHost> {
         return Text('Home');
     }
   }
-
-  // for getting title
-  String _getTitle(Pages _selection, DataModel dmodel) {
-    switch (_selection) {
-      case Pages.team:
-        if (dmodel.tus == null) {
-          return 'Team';
-        } else {
-          return dmodel.tus!.team.title;
-        }
-      case Pages.schedule:
-        return 'Schedule';
-      case Pages.calendar:
-        return 'Calendar';
-      case Pages.seasonRoster:
-        return 'Roster';
-      case Pages.seasonSettings:
-        return 'Season Select';
-      case Pages.settings:
-        return 'Settings';
-      default:
-        return 'Home';
-    }
-  }
-
-  // for checking if the view is refreshable or not
-  bool _isRefreshable(Pages _selection) {
-    switch (_selection) {
-      case Pages.team:
-        return false;
-      case Pages.schedule:
-        return true;
-      case Pages.calendar:
-        return true;
-      case Pages.seasonRoster:
-        return true;
-      case Pages.seasonSettings:
-        return false;
-      case Pages.settings:
-        return false;
-      default:
-        return false;
-    }
-  }
-
-  // for checking if the view is refreshable or not
-  Future<void> _refreshAction(Pages _selection, DataModel dmodel) async {
-    switch (_selection) {
-      case Pages.schedule:
-        if (dmodel.currentSeason != null) {
-          await dmodel.reloadHomePage(
-            dmodel.tus!.team.teamId,
-            dmodel.currentSeason!.seasonId,
-            dmodel.user!.email,
-            false,
-          );
-        }
-        break;
-      case Pages.calendar:
-        if (dmodel.currentSeason != null) {
-          await dmodel.scheduleGet(dmodel.tus!.team.teamId,
-              dmodel.currentSeason!.seasonId, dmodel.user!.email, (schedule) {
-            dmodel.setSchedule(schedule);
-            // invalidate old data
-            dmodel.seasonUsers = null;
-            // dmodel.teamRoster = null;
-          });
-        }
-        break;
-      case Pages.seasonRoster:
-        if (dmodel.currentSeason != null) {
-          await dmodel.getSeasonRoster(
-              dmodel.tus!.team.teamId, dmodel.currentSeason!.seasonId, (users) {
-            dmodel.setSeasonUsers(users);
-          });
-        }
-        break;
-      default:
-        print("error");
-        break;
-    }
-  }
-
-  bool _animate = false;
 
   final List<MenuItem> _menuItems = [
     // const MenuItem(

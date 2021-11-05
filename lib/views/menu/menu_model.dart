@@ -7,6 +7,8 @@ class MenuModel extends ChangeNotifier {
   bool isPan = false;
   bool isOpen = false;
 
+  bool animate = false;
+
   Pages selectedPage = Pages.schedule;
 
   final double sizeThreashold = 1.5;

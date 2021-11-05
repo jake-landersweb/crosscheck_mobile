@@ -258,4 +258,26 @@ extension EventCalls on DataModel {
       }
     });
   }
+
+  Future<void> updateEventUser(String teamId, String seasonId, String eventId,
+      String email, Map<String, dynamic> body, VoidCallback completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .put(
+            "/teams/$teamId/seasons/$seasonId/events/$eventId/users/$email/update",
+            headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue updating the event user", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully updated event user", false);
+        completion();
+      } else {
+        setError("There was an issue updating the event user", true);
+        print(response['message']);
+      }
+    });
+  }
 }

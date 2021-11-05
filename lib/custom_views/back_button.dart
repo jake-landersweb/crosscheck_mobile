@@ -4,9 +4,11 @@ import 'core/basic_button.dart' as cv;
 class BackButton extends StatelessWidget {
   final String title;
   final Color? color;
+  final bool showText;
   BackButton({
     this.title = 'Back',
     this.color,
+    this.showText = false,
   });
   @override
   Widget build(BuildContext context) {
@@ -21,14 +23,15 @@ class BackButton extends StatelessWidget {
             size: 30,
             color: color ?? Theme.of(context).colorScheme.primary,
           ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: color ?? Theme.of(context).colorScheme.primary,
+          if (showText)
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: color ?? Theme.of(context).colorScheme.primary,
+              ),
             ),
-          ),
         ],
       ),
     );

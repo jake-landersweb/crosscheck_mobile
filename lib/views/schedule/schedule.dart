@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/views/root.dart';
+import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom_views/root.dart' as cv;
@@ -21,6 +23,50 @@ class _ScheduleState extends State<Schedule> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
+    return cv.AppBar(
+      title: "",
+      refreshable: true,
+      areaHeight: 40,
+      leading: const MenuButton(),
+      onRefresh: () => _refreshAction(dmodel),
+      actions: [
+        if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+          cv.BasicButton(
+            onTap: () {
+              cv.Navigate(
+                context,
+                EventCreateEdit(
+                  isCreate: true,
+                  teamId: dmodel.tus!.team.teamId,
+                  seasonId: dmodel.currentSeason!.seasonId,
+                  completion: () {
+                    // reload the schedule
+                    dmodel.reloadHomePage(
+                      dmodel.tus!.team.teamId,
+                      dmodel.currentSeason!.seasonId,
+                      dmodel.user!.email,
+                      true,
+                    );
+                  },
+                ),
+              );
+            },
+            child: Icon(Icons.add, color: dmodel.color),
+          )
+        else if (dmodel.seasonUsers == null)
+          SizedBox(
+            height: 30,
+            width: 30,
+            child: cv.LoadingIndicator(),
+          )
+      ],
+      children: [
+        _body(context, dmodel),
+      ],
+    );
+  }
+
+  Widget _body(BuildContext context, DataModel dmodel) {
     if (dmodel.upcomingEvents != null) {
       return Column(
         children: [
@@ -92,6 +138,17 @@ class _ScheduleState extends State<Schedule> {
               child: Text("There are no seasons for this team."));
         }
       }
+    }
+  }
+
+  Future<void> _refreshAction(DataModel dmodel) async {
+    if (dmodel.currentSeason != null) {
+      await dmodel.reloadHomePage(
+        dmodel.tus!.team.teamId,
+        dmodel.currentSeason!.seasonId,
+        dmodel.user!.email,
+        false,
+      );
     }
   }
 }
