@@ -330,3 +330,239 @@ class _AppBarState extends State<AppBar> {
     );
   }
 }
+
+class AppBar2 extends StatefulWidget {
+  const AppBar2({
+    Key? key,
+    required this.title,
+    required this.children,
+    this.leading = const [],
+    this.trailing = const [],
+    this.isLarge = false,
+    this.scrollController,
+    this.itemBarPadding = const EdgeInsets.fromLTRB(15, 0, 15, 8),
+    this.refreshable = false,
+    this.onRefresh,
+    this.horizontalChildPadding = 15,
+    this.titlePadding = const EdgeInsets.fromLTRB(15, 0, 0, 15),
+  }) : super(key: key);
+
+  final String title;
+  final List<Widget> children;
+  final List<Widget> leading;
+  final List<Widget> trailing;
+  final bool isLarge;
+  final ScrollController? scrollController;
+  final EdgeInsets itemBarPadding;
+  final bool refreshable;
+  final AsyncCallback? onRefresh;
+  final double horizontalChildPadding;
+  final EdgeInsets titlePadding;
+
+  @override
+  _AppBar2State createState() => _AppBar2State();
+}
+
+class _AppBar2State extends State<AppBar2> {
+  final double _barHeight = 80;
+
+  // whether to show the shadow or not
+  bool _showElevation = false;
+
+  // controls title scale for interactive changing
+  double _titleScale = 1;
+
+  // whether to show the small title when large title is active
+  late bool _showSmallTitle;
+
+  // progress for loading
+  double _loadAmount = 0;
+
+  // for showing the loading indicator
+  bool _showLoad = false;
+
+  // for controlling scroll
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    // set up scroll controller
+    if (widget.scrollController == null) {
+      _scrollController = ScrollController();
+    } else {
+      _scrollController = widget.scrollController!;
+    }
+
+    // set up whether to show large title or not
+    if (widget.isLarge) {
+      _showSmallTitle = false;
+    } else {
+      _showSmallTitle = true;
+    }
+
+    // add logic to scroll controller
+    _scrollController.addListener(() {
+      print(_scrollController.offset);
+      if (_scrollController.offset > 0) {
+        // control showing small title when large
+        if (widget.isLarge) {
+          // set title scale to 1
+          if (_titleScale != 1) {
+            setState(() {
+              _titleScale = 1;
+            });
+          }
+          if (_scrollController.offset > 30) {
+            setState(() {
+              _showSmallTitle = true;
+            });
+          } else if (_scrollController.offset < 10) {
+            setState(() {
+              _showSmallTitle = false;
+            });
+          }
+        }
+        // show elevation indicators soon after scroll
+        if (_scrollController.offset > 5) {
+          setState(() {
+            _showElevation = true;
+          });
+        }
+      } else {
+        if (widget.isLarge) {
+          // increase title size when scrolling down
+          setState(() {
+            _titleScale = 1 + (-_scrollController.offset * 0.001);
+            _showSmallTitle =
+                false; // make sure title is hidden on faster scroll
+          });
+        }
+        // do not show elevation indicators
+        if (_showElevation) {
+          setState(() {
+            _showElevation = false;
+          });
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      bottom: false,
+      left: false,
+      right: false,
+      child: Stack(
+        children: [
+          _body(context),
+          _titleBar(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    return ListView(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+              top: _barHeight - MediaQuery.of(context).padding.top),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.isLarge)
+                // scalable large title
+                Padding(
+                  padding: widget.titlePadding,
+                  child: Transform.scale(
+                    alignment: Alignment.centerLeft,
+                    scale: _titleScale > 1 ? _titleScale : 1,
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 40,
+                      ),
+                    ),
+                  ),
+                ),
+              // all children passed
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: widget.horizontalChildPadding),
+                child: Column(
+                  children: widget.children,
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _titleBar(BuildContext context) {
+    return Column(
+      children: [
+        GlassContainer(
+          height: _barHeight,
+          width: double.infinity,
+          borderRadius: BorderRadius.circular(0),
+          backgroundColor:
+              MediaQuery.of(context).platformBrightness == Brightness.light
+                  ? ViewColors.lightList
+                  : Colors.black,
+          opacity: _showElevation ? 0.7 : 0,
+          blur: _showElevation ? 10 : 0,
+          child: Padding(
+            padding: widget.itemBarPadding,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Row(children: widget.leading),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Row(children: [
+                      const Spacer(),
+                      Row(children: widget.trailing),
+                    ]),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: AnimatedOpacity(
+                      opacity: _showSmallTitle ? 1 : 0,
+                      duration: const Duration(milliseconds: 150),
+                      child: Text(
+                        widget.title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                fit: StackFit.expand,
+              ),
+            ),
+          ),
+        ),
+        if (_showElevation)
+          const Divider(
+            height: 0.5,
+            indent: 0,
+            endIndent: 0,
+          ),
+      ],
+    );
+  }
+}
