@@ -23,13 +23,14 @@ class _ScheduleState extends State<Schedule> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
-      title: "",
-      refreshable: true,
-      areaHeight: 40,
-      leading: const MenuButton(),
+    return cv.AppBar2(
+      title: "Schedule",
+      isLarge: true,
+      // refreshable: true,
+      // areaHeight: 40,
+      leading: const [MenuButton()],
       onRefresh: () => _refreshAction(dmodel),
-      actions: [
+      trailing: [
         if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
           cv.BasicButton(
             onTap: () {
