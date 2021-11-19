@@ -43,28 +43,16 @@ class _EventDetailState extends State<EventDetail> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
-      title: "",
-      leading: cv.BackButton(color: dmodel.color),
-      actions: [_editButton(context, dmodel)],
+      title: widget.event.getTitle(),
+      isLarge: true,
+      color: dmodel.color,
+      leading: [cv.BackButton(color: dmodel.color)],
+      trailing: [_editButton(context, dmodel)],
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
       titlePadding: const EdgeInsets.only(left: 8),
       refreshable: true,
       onRefresh: () => _getUsers(dmodel),
-      color: dmodel.color,
       children: [
-        // title
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                widget.event.getTitle(),
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
         // event details
         _details(context),
         if (_users != null)

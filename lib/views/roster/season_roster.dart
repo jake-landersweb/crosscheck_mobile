@@ -27,8 +27,9 @@ class _SeasonRosterState extends State<SeasonRoster> {
       title: "Roster",
       isLarge: true,
       refreshable: true,
-      leading: const MenuButton(),
-      actions: [
+      color: dmodel.color,
+      leading: const [MenuButton()],
+      trailing: [
         if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
           cv.BasicButton(
             onTap: () {

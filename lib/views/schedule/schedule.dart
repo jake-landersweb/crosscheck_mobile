@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pnflutter/views/root.dart';
 import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 import '../../extras/root.dart';
 import '../../data/root.dart';
-import '../../extras/root.dart';
 import 'root.dart';
 
 class Schedule extends StatefulWidget {
@@ -23,11 +23,11 @@ class _ScheduleState extends State<Schedule> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar2(
+    return cv.AppBar(
       title: "Schedule",
-      isLarge: true,
+      // isLarge: true,
       refreshable: true,
-      // areaHeight: 40,
+      color: dmodel.color,
       leading: const [MenuButton()],
       onRefresh: () => _refreshAction(dmodel),
       trailing: [
@@ -56,8 +56,8 @@ class _ScheduleState extends State<Schedule> {
           )
         else if (dmodel.seasonUsers == null)
           SizedBox(
-            height: 30,
-            width: 30,
+            height: 25,
+            width: 25,
             child: cv.LoadingIndicator(),
           )
       ],
@@ -255,7 +255,7 @@ class _EventListState extends State<EventList> {
                           weekDayFromInt(eventDate.weekday),
                           eventDate.day,
                           dmodel,
-                          false,
+                          isSameDay(eventDate, DateTime.now()),
                         ),
                       ),
                     ),
@@ -332,7 +332,7 @@ class _EventListState extends State<EventList> {
                             weekDayFromInt(eventDate.weekday),
                             eventDate.day,
                             dmodel,
-                            false,
+                            isSameDay(eventDate, DateTime.now()),
                           ),
                         ),
                       ),

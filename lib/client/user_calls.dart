@@ -16,7 +16,6 @@ extension UserCalls on DataModel {
     if (response == null) {
       setError("There was an error fetching the user", true);
     } else if (response['status'] == 200) {
-      setSuccess("Logged in as ${response['body']['email']}", true);
       completion(User.fromJson(response['body']));
     } else {
       print(response['status']);
@@ -159,7 +158,6 @@ extension UserCalls on DataModel {
     if (response == null) {
       setError("There was an issue getting your information", true);
     } else if (response['status'] == 200) {
-      setSuccess("Logged in as $email", true);
       completion(UserTUS.fromJson(response['body']));
     } else {
       print(response['message']);

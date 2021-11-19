@@ -77,9 +77,9 @@ class _EventCreateEditState extends State<EventCreateEdit> {
         cv.AppBar(
           title: widget.isCreate ? "Create Event" : "Edit Event",
           isLarge: false,
-          leading: cv.BackButton(color: dmodel.color),
-          titlePadding: const EdgeInsets.only(left: 8),
-          actions: [if (!widget.isCreate) _editButton(context, dmodel)],
+          itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+          leading: [cv.BackButton(color: dmodel.color)],
+          trailing: [if (!widget.isCreate) _editButton(context, dmodel)],
           children: [
             if (widget.isCreate)
               Column(

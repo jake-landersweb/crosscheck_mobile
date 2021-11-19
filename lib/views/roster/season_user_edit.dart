@@ -83,10 +83,12 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: widget.isAdd ? "Add User" : "Edit User",
-      titlePadding: const EdgeInsets.only(left: 8),
-      leading: cv.BackButton(
-        color: dmodel.color,
-      ),
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+      leading: [
+        cv.BackButton(
+          color: dmodel.color,
+        ),
+      ],
       children: [
         const SizedBox(height: 16),
         cv.NativeList(

@@ -37,7 +37,7 @@ class _SettingsState extends State<Settings> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: "Settings",
-      leading: const MenuButton(),
+      leading: const [MenuButton()],
       children: [
         cv.Section(
           "Notifications",

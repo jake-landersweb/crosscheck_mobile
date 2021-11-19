@@ -36,7 +36,7 @@ class _CreateUserState extends State<CreateUser> {
           cv.AppBar(
             title: "Create Account",
             isLarge: true,
-            actions: [
+            trailing: [
               _loginButton(context),
             ],
             children: [
