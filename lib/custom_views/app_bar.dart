@@ -5,6 +5,7 @@ import 'package:flutter/painting.dart';
 import 'dart:ui';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:sprung/sprung.dart';
 
 import 'core/root.dart';
 
@@ -345,6 +346,7 @@ class AppBar2 extends StatefulWidget {
     this.onRefresh,
     this.horizontalChildPadding = 15,
     this.titlePadding = const EdgeInsets.fromLTRB(15, 0, 0, 15),
+    this.color = Colors.blue,
   }) : super(key: key);
 
   final String title;
@@ -358,6 +360,7 @@ class AppBar2 extends StatefulWidget {
   final AsyncCallback? onRefresh;
   final double horizontalChildPadding;
   final EdgeInsets titlePadding;
+  final Color color;
 
   @override
   _AppBar2State createState() => _AppBar2State();
@@ -381,6 +384,12 @@ class _AppBar2State extends State<AppBar2> {
   // for showing the loading indicator
   bool _showLoad = false;
 
+  // for determining if user scrolled enough to load
+  bool _shouldLoad = false;
+
+  // for getting amount to auto scroll by
+  double _scrollAmount = 0;
+
   // for controlling scroll
   late ScrollController _scrollController;
 
@@ -403,9 +412,8 @@ class _AppBar2State extends State<AppBar2> {
 
     // add logic to scroll controller
     _scrollController.addListener(() {
-      print(_scrollController.offset);
       if (_scrollController.offset > 0) {
-        // control showing small title when large
+        // for when title large
         if (widget.isLarge) {
           // set title scale to 1
           if (_titleScale != 1) {
@@ -413,15 +421,8 @@ class _AppBar2State extends State<AppBar2> {
               _titleScale = 1;
             });
           }
-          if (_scrollController.offset > 30) {
-            setState(() {
-              _showSmallTitle = true;
-            });
-          } else if (_scrollController.offset < 10) {
-            setState(() {
-              _showSmallTitle = false;
-            });
-          }
+        } else {
+          // for only when title is small
         }
         // show elevation indicators soon after scroll
         if (_scrollController.offset > 5) {
@@ -430,18 +431,46 @@ class _AppBar2State extends State<AppBar2> {
           });
         }
       } else {
+        // for when scroll is pulling down
+
+        // for when title lage only
         if (widget.isLarge) {
           // increase title size when scrolling down
-          setState(() {
-            _titleScale = 1 + (-_scrollController.offset * 0.001);
-            _showSmallTitle =
-                false; // make sure title is hidden on faster scroll
-          });
+          // only when not refreshable
+          if (!widget.refreshable) {
+            setState(() {
+              _titleScale = 1 + (-_scrollController.offset * 0.001);
+              _showSmallTitle =
+                  false; // make sure title is hidden on faster scroll
+            });
+          }
+        } else {
+          // for  only when title is small
         }
         // do not show elevation indicators
         if (_showElevation) {
           setState(() {
             _showElevation = false;
+          });
+        }
+      }
+      // global for scrolling up and down
+      if (_scrollController.offset > 30) {
+        setState(() {
+          _showSmallTitle = true;
+        });
+      } else if (_scrollController.offset < 10) {
+        setState(() {
+          _showSmallTitle = false;
+        });
+      }
+      if (widget.refreshable) {
+        setState(() {
+          _loadAmount = -0.2 + -(_scrollController.offset * 0.012);
+        });
+        if (_loadAmount >= 1) {
+          setState(() {
+            _shouldLoad = true;
           });
         }
       }
@@ -457,52 +486,88 @@ class _AppBar2State extends State<AppBar2> {
       right: false,
       child: Stack(
         children: [
-          _body(context),
+          AnimatedPadding(
+            duration: const Duration(milliseconds: 500),
+            curve: Sprung.overDamped,
+            padding: EdgeInsets.only(top: -_scrollAmount / 2),
+            child: _body(context),
+          ),
           _titleBar(context),
+          if (widget.refreshable)
+            if (widget.isLarge)
+              Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top +
+                        (Platform.isIOS ? 0 : 10)),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _shouldLoad
+                      ? const CircularProgressIndicator()
+                      : CircularProgressIndicator(
+                          value: _loadAmount,
+                          color: widget.color,
+                        ),
+                ),
+              ),
         ],
       ),
     );
   }
 
   Widget _body(BuildContext context) {
-    return ListView(
-      controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(),
-      children: [
-        Padding(
-          padding: EdgeInsets.only(
-              top: _barHeight - MediaQuery.of(context).padding.top),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.isLarge)
-                // scalable large title
-                Padding(
-                  padding: widget.titlePadding,
-                  child: Transform.scale(
-                    alignment: Alignment.centerLeft,
-                    scale: _titleScale > 1 ? _titleScale : 1,
-                    child: Text(
-                      widget.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 40,
+    return NotificationListener(
+      onNotification: (ScrollNotification notification) {
+        if (!notification.toString().contains("DragUpdateDetails")) {
+          // user released the screen, animate the position change
+          if (_scrollAmount == 0 && _shouldLoad) {
+            print("animating to padding");
+            setState(() {
+              _scrollAmount = _scrollController.offset;
+            });
+          }
+        }
+        return true;
+      },
+      child: ListView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+                top: _barHeight - MediaQuery.of(context).padding.top),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.isLarge)
+                  // scalable large title
+                  Padding(
+                    padding: widget.titlePadding,
+                    child: Transform.scale(
+                      alignment: Alignment.centerLeft,
+                      scale: _titleScale > 1 ? _titleScale : 1,
+                      child: Text(
+                        widget.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 40,
+                        ),
                       ),
                     ),
                   ),
+                // all children passed
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: widget.horizontalChildPadding,
+                  ),
+                  child: Column(
+                    children: widget.children,
+                  ),
                 ),
-              // all children passed
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: widget.horizontalChildPadding),
-                child: Column(
-                  children: widget.children,
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 

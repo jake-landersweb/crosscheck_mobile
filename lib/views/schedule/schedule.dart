@@ -26,7 +26,7 @@ class _ScheduleState extends State<Schedule> {
     return cv.AppBar2(
       title: "Schedule",
       isLarge: true,
-      // refreshable: true,
+      refreshable: true,
       // areaHeight: 40,
       leading: const [MenuButton()],
       onRefresh: () => _refreshAction(dmodel),
