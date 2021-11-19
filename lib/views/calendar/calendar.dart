@@ -50,7 +50,7 @@ class _CalendarState extends State<Calendar> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: "",
-      leading: const MenuButton(),
+      leading: const [MenuButton()],
       refreshable: true,
       onRefresh: () => _refreshAction(dmodel),
       children: [

@@ -29,11 +29,13 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: "",
-      titlePadding: const EdgeInsets.only(left: 8),
-      leading: cv.BackButton(
-        color: dmodel.color,
-      ),
-      actions: [_edit(context, dmodel)],
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+      leading: [
+        cv.BackButton(
+          color: dmodel.color,
+        ),
+      ],
+      trailing: [_edit(context, dmodel)],
       children: [
         UserAvatar(
           user: widget.user,

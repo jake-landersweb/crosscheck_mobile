@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:pnflutter/data/root.dart';
 
 class SeasonUserEventFields {

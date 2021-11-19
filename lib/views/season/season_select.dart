@@ -33,7 +33,7 @@ class _SeasonSelectState extends State<SeasonSelect> {
     return cv.AppBar(
       title: "Season Select",
       isLarge: true,
-      leading: const MenuButton(),
+      leading: const [MenuButton()],
       children: [
         cv.NativeList(
           itemPadding: kIsWeb
