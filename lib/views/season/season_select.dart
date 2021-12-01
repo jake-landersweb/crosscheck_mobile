@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pnflutter/extras/root.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:pnflutter/views/root.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,7 @@ class _SeasonSelectState extends State<SeasonSelect> {
     return cv.AppBar(
       title: "Season Select",
       isLarge: true,
+      backgroundColor: CustomColors.backgroundColor(context),
       leading: const [MenuButton()],
       children: [
         cv.NativeList(

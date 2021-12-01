@@ -66,7 +66,7 @@ class _NativeListState extends State<NativeList> {
   Widget iOSStyle(BuildContext context) {
     return Material(
       color: widget.color ?? ViewColors.cellColor(context),
-      shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(35)),
       child: Padding(
         padding: widget.padding,
         child: Column(

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom_views/root.dart' as cv;
@@ -36,6 +37,7 @@ class _CreateUserState extends State<CreateUser> {
           cv.AppBar(
             title: "Create Account",
             isLarge: true,
+            backgroundColor: CustomColors.backgroundColor(context),
             trailing: [
               _loginButton(context),
             ],

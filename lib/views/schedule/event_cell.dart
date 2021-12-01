@@ -59,8 +59,8 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   _toggleContainer() {
@@ -82,7 +82,9 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Material(
       color: CustomColors.cellColor(context),
-      shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      // color: Colors.red,
+      shape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(cornerRadius)),
       child: Stack(
         alignment: AlignmentDirectional.topEnd,
         children: [
@@ -126,7 +128,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
   Widget _header(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           flex: 85,
@@ -210,43 +212,117 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
         if (widget.event.hasAttendance) SizedBox(height: 8),
         if (widget.event.hasAttendance)
           if (widget.showStatus ?? true)
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // status select
-                EventUserStatus(
-                  status: widget.event.userStatus ?? 0,
-                  email: dmodel.user!.email,
-                  showTitle: false,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: cv.BasicLabel(label: "YOUR STATUS"),
+                ),
+                cv.BasicButton(
                   onTap: () {
                     // make sure this event has not passed
-                    if (stringToDate(widget.event.eDate)
-                            .isAfter(DateTime.now()) ||
-                        dmodel.currentSeasonUser!.isSeasonAdmin()) {
-                      cv.showFloatingSheet(
-                        context: context,
-                        builder: (context) {
-                          return StatusSelectSheet(
-                            email: widget.email,
-                            teamId: widget.teamId,
-                            seasonId: widget.seasonId,
-                            eventId: widget.event.eventId,
-                            isUpcoming: widget.isUpcoming,
-                          );
-                        },
-                      );
+                    if (dmodel.currentSeasonUser == null &&
+                        dmodel.seasonUsers != null) {
+                      dmodel.setError("You are not on this season", true);
+                    } else {
+                      if (stringToDate(widget.event.eDate)
+                              .isAfter(DateTime.now()) ||
+                          (dmodel.currentSeasonUser?.isSeasonAdmin() ??
+                              false)) {
+                        cv.showFloatingSheet(
+                          context: context,
+                          builder: (context) {
+                            return StatusSelectSheet(
+                              email: widget.email,
+                              teamId: widget.teamId,
+                              seasonId: widget.seasonId,
+                              eventId: widget.event.eventId,
+                              isUpcoming: widget.isUpcoming,
+                            );
+                          },
+                        );
+                      }
                     }
                   },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: dmodel.color,
+                      ),
+                    ),
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _statusCell(
+                          dmodel,
+                          Icons.cancel_outlined,
+                          widget.event.outCount,
+                          BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomLeft: Radius.circular(20),
+                          ),
+                          -1,
+                        ),
+                        Container(height: 40, width: 1, color: dmodel.color),
+                        _statusCell(dmodel, Icons.help_outline,
+                            widget.event.undecidedCount, null, 2),
+                        Container(height: 40, width: 1, color: dmodel.color),
+                        _statusCell(
+                          dmodel,
+                          Icons.check_circle_outline,
+                          widget.event.inCount,
+                          BorderRadius.only(
+                            topRight: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                          1,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                Spacer(),
-                // status indicators
-                _countCell(widget.event.inCount, Colors.green),
-                SizedBox(width: 16),
-                _countCell(widget.event.outCount, Colors.red),
-                SizedBox(width: 16),
-                _countCell(widget.event.undecidedCount,
-                    const Color.fromRGBO(235, 197, 9, 1)),
-                SizedBox(width: 16),
-                _countCell(widget.event.noResponse, Colors.grey),
+                // Row(
+                //   children: [
+                //     // status select
+                //     EventUserStatus(
+                //       status: widget.event.userStatus ?? 0,
+                //       email: dmodel.user!.email,
+                //       showTitle: false,
+                //       onTap: () {
+                // // make sure this event has not passed
+                // if (stringToDate(widget.event.eDate)
+                //         .isAfter(DateTime.now()) ||
+                //     dmodel.currentSeasonUser!.isSeasonAdmin()) {
+                //   cv.showFloatingSheet(
+                //     context: context,
+                //     builder: (context) {
+                //       return StatusSelectSheet(
+                //         email: widget.email,
+                //         teamId: widget.teamId,
+                //         seasonId: widget.seasonId,
+                //         eventId: widget.event.eventId,
+                //         isUpcoming: widget.isUpcoming,
+                //       );
+                //     },
+                //   );
+                // }
+                //       },
+                //     ),
+                //     Spacer(),
+                //     // status indicators
+                //     _countCell(widget.event.inCount, Colors.green),
+                //     SizedBox(width: 16),
+                //     _countCell(widget.event.outCount, Colors.red),
+                //     SizedBox(width: 16),
+                //     _countCell(widget.event.undecidedCount,
+                //         const Color.fromRGBO(235, 197, 9, 1)),
+                //     SizedBox(width: 16),
+                //     _countCell(widget.event.noResponse, Colors.grey),
+                //   ],
+                // ),
               ],
             ),
         // metadata
@@ -266,6 +342,42 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _statusCell(DataModel dmodel, IconData icon, int count,
+      BorderRadius? radius, int status) {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          color: widget.event.userStatus == status
+              ? dmodel.color
+              : Colors.transparent,
+        ),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "$count",
+                style: TextStyle(
+                  color: widget.event.userStatus == status
+                      ? Colors.white
+                      : dmodel.color,
+                ),
+              ),
+              SizedBox(width: 5),
+              Icon(
+                icon,
+                color: widget.event.userStatus == status
+                    ? Colors.white
+                    : dmodel.color,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

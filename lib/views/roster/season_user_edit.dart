@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
@@ -54,6 +55,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
   late bool _isPlaying;
   late Jersey _jersey;
   late int _seasonUserStatus;
+  late bool _isSub;
 
   @override
   void initState() {
@@ -76,6 +78,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
               int.tryParse(widget.user.seasonFields?.jerseyNumber ?? "0") ?? 0,
         );
     _seasonUserStatus = widget.user.seasonFields?.seasonUserStatus ?? 0;
+    _isSub = widget.user.seasonFields?.isSub ?? false;
   }
 
   @override
@@ -83,6 +86,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: widget.isAdd ? "Add User" : "Edit User",
+      backgroundColor: CustomColors.backgroundColor(context),
       itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
       leading: [
         cv.BackButton(
@@ -374,37 +378,66 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             },
           ),
           // user status
-          cv.BasicButton(
-            onTap: () {
-              cv.showFloatingSheet(
-                context: context,
-                builder: (context) {
-                  return UserStatusSelect(
-                      isAdd: widget.isAdd,
-                      onSelect: (value) {
-                        setState(() {
-                          _seasonUserStatus = value;
-                        });
-                      },
-                      initialSelection: _seasonUserStatus);
-                },
-              );
-            },
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Text(
-                    widget.user.seasonUserStatus(_seasonUserStatus),
-                    style: const TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18),
+          if (!widget.isAdd)
+            cv.BasicButton(
+              onTap: () {
+                cv.showFloatingSheet(
+                  context: context,
+                  builder: (context) {
+                    return UserStatusSelect(
+                        isAdd: widget.isAdd,
+                        onSelect: (value) {
+                          setState(() {
+                            _seasonUserStatus = value;
+                          });
+                        },
+                        initialSelection: _seasonUserStatus);
+                  },
+                );
+              },
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      widget.user.seasonUserStatus(_seasonUserStatus),
+                      style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18),
+                    ),
                   ),
+                  const Spacer(),
+                  Text(
+                    "User Status",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: CustomColors.textColor(context).withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            Row(
+              children: [
+                FlutterSwitch(
+                  value: _isSub,
+                  height: 25,
+                  width: 50,
+                  toggleSize: 18,
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  onToggle: (value) {
+                    setState(() {
+                      _isSub = value;
+                    });
+                  },
                 ),
                 const Spacer(),
+                const SizedBox(height: 40),
                 Text(
-                  "User Status",
+                  "Is A Sub",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -413,7 +446,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
                 ),
               ],
             ),
-          ),
         ],
       ),
     );
@@ -452,6 +484,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             "isPlaying": _isPlaying,
             "jersey": _jersey.toJson(),
             "seasonUserStatus": _seasonUserStatus,
+            "isSub": _isSub
           }
         };
         if (widget.isAdd) {

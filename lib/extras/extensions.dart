@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import 'root.dart';
 
+const double cornerRadius = 35;
+
 extension NullCheck on String? {
   bool isEmpty() {
     if (this == null) {
@@ -36,10 +38,10 @@ extension DateFormater on String {
 
 extension CustomColors on Colors {
   static Color lightList = const Color.fromRGBO(242, 242, 248, 1);
-  static Color subLightList = const Color.fromRGBO(232, 232, 240, 1);
+  // static Color subLightList = const Color.fromRGBO(232, 232, 240, 1);
 
-  static Color darkList = const Color.fromRGBO(28, 28, 30, 1);
-  static Color subDarkList = const Color.fromRGBO(38, 38, 40, 1);
+  static Color darkList = const Color.fromRGBO(48, 48, 50, 1);
+  // static Color subDarkList = const Color.fromRGBO(38, 38, 40, 1);
 
   static Color textColor(BuildContext context) {
     if (MediaQuery.of(context).platformBrightness == Brightness.light) {
@@ -62,6 +64,14 @@ extension CustomColors on Colors {
       return Colors.white;
     } else {
       return CustomColors.darkList;
+    }
+  }
+
+  static Color backgroundColor(BuildContext context) {
+    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+      return lightList;
+    } else {
+      return const Color.fromRGBO(30, 30, 33, 1);
     }
   }
 

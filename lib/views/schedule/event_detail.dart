@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 
@@ -43,8 +44,9 @@ class _EventDetailState extends State<EventDetail> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
-      title: widget.event.getTitle(),
-      isLarge: true,
+      title: "",
+      // isLarge: true,
+      backgroundColor: CustomColors.backgroundColor(context),
       color: dmodel.color,
       leading: [cv.BackButton(color: dmodel.color)],
       trailing: [_editButton(context, dmodel)],
@@ -53,6 +55,16 @@ class _EventDetailState extends State<EventDetail> {
       refreshable: true,
       onRefresh: () => _getUsers(dmodel),
       children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(widget.event.getTitle(),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 30),
+                  textAlign: TextAlign.start),
+            ),
+          ],
+        ),
         // event details
         _details(context),
         if (_users != null)

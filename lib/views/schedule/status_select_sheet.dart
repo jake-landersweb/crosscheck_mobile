@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../../extras/root.dart';
@@ -42,6 +43,8 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
 
   int _oldStatus = 0;
 
+  bool _isNoShow = false;
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +81,35 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                       onSelection: (value) {},
                     ),
             ),
+            // for managers if there wsa a no show
+            if (!widget.isUpcoming &&
+                ((dmodel.tus?.user.isTeamAdmin() ?? false) ||
+                    (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)))
+              Column(
+                children: [
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 25,
+                        child: FlutterSwitch(
+                          value: _isNoShow,
+                          height: 25,
+                          width: 50,
+                          toggleSize: 18,
+                          activeColor: dmodel.color,
+                          onToggle: (value) {
+                            setState(() {
+                              _isNoShow = value;
+                            });
+                          },
+                        ),
+                      ),
+                      const cv.BasicLabel(label: "   Was No Show"),
+                    ],
+                  ),
+                ],
+              ),
             const SizedBox(height: 16),
             cv.Section(
               "Leave a Note",
@@ -148,6 +180,9 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
     setState(() {
       _isLoading = true;
     });
+    if (_isNoShow) {
+      _status = -2;
+    }
     await dmodel.updateUserStatus(widget.teamId, widget.seasonId,
         widget.eventId, widget.email, _status, _message, () {
       // close the view
@@ -252,6 +287,9 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
         _oldStatus = status;
         _message = message;
         _isLoaded = true;
+        if (_status == -2) {
+          _isNoShow = true;
+        }
       });
     });
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:pnflutter/views/root.dart';
 import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
@@ -27,11 +28,13 @@ class _ScheduleState extends State<Schedule> {
       title: "Schedule",
       // isLarge: true,
       refreshable: true,
+      backgroundColor: CustomColors.backgroundColor(context),
       color: dmodel.color,
       leading: const [MenuButton()],
       onRefresh: () => _refreshAction(dmodel),
       trailing: [
-        if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+        if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
+            false || (dmodel.tus?.user.isTeamAdmin() ?? false))
           cv.BasicButton(
             onTap: () {
               cv.Navigate(

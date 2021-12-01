@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 import 'root.dart';
 import '../extras/root.dart';
 
+const Color dbg = Color.fromRGBO(30, 30, 33, 1);
+
 ThemeData darkTheme = ThemeData(
-  backgroundColor: Colors.black,
+  backgroundColor: dbg,
   fontFamily: fontFamily(),
   brightness: Brightness.dark,
-  canvasColor: Colors.black,
+  canvasColor: dbg,
   cardColor: CustomColors.darkList,
   cardTheme: CardTheme(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     color: CustomColors.darkList,
   ),
   colorScheme: ColorScheme(
-    background: Colors.black,
+    background: dbg,
     brightness: Brightness.dark,
     error: Colors.red,
     onBackground: Colors.white,
@@ -26,7 +28,7 @@ ThemeData darkTheme = ThemeData(
     primaryVariant: Colors.blue[900]!,
     secondary: Colors.black,
     secondaryVariant: Colors.orange[900]!,
-    surface: Colors.black,
+    surface: dbg,
   ),
   dividerColor: Colors.white.withOpacity(0.1),
   dividerTheme: const DividerThemeData(
@@ -34,5 +36,5 @@ ThemeData darkTheme = ThemeData(
     indent: 16,
     endIndent: 0,
   ),
-  scaffoldBackgroundColor: Colors.black, // scaffold base color
+  scaffoldBackgroundColor: dbg, // scaffold base color
 );
