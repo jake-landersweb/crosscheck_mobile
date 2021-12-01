@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 extension ViewColors on Colors {
   static Color lightList = const Color.fromRGBO(242, 242, 248, 1);
 
-  static Color darkList = const Color.fromRGBO(28, 28, 30, 1);
+  static Color darkList = const Color.fromRGBO(48, 48, 50, 1);
 
   static Color cellColor(BuildContext context) {
     if (MediaQuery.of(context).platformBrightness == Brightness.light) {

@@ -12,11 +12,10 @@ class BasicLabel extends StatelessWidget {
     return Text(
       label,
       style: TextStyle(
-        fontSize: 14,
         fontWeight: FontWeight.w500,
         color: Theme.of(context).brightness == Brightness.light
-            ? Colors.black.withOpacity(0.7)
-            : Colors.white.withOpacity(0.7),
+            ? Colors.black.withOpacity(0.5)
+            : Colors.white.withOpacity(0.5),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:provider/provider.dart';
 
 import '../root.dart';
@@ -30,6 +31,7 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
     return cv.AppBar(
       title: "",
       itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+      backgroundColor: CustomColors.backgroundColor(context),
       leading: [
         cv.BackButton(
           color: dmodel.color,
@@ -135,42 +137,49 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
           UserInfoCell(
               label: "Season Note",
               value: widget.user.seasonFields?.seasonUserNote ?? ""),
+          UserInfoCell(
+              label: "Is A Sub",
+              value: (widget.user.seasonFields?.isSub ?? false)
+                  ? "True"
+                  : "False"),
         ],
       ),
     );
   }
 
   Widget _edit(BuildContext context, DataModel dmodel) {
-    if (widget.user.email == dmodel.user!.email ||
-        dmodel.currentSeasonUser!.isSeasonAdmin()) {
-      return cv.BasicButton(
-        onTap: () {
-          cv.Navigate(
-            context,
-            SeasonUserEdit(
-              team: dmodel.tus!.team,
-              user: widget.user,
-              teamId: widget.teamId,
-              seasonId: widget.seasonId,
-              completion: () {
-                // do not need to fetch roster, getting returned value and replacing in list
-                // dmodel.getSeasonRoster(widget.teamId, widget.seasonId, (users) {
-                //   dmodel.setSeasonUsers(users);
-                // });
-                Navigator.of(context).pop();
-              },
-            ),
-          );
-        },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: dmodel.color,
+    Widget button = cv.BasicButton(
+      onTap: () {
+        cv.Navigate(
+          context,
+          SeasonUserEdit(
+            team: dmodel.tus!.team,
+            user: widget.user,
+            teamId: widget.teamId,
+            seasonId: widget.seasonId,
+            completion: () {
+              // do not need to fetch roster, getting returned value and replacing in list
+              // dmodel.getSeasonRoster(widget.teamId, widget.seasonId, (users) {
+              //   dmodel.setSeasonUsers(users);
+              // });
+              Navigator.of(context).pop();
+            },
           ),
+        );
+      },
+      child: Text(
+        "Edit",
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: dmodel.color,
         ),
-      );
+      ),
+    );
+    if (widget.user.email == dmodel.user!.email ||
+        (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) ||
+        (dmodel.tus!.user.isTeamAdmin())) {
+      return button;
     } else {
       return Container(height: 0);
     }

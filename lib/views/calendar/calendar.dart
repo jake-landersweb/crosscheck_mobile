@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -50,6 +51,7 @@ class _CalendarState extends State<Calendar> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: "",
+      backgroundColor: CustomColors.backgroundColor(context),
       leading: const [MenuButton()],
       refreshable: true,
       onRefresh: () => _refreshAction(dmodel),

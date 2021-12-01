@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:provider/provider.dart';
+import '../../extras/root.dart';
 
 import '../root.dart';
 import '../../client/root.dart';
@@ -26,6 +28,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
     return cv.AppBar(
       title: "Roster",
       isLarge: true,
+      backgroundColor: CustomColors.backgroundColor(context),
       refreshable: true,
       color: dmodel.color,
       leading: const [MenuButton()],
@@ -78,16 +81,17 @@ class _SeasonRosterState extends State<SeasonRoster> {
       } else {
         Iterable<SeasonUser> active = dmodel.seasonUsers!
             .where((element) => element.seasonFields!.seasonUserStatus == 1);
-        Iterable<SeasonUser> subs = dmodel.seasonUsers!
-            .where((element) => element.seasonFields!.seasonUserStatus == 2);
+        Iterable<SeasonUser> subs =
+            dmodel.seasonUsers!.where((element) => element.seasonFields!.isSub);
         Iterable<SeasonUser> recruits = dmodel.seasonUsers!.where((element) =>
-            element.seasonFields!.seasonUserStatus == 3 ||
-            element.seasonFields!.seasonUserStatus == 5);
+            element.seasonFields!.seasonUserStatus == 3 &&
+            !element.seasonFields!.isSub);
         Iterable<SeasonUser> invited = dmodel.seasonUsers!.where((element) =>
-            element.seasonFields!.seasonUserStatus == 4 ||
-            element.seasonFields!.seasonUserStatus == 6);
-        Iterable<SeasonUser> inactive = dmodel.seasonUsers!
-            .where((element) => element.seasonFields!.seasonUserStatus == -1);
+            element.seasonFields!.seasonUserStatus == 4 &&
+            !element.seasonFields!.isSub);
+        Iterable<SeasonUser> inactive = dmodel.seasonUsers!.where((element) =>
+            element.seasonFields!.seasonUserStatus == -1 &&
+            !element.seasonFields!.isSub);
         Iterable<SeasonUser> unknown = dmodel.seasonUsers!
             .where((element) => element.seasonFields!.seasonUserStatus == null);
         return Column(children: [

@@ -23,6 +23,7 @@ class AppBar extends StatefulWidget {
     this.childPadding = const EdgeInsets.fromLTRB(15, 15, 15, 48),
     this.titlePadding = const EdgeInsets.fromLTRB(15, 0, 0, 0),
     this.color = Colors.blue,
+    this.backgroundColor,
   }) : super(key: key);
 
   final String title;
@@ -37,6 +38,7 @@ class AppBar extends StatefulWidget {
   final EdgeInsets childPadding;
   final EdgeInsets titlePadding;
   final Color color;
+  final Color? backgroundColor;
 
   @override
   _AppBarState createState() => _AppBarState();
@@ -66,9 +68,16 @@ class _AppBarState extends State<AppBar> {
   // for controlling scroll
   late ScrollController _scrollController;
 
+  late String _title;
+
   @override
   void initState() {
     super.initState();
+    if (widget.title.length > 25) {
+      _title = widget.title.substring(0, 25) + "...";
+    } else {
+      _title = widget.title;
+    }
     // set up scroll controller
     if (widget.scrollController == null) {
       _scrollController = ScrollController();
@@ -86,6 +95,8 @@ class _AppBarState extends State<AppBar> {
     // add logic to scroll controller
     _scrollController.addListener(() {
       if (_scrollController.offset > 0) {
+        /** When scroll is pushing up */
+
         // for when title large
         if (widget.isLarge) {
           // set title scale to 1
@@ -94,40 +105,37 @@ class _AppBarState extends State<AppBar> {
               _titleScale = 1;
             });
           }
-        } else {
-          // for only when title is small
-        }
-        // show elevation indicators soon after scroll
-        if (_scrollController.offset > 5) {
-          setState(() {
-            _showElevation = true;
-          });
         }
       } else {
-        // for when scroll is pulling down
+        /** for when scroll is pulling down */
 
-        // for when title lage only
-        if (widget.isLarge) {
-          // increase title size when scrolling down
-          // only when not refreshable
-          if (!widget.refreshable) {
-            setState(() {
-              _titleScale = 1 + (-_scrollController.offset * 0.001);
-              _showSmallTitle =
-                  false; // make sure title is hidden on faster scroll
-            });
-          }
-        } else {
-          // for  only when title is small
-        }
-        // do not show elevation indicators
-        if (_showElevation) {
+        // increse the title scale when pulling down and
+        // FOR ONLY LARGE
+        // FOR NOT REFRESHABLE
+        if (widget.isLarge && !widget.refreshable) {
           setState(() {
-            _showElevation = false;
+            _titleScale = 1 + (-_scrollController.offset * 0.001);
+            _showSmallTitle =
+                false; // make sure title is hidden on faster scroll
           });
         }
       }
-      // global for scrolling up and down
+      /** EVERYTHING BELOW IS GLOBAL FOR SCROLLING UP AND DOWN */
+
+      // show elevation indicators soon after scroll
+      // FOR BOTH SMALL AND LARGE
+      if (_scrollController.offset > 10) {
+        setState(() {
+          _showElevation = true;
+        });
+      } else {
+        setState(() {
+          _showElevation = false;
+        });
+      }
+
+      // FOR CONTROLLING SHOWING AND HIDING SMALL TITLE
+      // ONLY WHEN LARGE
       if (widget.isLarge) {
         if (_scrollController.offset > 30) {
           setState(() {
@@ -139,14 +147,17 @@ class _AppBarState extends State<AppBar> {
           });
         }
       }
+
+      // ONLY FOR REFRESHABLE
       if (widget.refreshable) {
         setState(() {
           _loadAmount = -0.2 + -(_scrollController.offset * 0.012);
         });
+        // control if the view should reload when the user releases the screen
         if (_loadAmount >= 1) {
-          setState(() {
-            _shouldLoad = true;
-          });
+          _shouldLoad = true;
+        } else {
+          _shouldLoad = false;
         }
       }
     });
@@ -184,7 +195,7 @@ class _AppBarState extends State<AppBar> {
                       (Platform.isIOS ? 0 : 10)),
               child: Align(
                 alignment: Alignment.topCenter,
-                child: _shouldLoad && _scrollAmount != 0
+                child: _scrollAmount != 0
                     ? CircularProgressIndicator(color: widget.color)
                     : CircularProgressIndicator(
                         value: _loadAmount,
@@ -200,7 +211,8 @@ class _AppBarState extends State<AppBar> {
   Widget _body(BuildContext context) {
     return NotificationListener(
       onNotification: (ScrollNotification notification) {
-        if (!notification.toString().contains("DragUpdateDetails")) {
+        if (!notification.toString().contains("DragUpdateDetails") &&
+            !notification.toString().contains("direction")) {
           // user released the screen, animate the position change
           if (_scrollAmount == 0 && _shouldLoad) {
             setState(() {
@@ -229,7 +241,7 @@ class _AppBarState extends State<AppBar> {
                       alignment: Alignment.centerLeft,
                       scale: _titleScale > 1 ? _titleScale : 1,
                       child: Text(
-                        widget.title,
+                        _title,
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 40,
@@ -259,10 +271,10 @@ class _AppBarState extends State<AppBar> {
           height: _barHeight,
           width: double.infinity,
           borderRadius: BorderRadius.circular(0),
-          backgroundColor:
-              MediaQuery.of(context).platformBrightness == Brightness.light
+          backgroundColor: widget.backgroundColor ??
+              (MediaQuery.of(context).platformBrightness == Brightness.light
                   ? ViewColors.lightList
-                  : Colors.black,
+                  : Colors.black),
           opacity: _showElevation ? 0.7 : 0,
           blur: _showElevation ? 10 : 0,
           child: Padding(
@@ -288,7 +300,7 @@ class _AppBarState extends State<AppBar> {
                       opacity: _showSmallTitle ? 1 : 0,
                       duration: const Duration(milliseconds: 150),
                       child: Text(
-                        widget.title,
+                        _title,
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
@@ -302,12 +314,16 @@ class _AppBarState extends State<AppBar> {
             ),
           ),
         ),
-        if (_showElevation)
-          const Divider(
+        // for showing divider between bar and view
+        AnimatedOpacity(
+          opacity: _showElevation ? 1 : 0,
+          duration: const Duration(milliseconds: 300),
+          child: const Divider(
             height: 0.5,
             indent: 0,
             endIndent: 0,
           ),
+        ),
       ],
     );
   }

@@ -57,6 +57,8 @@ class _EventUserStatusState extends State<EventUserStatus> {
         return Colors.grey;
       case -1:
         return Colors.red;
+      case -2:
+        return const Color.fromRGBO(100, 30, 30, 0.7);
       case 1:
         return Colors.green;
       case 2:
@@ -72,6 +74,8 @@ class _EventUserStatusState extends State<EventUserStatus> {
         return "no info";
       case -1:
         return "not going";
+      case -2:
+        return "no show";
       case 1:
         return "going";
       case 2:
@@ -87,6 +91,8 @@ class _EventUserStatusState extends State<EventUserStatus> {
         return Icons.remove_circle_outline;
       case -1:
         return Icons.cancel;
+      case -2:
+        return Icons.block;
       case 1:
         return Icons.check_circle;
       case 2:

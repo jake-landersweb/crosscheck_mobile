@@ -57,6 +57,10 @@ class SeasonUserTeamFields {
     data['tPosition'] = tPosition;
     return data;
   }
+
+  bool isTeamAdmin() {
+    return teamUserType > 1 ? true : false;
+  }
 }
 
 class LastSeason {

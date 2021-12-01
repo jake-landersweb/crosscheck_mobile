@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/theme/root.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'dart:convert';
 
 import '../../../data/root.dart';
 import '../../../client/root.dart';
 import '../../../custom_views/root.dart' as cv;
 import '../../../extras/root.dart';
 import '../../shared/root.dart';
+import 'root.dart';
 
 class EventCreateEdit extends StatefulWidget {
   const EventCreateEdit({
@@ -77,6 +78,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
         cv.AppBar(
           title: widget.isCreate ? "Create Event" : "Edit Event",
           isLarge: false,
+          backgroundColor: CustomColors.backgroundColor(context),
           itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
           leading: [cv.BackButton(color: dmodel.color)],
           trailing: [if (!widget.isCreate) _editButton(context, dmodel)],
@@ -455,6 +457,30 @@ class _EventCreateEditState extends State<EventCreateEdit> {
             children: [for (var i in _users!) _userRow(context, dmodel, i)],
           ),
         ),
+        const SizedBox(height: 16),
+        cv.BasicButton(
+          onTap: () {
+            cv.Navigate(
+              context,
+              EventSubAdd(
+                  teamId: widget.teamId,
+                  seasonId: widget.seasonId,
+                  eventId: _event.eventId),
+            );
+          },
+          child: Material(
+            color: CustomColors.cellColor(context),
+            shape: ContinuousRectangleBorder(
+                borderRadius: BorderRadius.circular(cornerRadius)),
+            child: const SizedBox(
+              height: 50,
+              width: double.infinity,
+              child: Center(
+                child: Text("Add Sub"),
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 24),
       ],
     );
@@ -538,7 +564,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
     return cv.GlassContainer(
       height: 60,
       width: double.infinity,
-      backgroundColor: CustomColors.plainBackground(context),
+      backgroundColor: CustomColors.backgroundColor(context),
       opacity: 0.7,
       child: Column(
         children: [

@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
+import '../../extras/root.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
@@ -37,6 +38,7 @@ class _SettingsState extends State<Settings> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: "Settings",
+      backgroundColor: CustomColors.backgroundColor(context),
       leading: const [MenuButton()],
       children: [
         cv.Section(

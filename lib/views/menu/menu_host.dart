@@ -196,8 +196,8 @@ class _MenuHostState extends State<MenuHost> {
             _menuRow(context, _menuItems[2], _menu, _size),
             const SizedBox(height: 16),
             _menuRow(context, _menuItems[3], _menu, _size),
-            const SizedBox(height: 16),
-            _menuRow(context, _menuItems[4], _menu, _size),
+            // const SizedBox(height: 16),
+            // _menuRow(context, _menuItems[4], _menu, _size),
             // const SizedBox(height: 16),
             // _menuRow(context, _menuItems[5], _menu, _size),
           ],
@@ -315,11 +315,11 @@ class _MenuHostState extends State<MenuHost> {
       icon: Icons.list,
       page: Pages.schedule,
     ),
-    const MenuItem(
-      title: 'Calendar',
-      icon: Icons.calendar_today,
-      page: Pages.calendar,
-    ),
+    // const MenuItem(
+    //   title: 'Calendar',
+    //   icon: Icons.calendar_today,
+    //   page: Pages.calendar,
+    // ),
     const MenuItem(
       title: 'Roster',
       icon: Icons.person,
