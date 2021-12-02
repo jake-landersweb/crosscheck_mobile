@@ -17,14 +17,14 @@ class EventDetail extends StatefulWidget {
     required this.event,
     required this.email,
     required this.teamId,
-    required this.seasonId,
+    required this.season,
     required this.isUpcoming,
   }) : super(key: key);
 
   final Event event;
   final String email;
   final String teamId;
-  final String seasonId;
+  final Season season;
   final bool isUpcoming;
 
   @override
@@ -219,7 +219,7 @@ class _EventDetailState extends State<EventDetail> {
       children: [
         // user avatar cell
         Expanded(
-          child: UserCell(user: user),
+          child: UserCell(user: user, season: widget.season),
         ),
         // show a message icon if the user left a message
         if (!user.eventFields!.message.isEmpty())
@@ -235,7 +235,7 @@ class _EventDetailState extends State<EventDetail> {
                       event: widget.event,
                       email: widget.email,
                       teamId: widget.teamId,
-                      seasonId: widget.seasonId,
+                      season: widget.season,
                       completion: () {
                         // refresh user data when added reply
                         _getUsers(dmodel);
@@ -265,7 +265,7 @@ class _EventDetailState extends State<EventDetail> {
                     return StatusSelectSheet(
                       email: user.email,
                       teamId: widget.teamId,
-                      seasonId: widget.seasonId,
+                      seasonId: widget.season.seasonId,
                       eventId: widget.event.eventId,
                       isUpcoming: widget.isUpcoming,
                       completion: () {
@@ -291,13 +291,13 @@ class _EventDetailState extends State<EventDetail> {
             EventCreateEdit(
               isCreate: false,
               teamId: widget.teamId,
-              seasonId: widget.seasonId,
+              season: widget.season,
               initialEvent: widget.event,
               users: (_users != null) ? _users : null,
               completion: () {
                 // reload the schedule
                 dmodel.reloadHomePage(
-                    widget.teamId, widget.seasonId, widget.email, true);
+                    widget.teamId, widget.season.seasonId, widget.email, true);
                 // go back a screen
                 Navigator.of(context).pop();
               },
@@ -317,7 +317,8 @@ class _EventDetailState extends State<EventDetail> {
 
   Future<void> _getUsers(DataModel dmodel) async {
     await dmodel.getEventUsers(
-        widget.teamId, widget.seasonId, widget.event.eventId, (eventUsers) {
+        widget.teamId, widget.season.seasonId, widget.event.eventId,
+        (eventUsers) {
       List<SeasonUser> seasonUsers = List.from(dmodel.seasonUsers!);
 
       List<SeasonUser> users = [];

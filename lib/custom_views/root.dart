@@ -14,3 +14,4 @@ export 'segmented_picker.dart';
 export 'circle.dart';
 export 'number_picker.dart';
 export 'basic_label.dart';
+export 'labeled_cell.dart';

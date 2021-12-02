@@ -16,7 +16,7 @@ class EventCell extends StatefulWidget {
     required this.event,
     required this.email,
     required this.teamId,
-    required this.seasonId,
+    required this.season,
     this.isExpaded = false,
     this.showStatus,
     required this.isUpcoming,
@@ -25,7 +25,7 @@ class EventCell extends StatefulWidget {
   final Event event;
   final String email;
   final String teamId;
-  final String seasonId;
+  final Season season;
   final bool? isExpaded;
   final bool? showStatus;
   final bool isUpcoming;
@@ -141,7 +141,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                     event: widget.event,
                     email: widget.email,
                     teamId: widget.teamId,
-                    seasonId: widget.seasonId,
+                    season: widget.season,
                     isUpcoming: widget.isUpcoming,
                   ),
                 );
@@ -236,7 +236,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                             return StatusSelectSheet(
                               email: widget.email,
                               teamId: widget.teamId,
-                              seasonId: widget.seasonId,
+                              seasonId: widget.season.seasonId,
                               eventId: widget.event.eventId,
                               isUpcoming: widget.isUpcoming,
                             );

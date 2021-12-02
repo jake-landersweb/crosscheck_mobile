@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:pnflutter/theme/root.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 
-import '../root.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
+import '../menu/root.dart';
+import 'root.dart';
+import '../shared/root.dart';
 
 class SeasonRoster extends StatefulWidget {
-  const SeasonRoster({Key? key}) : super(key: key);
+  const SeasonRoster({
+    Key? key,
+    required this.team,
+    required this.season,
+    required this.seasonUsers,
+    this.currentSeasonUser,
+    required this.teamUser,
+    required this.isOnTeam,
+  }) : super(key: key);
+  final Team team;
+  final Season season;
+  final List<SeasonUser>? seasonUsers;
+  final SeasonUser? currentSeasonUser;
+  final SeasonUserTeamFields teamUser;
+  final bool isOnTeam;
 
   @override
   _SeasonRosterState createState() => _SeasonRosterState();
@@ -33,16 +48,17 @@ class _SeasonRosterState extends State<SeasonRoster> {
       color: dmodel.color,
       leading: const [MenuButton()],
       trailing: [
-        if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+        if (widget.currentSeasonUser?.isSeasonAdmin() ??
+            false || widget.teamUser.isTeamAdmin())
           cv.BasicButton(
             onTap: () {
               cv.Navigate(
                 context,
                 SeasonUserEdit(
-                  team: dmodel.tus!.team,
+                  team: widget.team,
                   user: SeasonUser.empty(),
-                  teamId: dmodel.tus!.team.teamId,
-                  seasonId: dmodel.currentSeason!.seasonId,
+                  teamId: widget.team.teamId,
+                  season: widget.season,
                   completion: () {},
                   isAdd: true,
                 ),
@@ -59,7 +75,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
-    if (dmodel.seasonUsers == null) {
+    if (widget.seasonUsers == null) {
       // show loading
       return cv.NativeList(
         children: [
@@ -67,7 +83,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
         ],
       );
     } else {
-      if (dmodel.seasonUsers!.isEmpty) {
+      if (widget.seasonUsers!.isEmpty) {
         return const Padding(
           padding: EdgeInsets.only(top: 20),
           child: Text(
@@ -79,20 +95,20 @@ class _SeasonRosterState extends State<SeasonRoster> {
           ),
         );
       } else {
-        Iterable<SeasonUser> active = dmodel.seasonUsers!
+        Iterable<SeasonUser> active = widget.seasonUsers!
             .where((element) => element.seasonFields!.seasonUserStatus == 1);
         Iterable<SeasonUser> subs =
-            dmodel.seasonUsers!.where((element) => element.seasonFields!.isSub);
-        Iterable<SeasonUser> recruits = dmodel.seasonUsers!.where((element) =>
+            widget.seasonUsers!.where((element) => element.seasonFields!.isSub);
+        Iterable<SeasonUser> recruits = widget.seasonUsers!.where((element) =>
             element.seasonFields!.seasonUserStatus == 3 &&
             !element.seasonFields!.isSub);
-        Iterable<SeasonUser> invited = dmodel.seasonUsers!.where((element) =>
+        Iterable<SeasonUser> invited = widget.seasonUsers!.where((element) =>
             element.seasonFields!.seasonUserStatus == 4 &&
             !element.seasonFields!.isSub);
-        Iterable<SeasonUser> inactive = dmodel.seasonUsers!.where((element) =>
+        Iterable<SeasonUser> inactive = widget.seasonUsers!.where((element) =>
             element.seasonFields!.seasonUserStatus == -1 &&
             !element.seasonFields!.isSub);
-        Iterable<SeasonUser> unknown = dmodel.seasonUsers!
+        Iterable<SeasonUser> unknown = widget.seasonUsers!
             .where((element) => element.seasonFields!.seasonUserStatus == null);
         return Column(children: [
           if (active.isNotEmpty)
@@ -163,6 +179,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
         cv.Navigate(
           context,
           SeasonUserDetail(
+            season: widget.season,
             user: user,
             teamId: dmodel.tus!.team.teamId,
             seasonId: dmodel.currentSeason!.seasonId,
@@ -172,15 +189,18 @@ class _SeasonRosterState extends State<SeasonRoster> {
       child: UserCell(
         user: user,
         isClickable: true,
+        season: widget.season,
       ),
     );
   }
 
   void _checkRoster(DataModel dmodel) async {
-    if (dmodel.seasonUsers == null) {
+    if (widget.seasonUsers == null) {
       await dmodel.getSeasonRoster(
-          dmodel.tus!.team.teamId, dmodel.currentSeason!.seasonId, (users) {
-        dmodel.setSeasonUsers(users);
+          dmodel.tus!.team.teamId, widget.season.seasonId, (users) {
+        if (widget.isOnTeam) {
+          dmodel.setSeasonUsers(users);
+        }
       });
     } else {
       print('already have roster');
@@ -188,11 +208,11 @@ class _SeasonRosterState extends State<SeasonRoster> {
   }
 
   Future<void> _refreshAction(DataModel dmodel) async {
-    if (dmodel.currentSeason != null) {
-      await dmodel.getSeasonRoster(
-          dmodel.tus!.team.teamId, dmodel.currentSeason!.seasonId, (users) {
+    await dmodel.getSeasonRoster(
+        dmodel.tus!.team.teamId, widget.season.seasonId, (users) {
+      if (widget.isOnTeam) {
         dmodel.setSeasonUsers(users);
-      });
-    }
+      }
+    });
   }
 }

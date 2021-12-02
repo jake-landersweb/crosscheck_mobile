@@ -30,4 +30,13 @@ class MenuModel extends ChangeNotifier {
   }
 }
 
-enum Pages { team, schedule, calendar, seasonRoster, seasonSettings, settings }
+enum Pages {
+  team,
+  schedule,
+  calendar,
+  seasonRoster,
+  seasonSettings,
+  settings,
+  teamAdmin,
+  seasonAdmin
+}

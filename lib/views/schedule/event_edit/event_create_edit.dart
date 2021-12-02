@@ -17,14 +17,14 @@ class EventCreateEdit extends StatefulWidget {
     required this.isCreate,
     this.initialEvent,
     required this.teamId,
-    required this.seasonId,
+    required this.season,
     required this.completion,
     this.users,
   }) : super(key: key);
   final bool isCreate;
   final Event? initialEvent;
   final String teamId;
-  final String seasonId;
+  final Season season;
   final VoidCallback completion;
   final List<SeasonUser>? users;
 
@@ -464,7 +464,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
               context,
               EventSubAdd(
                   teamId: widget.teamId,
-                  seasonId: widget.seasonId,
+                  seasonId: widget.season.seasonId,
                   eventId: _event.eventId),
             );
           },
@@ -491,7 +491,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
       children: [
         // user avatar cell
         Expanded(
-          child: UserCell(user: user),
+          child: UserCell(user: user, season: widget.season),
         ),
         // add toggle here
         FlutterSwitch(
@@ -677,12 +677,13 @@ class _EventCreateEditState extends State<EventCreateEdit> {
     _eventBody['homeTeam'] = homeTeam.toJson();
     _eventBody['awayTeam'] = awayTeam.toJson();
     _eventBody['teamId'] = widget.teamId;
-    _eventBody['seasonId'] = widget.seasonId;
+    _eventBody['seasonId'] = widget.season.seasonId;
     _eventBody['eLocation'] = _event.eventLocation?.name ?? "";
 
     // send the request
     if (widget.isCreate) {
-      await dmodel.createEvent(widget.teamId, widget.seasonId, _eventBody, () {
+      await dmodel
+          .createEvent(widget.teamId, widget.season.seasonId, _eventBody, () {
         setState(() {
           dmodel.schedule == null;
         });
@@ -692,7 +693,8 @@ class _EventCreateEditState extends State<EventCreateEdit> {
     } else {
       // update the event
       await dmodel.updateEvent(
-          widget.teamId, widget.seasonId, _event.eventId, _eventBody, () {
+          widget.teamId, widget.season.seasonId, _event.eventId, _eventBody,
+          () {
         Navigator.of(context).pop();
         widget.completion();
       });
@@ -700,7 +702,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
       // go through all edited users and change the status
       _changedUsers.forEach((key, value) {
         // update the event users
-        dmodel.updateEventUser(widget.teamId, widget.seasonId,
+        dmodel.updateEventUser(widget.teamId, widget.season.seasonId,
             widget.initialEvent!.eventId, key, {"isParticipant": value}, () {});
       });
     }

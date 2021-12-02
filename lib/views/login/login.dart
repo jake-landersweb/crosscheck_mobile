@@ -24,74 +24,71 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return Scaffold(
-      body: Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  CustomColors.fromHex("00a1ff"),
-                  CustomColors.fromHex("00ff8f")
-                ], // red to yellow
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ListView(
-              children: [
-                Opacity(
-                  opacity: 0.7,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Image.asset("assets/launch/x_white_centered.png"),
-                    ),
+    return Container(
+      // decoration: BoxDecoration(
+      //   gradient: LinearGradient(
+      //     begin: Alignment.topLeft,
+      //     end: Alignment.bottomRight,
+      //     colors: [
+      //       CustomColors.fromHex("00a1ff"),
+      //       CustomColors.fromHex("00ff8f")
+      //     ], // red to yellow
+      //   ),
+      // ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: CustomColors.backgroundColor(context),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              Opacity(
+                opacity: 0.5,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Image.asset("assets/launch/x.png"),
                   ),
                 ),
-                const SizedBox(height: 16),
-                cv.NativeList(
-                  children: _form(context),
-                ),
-                cv.Section('',
-                    child: cv.BasicButton(
-                      onTap: () {
-                        dismissKeyboard(context);
-                        if (_formIsValid(dmodel)) {
-                          _login(dmodel);
-                        }
-                      },
-                      child: cv.NativeList(
-                        itemPadding: EdgeInsets.all(0),
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: Center(
-                              child: _isLoading
-                                  ? cv.LoadingIndicator()
-                                  : Text(
-                                      "Login",
-                                      style: TextStyle(
-                                          color: CustomColors.fromHex("00a1ff"),
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 18),
-                                    ),
-                            ),
-                          ),
-                        ],
+              ),
+              const SizedBox(height: 16),
+              cv.NativeList(
+                children: _form(context),
+              ),
+              cv.Section(
+                '',
+                child: cv.BasicButton(
+                  onTap: () {
+                    dismissKeyboard(context);
+                    if (_formIsValid(dmodel)) {
+                      _login(dmodel);
+                    }
+                  },
+                  child: cv.NativeList(
+                    itemPadding: const EdgeInsets.all(0),
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: Center(
+                          child: _isLoading
+                              ? cv.LoadingIndicator()
+                              : Text(
+                                  "Login",
+                                  style: TextStyle(
+                                      color: CustomColors.fromHex("00a1ff"),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
+                        ),
                       ),
-                    ))
-              ],
-            ),
+                    ],
+                  ),
+                ),
+              )
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
