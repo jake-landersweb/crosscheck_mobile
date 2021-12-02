@@ -11,17 +11,19 @@ class UserCell extends StatelessWidget {
   const UserCell({
     Key? key,
     required this.user,
+    required this.season,
     this.isClickable,
   }) : super(key: key);
   final SeasonUser user;
   final bool? isClickable;
+  final Season season;
 
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Row(
       children: [
-        UserAvatar(user: user),
+        UserAvatar(user: user, season: season),
         const SizedBox(width: 16),
         Expanded(
           child: Row(
@@ -36,7 +38,7 @@ class UserCell extends StatelessWidget {
                 ),
               Expanded(
                 child: Text(
-                  user.name(),
+                  user.name(season.showNicknames),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
@@ -136,6 +138,7 @@ class UserAvatar extends StatelessWidget {
   const UserAvatar({
     Key? key,
     required this.user,
+    required this.season,
     this.diameter = 60,
     this.fontSize = 30,
   }) : super(key: key);
@@ -143,6 +146,7 @@ class UserAvatar extends StatelessWidget {
   final SeasonUser user;
   final double diameter;
   final double fontSize;
+  final Season season;
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +155,7 @@ class UserAvatar extends StatelessWidget {
       children: [
         cv.Circle(diameter, CustomColors.random(user.email)),
         Text(
-          user.name()[0].toUpperCase(),
+          user.name(season.showNicknames)[0].toUpperCase(),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,

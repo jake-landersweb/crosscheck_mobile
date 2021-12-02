@@ -11,11 +11,13 @@ import '../../extras/root.dart';
 class SeasonUserDetail extends StatefulWidget {
   const SeasonUserDetail({
     Key? key,
+    required this.season,
     required this.user,
     required this.teamId,
     required this.seasonId,
   }) : super(key: key);
 
+  final Season season;
   final SeasonUser user;
   final String teamId;
   final String seasonId;
@@ -43,10 +45,11 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
           user: widget.user,
           diameter: 100,
           fontSize: 50,
+          season: widget.season,
         ),
         const SizedBox(height: 16),
         Text(
-          widget.user.name(),
+          widget.user.name(widget.season.showNicknames),
           style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w700,
@@ -117,6 +120,10 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
       child: cv.NativeList(
         itemPadding: const EdgeInsets.all(16),
         children: [
+          if (!(widget.user.seasonFields?.nickname).isEmpty() &&
+              widget.season.showNicknames)
+            UserInfoCell(
+                label: "Nickname", value: widget.user.seasonFields!.nickname),
           UserInfoCell(label: "Stats", value: widget.user.getSeasonStats()),
           UserInfoCell(
               label: "Season Position",
@@ -156,7 +163,7 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
             team: dmodel.tus!.team,
             user: widget.user,
             teamId: widget.teamId,
-            seasonId: widget.seasonId,
+            season: widget.season,
             completion: () {
               // do not need to fetch roster, getting returned value and replacing in list
               // dmodel.getSeasonRoster(widget.teamId, widget.seasonId, (users) {

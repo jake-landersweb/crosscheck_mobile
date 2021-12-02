@@ -18,14 +18,14 @@ class SeasonUserEdit extends StatefulWidget {
     required this.team,
     required this.user,
     required this.teamId,
-    required this.seasonId,
+    required this.season,
     required this.completion,
     this.isAdd = false,
   }) : super(key: key);
   final Team team;
   final SeasonUser user;
   final String teamId;
-  final String seasonId;
+  final Season season;
   final VoidCallback completion;
   final bool isAdd;
 
@@ -56,6 +56,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
   late Jersey _jersey;
   late int _seasonUserStatus;
   late bool _isSub;
+  late String _nickname;
 
   @override
   void initState() {
@@ -79,6 +80,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
         );
     _seasonUserStatus = widget.user.seasonFields?.seasonUserStatus ?? 0;
     _isSub = widget.user.seasonFields?.isSub ?? false;
+    _nickname = widget.user.seasonFields?.nickname ?? "";
   }
 
   @override
@@ -275,6 +277,17 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
       "Season Fields",
       child: cv.NativeList(
         children: [
+          // nickname
+          if (widget.season.showNicknames)
+            _UserTextField(
+              label: "Nickname",
+              initialValue: _nickname,
+              onChanged: (value) {
+                setState(() {
+                  _nickname = value;
+                });
+              },
+            ),
           // season position
           if (widget.team.positions != null &&
               (widget.team.positions?.available.length ?? 0) < 4)
@@ -484,12 +497,13 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             "isPlaying": _isPlaying,
             "jersey": _jersey.toJson(),
             "seasonUserStatus": _seasonUserStatus,
-            "isSub": _isSub
+            "isSub": _isSub,
+            "nickname": _nickname,
           }
         };
         if (widget.isAdd) {
-          await dmodel.seasonUserAdd(widget.teamId, widget.seasonId, body,
-              (seasonUser) {
+          await dmodel.seasonUserAdd(
+              widget.teamId, widget.season.seasonId, body, (seasonUser) {
             // add returned user to the list
             dmodel.seasonUsers!.add(seasonUser);
             Navigator.of(context).pop();
@@ -497,7 +511,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           });
         } else {
           await dmodel.seasonUserUpdate(
-              widget.teamId, widget.seasonId, widget.user.email, body,
+              widget.teamId, widget.season.seasonId, widget.user.email, body,
               (seasonUser) {
             // replace the user with the returned one
             for (var i in dmodel.seasonUsers!) {

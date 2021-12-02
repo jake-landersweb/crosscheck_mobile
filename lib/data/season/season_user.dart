@@ -94,15 +94,31 @@ class SeasonUser extends Equatable {
   }
 
   // for team user name
-  String name() {
-    if (userFields == null) {
-      return email;
-    } else if (userFields!.firstName.isEmpty()) {
-      return email;
-    } else if (userFields!.lastName.isEmpty()) {
-      return userFields!.firstName!;
+  String name(bool showNicknames) {
+    if (showNicknames) {
+      if (!(seasonFields?.nickname).isEmpty()) {
+        return seasonFields!.nickname;
+      } else {
+        if (userFields == null) {
+          return email;
+        } else if (userFields!.firstName.isEmpty()) {
+          return email;
+        } else if (userFields!.lastName.isEmpty()) {
+          return userFields!.firstName!;
+        } else {
+          return "${userFields!.firstName} ${userFields!.lastName}";
+        }
+      }
     } else {
-      return "${userFields!.firstName} ${userFields!.lastName}";
+      if (userFields == null) {
+        return email;
+      } else if (userFields!.firstName.isEmpty()) {
+        return email;
+      } else if (userFields!.lastName.isEmpty()) {
+        return userFields!.firstName!;
+      } else {
+        return "${userFields!.firstName} ${userFields!.lastName}";
+      }
     }
   }
 

@@ -17,14 +17,14 @@ class UserCommentSheet extends StatefulWidget {
     required this.event,
     required this.email,
     required this.teamId,
-    required this.seasonId,
+    required this.season,
     required this.completion,
   }) : super(key: key);
   final SeasonUser user;
   final Event event;
   final String email;
   final String teamId;
-  final String seasonId;
+  final Season season;
   final VoidCallback completion;
 
   @override
@@ -189,10 +189,10 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
         });
         await dmodel.replyToStatus(
             widget.teamId,
-            widget.seasonId,
+            widget.season.seasonId,
             widget.event.eventId,
             widget.user.email,
-            dmodel.currentSeasonUser!.name(),
+            dmodel.currentSeasonUser!.name(widget.season.showNicknames),
             _reply,
             widget.event.getTitle(), () {
           setState(() {
@@ -200,7 +200,8 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
               StatusReply(
                 date: dateToString(DateTime.now()),
                 message: _reply,
-                name: dmodel.currentSeasonUser!.name(),
+                name:
+                    dmodel.currentSeasonUser!.name(widget.season.showNicknames),
               ),
             );
             _reply = "";

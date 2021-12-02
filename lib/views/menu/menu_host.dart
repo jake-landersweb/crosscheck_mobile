@@ -184,22 +184,18 @@ class _MenuHostState extends State<MenuHost> {
             const Divider(height: 0.5),
             const SizedBox(height: 16),
             _menuRow(context, _menuItems[0], _menu, _size),
-            // const SizedBox(height: 16),
-            // Divider(
-            //     color: CustomColors.textColor(context).withOpacity(0.2),
-            //     indent: 0,
-            //     endIndent: 0,
-            //     height: 0.5),
             const SizedBox(height: 16),
             _menuRow(context, _menuItems[1], _menu, _size),
             const SizedBox(height: 16),
             _menuRow(context, _menuItems[2], _menu, _size),
             const SizedBox(height: 16),
             _menuRow(context, _menuItems[3], _menu, _size),
-            // const SizedBox(height: 16),
-            // _menuRow(context, _menuItems[4], _menu, _size),
-            // const SizedBox(height: 16),
-            // _menuRow(context, _menuItems[5], _menu, _size),
+            const SizedBox(height: 16),
+            if (dmodel.tus?.user.isTeamAdmin() ?? false)
+              _menuRow(context, _menuItems[4], _menu, _size),
+            const SizedBox(height: 16),
+            if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+              _menuRow(context, _menuItems[5], _menu, _size),
           ],
         ),
       ),
@@ -274,19 +270,18 @@ class _MenuHostState extends State<MenuHost> {
       case Pages.schedule:
         return const Schedule();
       case Pages.calendar:
-        if (dmodel.tus == null) {
-          return Container();
-        } else {
-          return Calendar(
-              teamId: dmodel.tus!.team.teamId,
-              seasonId: dmodel.currentSeason!.seasonId,
-              email: dmodel.user!.email);
-        }
+        return Container();
       case Pages.seasonRoster:
         if (dmodel.currentSeason == null) {
           return Container();
         } else {
-          return const SeasonRoster();
+          return SeasonRoster(
+            team: dmodel.tus!.team,
+            season: dmodel.currentSeason!,
+            seasonUsers: dmodel.seasonUsers,
+            teamUser: dmodel.tus!.user,
+            isOnTeam: true,
+          );
         }
       case Pages.seasonSettings:
         if (dmodel.currentSeason == null) {
@@ -299,6 +294,10 @@ class _MenuHostState extends State<MenuHost> {
         }
       case Pages.settings:
         return const Settings();
+      case Pages.teamAdmin:
+        return TeamAdmin(team: dmodel.tus!.team, seasons: dmodel.tus!.seasons);
+      case Pages.seasonAdmin:
+        return SeasonAdmin(season: dmodel.currentSeason!);
       default:
         return Text('Home');
     }
@@ -315,11 +314,6 @@ class _MenuHostState extends State<MenuHost> {
       icon: Icons.list,
       page: Pages.schedule,
     ),
-    // const MenuItem(
-    //   title: 'Calendar',
-    //   icon: Icons.calendar_today,
-    //   page: Pages.calendar,
-    // ),
     const MenuItem(
       title: 'Roster',
       icon: Icons.person,
@@ -334,6 +328,16 @@ class _MenuHostState extends State<MenuHost> {
       title: 'Settings',
       icon: Icons.settings,
       page: Pages.settings,
+    ),
+    const MenuItem(
+      title: 'Team Admin',
+      icon: Icons.manage_accounts,
+      page: Pages.teamAdmin,
+    ),
+    const MenuItem(
+      title: 'Season Admin',
+      icon: Icons.admin_panel_settings,
+      page: Pages.seasonAdmin,
     ),
   ];
 }

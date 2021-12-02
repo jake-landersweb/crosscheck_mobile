@@ -5,7 +5,7 @@ import 'root.dart';
 class Team extends Equatable {
   late String teamId;
   late String title;
-  String? teamCode;
+  late String teamCode;
   String? teamNote;
   late TeamStyle teamStyle;
   late TeamInfo teamInfo;
@@ -14,7 +14,7 @@ class Team extends Equatable {
   Team({
     required this.teamId,
     required this.title,
-    this.teamCode,
+    required this.teamCode,
     this.teamNote,
     required this.teamStyle,
     required this.teamInfo,
@@ -48,7 +48,7 @@ class Team extends Equatable {
     Team team = Team(
       teamId: json['teamId'],
       title: json['title'],
-      teamCode: json['teamCode'],
+      teamCode: json['teamCode'] ?? "",
       teamNote: json['teamNote'],
       teamStyle: TeamStyle.fromJson(json['teamStyle']),
       teamInfo: TeamInfo.fromJson(json['teamInfo']),

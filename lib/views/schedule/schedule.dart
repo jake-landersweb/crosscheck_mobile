@@ -42,7 +42,7 @@ class _ScheduleState extends State<Schedule> {
                 EventCreateEdit(
                   isCreate: true,
                   teamId: dmodel.tus!.team.teamId,
-                  seasonId: dmodel.currentSeason!.seasonId,
+                  season: dmodel.currentSeason!,
                   completion: () {
                     // reload the schedule
                     dmodel.reloadHomePage(
@@ -268,7 +268,7 @@ class _EventListState extends State<EventList> {
                         event: widget.list[index],
                         email: dmodel.user!.email,
                         teamId: dmodel.tus!.team.teamId,
-                        seasonId: dmodel.currentSeason!.seasonId,
+                        season: dmodel.currentSeason!,
                         isExpaded: widget.isPrevious ? false : true,
                         isUpcoming: !widget.isPrevious,
                       ),
@@ -293,7 +293,7 @@ class _EventListState extends State<EventList> {
                       event: widget.list[index],
                       email: dmodel.user!.email,
                       teamId: dmodel.tus!.team.teamId,
-                      seasonId: dmodel.currentSeason!.seasonId,
+                      season: dmodel.currentSeason!,
                       isUpcoming: !widget.isPrevious,
                     ),
                   ),
@@ -345,7 +345,7 @@ class _EventListState extends State<EventList> {
                             event: widget.list[index],
                             email: dmodel.user!.email,
                             teamId: dmodel.tus!.team.teamId,
-                            seasonId: dmodel.currentSeason!.seasonId,
+                            season: dmodel.currentSeason!,
                             isUpcoming: !widget.isPrevious),
                       ),
                     ],
