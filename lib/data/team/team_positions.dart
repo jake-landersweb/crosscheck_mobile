@@ -1,17 +1,22 @@
 class TeamPositions {
-  late int defaultPosition;
-  late List<int> available;
+  late String defaultPosition;
+  late List<String> available;
+  late bool isActive;
 
   TeamPositions({
+    required this.isActive,
     required this.defaultPosition,
     required this.available,
   });
 
   TeamPositions.fromJson(Map<String, dynamic> json) {
-    defaultPosition = (json['defaultPosition'] ?? 0).round();
-    List<int> temp = [];
-    for (var i in json['available']) {
-      temp.add(i.round());
+    isActive = json['isActive'] ?? false;
+    defaultPosition = json['defaultPosition'] ?? "";
+    List<String> temp = [];
+    if (json.containsKey("available")) {
+      for (var i in json['available']) {
+        temp.add(i);
+      }
     }
     available = temp;
   }

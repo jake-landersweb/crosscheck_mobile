@@ -40,7 +40,11 @@ extension UserCalls on DataModel {
       setError("There was an error logging in", true);
     } else if (response['status'] == 200) {
       setSuccess("Successfully logged in", true);
-      completion(User.fromJson(response['body']));
+      try {
+        completion(User.fromJson(response['body']));
+      } catch (error) {
+        setError("There was an issue with your data. Contact Support", true);
+      }
     } else {
       print(response['message']);
       switch (response['status']) {

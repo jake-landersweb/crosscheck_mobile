@@ -4,10 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LoadingIndicator extends StatelessWidget {
+  final Color? color;
+
+  const LoadingIndicator({
+    this.color = null,
+  });
+
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator(color: color));
     } else {
       if (Platform.isIOS) {
         return const Center(child: CupertinoActivityIndicator());

@@ -66,4 +66,42 @@ extension TeamCalls on DataModel {
       }
     });
   }
+
+  Future<void> createTeam(
+      Map<String, dynamic> body, Function(Team) completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .post("/createTeam", headers, jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue creating the team", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully created your team!", true);
+        completion(Team.fromJson(response['body']));
+      } else {
+        setError("There was an issue creating the team", true);
+        print(response['message']);
+      }
+    });
+  }
+
+  Future<void> updateTeam(
+      String teamId, Map<String, dynamic> body, VoidCallback completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .put("/teams/$teamId/update", headers, jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue updating the team", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully updated your team", true);
+        completion();
+      } else {
+        setError("There was an issue updating the team", true);
+        print(response['message']);
+      }
+    });
+  }
 }

@@ -22,12 +22,8 @@ class _DashboardState extends State<Dashboard> {
       providers: [ChangeNotifierProvider(create: (context) => MenuModel())],
       child: Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: Theme.of(context).colorScheme.copyWith(
-                primary: (dmodel.tus?.team.teamStyle.color != null &&
-                        dmodel.tus?.team.teamStyle.color != "")
-                    ? CustomColors.fromHex(dmodel.tus!.team.teamStyle.color!)
-                    : Colors.blue,
-              ),
+          colorScheme:
+              Theme.of(context).colorScheme.copyWith(primary: dmodel.color),
         ),
         child: MenuHost(),
       ),
