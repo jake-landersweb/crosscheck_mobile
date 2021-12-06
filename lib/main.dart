@@ -84,8 +84,9 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
       case AppLifecycleState.resumed:
         print("app in resumed");
         // reload the data if app was in background for overg 5 minutes
-        if (_closedTime!
-            .isBefore(DateTime.now().subtract(const Duration(minutes: 5)))) {
+        if (_closedTime?.isBefore(
+                DateTime.now().subtract(const Duration(minutes: 5))) ??
+            false) {
           _resetData(context.read<DataModel>());
         }
         break;

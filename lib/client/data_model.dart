@@ -144,9 +144,10 @@ class DataModel extends ChangeNotifier {
     this.tus = tus;
     prefs.setString("teamId", tus.team.teamId);
     print("set tus");
+    noTeam = false;
     // set the color
-    if (tus.team.teamStyle.color != null) {
-      color = CustomColors.fromHex(tus.team.teamStyle.color!);
+    if (tus.team.color != "") {
+      color = CustomColors.fromHex(tus.team.color);
     }
     if (tus.seasons.isNotEmpty) {
       // check for saved seasonId

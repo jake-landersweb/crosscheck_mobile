@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pnflutter/client/api_helpers.dart';
+import 'package:pnflutter/views/root.dart';
 import 'package:provider/provider.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
@@ -31,56 +31,54 @@ class _TeamAdminState extends State<TeamAdmin> {
       // refreshable: true,
       color: dmodel.color,
       leading: const [MenuButton()],
-      // trailing: [
-
-      // ],
+      trailing: [_edit(context, dmodel)],
       // onRefresh: () => _refreshAction(dmodel),
-      children: [
-        cv.Section(
-          "Basic Information",
-          child: _body(context, dmodel),
-        ),
-        _seasons(context, dmodel),
-        if (widget.team.positions != null)
-          cv.Section("Available Positions", child: _teamPositions(context)),
-      ],
+      children: [_body(context, dmodel)],
     );
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
-    return Column(children: [
-      cv.NativeList(
-        children: [
-          cv.LabeledCell(
-            label: "Title",
-            value: widget.team.title,
+    return Column(
+      children: [
+        cv.Section(
+          "Basic Info",
+          child: cv.NativeList(
+            children: [
+              cv.LabeledCell(
+                label: "Title",
+                value: widget.team.title,
+              ),
+              cv.LabeledCell(
+                label: "Team Code",
+                value: widget.team.teamCode,
+              ),
+              cv.LabeledCell(
+                label: "Team Id",
+                value: widget.team.teamId,
+              ),
+              if (widget.team.color != "")
+                cv.LabeledCell(
+                  label: "Color",
+                  value: widget.team.color,
+                ),
+              if (widget.team.image != "")
+                cv.LabeledCell(
+                  label: "Image",
+                  value: widget.team.image,
+                ),
+              cv.LabeledCell(
+                label: "Is Light",
+                value: widget.team.isLight ? "True" : "False",
+              ),
+            ],
           ),
-          cv.LabeledCell(
-            label: "Team Code",
-            value: widget.team.teamCode,
-          ),
-          cv.LabeledCell(
-            label: "Team Id",
-            value: widget.team.teamId,
-          ),
-          if (!widget.team.teamStyle.color.isEmpty())
-            cv.LabeledCell(
-              label: "Color",
-              value: widget.team.teamStyle.color!,
-            ),
-          if (!widget.team.teamStyle.image.isEmpty())
-            cv.LabeledCell(
-              label: "Image",
-              value: widget.team.teamStyle.image!,
-            ),
-          if (widget.team.teamStyle.isLight != null)
-            cv.LabeledCell(
-              label: "Is Light",
-              value: widget.team.teamStyle.isLight! ? "True" : "False",
-            ),
-        ],
-      ),
-    ]);
+        ),
+        _seasons(context, dmodel),
+        if (widget.team.positions.isActive) _teamPositions(context, dmodel),
+        if (widget.team.customFields.isNotEmpty) _customFields(context),
+        if (widget.team.customUserFields.isNotEmpty) _customUserFields(context),
+      ],
+    );
   }
 
   Widget _seasons(BuildContext context, DataModel dmodel) {
@@ -90,60 +88,94 @@ class _TeamAdminState extends State<TeamAdmin> {
         children: [
           cv.NativeList(
             children: [
-              for (var i in widget.seasons)
-                cv.LabeledCell(
-                  label: i.status(),
-                  value: i.title,
-                ),
+              if (widget.seasons.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Center(
+                    child: Text("There are no seasons"),
+                  ),
+                )
+              else
+                for (var i in widget.seasons)
+                  cv.LabeledCell(
+                    label: i.status(),
+                    value: i.title,
+                  ),
             ],
-          ),
-          const SizedBox(height: 16),
-          cv.BasicButton(
-            onTap: () {},
-            child: cv.NativeList(
-              itemPadding: const EdgeInsets.all(0),
-              children: [
-                SizedBox(
-                    height: 50,
-                    child: Center(
-                      child: Text(
-                        "Create Season",
-                        style: TextStyle(
-                            color: dmodel.color,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18),
-                      ),
-                    ))
-              ],
-            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _teamPositions(BuildContext context) {
+  Widget _teamPositions(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
         cv.NativeList(
           children: [
             cv.LabeledCell(
               label: "Default",
-              value: getPostion(widget.team.positions!.defaultPosition),
+              value: widget.team.positions.defaultPosition,
             ),
           ],
         ),
         const SizedBox(height: 16),
         cv.NativeList(
           children: [
-            for (var position in widget.team.positions!.available)
+            for (var position in widget.team.positions.available)
               cv.LabeledCell(
                 label: "",
-                value: getPostion(position),
+                value: position,
               ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _customFields(BuildContext context) {
+    return cv.Section(
+      "Custom Fields",
+      child: cv.NativeList(
+        children: [
+          for (var i in widget.team.customFields)
+            cv.LabeledCell(
+              label: i.title,
+              value: i.getValue(),
+            )
+        ],
+      ),
+    );
+  }
+
+  Widget _customUserFields(BuildContext context) {
+    return cv.Section(
+      "Custom User Fields",
+      child: cv.NativeList(
+        children: [
+          for (var i in widget.team.customUserFields)
+            cv.LabeledCell(
+              label: i.title,
+              value: "Default: ${i.defaultValue}",
+            )
+        ],
+      ),
+    );
+  }
+
+  Widget _edit(BuildContext context, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        cv.Navigate(context, EditTeam(team: widget.team));
+      },
+      child: Text(
+        "Edit",
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 18,
+          color: dmodel.color,
+        ),
+      ),
     );
   }
 }

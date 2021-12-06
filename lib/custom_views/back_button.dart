@@ -5,10 +5,12 @@ class BackButton extends StatelessWidget {
   final String title;
   final Color? color;
   final bool showText;
+  final bool showIcon;
   BackButton({
     this.title = 'Back',
     this.color,
     this.showText = false,
+    this.showIcon = true,
   });
   @override
   Widget build(BuildContext context) {
@@ -18,17 +20,18 @@ class BackButton extends StatelessWidget {
       },
       child: Row(
         children: [
-          Icon(
-            Icons.chevron_left,
-            size: 30,
-            color: color ?? Theme.of(context).colorScheme.primary,
-          ),
+          if (showIcon)
+            Icon(
+              Icons.chevron_left,
+              size: 30,
+              color: color ?? Theme.of(context).colorScheme.primary,
+            ),
           if (showText)
             Text(
               title,
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
                 color: color ?? Theme.of(context).colorScheme.primary,
               ),
             ),

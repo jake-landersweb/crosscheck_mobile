@@ -114,7 +114,7 @@ class _AppBarState extends State<AppBar> {
         // FOR NOT REFRESHABLE
         if (widget.isLarge && !widget.refreshable) {
           setState(() {
-            _titleScale = 1 + (-_scrollController.offset * 0.001);
+            _titleScale = 1 + (-_scrollController.offset * 0.0005);
             _showSmallTitle =
                 false; // make sure title is hidden on faster scroll
           });

@@ -1,19 +1,21 @@
+import '../root.dart';
+
 class SeasonUserTeamFields {
   String? teamUserNote;
   String? orgId;
   LastSeason? lastSeason;
   late int teamUserType;
   // new fields
-  int? rank;
-  int? tPosition;
+  late String pos;
+  late List<CustomField> customFields;
 
   SeasonUserTeamFields({
     this.teamUserNote,
     this.orgId,
     this.lastSeason,
     required this.teamUserType,
-    this.rank,
-    this.tPosition,
+    required this.pos,
+    required this.customFields,
   });
 
   SeasonUserTeamFields.empty() {
@@ -21,8 +23,8 @@ class SeasonUserTeamFields {
     orgId = "";
     lastSeason = LastSeason.empty();
     teamUserType = 1;
-    rank = 0;
-    tPosition = 0;
+    pos = "";
+    customFields = [];
   }
 
   SeasonUserTeamFields.of(SeasonUserTeamFields user) {
@@ -30,8 +32,8 @@ class SeasonUserTeamFields {
     orgId = user.orgId;
     lastSeason = user.lastSeason;
     teamUserType = user.teamUserType;
-    rank = user.rank;
-    tPosition = user.tPosition;
+    pos = user.pos;
+    customFields = user.customFields;
   }
 
   SeasonUserTeamFields.fromJson(Map<String, dynamic> json) {
@@ -41,8 +43,12 @@ class SeasonUserTeamFields {
         ? LastSeason.fromJson(json['lastSeason'])
         : null;
     teamUserType = json['teamUserType']?.round();
-    rank = json['rank']?.round();
-    tPosition = json['tPosition']?.round();
+    pos = json['pos'] ?? "";
+    customFields = [];
+    if (json.containsKey("customFields")) {
+      json['customFields']
+          .forEach((v) => customFields.add(CustomField.fromJson(v)));
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -53,8 +59,7 @@ class SeasonUserTeamFields {
       data['lastSeason'] = lastSeason!.toJson();
     }
     data['teamUserType'] = teamUserType;
-    data['rank'] = rank;
-    data['tPosition'] = tPosition;
+
     return data;
   }
 

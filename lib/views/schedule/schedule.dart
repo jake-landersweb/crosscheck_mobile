@@ -10,6 +10,7 @@ import '../../client/root.dart';
 import '../../extras/root.dart';
 import '../../data/root.dart';
 import 'root.dart';
+import '../team/root.dart';
 
 class Schedule extends StatefulWidget {
   const Schedule({Key? key}) : super(key: key);
@@ -34,7 +35,9 @@ class _ScheduleState extends State<Schedule> {
       onRefresh: () => _refreshAction(dmodel),
       trailing: [
         if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
-            false || (dmodel.tus?.user.isTeamAdmin() ?? false))
+            false ||
+                (dmodel.tus?.user.isTeamAdmin() ?? false) &&
+                    dmodel.currentSeason != null)
           cv.BasicButton(
             onTap: () {
               cv.Navigate(
@@ -57,8 +60,9 @@ class _ScheduleState extends State<Schedule> {
             },
             child: Icon(Icons.add, color: dmodel.color),
           )
-        else if (dmodel.seasonUsers == null)
-          SizedBox(
+        else if (dmodel.seasonUsers == null &&
+            !(dmodel.noTeam || dmodel.noSeason))
+          const SizedBox(
             height: 25,
             width: 25,
             child: cv.LoadingIndicator(),
@@ -136,10 +140,9 @@ class _ScheduleState extends State<Schedule> {
         return const ScheduleLoading();
       } else {
         if (dmodel.noTeam) {
-          return const Center(child: Text("You are not a member of any teams"));
+          return const NoTeam();
         } else {
-          return const Center(
-              child: Text("There are no seasons for this team."));
+          return const NoSeason();
         }
       }
     }

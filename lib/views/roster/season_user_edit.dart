@@ -65,7 +65,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     _firstName = widget.user.userFields?.firstName ?? "";
     _lastName = widget.user.userFields?.lastName ?? "";
     _phone = widget.user.userFields?.phone ?? "";
-    _tPosition = widget.user.teamFields?.tPosition ?? 0;
+    // _tPosition = widget.user.teamFields?.tPosition ?? 0;
     _teamUserNote = widget.user.teamFields?.teamUserNote ?? "";
     _teamUserType = widget.user.teamFields?.teamUserType ?? 0;
     _sPosition = widget.user.seasonFields?.sPosition ?? 0;
@@ -192,41 +192,41 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
       child: cv.NativeList(
         children: [
           // team position
-          if (widget.team.positions != null &&
-              (widget.team.positions?.available.length ?? 0) < 4)
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                  child: Row(
-                    children: [
-                      const Spacer(),
-                      Text(
-                        "Team Position",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              CustomColors.textColor(context).withOpacity(0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                cv.SegmentedPicker<int>(
-                  onSelection: (value) {
-                    setState(() {
-                      _tPosition = value;
-                    });
-                  },
-                  titles: widget.team.positions!.available
-                      .map((e) => widget.user.getPosition(e.round()))
-                      .toList(),
-                  initialSelection: _tPosition,
-                  selections: widget.team.positions!.available,
-                ),
-              ],
-            ),
+          // if (widget.team.positions != null &&
+          //     (widget.team.positions?.available.length ?? 0) < 4)
+          //   Column(
+          //     children: [
+          //       Padding(
+          //         padding: const EdgeInsets.symmetric(vertical: 6.0),
+          //         child: Row(
+          //           children: [
+          //             const Spacer(),
+          //             Text(
+          //               "Team Position",
+          //               style: TextStyle(
+          //                 fontSize: 14,
+          //                 fontWeight: FontWeight.w500,
+          //                 color:
+          //                     CustomColors.textColor(context).withOpacity(0.7),
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //       cv.SegmentedPicker<int>(
+          //         onSelection: (value) {
+          //           setState(() {
+          //             _tPosition = value;
+          //           });
+          //         },
+          //         titles: widget.team.positions!.available
+          //             .map((e) => widget.user.getPosition(e.round()))
+          //             .toList(),
+          //         initialSelection: _tPosition,
+          //         selections: widget.team.positions!.available,
+          //       ),
+          //     ],
+          //   ),
           // team note
           _UserTextField(
             label: "Team Note",
@@ -289,41 +289,41 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
               },
             ),
           // season position
-          if (widget.team.positions != null &&
-              (widget.team.positions?.available.length ?? 0) < 4)
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                  child: Row(
-                    children: [
-                      const Spacer(),
-                      Text(
-                        "Season Position",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              CustomColors.textColor(context).withOpacity(0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                cv.SegmentedPicker<int>(
-                  onSelection: (value) {
-                    setState(() {
-                      _sPosition = value;
-                    });
-                  },
-                  titles: widget.team.positions!.available
-                      .map((e) => widget.user.getPosition(e.round()))
-                      .toList(),
-                  initialSelection: _sPosition,
-                  selections: widget.team.positions!.available,
-                ),
-              ],
-            ),
+          // if (widget.team.positions != null &&
+          //     (widget.team.positions?.available.length ?? 0) < 4)
+          //   Column(
+          //     children: [
+          //       Padding(
+          //         padding: const EdgeInsets.symmetric(vertical: 6.0),
+          //         child: Row(
+          //           children: [
+          //             const Spacer(),
+          //             Text(
+          //               "Season Position",
+          //               style: TextStyle(
+          //                 fontSize: 14,
+          //                 fontWeight: FontWeight.w500,
+          //                 color:
+          //                     CustomColors.textColor(context).withOpacity(0.7),
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //       cv.SegmentedPicker<int>(
+          //         onSelection: (value) {
+          //           setState(() {
+          //             _sPosition = value;
+          //           });
+          //         },
+          //         titles: widget.team.positions!.available
+          //             .map((e) => widget.user.getPosition(e.round()))
+          //             .toList(),
+          //         initialSelection: _sPosition,
+          //         selections: widget.team.positions!.available,
+          //       ),
+          //     ],
+          //   ),
           // stats
           for (var i in _stats) _StatEditCell(stat: i, color: dmodel.color),
           // isManager

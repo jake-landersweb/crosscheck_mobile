@@ -101,10 +101,10 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
         children: [
           UserInfoCell(
               label: "Org id", value: widget.user.teamFields?.orgId ?? ""),
-          UserInfoCell(
-              label: "Team Position",
-              value: widget.user
-                  .getPosition(widget.user.teamFields?.tPosition ?? 0)),
+          // UserInfoCell(
+          //     label: "Team Position",
+          //     value: widget.user
+          //         .getPosition(widget.user.teamFields?.tPosition ?? 0)),
           UserInfoCell(label: "User Type", value: widget.user.teamUserType()),
           UserInfoCell(
               label: "Team Note",

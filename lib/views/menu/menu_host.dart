@@ -144,12 +144,11 @@ class _MenuHostState extends State<MenuHost> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (dmodel.tus?.team.teamStyle.image != null &&
-                dmodel.tus?.team.teamStyle.image != "")
+            if (dmodel.tus?.team.image != "" && dmodel.tus != null)
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Image.network(
-                  dmodel.tus!.team.teamStyle.image!,
+                  dmodel.tus!.team.image,
                   width: (_size.width / _menu.sizeThreashold) - 32,
                   errorBuilder: (context, error, stackTrace) {
                     return Padding(
@@ -261,12 +260,6 @@ class _MenuHostState extends State<MenuHost> {
   // for getting correct view
   Widget _getView(Pages _selection, DataModel dmodel) {
     switch (_selection) {
-      case Pages.team:
-        if (dmodel.tus == null) {
-          return Container();
-        } else {
-          return Team(teamId: dmodel.tus!.team.teamId);
-        }
       case Pages.schedule:
         return const Schedule();
       case Pages.calendar:
