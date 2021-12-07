@@ -93,6 +93,9 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
       leading: [
         cv.BackButton(
           color: dmodel.color,
+          showText: true,
+          title: "Cancel",
+          showIcon: false,
         ),
       ],
       children: [
@@ -121,8 +124,10 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           ],
         ),
         _userFields(context),
-        if (dmodel.currentSeasonUser!.isSeasonAdmin()) _teamFields(context),
-        if (dmodel.currentSeasonUser!.isSeasonAdmin())
+        if ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) ||
+            (dmodel.tus?.user.isTeamAdmin() ?? false))
+          _teamFields(context),
+        if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
           _seasonFields(context, dmodel),
         cv.Section(
           "",

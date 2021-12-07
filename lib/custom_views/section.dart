@@ -10,12 +10,14 @@ class Section extends StatefulWidget {
     required this.child,
     this.allowsCollapse = false,
     this.initOpen = false,
+    this.headerPadding = const EdgeInsets.fromLTRB(16, 8, 8, 4),
   }) : super(key: key);
 
   final String title;
   final Widget child;
   final bool? allowsCollapse;
   final bool? initOpen;
+  final EdgeInsets headerPadding;
 
   @override
   _SectionState createState() => _SectionState();
@@ -89,7 +91,7 @@ class _SectionState extends State<Section> with TickerProviderStateMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
+          padding: widget.headerPadding,
           child: Row(
             children: [
               _title(context),
@@ -113,7 +115,7 @@ class _SectionState extends State<Section> with TickerProviderStateMixin {
         Row(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
+              padding: widget.headerPadding,
               child: _title(context),
             ),
             const Expanded(

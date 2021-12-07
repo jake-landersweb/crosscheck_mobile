@@ -89,7 +89,7 @@ class _TextFieldState extends State<TextField> {
               Material(
                 color: ViewColors.cellColor(context),
                 shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
+                    borderRadius: BorderRadius.circular(35)),
                 child: Padding(
                   padding: widget.fieldPadding,
                   child: _getLabeledCupertino(context),
@@ -140,8 +140,8 @@ class _TextFieldState extends State<TextField> {
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black.withOpacity(0.7)
-                  : Colors.white.withOpacity(0.7),
+                  ? Colors.black.withOpacity(0.5)
+                  : Colors.white.withOpacity(0.5),
             ),
           ),
         ),
@@ -312,7 +312,7 @@ class _DynamicTextFieldState extends State<DynamicTextField> {
               Material(
                 color: ViewColors.cellColor(context),
                 shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
+                    borderRadius: BorderRadius.circular(35)),
                 child: Padding(
                   padding: widget.fieldPadding,
                   child: _getLabeledCupertino(context),
@@ -363,8 +363,8 @@ class _DynamicTextFieldState extends State<DynamicTextField> {
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black.withOpacity(0.7)
-                  : Colors.white.withOpacity(0.7),
+                  ? Colors.black.withOpacity(0.5)
+                  : Colors.white.withOpacity(0.5),
             ),
           ),
         ),

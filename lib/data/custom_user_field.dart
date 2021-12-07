@@ -23,4 +23,32 @@ class CustomUserField {
     defaultValue = json['defaultValue'] ?? "";
     defaultStringListValue = json['defaultStringListValue'] ?? [];
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "title": title,
+      "type": type,
+      "defaultValue": defaultValue,
+    };
+  }
+
+  void setTitle(String title) {
+    this.title = title;
+  }
+
+  void setType(String type) {
+    this.type = type;
+  }
+
+  void setStringVal(String val) {
+    defaultValue = val;
+  }
+
+  void setIntVal(int val) {
+    defaultValue = val.toString();
+  }
+
+  void setBoolVal(bool val) {
+    defaultValue = val ? "true" : "false";
+  }
 }

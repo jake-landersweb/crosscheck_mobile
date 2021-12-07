@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:pnflutter/extras/root.dart';
 import 'package:sprung/sprung.dart';
+import 'root.dart' as cv;
 
 class AnimatedList<T> extends StatefulWidget {
   const AnimatedList({
@@ -10,6 +12,8 @@ class AnimatedList<T> extends StatefulWidget {
     this.padding = const EdgeInsets.all(16),
     this.childPadding = const EdgeInsets.fromLTRB(16, 0, 16, 0),
     this.buttonPadding = 5,
+    this.onTap,
+    this.allowTap = false,
   }) : super(key: key);
 
   final List<T> children;
@@ -17,6 +21,8 @@ class AnimatedList<T> extends StatefulWidget {
   final EdgeInsets childPadding;
   final Widget Function(BuildContext context, T item) cellBuilder;
   final double buttonPadding;
+  final Function(T item)? onTap;
+  final bool allowTap;
 
   @override
   _AnimatedListState<T> createState() => _AnimatedListState<T>();
@@ -40,6 +46,8 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
                   padding: widget.padding,
                   childPadding: widget.childPadding,
                   buttonPadding: widget.buttonPadding,
+                  onTap: widget.onTap,
+                  allowTap: widget.allowTap,
                   onRemove: (index) {
                     setState(() {
                       widget.children.removeAt(index);
@@ -64,7 +72,10 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
       height: 0.5,
       child: Stack(
         children: [
-          Container(height: 0.5, width: double.infinity, color: Colors.white),
+          Container(
+              height: 0.5,
+              width: double.infinity,
+              color: CustomColors.cellColor(context)),
           const Divider(indent: 15),
         ],
       ),
@@ -82,6 +93,8 @@ class SwipeListCell<T> extends StatefulWidget {
     required this.childPadding,
     required this.onRemove,
     required this.buttonPadding,
+    this.onTap,
+    required this.allowTap,
   }) : super(key: key);
   final List<T> children;
   final int index;
@@ -90,6 +103,8 @@ class SwipeListCell<T> extends StatefulWidget {
   final EdgeInsets childPadding;
   final Function(int) onRemove;
   final double buttonPadding;
+  final Function(T item)? onTap;
+  final bool allowTap;
 
   @override
   _SwipeListCellState<T> createState() => _SwipeListCellState<T>();
@@ -161,21 +176,44 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
           ),
         ],
       ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-            widget.padding.left, 0, widget.padding.right, 0),
-        child: Material(
-          color: Colors.white,
-          shape: ContinuousRectangleBorder(borderRadius: _getborderRadius()),
-          child: SizeTransition(
-            sizeFactor: _animation,
-            child: Padding(
-              padding: widget.childPadding,
-              child: widget.child,
+      child: !widget.allowTap
+          ? Padding(
+              padding: EdgeInsets.fromLTRB(
+                  widget.padding.left, 0, widget.padding.right, 0),
+              child: Material(
+                color: CustomColors.cellColor(context),
+                shape:
+                    ContinuousRectangleBorder(borderRadius: _getborderRadius()),
+                child: SizeTransition(
+                  sizeFactor: _animation,
+                  child: Padding(
+                    padding: widget.childPadding,
+                    child: widget.child,
+                  ),
+                ),
+              ),
+            )
+          : cv.BasicButton(
+              onTap: () {
+                widget.onTap!(widget.children[widget.index]);
+              },
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                    widget.padding.left, 0, widget.padding.right, 0),
+                child: Material(
+                  color: CustomColors.cellColor(context),
+                  shape: ContinuousRectangleBorder(
+                      borderRadius: _getborderRadius()),
+                  child: SizeTransition(
+                    sizeFactor: _animation,
+                    child: Padding(
+                      padding: widget.childPadding,
+                      child: widget.child,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
