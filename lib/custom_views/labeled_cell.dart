@@ -29,7 +29,7 @@ class LabeledCell extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: ViewColors.textColor(context).withOpacity(0.7),
+              color: ViewColors.textColor(context).withOpacity(0.5),
             ),
           ),
         ],

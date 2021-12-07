@@ -16,3 +16,4 @@ export 'number_picker.dart';
 export 'basic_label.dart';
 export 'labeled_cell.dart';
 export 'animated_list.dart';
+export 'labeled_widget.dart';

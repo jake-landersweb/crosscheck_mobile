@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'root.dart';
@@ -86,9 +87,25 @@ extension TeamCalls on DataModel {
     });
   }
 
-  Future<void> updateTeam(
-      String teamId, Map<String, dynamic> body, VoidCallback completion) async {
+  Future<void> updateTeam(String teamId, Map<String, dynamic> body,
+      Map<String, dynamic> userFields, VoidCallback completion) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .put("/teams/$teamId/updateCustomUserFields", headers,
+            jsonEncode(userFields))
+        .then((response) {
+      if (response == null) {
+        setError(
+            "There was an issue updating the team custom user fields", true);
+      } else if (response['status'] == 200) {
+        print("successfully updated customUserFields");
+      } else {
+        setError(
+            "There was an issue updating the team custom user fields", true);
+        print(response['message']);
+      }
+    });
 
     await client
         .put("/teams/$teamId/update", headers, jsonEncode(body))
