@@ -243,19 +243,20 @@ class _SCEUsersState extends State<SCEUsers> {
       "positions": widget.model.positions.toJson(),
       "teamUserEmails": teamUserEmails,
       "date": dateToString(DateTime.now()),
-    };
-
-    Map<String, dynamic> userFields = {
       "customUserFields":
           widget.model.customUserFields.map((e) => e.toJson()).toList(),
+      "stats": widget.model.stats.toJson(),
     };
 
-    await dmodel.createSeason(widget.team.teamId, body, userFields, () {
+    await dmodel.createSeason(widget.team.teamId, body, () {
       // success, get out of widget
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
+      if (widget.model.isCreate) {
+        Navigator.of(context).pop();
+      }
       // get tus
       dmodel.teamUserSeasonsGet(widget.team.teamId, dmodel.user!.email, (tus) {
         dmodel.setTUS(tus);

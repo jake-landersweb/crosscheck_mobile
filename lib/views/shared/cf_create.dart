@@ -7,8 +7,10 @@ class CustomFieldCreate extends StatefulWidget {
   const CustomFieldCreate({
     Key? key,
     required this.customFields,
+    required this.onAdd,
   }) : super(key: key);
-  final List<CustomField> customFields;
+  final List<DynamicField> customFields;
+  final DynamicField Function() onAdd;
 
   @override
   _CustomFieldCreateState createState() => _CustomFieldCreateState();
@@ -19,11 +21,11 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        cv.AnimatedList<CustomField>(
+        cv.AnimatedList<DynamicField>(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           buttonPadding: 20,
           children: widget.customFields,
-          cellBuilder: (BuildContext context, CustomField item) {
+          cellBuilder: (BuildContext context, DynamicField item) {
             return CustomFieldField(item: item);
           },
         ),
@@ -32,15 +34,7 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
           child: cv.BasicButton(
             onTap: () {
               setState(() {
-                widget.customFields.add(
-                  CustomField(
-                    title: "",
-                    type: "S",
-                    stringVal: "",
-                    intVal: 0,
-                    boolVal: true,
-                  ),
-                );
+                widget.customFields.add(widget.onAdd());
               });
             },
             child: const cv.NativeList(

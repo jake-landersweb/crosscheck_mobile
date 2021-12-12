@@ -88,7 +88,12 @@ class _SCECustomFState extends State<SCECustomF> {
     return cv.Section(
       "Custom Fields",
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
-      child: CustomFieldCreate(customFields: widget.model.customFields),
+      child: CustomFieldCreate(
+        customFields: widget.model.customFields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
+      ),
     );
   }
 
@@ -96,8 +101,12 @@ class _SCECustomFState extends State<SCECustomF> {
     return cv.Section(
       "Custom User Fields",
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
-      child: CustomUserFieldCreate(
-          customUserFields: widget.model.customUserFields),
+      child: CustomFieldCreate(
+        customFields: widget.model.customUserFields,
+        onAdd: () {
+          return CustomUserField(title: "", type: "S", defaultValue: "");
+        },
+      ),
     );
   }
 
@@ -107,7 +116,7 @@ class _SCECustomFState extends State<SCECustomF> {
       child: cv.BasicButton(
         onTap: () {
           cv.Navigate(
-              context, SCEUsers(model: widget.model, team: widget.team));
+              context, SCEStats(model: widget.model, team: widget.team));
         },
         child: Material(
           shape: ContinuousRectangleBorder(

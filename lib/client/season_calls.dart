@@ -89,37 +89,26 @@ extension SeasonCalls on DataModel {
     });
   }
 
-  Future<void> createSeason(String teamId, Map<String, dynamic> body,
-      Map<String, dynamic> userFields, VoidCallback completion) async {
+  Future<void> createSeason(
+      String teamId, Map<String, dynamic> body, VoidCallback completion) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    dynamic response = await client.post(
-        "/teams/$teamId/createSeason", headers, jsonEncode(body));
-
-    if (response == null) {
-      setError("There was an issue creating your season", true);
-    } else if (response['status'] == 200) {
-      await client
-          .put(
-              "/teams/$teamId/seasons/${response['body']['seasonId']}/updateCustomUserFields",
-              headers,
-              jsonEncode(userFields))
-          .then((response) {
-        if (response == null) {
-          setError(
-              "There was an issue creaing your user's custom fields", true);
-        } else if (response['status'] == 200) {
-          setSuccess("Successfully created your season", true);
-          completion();
-        } else {
-          setError(
-              "There was an issue creaing your user's custom fields", true);
-          print(response['message']);
-        }
-      });
-    } else {
-      setError("There was an issue creating your season", true);
-      print(response['message']);
-    }
+    // first create the season
+    await client
+        .post("/teams/$teamId/createSeason", headers, jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue creating the season", true);
+      } else if (response['status'] == 200) {
+        completion();
+        setSuccess("Successfully created season", true);
+      } else if (response['status'] < 400) {
+        completion();
+        setError("Your season was created, but " + response['message'], true);
+      } else {
+        print(response['message']);
+        setError("There was an issue creating your season", true);
+      }
+    });
   }
 }

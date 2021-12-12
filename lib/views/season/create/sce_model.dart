@@ -19,6 +19,8 @@ class SCEModel {
 
   List<SeasonUser> teamUsers = [];
 
+  TeamStat stats = TeamStat.empty();
+
   int index = 0;
 
   late bool isCreate;

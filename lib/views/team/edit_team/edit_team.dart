@@ -237,7 +237,12 @@ class _EditTeamState extends State<EditTeam> {
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
       allowsCollapse: true,
       initOpen: false,
-      child: CustomFieldCreate(customFields: _customFields),
+      child: CustomFieldCreate(
+        customFields: _customFields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
+      ),
     );
   }
 
@@ -247,7 +252,12 @@ class _EditTeamState extends State<EditTeam> {
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
       allowsCollapse: true,
       initOpen: false,
-      child: CustomUserFieldCreate(customUserFields: _customUserFields),
+      child: CustomFieldCreate(
+        customFields: _customUserFields,
+        onAdd: () {
+          return CustomUserField(title: "", type: "S", defaultValue: "");
+        },
+      ),
     );
   }
 

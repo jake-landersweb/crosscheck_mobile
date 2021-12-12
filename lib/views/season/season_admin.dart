@@ -129,7 +129,7 @@ class _SeasonAdminState extends State<SeasonAdmin> {
           for (var i in widget.season.customFields)
             cv.LabeledCell(
               height: cellHeight,
-              label: i.title,
+              label: i.getTitle(),
               value: i.getValue(),
             )
         ],
@@ -148,8 +148,8 @@ class _SeasonAdminState extends State<SeasonAdmin> {
           for (var i in widget.season.customUserFields)
             cv.LabeledCell(
               height: cellHeight,
-              label: i.title,
-              value: "Default: ${i.defaultValue}",
+              label: i.getTitle(),
+              value: "Default: ${i.getValue()}",
             )
         ],
       ),
@@ -159,7 +159,7 @@ class _SeasonAdminState extends State<SeasonAdmin> {
   Widget _seasonStats(BuildContext context) {
     return cv.NativeList(
       children: [
-        for (var stat in widget.season.stats)
+        for (var stat in widget.season.stats.stats)
           Column(
             children: [
               cv.LabeledCell(

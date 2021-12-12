@@ -9,7 +9,7 @@ class Season extends Equatable {
   late String seasonCode;
   late int seasonStatus;
   late String seasonNote;
-  late List<SeasonStat> stats;
+  late TeamStat stats;
   late bool showNicknames;
   late TeamPositions positions;
   late List<CustomField> customFields;
@@ -39,7 +39,7 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 1;
     seasonNote = "";
-    stats = [];
+    stats = TeamStat.empty();
     showNicknames = false;
     positions = TeamPositions.empty();
     customFields = [];
@@ -71,7 +71,7 @@ class Season extends Equatable {
     seasonCode = json['seasonCode'] ?? "";
     seasonStatus = json['seasonStatus'].round();
     seasonNote = json['seasonNote'] ?? "";
-    stats = SeasonStat.fromJson(json['stats']);
+    stats = TeamStat.fromJson(json['stats']);
     showNicknames = json['showNicknames'] ?? false;
     positions = json['positions'] == null
         ? TeamPositions.empty()
@@ -94,7 +94,7 @@ class Season extends Equatable {
       "seasonCode": seasonCode,
       "seasonStatus": seasonStatus,
       "seasonNote": seasonNote,
-      "stats": stats.map((e) => e.toJson()).toList(),
+      "stats": stats.toJson(),
       "showNicknames": showNicknames,
       "positions": positions.toJson(),
       "customFields": customFields.map((e) => e.toJson()).toList(),
