@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pnflutter/theme/root.dart';
 import 'package:provider/provider.dart';
 
 import '../root.dart';
@@ -11,16 +10,14 @@ import '../../extras/root.dart';
 class SeasonUserDetail extends StatefulWidget {
   const SeasonUserDetail({
     Key? key,
-    required this.season,
+    this.season,
     required this.user,
-    required this.teamId,
-    required this.seasonId,
+    required this.team,
   }) : super(key: key);
 
-  final Season season;
+  final Season? season;
   final SeasonUser user;
-  final String teamId;
-  final String seasonId;
+  final Team team;
 
   @override
   State<SeasonUserDetail> createState() => _SeasonUserDetailState();
@@ -49,7 +46,7 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
         ),
         const SizedBox(height: 16),
         Text(
-          widget.user.name(widget.season.showNicknames),
+          widget.user.name(widget.season?.showNicknames ?? false),
           style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w700,
@@ -67,9 +64,8 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
 
   Widget _email(BuildContext context) {
     return cv.NativeList(
-      itemPadding: const EdgeInsets.all(16),
       children: [
-        UserInfoCell(label: "Email", value: widget.user.email),
+        cv.LabeledCell(label: "Email", value: widget.user.email, height: 40),
       ],
     );
   }
@@ -78,16 +74,19 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
     return cv.Section(
       "User Info",
       child: cv.NativeList(
-        itemPadding: const EdgeInsets.all(16),
         children: [
-          UserInfoCell(
+          cv.LabeledCell(
               label: "First name",
-              value: widget.user.userFields?.firstName ?? ""),
-          UserInfoCell(
+              value: widget.user.userFields?.firstName ?? "",
+              height: 40),
+          cv.LabeledCell(
               label: "Last name",
-              value: widget.user.userFields?.lastName ?? ""),
-          UserInfoCell(
-              label: "Phone", value: widget.user.userFields?.phone ?? ""),
+              value: widget.user.userFields?.lastName ?? "",
+              height: 40),
+          cv.LabeledCell(
+              label: "Phone",
+              value: widget.user.userFields?.phone ?? "",
+              height: 40),
         ],
       ),
     );
@@ -97,18 +96,26 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
     return cv.Section(
       "Team Info",
       child: cv.NativeList(
-        itemPadding: const EdgeInsets.all(16),
         children: [
-          UserInfoCell(
-              label: "Org id", value: widget.user.teamFields?.orgId ?? ""),
-          // UserInfoCell(
-          //     label: "Team Position",
-          //     value: widget.user
-          //         .getPosition(widget.user.teamFields?.tPosition ?? 0)),
-          UserInfoCell(label: "User Type", value: widget.user.teamUserType()),
-          UserInfoCell(
+          if (widget.team.positions.isActive)
+            cv.LabeledCell(
+                label: "Team Position",
+                value: widget.user.teamFields?.pos ?? "",
+                height: 40),
+          cv.LabeledCell(
+              label: "User Type",
+              value: widget.user.teamUserType(),
+              height: 40),
+          cv.LabeledCell(
               label: "Team Note",
-              value: widget.user.teamFields?.teamUserNote ?? "")
+              value: (widget.user.teamFields?.teamUserNote.isEmpty() ?? true)
+                  ? "Empty"
+                  : widget.user.teamFields!.teamUserNote!,
+              height: 40),
+          // custom fields
+          if (widget.user.teamFields?.customFields.isNotEmpty ?? false)
+            for (var i in widget.user.teamFields!.customFields)
+              cv.LabeledCell(label: i.title, value: i.getValue(), height: 40),
         ],
       ),
     );
@@ -121,7 +128,7 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
         itemPadding: const EdgeInsets.all(16),
         children: [
           if (!(widget.user.seasonFields?.nickname).isEmpty() &&
-              widget.season.showNicknames)
+              (widget.season?.showNicknames ?? false))
             UserInfoCell(
                 label: "Nickname", value: widget.user.seasonFields!.nickname),
           UserInfoCell(label: "Stats", value: widget.user.getSeasonStats()),
@@ -162,7 +169,7 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
           SeasonUserEdit(
             team: dmodel.tus!.team,
             user: widget.user,
-            teamId: widget.teamId,
+            teamId: widget.team.teamId,
             season: widget.season,
             completion: () {
               // do not need to fetch roster, getting returned value and replacing in list
@@ -177,8 +184,8 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
       child: Text(
         "Edit",
         style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
+          fontSize: 18,
           color: dmodel.color,
         ),
       ),
@@ -209,7 +216,7 @@ class UserInfoCell extends StatelessWidget {
         Expanded(
           child: Text(
             value,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
         ),
         Text(

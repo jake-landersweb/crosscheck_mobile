@@ -4,6 +4,7 @@ import 'package:pnflutter/views/root.dart';
 import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
@@ -88,45 +89,48 @@ class _ScheduleState extends State<Schedule> {
             initialSelection: "Upcoming",
           ),
           if (_currentTitle == "Upcoming")
-            Column(
-              children: [
-                EventList(
-                  list: dmodel.upcomingEvents!,
-                  isPrevious: false,
-                ),
-                const SizedBox(height: 32),
-                if (!dmodel.hasLoadedAllEvents)
-                  cv.BasicButton(
-                    onTap: () {
-                      dmodel.getRestEvents(dmodel.tus!.team.teamId,
-                          dmodel.currentSeason!.seasonId, dmodel.user!.email);
-                    },
-                    child: Material(
-                      color: CustomColors.cellColor(context),
-                      shape: ContinuousRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: SizedBox(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: dmodel.isFetchingRestEvents
-                            ? cv.LoadingIndicator()
-                            : const Opacity(
-                                opacity: 0.5,
-                                child: Center(
-                                  child: Text(
-                                    "Get More",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
+            if (dmodel.upcomingEvents!.isEmpty)
+              cv.NoneFound("There are no upcoming events", color: dmodel.color)
+            else
+              Column(
+                children: [
+                  EventList(
+                    list: dmodel.upcomingEvents!,
+                    isPrevious: false,
+                  ),
+                  const SizedBox(height: 32),
+                  if (!dmodel.hasLoadedAllEvents)
+                    cv.BasicButton(
+                      onTap: () {
+                        dmodel.getRestEvents(dmodel.tus!.team.teamId,
+                            dmodel.currentSeason!.seasonId, dmodel.user!.email);
+                      },
+                      child: Material(
+                        color: CustomColors.cellColor(context),
+                        shape: ContinuousRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: SizedBox(
+                          height: 50,
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: dmodel.isFetchingRestEvents
+                              ? const cv.LoadingIndicator()
+                              : const Opacity(
+                                  opacity: 0.5,
+                                  child: Center(
+                                    child: Text(
+                                      "Get More",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                        ),
                       ),
                     ),
-                  ),
-              ],
-            )
+                ],
+              )
           else
             PreviousEvents(
                 teamId: dmodel.tus!.team.teamId,
@@ -156,6 +160,12 @@ class _ScheduleState extends State<Schedule> {
         dmodel.user!.email,
         false,
       );
+    } else if (!dmodel.noTeam && dmodel.tus != null) {
+      await dmodel.teamUserSeasonsGet(
+          dmodel.tus!.team.teamId, dmodel.user!.email, (tus) {
+        dmodel.setTUS(tus);
+        return;
+      });
     }
   }
 }
@@ -187,6 +197,8 @@ class _PreviousEventsState extends State<PreviousEvents> {
     DataModel dmodel = Provider.of<DataModel>(context);
     if (dmodel.previousEvents == null) {
       return const ScheduleLoading();
+    } else if (dmodel.previousEvents!.isEmpty) {
+      return cv.NoneFound("There are no previous events", color: dmodel.color);
     } else {
       return EventList(list: dmodel.previousEvents!, isPrevious: true);
     }

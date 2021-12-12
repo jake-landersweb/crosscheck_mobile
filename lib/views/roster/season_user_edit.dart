@@ -18,14 +18,14 @@ class SeasonUserEdit extends StatefulWidget {
     required this.team,
     required this.user,
     required this.teamId,
-    required this.season,
+    this.season,
     required this.completion,
     this.isAdd = false,
   }) : super(key: key);
   final Team team;
   final SeasonUser user;
   final String teamId;
-  final Season season;
+  final Season? season;
   final VoidCallback completion;
   final bool isAdd;
 
@@ -44,7 +44,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
   late String _phone;
 
   // team fields
-  late int _tPosition;
+  late String _pos;
   late String _teamUserNote;
   late int _teamUserType;
 
@@ -65,7 +65,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     _firstName = widget.user.userFields?.firstName ?? "";
     _lastName = widget.user.userFields?.lastName ?? "";
     _phone = widget.user.userFields?.phone ?? "";
-    // _tPosition = widget.user.teamFields?.tPosition ?? 0;
+    _pos = widget.user.teamFields?.pos ?? "";
     _teamUserNote = widget.user.teamFields?.teamUserNote ?? "";
     _teamUserType = widget.user.teamFields?.teamUserType ?? 0;
     _sPosition = widget.user.seasonFields?.sPosition ?? 0;
@@ -89,7 +89,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     return cv.AppBar(
       title: widget.isAdd ? "Add User" : "Edit User",
       backgroundColor: CustomColors.backgroundColor(context),
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+      // itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
       leading: [
         cv.BackButton(
           color: dmodel.color,
@@ -136,17 +136,21 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
               _function(context, dmodel);
             },
             child: cv.NativeList(
-              itemPadding: const EdgeInsets.all(16),
               children: [
                 if (_isLoading)
-                  cv.LoadingIndicator()
+                  const SizedBox(height: 40, child: cv.LoadingIndicator())
                 else
-                  Text(
-                    widget.isAdd ? "Add" : "Update",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: dmodel.color),
+                  SizedBox(
+                    height: 40,
+                    child: Center(
+                      child: Text(
+                        widget.isAdd ? "Add" : "Update",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: dmodel.color),
+                      ),
+                    ),
                   ),
               ],
             ),
@@ -283,7 +287,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
       child: cv.NativeList(
         children: [
           // nickname
-          if (widget.season.showNicknames)
+          if (widget.season?.showNicknames ?? false)
             _UserTextField(
               label: "Nickname",
               initialValue: _nickname,
@@ -491,7 +495,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             "phone": _phone,
           },
           "teamFields": {
-            "tPosition": _tPosition,
+            "pos": _pos,
             "teamUserNote": _teamUserNote,
             "teamUserType": _teamUserType,
           },
@@ -507,27 +511,35 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           }
         };
         if (widget.isAdd) {
-          await dmodel.seasonUserAdd(
-              widget.teamId, widget.season.seasonId, body, (seasonUser) {
-            // add returned user to the list
-            dmodel.seasonUsers!.add(seasonUser);
-            Navigator.of(context).pop();
-            widget.completion();
-          });
+          if (widget.season != null) {
+            await dmodel.seasonUserAdd(
+                widget.teamId, widget.season!.seasonId, body, (seasonUser) {
+              // add returned user to the list
+              dmodel.seasonUsers!.add(seasonUser);
+              Navigator.of(context).pop();
+              widget.completion();
+            });
+          } else {
+            print("TODO");
+          }
         } else {
-          await dmodel.seasonUserUpdate(
-              widget.teamId, widget.season.seasonId, widget.user.email, body,
-              (seasonUser) {
-            // replace the user with the returned one
-            for (var i in dmodel.seasonUsers!) {
-              if (i.email == seasonUser.email) {
-                i.set(seasonUser);
-                break;
+          if (widget.season != null) {
+            await dmodel.seasonUserUpdate(
+                widget.teamId, widget.season!.seasonId, widget.user.email, body,
+                (seasonUser) {
+              // replace the user with the returned one
+              for (var i in dmodel.seasonUsers!) {
+                if (i.email == seasonUser.email) {
+                  i.set(seasonUser);
+                  break;
+                }
               }
-            }
-            Navigator.of(context).pop();
-            widget.completion();
-          });
+              Navigator.of(context).pop();
+              widget.completion();
+            });
+          } else {
+            print("TODO");
+          }
         }
         setState(() {
           _isLoading = false;

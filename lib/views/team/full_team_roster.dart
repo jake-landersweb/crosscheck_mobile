@@ -13,8 +13,14 @@ class FullTeamRoster extends StatefulWidget {
   const FullTeamRoster({
     Key? key,
     required this.team,
+    required this.childBuilder,
+    this.allowSelect = false,
+    this.onSelection,
   }) : super(key: key);
   final Team team;
+  final bool allowSelect;
+  final Function(SeasonUser)? onSelection;
+  final Widget Function(SeasonUser) childBuilder;
 
   @override
   _FullTeamRosterState createState() => _FullTeamRosterState();
@@ -56,9 +62,9 @@ class _FullTeamRosterState extends State<FullTeamRoster> {
       refreshable: true,
       onRefresh: () => _getRoster(dmodel),
       backgroundColor: CustomColors.backgroundColor(context),
-      childPadding: EdgeInsets.fromLTRB(0, 15, 0, 45),
+      childPadding: const EdgeInsets.fromLTRB(0, 15, 0, 45),
       color: dmodel.color,
-      leading: [cv.BackButton()],
+      leading: [cv.BackButton(color: dmodel.color)],
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -76,15 +82,19 @@ class _FullTeamRosterState extends State<FullTeamRoster> {
         ],
       );
     } else if (_roster == null) {
-      return Text("There was an issue");
+      return const Text("There was an issue");
     } else if (_roster!.isEmpty) {
       return const Text(
           "There are no users on your team. How did this happen? Contact support.");
     } else {
-      return cv.NativeList(
-        children: [
-          for (SeasonUser i in _roster!) _rosterCell(context, i, dmodel),
-        ],
+      return cv.AnimatedList<SeasonUser>(
+        enabled: false,
+        childPadding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+        padding: EdgeInsets.zero,
+        children: _roster!,
+        cellBuilder: (context, user) {
+          return _rosterCell(context, user, dmodel);
+        },
       );
     }
   }
@@ -92,21 +102,23 @@ class _FullTeamRosterState extends State<FullTeamRoster> {
   Widget _rosterCell(BuildContext context, SeasonUser user, DataModel dmodel) {
     return cv.BasicButton(
       onTap: () {
-        cv.Navigate(
-          context,
-          SeasonUserDetail(
-            season: Season.empty(),
-            user: user,
-            teamId: dmodel.tus!.team.teamId,
-            seasonId: "",
-          ),
-        );
+        if (widget.allowSelect) {
+          if (widget.onSelection != null) {
+            setState(() {
+              widget.onSelection!(user);
+            });
+          }
+        } else {
+          cv.Navigate(
+            context,
+            SeasonUserDetail(
+              user: user,
+              team: dmodel.tus!.team,
+            ),
+          );
+        }
       },
-      child: UserCell(
-        user: user,
-        isClickable: true,
-        season: Season.empty(),
-      ),
+      child: widget.childBuilder(user),
     );
   }
 }

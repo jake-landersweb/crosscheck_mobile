@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pnflutter/client/api_helpers.dart';
+import 'package:pnflutter/views/root.dart';
 import 'package:provider/provider.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
@@ -11,8 +12,10 @@ class SeasonAdmin extends StatefulWidget {
   const SeasonAdmin({
     Key? key,
     required this.season,
+    required this.team,
   }) : super(key: key);
   final Season season;
+  final Team team;
 
   @override
   _SeasonAdminState createState() => _SeasonAdminState();
@@ -29,64 +32,127 @@ class _SeasonAdminState extends State<SeasonAdmin> {
       // refreshable: true,
       color: dmodel.color,
       leading: const [MenuButton()],
-      // trailing: [
-
-      // ],
+      trailing: [_edit(context, dmodel)],
       // onRefresh: () => _refreshAction(dmodel),
-      children: [
-        cv.Section(
-          "Basic Information",
-          child: _body(context, dmodel),
-        ),
-        if (widget.season.stats.isNotEmpty)
-          cv.Section("Stats", child: _seasonStats(context)),
-      ],
+      children: [_body(context, dmodel)],
     );
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
-        cv.NativeList(
-          children: [
-            cv.LabeledCell(
-              label: "Title",
-              value: widget.season.title,
-            ),
-            cv.LabeledCell(
-              label: "Status",
-              value: widget.season.status(),
-            ),
-            cv.LabeledCell(
-              label: "Default Position",
-              value: getPostion(widget.season.defaultPosition),
-            ),
-            if (!widget.season.seasonCode.isEmpty())
-              cv.LabeledCell(
-                label: "Season Code",
-                value: widget.season.seasonCode!,
-              ),
-            cv.LabeledCell(
-              label: "Season Id",
-              value: widget.season.seasonId,
-            ),
-            cv.LabeledCell(
-              label: "Show Nicknames",
-              value: widget.season.showNicknames ? "True" : "False",
-            ),
-            if (!widget.season.seasonInfo.website.isEmpty())
-              cv.LabeledCell(
-                label: "Website",
-                value: widget.season.seasonInfo.website!,
-              ),
-            if (!widget.season.seasonInfo.email.isEmpty())
-              cv.LabeledCell(
-                label: "Email",
-                value: widget.season.seasonInfo.email!,
-              ),
-          ],
-        )
+        _basic(context, dmodel),
+        const SizedBox(height: 16),
+        _teamPositions(context, dmodel),
+        const SizedBox(height: 16),
+        _customFields(context),
+        const SizedBox(height: 16),
+        _customUserFields(context),
       ],
+    );
+  }
+
+  Widget _basic(BuildContext context, DataModel dmodel) {
+    return cv.Section(
+      "Basic Info",
+      child: Column(
+        children: [
+          cv.NativeList(
+            children: [
+              cv.LabeledCell(
+                height: cellHeight,
+                label: "Title",
+                value: widget.season.title,
+              ),
+              cv.LabeledCell(
+                height: cellHeight,
+                label: "Status",
+                value: widget.season.status(),
+              ),
+              cv.LabeledCell(
+                label: "Season Id",
+                value: widget.season.seasonId,
+              ),
+              cv.LabeledCell(
+                height: cellHeight,
+                label: "Season Code",
+                value: widget.season.seasonCode,
+              ),
+              if (widget.season.website != "")
+                cv.LabeledCell(
+                  height: cellHeight,
+                  label: "Website",
+                  value: widget.season.website,
+                ),
+              cv.LabeledCell(
+                height: cellHeight,
+                label: "Show Nicknames",
+                value: widget.season.showNicknames ? "True" : "False",
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _teamPositions(BuildContext context, DataModel dmodel) {
+    return cv.Section(
+      "Positions",
+      allowsCollapse: true,
+      initOpen: false,
+      child: cv.NativeList(
+        children: [
+          for (var position in widget.season.positions.available)
+            SizedBox(
+              height: cellHeight,
+              child: cv.LabeledCell(
+                label: position == widget.season.positions.defaultPosition
+                    ? "Default"
+                    : "",
+                value: position,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _customFields(BuildContext context) {
+    return cv.Section(
+      "Custom Fields",
+      allowsCollapse: true,
+      initOpen: false,
+      child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+        children: [
+          for (var i in widget.season.customFields)
+            cv.LabeledCell(
+              height: cellHeight,
+              label: i.title,
+              value: i.getValue(),
+            )
+        ],
+      ),
+    );
+  }
+
+  Widget _customUserFields(BuildContext context) {
+    return cv.Section(
+      "Custom User Fields",
+      allowsCollapse: true,
+      initOpen: false,
+      child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+        children: [
+          for (var i in widget.season.customUserFields)
+            cv.LabeledCell(
+              height: cellHeight,
+              label: i.title,
+              value: "Default: ${i.defaultValue}",
+            )
+        ],
+      ),
     );
   }
 
@@ -109,6 +175,23 @@ class _SeasonAdminState extends State<SeasonAdmin> {
             ],
           ),
       ],
+    );
+  }
+
+  Widget _edit(BuildContext context, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        cv.Navigate(context,
+            SCERoot(isCreate: false, team: widget.team, season: widget.season));
+      },
+      child: Text(
+        "Edit",
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 18,
+          color: dmodel.color,
+        ),
+      ),
     );
   }
 }

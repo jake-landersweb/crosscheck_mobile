@@ -152,14 +152,18 @@ class DataModel extends ChangeNotifier {
     if (tus.seasons.isNotEmpty) {
       // check for saved seasonId
       if (prefs.containsKey("seasonId")) {
+        print("has saved seasonId");
         for (var i in tus.seasons) {
           if (i.seasonId == prefs.getString("seasonId")) {
             // set the current season with this item
             setCurrentSeason(i);
-            break;
+            return;
           }
         }
+        setCurrentSeason(tus.seasons.first);
+        return;
       } else {
+        print("no saved seasonId");
         setCurrentSeason(tus.seasons.first);
         return;
       }
@@ -311,3 +315,5 @@ class DataModel extends ChangeNotifier {
     previousEvents = null;
   }
 }
+
+const double cellHeight = 45;

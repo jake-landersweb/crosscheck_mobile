@@ -45,12 +45,15 @@ class _TeamAdminState extends State<TeamAdmin> {
           allowsCollapse: true,
           initOpen: true,
           child: cv.NativeList(
+            itemPadding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
             children: [
               cv.LabeledCell(
+                height: cellHeight,
                 label: "Title",
                 value: widget.team.title,
               ),
               cv.LabeledCell(
+                height: cellHeight,
                 label: "Team Code",
                 value: widget.team.teamCode,
               ),
@@ -60,27 +63,49 @@ class _TeamAdminState extends State<TeamAdmin> {
               ),
               if (widget.team.color != "")
                 cv.LabeledCell(
+                  height: cellHeight,
                   label: "Color",
-                  value: widget.team.color,
+                  value: "#" + widget.team.color,
                 ),
               if (widget.team.image != "")
                 cv.LabeledCell(
+                  height: cellHeight,
                   label: "Image",
                   value: widget.team.image,
                 ),
               cv.LabeledCell(
+                height: cellHeight,
                 label: "Is Light",
                 value: widget.team.isLight ? "True" : "False",
               ),
             ],
           ),
         ),
-        _seasons(context, dmodel),
         const SizedBox(height: 16),
         _teamRoster(context, dmodel),
-        if (widget.team.positions.isActive) _teamPositions(context, dmodel),
-        if (widget.team.customFields.isNotEmpty) _customFields(context),
-        if (widget.team.customUserFields.isNotEmpty) _customUserFields(context),
+        const SizedBox(height: 16),
+        _seasons(context, dmodel),
+        if (widget.team.positions.isActive)
+          Column(
+            children: [
+              const SizedBox(height: 16),
+              _teamPositions(context, dmodel),
+            ],
+          ),
+        if (widget.team.customFields.isNotEmpty)
+          Column(
+            children: [
+              const SizedBox(height: 16),
+              _customFields(context),
+            ],
+          ),
+        if (widget.team.customUserFields.isNotEmpty)
+          Column(
+            children: [
+              const SizedBox(height: 16),
+              _customUserFields(context),
+            ],
+          ),
       ],
     );
   }
@@ -95,19 +120,48 @@ class _TeamAdminState extends State<TeamAdmin> {
           cv.NativeList(
             children: [
               if (widget.seasons.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                const SizedBox(
+                  height: cellHeight,
                   child: Center(
-                    child: Text("There are no seasons"),
+                    child: Text(
+                      "No seasons here",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    ),
                   ),
                 )
               else
                 for (var i in widget.seasons)
                   cv.LabeledCell(
+                    height: cellHeight,
                     label: i.status(),
                     value: i.title,
                   ),
             ],
+          ),
+          const SizedBox(height: 16),
+          cv.BasicButton(
+            onTap: () {
+              cv.Navigate(context, SCERoot(isCreate: true, team: widget.team));
+            },
+            child: Material(
+              color: dmodel.color,
+              shape: ContinuousRectangleBorder(
+                borderRadius: BorderRadius.circular(35),
+              ),
+              child: const SizedBox(
+                height: 50,
+                child: Center(
+                  child: Text(
+                    "Create New Season",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -117,12 +171,24 @@ class _TeamAdminState extends State<TeamAdmin> {
   Widget _teamRoster(BuildContext context, DataModel dmodel) {
     return cv.BasicButton(
       onTap: () {
-        cv.Navigate(context, FullTeamRoster(team: widget.team));
+        cv.Navigate(
+          context,
+          FullTeamRoster(
+            team: widget.team,
+            childBuilder: (user) {
+              return UserCell(
+                user: user,
+                isClickable: false,
+                season: Season.empty(),
+              );
+            },
+          ),
+        );
       },
       child: cv.NativeList(
         children: [
           SizedBox(
-            height: 40,
+            height: cellHeight,
             child: Row(
               children: [
                 const Text(
@@ -145,26 +211,18 @@ class _TeamAdminState extends State<TeamAdmin> {
       "Positions",
       allowsCollapse: true,
       initOpen: false,
-      child: Column(
+      child: cv.NativeList(
         children: [
-          cv.NativeList(
-            children: [
-              cv.LabeledCell(
-                label: "Default",
-                value: widget.team.positions.defaultPosition,
+          for (var position in widget.team.positions.available)
+            SizedBox(
+              height: cellHeight,
+              child: cv.LabeledCell(
+                label: position == widget.team.positions.defaultPosition
+                    ? "Default"
+                    : "",
+                value: position,
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          cv.NativeList(
-            children: [
-              for (var position in widget.team.positions.available)
-                cv.LabeledCell(
-                  label: "",
-                  value: position,
-                ),
-            ],
-          ),
+            ),
         ],
       ),
     );
@@ -176,9 +234,11 @@ class _TeamAdminState extends State<TeamAdmin> {
       allowsCollapse: true,
       initOpen: false,
       child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
         children: [
           for (var i in widget.team.customFields)
             cv.LabeledCell(
+              height: cellHeight,
               label: i.title,
               value: i.getValue(),
             )
@@ -193,9 +253,11 @@ class _TeamAdminState extends State<TeamAdmin> {
       allowsCollapse: true,
       initOpen: false,
       child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
         children: [
           for (var i in widget.team.customUserFields)
             cv.LabeledCell(
+              height: cellHeight,
               label: i.title,
               value: "Default: ${i.defaultValue}",
             )

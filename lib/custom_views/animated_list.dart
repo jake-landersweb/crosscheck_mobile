@@ -14,6 +14,7 @@ class AnimatedList<T> extends StatefulWidget {
     this.buttonPadding = 5,
     this.onTap,
     this.allowTap = false,
+    this.enabled = true,
   }) : super(key: key);
 
   final List<T> children;
@@ -23,6 +24,7 @@ class AnimatedList<T> extends StatefulWidget {
   final double buttonPadding;
   final Function(T item)? onTap;
   final bool allowTap;
+  final bool enabled;
 
   @override
   _AnimatedListState<T> createState() => _AnimatedListState<T>();
@@ -32,14 +34,15 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.fromLTRB(0, widget.padding.top, 0, widget.padding.bottom),
+      padding: EdgeInsets.fromLTRB(
+          0, widget.padding.top, widget.padding.right, widget.padding.bottom),
       child: Column(
         children: [
           for (var i = 0; i < widget.children.length; i++)
             Column(
               children: [
                 SwipeListCell<T>(
+                  enabled: widget.enabled,
                   children: widget.children,
                   child: widget.cellBuilder(context, widget.children[i]),
                   index: i,
@@ -56,8 +59,7 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
                 ),
                 if (i != widget.children.length - 1)
                   Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        widget.padding.left, 0, widget.padding.right, 0),
+                    padding: EdgeInsets.only(left: widget.padding.left),
                     child: _divider(context),
                   ),
               ],
@@ -95,6 +97,7 @@ class SwipeListCell<T> extends StatefulWidget {
     required this.buttonPadding,
     this.onTap,
     required this.allowTap,
+    required this.enabled,
   }) : super(key: key);
   final List<T> children;
   final int index;
@@ -105,6 +108,7 @@ class SwipeListCell<T> extends StatefulWidget {
   final double buttonPadding;
   final Function(T item)? onTap;
   final bool allowTap;
+  final bool enabled;
 
   @override
   _SwipeListCellState<T> createState() => _SwipeListCellState<T>();
@@ -149,10 +153,11 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
   @override
   Widget build(BuildContext context) {
     return Slidable(
+      enabled: widget.enabled,
       key: ValueKey(widget.children[widget.index]),
       endActionPane: ActionPane(
         extentRatio: 0.25,
-        motion: const DrawerMotion(),
+        motion: const BehindMotion(),
         children: [
           CustomSlidableAction(
             onPressed: (context) {
@@ -165,10 +170,8 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
                 shape: ContinuousRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const SizedBox.expand(
-                  child: Center(
-                    child: Icon(Icons.delete, color: Colors.red),
-                  ),
+                child: const Center(
+                  child: Icon(Icons.delete, color: Colors.red),
                 ),
               ),
             ),
@@ -178,8 +181,7 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
       ),
       child: !widget.allowTap
           ? Padding(
-              padding: EdgeInsets.fromLTRB(
-                  widget.padding.left, 0, widget.padding.right, 0),
+              padding: EdgeInsets.fromLTRB(widget.padding.left, 0, 0, 0),
               child: Material(
                 color: CustomColors.cellColor(context),
                 shape:
@@ -193,13 +195,12 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
                 ),
               ),
             )
-          : cv.BasicButton(
-              onTap: () {
-                widget.onTap!(widget.children[widget.index]);
-              },
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                    widget.padding.left, 0, widget.padding.right, 0),
+          : Padding(
+              padding: EdgeInsets.fromLTRB(widget.padding.left, 0, 0, 0),
+              child: cv.BasicButton(
+                onTap: () {
+                  widget.onTap!(widget.children[widget.index]);
+                },
                 child: Material(
                   color: CustomColors.cellColor(context),
                   shape: ContinuousRectangleBorder(

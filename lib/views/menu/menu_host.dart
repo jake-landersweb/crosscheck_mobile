@@ -288,9 +288,15 @@ class _MenuHostState extends State<MenuHost> {
       case Pages.settings:
         return const Settings();
       case Pages.teamAdmin:
-        return TeamAdmin(team: dmodel.tus!.team, seasons: dmodel.tus!.seasons);
+        if (dmodel.tus != null) {
+          return TeamAdmin(
+              team: dmodel.tus!.team, seasons: dmodel.tus!.seasons);
+        } else {
+          return Container();
+        }
       case Pages.seasonAdmin:
-        return SeasonAdmin(season: dmodel.currentSeason!);
+        return SeasonAdmin(
+            season: dmodel.currentSeason!, team: dmodel.tus!.team);
       default:
         return Text('Home');
     }

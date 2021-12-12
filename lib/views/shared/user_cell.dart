@@ -146,7 +146,7 @@ class UserAvatar extends StatelessWidget {
   final SeasonUser user;
   final double diameter;
   final double fontSize;
-  final Season season;
+  final Season? season;
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +155,7 @@ class UserAvatar extends StatelessWidget {
       children: [
         cv.Circle(diameter, CustomColors.random(user.email)),
         Text(
-          user.name(season.showNicknames)[0].toUpperCase(),
+          user.name(season?.showNicknames ?? false)[0].toUpperCase(),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,

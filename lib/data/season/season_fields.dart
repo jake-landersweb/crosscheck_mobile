@@ -71,7 +71,6 @@ class SeasonUserSeasonFields {
     email = json['email'];
     isManager = json['isManager'] ?? false;
     isPlaying = json['isPlaying'] ?? true;
-    jersey = Jersey.fromJson(json['jersey']);
     stats = SUStats.fromJson(json['stats']);
     sPosition = json['sPosition']?.round() ?? 0;
     jerseySize = json['jerseySize'];

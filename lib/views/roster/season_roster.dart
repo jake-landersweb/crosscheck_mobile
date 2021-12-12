@@ -181,8 +181,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
           SeasonUserDetail(
             season: widget.season,
             user: user,
-            teamId: dmodel.tus!.team.teamId,
-            seasonId: dmodel.currentSeason!.seasonId,
+            team: dmodel.tus!.team,
           ),
         );
       },

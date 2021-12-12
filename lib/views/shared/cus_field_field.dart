@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import '../../../data/root.dart';
-import '../../../custom_views/root.dart' as cv;
+import '../../data/root.dart';
+import '../../custom_views/root.dart' as cv;
 import 'package:flutter_switch/flutter_switch.dart';
 
-class CustomUserFieldField extends StatefulWidget {
-  const CustomUserFieldField({
+class CustomFieldField extends StatefulWidget {
+  const CustomFieldField({
     Key? key,
     required this.item,
   }) : super(key: key);
-  final CustomUserField item;
+  final CustomField item;
 
   @override
-  _CustomUserFieldFieldState createState() => _CustomUserFieldFieldState();
+  _CustomFieldFieldState createState() => _CustomFieldFieldState();
 }
 
-class _CustomUserFieldFieldState extends State<CustomUserFieldField> {
+class _CustomFieldFieldState extends State<CustomFieldField> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,7 +28,7 @@ class _CustomUserFieldFieldState extends State<CustomUserFieldField> {
           charLimit: 25,
           showCharacters: true,
           onChanged: (value) {
-            widget.item.setTitle(value);
+            widget.item.title = value;
           },
           validator: (value) {},
         ),
@@ -37,25 +37,9 @@ class _CustomUserFieldFieldState extends State<CustomUserFieldField> {
           titles: const ["Word", "Number", "True/False"],
           selections: const ["S", "I", "B"],
           onSelection: (value) {
-            switch (value) {
-              case "S":
-                setState(() {
-                  widget.item.setType(value);
-                  widget.item.setStringVal("");
-                });
-                break;
-              case "I":
-                setState(() {
-                  widget.item.setType(value);
-                  widget.item.setIntVal(0);
-                });
-                break;
-              default:
-                setState(() {
-                  widget.item.setType(value);
-                  widget.item.setBoolVal(false);
-                });
-            }
+            setState(() {
+              widget.item.setType(value);
+            });
           },
         ),
         SizedBox(height: 50, child: Center(child: _valField(context))),
@@ -70,7 +54,7 @@ class _CustomUserFieldFieldState extends State<CustomUserFieldField> {
           fieldPadding: const EdgeInsets.all(0),
           showBackground: false,
           isLabeled: true,
-          initialvalue: widget.item.defaultValue,
+          initialvalue: widget.item.stringVal ?? "",
           labelText: "Value",
           charLimit: 25,
           showCharacters: true,
@@ -88,7 +72,7 @@ class _CustomUserFieldFieldState extends State<CustomUserFieldField> {
                 width: 50,
                 child: Center(
                   child: Text(
-                    widget.item.defaultValue,
+                    (widget.item.intVal ?? 0).toString(),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -117,7 +101,7 @@ class _CustomUserFieldFieldState extends State<CustomUserFieldField> {
         return cv.LabeledWidget(
           "Value",
           child: FlutterSwitch(
-            value: widget.item.defaultValue == "true" ? true : false,
+            value: widget.item.boolVal ?? false,
             height: 25,
             width: 50,
             toggleSize: 18,

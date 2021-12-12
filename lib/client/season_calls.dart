@@ -88,4 +88,38 @@ extension SeasonCalls on DataModel {
       }
     });
   }
+
+  Future<void> createSeason(String teamId, Map<String, dynamic> body,
+      Map<String, dynamic> userFields, VoidCallback completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    dynamic response = await client.post(
+        "/teams/$teamId/createSeason", headers, jsonEncode(body));
+
+    if (response == null) {
+      setError("There was an issue creating your season", true);
+    } else if (response['status'] == 200) {
+      await client
+          .put(
+              "/teams/$teamId/seasons/${response['body']['seasonId']}/updateCustomUserFields",
+              headers,
+              jsonEncode(userFields))
+          .then((response) {
+        if (response == null) {
+          setError(
+              "There was an issue creaing your user's custom fields", true);
+        } else if (response['status'] == 200) {
+          setSuccess("Successfully created your season", true);
+          completion();
+        } else {
+          setError(
+              "There was an issue creaing your user's custom fields", true);
+          print(response['message']);
+        }
+      });
+    } else {
+      setError("There was an issue creating your season", true);
+      print(response['message']);
+    }
+  }
 }

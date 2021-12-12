@@ -9,6 +9,12 @@ class TeamPositions {
     required this.available,
   });
 
+  TeamPositions.empty() {
+    isActive = true;
+    defaultPosition = "";
+    available = [];
+  }
+
   TeamPositions.fromJson(Map<String, dynamic> json) {
     isActive = json['isActive'] ?? true;
     defaultPosition = json['defaultPosition'] ?? "";
