@@ -64,4 +64,14 @@ class CustomUserField extends DynamicField {
       defaultValue = value.toString();
     }
   }
+
+  bool isEqual(CustomUserField cuf) {
+    if (title == cuf.title &&
+        type == cuf.type &&
+        defaultValue == cuf.defaultValue) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

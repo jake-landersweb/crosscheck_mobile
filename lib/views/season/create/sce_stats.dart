@@ -17,10 +17,8 @@ class SCEStats extends StatefulWidget {
   const SCEStats({
     Key? key,
     required this.team,
-    required this.model,
   }) : super(key: key);
   final Team team;
-  final SCEModel model;
 
   @override
   _SCEStatsState createState() => _SCEStatsState();
@@ -28,149 +26,78 @@ class SCEStats extends StatefulWidget {
 
 class _SCEStatsState extends State<SCEStats> {
   @override
-  void initState() {
-    widget.model.index += 1;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    widget.model.index -= 1;
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return Stack(
-      alignment: AlignmentDirectional.bottomCenter,
+    SCEModel scemodel = Provider.of<SCEModel>(context);
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
       children: [
-        cv.AppBar(
-          title: "Positions",
-          isLarge: false,
-          backgroundColor: CustomColors.backgroundColor(context),
-          childPadding: const EdgeInsets.fromLTRB(0, 15, 0, 45),
-          itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
-          leading: [
-            cv.BackButton(
-              color: dmodel.color,
-            )
-          ],
-          color: dmodel.color,
-          children: [_body(context, dmodel)],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 48.0),
-          child: _next(context, dmodel),
-        ),
+        _isActive(context, dmodel, scemodel),
+        const SizedBox(height: 16),
+        _statList(context, dmodel, scemodel),
+        const SizedBox(height: 48),
       ],
     );
   }
 
-  Widget _body(BuildContext context, DataModel dmodel) {
-    return Column(
-      children: [
-        widget.model.status(context, dmodel),
-        const SizedBox(height: 16),
-        _isActive(context, dmodel),
-        const SizedBox(height: 16),
-        _statList(context, dmodel),
-      ],
-    );
-  }
-
-  Widget _isActive(BuildContext context, DataModel dmodel) {
+  Widget _isActive(BuildContext context, DataModel dmodel, SCEModel scemodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.NativeList(
-        children: [
-          cv.LabeledWidget(
-            "Is Active",
-            height: cellHeight,
-            child: FlutterSwitch(
-              value: widget.model.stats.isActive,
-              height: 25,
-              width: 50,
-              toggleSize: 18,
-              activeColor: dmodel.color,
-              onToggle: (value) {
-                setState(() {
-                  widget.model.stats.isActive = value;
-                });
-              },
+      child: cv.Section(
+        "Stats",
+        child: cv.NativeList(
+          children: [
+            cv.LabeledWidget(
+              "Is Active",
+              height: cellHeight,
+              child: FlutterSwitch(
+                value: scemodel.stats.isActive,
+                height: 25,
+                width: 50,
+                toggleSize: 18,
+                activeColor: dmodel.color,
+                onToggle: (value) {
+                  setState(() {
+                    scemodel.stats.isActive = value;
+                  });
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _statList(BuildContext context, DataModel dmodel) {
+  Widget _statList(BuildContext context, DataModel dmodel, SCEModel scemodel) {
     return Column(
       children: [
         cv.AnimatedList<StatItem>(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           buttonPadding: 20,
-          children: widget.model.stats.stats,
+          children: scemodel.stats.stats,
           cellBuilder: (BuildContext context, StatItem item) {
             // return CustomFieldField(item: item);
-            return StatCell(item: item, model: widget.model);
+            return StatCell(item: item, color: dmodel.color);
+          },
+          onRemove: (index) {
+            scemodel.removeStat(index);
           },
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: cv.BasicButton(
+          child: cv.RoundedLabel(
+            "Add New",
+            color: CustomColors.cellColor(context),
+            textColor: CustomColors.textColor(context),
             onTap: () {
-              setState(() {
-                widget.model.stats.stats.add(StatItem.empty());
-              });
+              scemodel.addStat(StatItem.empty());
             },
-            child: const cv.NativeList(
-              children: [
-                SizedBox(
-                  height: 40,
-                  child: Center(
-                    child: Text(
-                      "Add new",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
+        const SizedBox(height: 48),
       ],
-    );
-  }
-
-  Widget _next(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.BasicButton(
-        onTap: () {
-          cv.Navigate(
-              context, SCEUsers(model: widget.model, team: widget.team));
-        },
-        child: Material(
-          shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.circular(35)),
-          color: CustomColors.cellColor(context),
-          child: const SizedBox(
-            height: cellHeight,
-            child: Center(
-              child: Text(
-                "Next",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -179,10 +106,10 @@ class StatCell extends StatefulWidget {
   const StatCell({
     Key? key,
     required this.item,
-    required this.model,
+    this.color = Colors.blue,
   }) : super(key: key);
   final StatItem item;
-  final SCEModel model;
+  final Color color;
 
   @override
   _StatCellState createState() => _StatCellState();
@@ -196,6 +123,7 @@ class _StatCellState extends State<StatCell> {
       children: [
         cv.TextField(
           fieldPadding: EdgeInsets.zero,
+          initialvalue: widget.item.getTitle(),
           labelText: "Title",
           onChanged: (value) {
             setState(() {
@@ -223,6 +151,7 @@ class _StatCellState extends State<StatCell> {
                 ),
               ),
               cv.NumberPicker(
+                plusBackgroundColor: widget.color,
                 minValue: -100,
                 maxValue: 100,
                 onMinusClick: (value) {

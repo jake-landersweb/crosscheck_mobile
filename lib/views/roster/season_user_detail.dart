@@ -57,6 +57,7 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
         if (widget.user.userFields != null) _userInfo(context),
         if (widget.user.teamFields != null) _teamInfo(context),
         if (widget.user.seasonFields != null) _seasonInfo(context),
+        if (widget.user.seasonFields?.stats != null) _stats(context, dmodel),
         const SizedBox(height: 48),
       ],
     );
@@ -125,37 +126,55 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
     return cv.Section(
       "Season Info",
       child: cv.NativeList(
-        itemPadding: const EdgeInsets.all(16),
         children: [
           if (!(widget.user.seasonFields?.nickname).isEmpty() &&
               (widget.season?.showNicknames ?? false))
-            UserInfoCell(
-                label: "Nickname", value: widget.user.seasonFields!.nickname),
-          UserInfoCell(label: "Stats", value: widget.user.getSeasonStats()),
-          UserInfoCell(
+            cv.LabeledCell(
+                height: 40,
+                label: "Nickname",
+                value: widget.user.seasonFields!.nickname),
+          cv.LabeledCell(
+              height: 40,
               label: "Season Position",
-              value: widget.user
-                  .getPosition(widget.user.seasonFields?.sPosition ?? 0)),
-          UserInfoCell(
-              label: "Jersey Number", value: widget.user.jerseyNumber()),
-          UserInfoCell(label: "Jersey Size", value: widget.user.jersyeSize()),
-          UserInfoCell(
+              value: widget.user.seasonFields?.pos ?? ""),
+          cv.LabeledCell(
+              height: 40,
               label: "User Status",
               value: widget.user.seasonUserStatus(
                   widget.user.seasonFields?.seasonUserStatus ?? 0)),
-          UserInfoCell(
+          cv.LabeledCell(
+              height: 40,
               label: "Is Manager",
               value: (widget.user.seasonFields?.isManager ?? false)
                   ? "True"
                   : "False"),
-          UserInfoCell(
+          cv.LabeledCell(
+              height: 40,
               label: "Season Note",
               value: widget.user.seasonFields?.seasonUserNote ?? ""),
-          UserInfoCell(
+          cv.LabeledCell(
+              height: 40,
               label: "Is A Sub",
               value: (widget.user.seasonFields?.isSub ?? false)
                   ? "True"
                   : "False"),
+          // custom fields
+          if (widget.user.seasonFields?.customFields.isNotEmpty ?? false)
+            for (var i in widget.user.seasonFields!.customFields)
+              cv.LabeledCell(label: i.title, value: i.getValue(), height: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _stats(BuildContext context, DataModel dmodel) {
+    return cv.Section(
+      "Stats",
+      child: cv.NativeList(
+        children: [
+          for (var i in widget.user.seasonFields!.stats)
+            cv.LabeledCell(
+                height: 40, value: i.value.toString(), label: i.title)
         ],
       ),
     );

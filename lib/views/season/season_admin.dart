@@ -7,6 +7,7 @@ import '../../data/root.dart';
 import '../../extras/root.dart';
 import '../menu/root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class SeasonAdmin extends StatefulWidget {
   const SeasonAdmin({
@@ -181,8 +182,14 @@ class _SeasonAdminState extends State<SeasonAdmin> {
   Widget _edit(BuildContext context, DataModel dmodel) {
     return cv.BasicButton(
       onTap: () {
-        cv.Navigate(context,
-            SCERoot(isCreate: false, team: widget.team, season: widget.season));
+        showMaterialModalBottomSheet(
+          enableDrag: false,
+          context: context,
+          builder: (context) {
+            return SCERoot(
+                team: widget.team, isCreate: false, season: widget.season);
+          },
+        );
       },
       child: Text(
         "Edit",

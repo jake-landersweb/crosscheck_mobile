@@ -18,3 +18,4 @@ export 'labeled_cell.dart';
 export 'animated_list.dart';
 export 'labeled_widget.dart';
 export 'none_found.dart';
+export 'rounded_label.dart';

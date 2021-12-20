@@ -1,6 +1,7 @@
 import 'root.dart';
+import 'package:equatable/equatable.dart';
 
-class TeamStat {
+class TeamStat extends Equatable {
   late bool isActive;
   late List<StatItem> stats;
 
@@ -11,7 +12,7 @@ class TeamStat {
 
   TeamStat.of(TeamStat s) {
     isActive = s.isActive;
-    stats = s.stats;
+    stats = List.of(s.stats);
   }
 
   TeamStat.empty() {
@@ -33,4 +34,7 @@ class TeamStat {
       "stats": stats.map((e) => e.toJson()).toList(),
     };
   }
+
+  @override
+  List<Object?> get props => [isActive, stats];
 }

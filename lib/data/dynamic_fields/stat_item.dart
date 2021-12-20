@@ -1,4 +1,6 @@
-class StatItem {
+import 'package:equatable/equatable.dart';
+
+class StatItem extends Equatable {
   late String title;
   late int defaultValue;
   late bool isActive;
@@ -50,4 +52,17 @@ class StatItem {
   void setValue(int value) {
     defaultValue = value;
   }
+
+  bool isEqual(StatItem item) {
+    if (title == item.title &&
+        defaultValue == item.defaultValue &&
+        isActive == item.isActive) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  List<Object?> get props => [title, isActive, defaultValue];
 }

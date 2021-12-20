@@ -222,84 +222,83 @@ class _EditTeamState extends State<EditTeam> {
   }
 
   Widget _pos(BuildContext context, DataModel dmodel) {
-    return cv.Section(
-      "Positions",
-      headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
-      allowsCollapse: true,
-      initOpen: false,
-      child: PositionsCreate(positions: _positions),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: cv.Section(
+        "Positions",
+        allowsCollapse: true,
+        initOpen: false,
+        child: PositionsCreate(positions: _positions),
+      ),
     );
   }
 
   Widget _customF(BuildContext context, DataModel dmodel) {
-    return cv.Section(
-      "Custom Fields",
-      headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
-      allowsCollapse: true,
-      initOpen: false,
-      child: CustomFieldCreate(
-        customFields: _customFields,
-        onAdd: () {
-          return CustomField(title: "", type: "S", value: "");
-        },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: cv.Section(
+        "Custom Fields",
+        allowsCollapse: true,
+        initOpen: false,
+        child: CustomFieldCreate(
+          customFields: _customFields,
+          onAdd: () {
+            return CustomField(title: "", type: "S", value: "");
+          },
+        ),
       ),
     );
   }
 
   Widget _customUserF(BuildContext context, DataModel dmodel) {
-    return cv.Section(
-      "Custom User Fields",
-      headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
-      allowsCollapse: true,
-      initOpen: false,
-      child: CustomFieldCreate(
-        customFields: _customUserFields,
-        onAdd: () {
-          return CustomUserField(title: "", type: "S", defaultValue: "");
-        },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: cv.Section(
+        "Custom User Fields",
+        allowsCollapse: true,
+        initOpen: false,
+        child: CustomFieldCreate(
+          customFields: _customUserFields,
+          onAdd: () {
+            return CustomUserField(title: "", type: "S", defaultValue: "");
+          },
+        ),
       ),
     );
   }
 
   Widget _editButton(BuildContext context, DataModel dmodel) {
-    return cv.BasicButton(
-      onTap: () {
-        // check custom fields
-        for (var i in _customFields) {
-          if (i.title == "") {
-            dmodel.setError("Custom field title cannot be blank", true);
-            return;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: cv.RoundedLabel(
+        "",
+        color: dmodel.color,
+        child: _isLoading
+            ? const cv.LoadingIndicator(color: Colors.white)
+            : const Text(
+                "Confirm",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+        onTap: () {
+          // check custom fields
+          for (var i in _customFields) {
+            if (i.title == "") {
+              dmodel.setError("Custom field title cannot be blank", true);
+              return;
+            }
           }
-        }
-        for (var i in _customUserFields) {
-          if (i.title == "") {
-            dmodel.setError("Custom user field title cannot be blank", true);
-            return;
+          for (var i in _customUserFields) {
+            if (i.title == "") {
+              dmodel.setError("Custom user field title cannot be blank", true);
+              return;
+            }
           }
-        }
-        _editTeam(context, dmodel);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Material(
-          shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.circular(35)),
-          color: dmodel.color,
-          child: SizedBox(
-            height: cellHeight,
-            child: Center(
-              child: _isLoading
-                  ? const cv.LoadingIndicator(color: Colors.white)
-                  : const Text(
-                      "Confirm",
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white),
-                    ),
-            ),
-          ),
-        ),
+          _editTeam(context, dmodel);
+        },
       ),
     );
   }

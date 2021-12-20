@@ -8,6 +8,12 @@ class SeasonStat {
       required this.defaultValue,
       required this.isActive});
 
+  SeasonStat.empty() {
+    title = "";
+    defaultValue = 0;
+    isActive = true;
+  }
+
   static List<SeasonStat> fromJson(dynamic json) {
     List<SeasonStat> list = [];
     if (json != null) {

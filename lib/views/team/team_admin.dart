@@ -6,6 +6,7 @@ import '../../data/root.dart';
 import '../../extras/root.dart';
 import '../menu/root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class TeamAdmin extends StatefulWidget {
   const TeamAdmin({
@@ -117,59 +118,83 @@ class _TeamAdminState extends State<TeamAdmin> {
       initOpen: true,
       child: Column(
         children: [
-          cv.NativeList(
-            children: [
-              if (widget.seasons.isEmpty)
-                const SizedBox(
-                  height: cellHeight,
-                  child: Center(
-                    child: Text(
-                      "No seasons here",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          if (widget.seasons.isEmpty)
+            cv.RoundedLabel("No Seasons Here",
+                color: CustomColors.cellColor(context))
+          else
+            cv.NativeList(
+              itemPadding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
+              children: [
+                for (var i in widget.seasons)
+                  cv.BasicButton(
+                    onTap: () {
+                      showMaterialModalBottomSheet(
+                        enableDrag: false,
+                        context: context,
+                        builder: (context) {
+                          return SCERoot(
+                              team: widget.team, isCreate: false, season: i);
+                        },
+                      );
+                    },
+                    child: SizedBox(
+                      height: 45,
+                      child: Row(
+                        children: [
+                          Text(
+                            i.title,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: CustomColors.textColor(context)),
+                          ),
+                          const Spacer(),
+                          Text(
+                            i.status(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: CustomColors.textColor(context)
+                                  .withOpacity(0.5),
+                            ),
+                          ),
+                          Icon(
+                            Icons.more_vert,
+                            color: CustomColors.textColor(context)
+                                .withOpacity(0.5),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                )
-              else
-                for (var i in widget.seasons)
-                  cv.LabeledCell(
-                    height: cellHeight,
-                    label: i.status(),
-                    value: i.title,
-                  ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          cv.BasicButton(
-            onTap: () {
-              cv.Navigate(context, SCERoot(isCreate: true, team: widget.team));
-            },
-            child: Material(
-              color: dmodel.color,
-              shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.circular(35),
-              ),
-              child: const SizedBox(
-                height: 50,
-                child: Center(
-                  child: Text(
-                    "Create New Season",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
+              ],
             ),
-          ),
+          const SizedBox(height: 16),
+          cv.RoundedLabel(
+            "Create New Season",
+            color: dmodel.color,
+            textColor: Colors.white,
+            onTap: () {
+              showMaterialModalBottomSheet(
+                enableDrag: false,
+                context: context,
+                builder: (context) {
+                  return SCERoot(isCreate: true, team: widget.team);
+                },
+              );
+            },
+          )
         ],
       ),
     );
   }
 
   Widget _teamRoster(BuildContext context, DataModel dmodel) {
-    return cv.BasicButton(
+    return cv.RoundedLabel(
+      "Full Team Roster",
+      color: CustomColors.cellColor(context),
+      textColor: CustomColors.textColor(context).withOpacity(0.7),
+      isNavigator: true,
       onTap: () {
         cv.Navigate(
           context,
@@ -185,24 +210,6 @@ class _TeamAdminState extends State<TeamAdmin> {
           ),
         );
       },
-      child: cv.NativeList(
-        children: [
-          SizedBox(
-            height: cellHeight,
-            child: Row(
-              children: [
-                const Text(
-                  "Full Team Roster",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-                const Spacer(),
-                Icon(Icons.chevron_right_sharp,
-                    color: CustomColors.textColor(context).withOpacity(0.5)),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 

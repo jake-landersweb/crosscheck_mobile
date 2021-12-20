@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:pnflutter/views/season/create/root.dart';
 import 'package:pnflutter/views/season/create/sce_model.dart';
 import 'package:pnflutter/views/season/create/sce_positions.dart';
 import 'package:provider/provider.dart';
+import 'package:sprung/sprung.dart';
 import '../../../client/root.dart';
 import '../../../data/root.dart';
 import '../../../extras/root.dart';
@@ -24,191 +28,280 @@ class SCERoot extends StatefulWidget {
 }
 
 class _SCERootState extends State<SCERoot> {
-  late SCEModel _model;
+  late PageController _controller;
 
   @override
   void initState() {
-    _model = SCEModel(widget.isCreate);
-    if (!widget.isCreate) {
-      if (widget.season == null) {
-        throw Exception("isCreate cannot be false when Season is null");
-      } else {
-        _model.title = widget.season!.title;
-        _model.website = widget.season!.website;
-        _model.seasonNote = widget.season!.seasonNote;
-        _model.showNicknames = widget.season!.showNicknames;
-        _model.positions = TeamPositions.of(widget.season!.positions);
-        _model.customFields = List.of(widget.season!.customFields);
-        _model.customUserFields = List.of(widget.season!.customUserFields);
-      }
-    }
-    _model.positions = TeamPositions.of(widget.team.positions);
+    _controller = PageController();
     super.initState();
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  bool _isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return Stack(
-      alignment: AlignmentDirectional.bottomCenter,
-      children: [
-        cv.AppBar(
-          title: _model.isCreate ? "Create Season" : "Edit Season",
-          isLarge: false,
-          backgroundColor: CustomColors.backgroundColor(context),
-          childPadding: const EdgeInsets.fromLTRB(0, 15, 0, 45),
-          leading: [
-            cv.BackButton(
-              color: dmodel.color,
-              title: "Cancel",
-              showIcon: false,
-              showText: true,
-            )
+    return ChangeNotifierProvider<SCEModel>(
+      create: (_) => widget.isCreate
+          ? SCEModel.create(widget.team)
+          : SCEModel.update(widget.team, widget.season!),
+      // we use `builder` to obtain a new `BuildContext` that has access to the provider
+      builder: (context, child) {
+        // No longer throws
+        return Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            cv.AppBar(
+              canScroll: false,
+              title: widget.isCreate ? "Create Season" : "Edit Season",
+              children: [
+                Expanded(
+                  child: _body(context, dmodel),
+                ),
+              ],
+              leading: [
+                cv.BackButton(
+                  title: "Cancel",
+                  showIcon: false,
+                  showText: true,
+                  color: dmodel.color,
+                ),
+              ],
+            ),
+            _navigation(context, dmodel),
           ],
-          color: dmodel.color,
-          children: [_body(context, dmodel)],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 48.0),
-          child: _next(context, dmodel),
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
+    SCEModel scemodel = Provider.of<SCEModel>(context);
     return Column(
       children: [
-        _model.status(context, dmodel),
+        const SizedBox(height: 100),
+        scemodel.status(context, dmodel),
         const SizedBox(height: 16),
-        _required(context, dmodel),
-        const SizedBox(height: 16),
-        _basicInfo(context, dmodel),
-        const SizedBox(height: 48),
+        const Divider(
+          height: 0.5,
+          indent: 0,
+          endIndent: 0,
+        ),
+        Expanded(
+          child: PageView(
+            controller: _controller,
+            children: [
+              SCEBasic(team: widget.team),
+              SCEPositions(team: widget.team),
+              SCECustomF(team: widget.team),
+              SCEStats(team: widget.team),
+              if (scemodel.isCreate) SCEUsers(team: widget.team),
+            ],
+            onPageChanged: (page) {
+              scemodel.setIndex(page);
+            },
+          ),
+        ),
       ],
     );
   }
 
-  Widget _required(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.Section(
-        "Required",
-        child: cv.NativeList(
+  Widget _navigation(BuildContext context, DataModel dmodel) {
+    SCEModel scemodel = Provider.of<SCEModel>(context);
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
           children: [
-            SizedBox(
-              height: cellHeight,
-              child: cv.TextField(
-                labelText: "Title",
-                initialvalue: _model.title,
-                showBackground: false,
-                fieldPadding: EdgeInsets.zero,
-                isLabeled: true,
-                onChanged: (value) {
-                  setState(() {
-                    _model.title = value;
-                  });
+            AnimatedOpacity(
+              opacity: scemodel.index == 0 ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              child: cv.BasicButton(
+                onTap: () {
+                  if (scemodel.index != 0) {
+                    _controller.previousPage(
+                        duration: const Duration(milliseconds: 700),
+                        curve: Sprung.overDamped);
+                  }
                 },
-                validator: (value) {},
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _basicInfo(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.Section(
-        "Basic Info",
-        child: cv.NativeList(
-          children: [
-            SizedBox(
-              height: cellHeight,
-              child: cv.TextField(
-                initialvalue: _model.website,
-                labelText: "Website (url)",
-                showBackground: false,
-                fieldPadding: EdgeInsets.zero,
-                isLabeled: true,
-                onChanged: (value) {
-                  setState(() {
-                    _model.website = value;
-                  });
-                },
-                validator: (value) {},
-              ),
-            ),
-            SizedBox(
-              height: cellHeight,
-              child: cv.TextField(
-                initialvalue: _model.seasonNote,
-                labelText: "Season Note",
-                showBackground: false,
-                fieldPadding: EdgeInsets.zero,
-                isLabeled: true,
-                onChanged: (value) {
-                  setState(() {
-                    _model.seasonNote = value;
-                  });
-                },
-                validator: (value) {},
-              ),
-            ),
-            cv.LabeledWidget(
-              "Show Nicknames",
-              height: cellHeight,
-              child: FlutterSwitch(
-                value: _model.showNicknames,
-                height: 25,
-                width: 50,
-                toggleSize: 18,
-                activeColor: dmodel.color,
-                onToggle: (value) {
-                  setState(() {
-                    _model.showNicknames = value;
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _next(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.BasicButton(
-        onTap: () {
-          if (_model.title.isEmpty) {
-            dmodel.setError("Title cannot be blank", true);
-          } else {
-            cv.Navigate(
-                context, SCEPositions(model: _model, team: widget.team));
-          }
-        },
-        child: Material(
-          shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.circular(35)),
-          color: CustomColors.cellColor(context),
-          child: const SizedBox(
-            height: cellHeight,
-            child: Center(
-              child: Text(
-                "Next",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+                child: cv.GlassContainer(
+                  height: 50,
+                  width: 50,
+                  borderRadius: BorderRadius.circular(25),
+                  backgroundColor:
+                      CustomColors.textColor(context).withOpacity(0.1),
+                  child: Icon(
+                    Icons.chevron_left,
+                    color: CustomColors.textColor(context).withOpacity(0.7),
+                  ),
                 ),
               ),
             ),
-          ),
+            const Spacer(),
+            cv.BasicButton(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 5,
+                    sigmaY: 5,
+                  ),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 700),
+                    curve: Sprung.overDamped,
+                    decoration: BoxDecoration(
+                      color: scemodel.isAtEnd() && !scemodel.isValidated()
+                          ? Colors.red.withOpacity(0.3)
+                          : dmodel.color,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    width: scemodel.isAtEnd()
+                        ? MediaQuery.of(context).size.width / 1.5
+                        : 50,
+                    height: 50,
+                    child: scemodel.isAtEnd()
+                        ? Center(
+                            child: _isLoading
+                                ? const cv.LoadingIndicator(color: Colors.white)
+                                : Text(
+                                    scemodel.buttonTitle(),
+                                    softWrap: false,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: scemodel.isValidated()
+                                          ? Colors.white
+                                          : Colors.red[900],
+                                    ),
+                                  ),
+                          )
+                        : const Icon(
+                            Icons.chevron_right,
+                            color: Colors.white,
+                          ),
+                  ),
+                ),
+              ),
+              onTap: () {
+                if (scemodel.isAtEnd()) {
+                  if (scemodel.isValidated()) {
+                    if (scemodel.isCreate) {
+                      _create(context, dmodel, scemodel);
+                    } else {
+                      _update(context, dmodel, scemodel);
+                    }
+                  }
+                } else {
+                  _controller.nextPage(
+                      duration: const Duration(milliseconds: 700),
+                      curve: Sprung.overDamped);
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Future<void> _update(
+      BuildContext context, DataModel dmodel, SCEModel scemodel) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    Map<String, dynamic> body = {
+      "title": scemodel.title,
+      "website": scemodel.website,
+      "seasonNote": scemodel.seasonNote,
+      "showNicknames": scemodel.showNicknames,
+      "customFields": scemodel.customFields.map((e) => e.toJson()).toList(),
+      "positions": scemodel.positions.toJson(),
+      "date": dateToString(DateTime.now()),
+      "seasonStatus": scemodel.seasonStatus,
+    };
+
+    bool customUserFieldsMatch() {
+      for (var i in scemodel.customUserFields) {
+        if (!scemodel.oldCustomUserFields
+            .any((element) => element.isEqual(i))) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    if (!customUserFieldsMatch()) {
+      body['customUserFields'] =
+          scemodel.customUserFields.map((e) => e.toJson()).toList();
+    }
+
+    if (scemodel.stats != scemodel.oldStats) {
+      body['stats'] = scemodel.stats.toJson();
+    }
+
+    print(body);
+
+    await dmodel.updateSeason(widget.team.teamId, widget.season!.seasonId, body,
+        () {
+      // success, get out of widget
+      Navigator.of(context).pop();
+      // get tus
+      dmodel.teamUserSeasonsGet(widget.team.teamId, dmodel.user!.email, (tus) {
+        dmodel.setTUS(tus);
+      });
+    });
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _create(
+      BuildContext context, DataModel dmodel, SCEModel scemodel) async {
+    setState(() {
+      _isLoading = true;
+    });
+    List<String> teamUserEmails = [];
+
+    // create email list
+    for (var i in scemodel.teamUsers) {
+      teamUserEmails.add(i.email);
+    }
+
+    Map<String, dynamic> body = {
+      "title": scemodel.title,
+      "website": scemodel.website,
+      "seasonNote": scemodel.seasonNote,
+      "showNicknames": scemodel.showNicknames,
+      "customFields": scemodel.customFields.map((e) => e.toJson()).toList(),
+      "positions": scemodel.positions.toJson(),
+      "teamUserEmails": teamUserEmails,
+      "date": dateToString(DateTime.now()),
+      "customUserFields":
+          scemodel.customUserFields.map((e) => e.toJson()).toList(),
+      "stats": scemodel.stats.toJson(),
+    };
+
+    print(body);
+
+    await dmodel.createSeason(widget.team.teamId, body, () {
+      // success, get out of widget
+      Navigator.of(context).pop();
+      // get tus
+      dmodel.teamUserSeasonsGet(widget.team.teamId, dmodel.user!.email, (tus) {
+        dmodel.setTUS(tus);
+      });
+    });
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

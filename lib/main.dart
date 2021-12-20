@@ -200,101 +200,6 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
       ),
     );
   }
-
-  // success snack bar
-  Widget _showSuccess(BuildContext context, DataModel dmodel) {
-    return Builder(
-      builder: (context) {
-        var _snackBar = SnackBar(
-          elevation: 0,
-          content: Row(
-            children: [
-              Text(dmodel.successText,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: CustomColors.textColor(context),
-                  )),
-              const Spacer(),
-              Icon(
-                Icons.check_circle_outline,
-                color: CustomColors.textColor(context).withOpacity(0.7),
-              )
-            ],
-          ),
-          backgroundColor:
-              MediaQuery.of(context).platformBrightness == Brightness.light
-                  ? Colors.white
-                  : CustomColors.darkList,
-          behavior: SnackBarBehavior.floating,
-          shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-          ),
-          // TODO - implement slide up and down animation
-        );
-        // do not interupt the current build method
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          // hide the current snackbar
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          // show the success message
-          ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-          // set the text as empty again
-          Future.delayed(const Duration(milliseconds: 500), () {
-            setState(() {
-              dmodel.successText = "";
-            });
-          });
-        });
-        // do not display an actual view
-        return Container();
-      },
-    );
-  }
-
-  // error snackbar
-  Widget _showError(BuildContext context, DataModel dmodel) {
-    return Builder(
-      builder: (context) {
-        var _snackBar = SnackBar(
-          elevation: 0,
-          content: Row(
-            children: [
-              Expanded(
-                flex: 80,
-                child: Text(
-                  dmodel.errorText,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-              const Expanded(
-                flex: 20,
-                child: Icon(
-                  Icons.warning_rounded,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-          shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-          ),
-          // TODO - implement slide up and down animation
-        );
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(_snackBar);
-          Future.delayed(const Duration(milliseconds: 500), () {
-            setState(() {
-              dmodel.errorText = "";
-            });
-          });
-        });
-        return Container();
-      },
-    );
-  }
 }
 
 class StatusBar extends StatefulWidget {
@@ -352,10 +257,11 @@ class _StatusBarState extends State<StatusBar>
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 32.0),
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 32),
         child: SlideTransition(
           position: position,
           child: cv.GlassContainer(
+            borderRadius: BorderRadius.circular(25),
             opacity: widget.opacity,
             backgroundColor: widget.backgroundColor,
             height: 50,

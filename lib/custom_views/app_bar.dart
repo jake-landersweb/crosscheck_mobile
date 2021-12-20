@@ -11,8 +11,8 @@ import 'core/root.dart';
 class AppBar extends StatefulWidget {
   const AppBar({
     Key? key,
-    required this.title,
-    required this.children,
+    this.title = "",
+    this.children = const [],
     this.leading = const [],
     this.trailing = const [],
     this.isLarge = false,
@@ -24,6 +24,7 @@ class AppBar extends StatefulWidget {
     this.titlePadding = const EdgeInsets.fromLTRB(15, 0, 0, 0),
     this.color = Colors.blue,
     this.backgroundColor,
+    this.canScroll = true,
   }) : super(key: key);
 
   final String title;
@@ -39,6 +40,7 @@ class AppBar extends StatefulWidget {
   final EdgeInsets titlePadding;
   final Color color;
   final Color? backgroundColor;
+  final bool canScroll;
 
   @override
   _AppBarState createState() => _AppBarState();
@@ -223,45 +225,53 @@ class _AppBarState extends State<AppBar> {
         }
         return true;
       },
-      child: ListView(
-        controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-                top: _barHeight - MediaQuery.of(context).padding.top),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.isLarge)
-                  // scalable large title
-                  Padding(
-                    padding: widget.titlePadding,
-                    child: Transform.scale(
-                      alignment: Alignment.centerLeft,
-                      scale: _titleScale > 1 ? _titleScale : 1,
-                      child: Text(
-                        _title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 40,
-                        ),
-                      ),
+      child: widget.canScroll
+          ? ListView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: _children(context),
+            )
+          : Column(
+              children: widget.children,
+            ),
+    );
+  }
+
+  List<Widget> _children(BuildContext context) {
+    return [
+      Padding(
+        padding: EdgeInsets.only(
+            top: _barHeight - MediaQuery.of(context).padding.top),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.isLarge)
+              // scalable large title
+              Padding(
+                padding: widget.titlePadding,
+                child: Transform.scale(
+                  alignment: Alignment.centerLeft,
+                  scale: _titleScale > 1 ? _titleScale : 1,
+                  child: Text(
+                    _title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 40,
                     ),
                   ),
-                // all children passed
-                Padding(
-                  padding: widget.childPadding,
-                  child: Column(
-                    children: widget.children,
-                  ),
                 ),
-              ],
+              ),
+            // all children passed
+            Padding(
+              padding: widget.childPadding,
+              child: Column(
+                children: widget.children,
+              ),
             ),
-          )
-        ],
-      ),
-    );
+          ],
+        ),
+      )
+    ];
   }
 
   Widget _titleBar(BuildContext context) {

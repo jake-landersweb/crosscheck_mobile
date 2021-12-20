@@ -64,4 +64,12 @@ class CustomField extends DynamicField {
       this.value = value.toString();
     }
   }
+
+  bool isEqual(CustomField cf) {
+    if (title == cf.title && type == cf.type && value == cf.value) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

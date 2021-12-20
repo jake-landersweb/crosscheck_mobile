@@ -25,35 +25,31 @@ class _PositionsCreateState extends State<PositionsCreate> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: cv.NativeList(
-            children: [
-              cv.LabeledWidget(
-                "Is Active",
-                height: cellHeight,
-                child: FlutterSwitch(
-                  value: widget.positions.isActive,
-                  height: 25,
-                  width: 50,
-                  toggleSize: 18,
-                  activeColor: dmodel.color,
-                  onToggle: (value) {
-                    setState(() {
-                      widget.positions.isActive = value;
-                    });
-                  },
-                ),
+        cv.NativeList(
+          children: [
+            cv.LabeledWidget(
+              "Is Active",
+              height: cellHeight,
+              child: FlutterSwitch(
+                value: widget.positions.isActive,
+                height: 25,
+                width: 50,
+                toggleSize: 18,
+                activeColor: dmodel.color,
+                onToggle: (value) {
+                  setState(() {
+                    widget.positions.isActive = value;
+                  });
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         cv.Section(
           "Available Positions",
-          headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
           child: cv.AnimatedList<String>(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            childPadding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+            padding: EdgeInsets.zero,
+            childPadding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
             children: widget.positions.available,
             allowTap: true,
             onTap: (item) {
@@ -104,7 +100,7 @@ class _PositionsCreateState extends State<PositionsCreate> {
         ),
         const SizedBox(height: 16),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
               cv.TextField(
@@ -117,7 +113,10 @@ class _PositionsCreateState extends State<PositionsCreate> {
                 validator: (value) {},
               ),
               const SizedBox(height: 16),
-              cv.BasicButton(
+              cv.RoundedLabel(
+                "Add New",
+                color: CustomColors.cellColor(context),
+                textColor: CustomColors.textColor(context),
                 onTap: () {
                   if (_newPos.isEmpty) {
                     dmodel.setError("New position title cannot be empty", true);
@@ -136,21 +135,7 @@ class _PositionsCreateState extends State<PositionsCreate> {
                     }
                   }
                 },
-                child: const cv.NativeList(
-                  children: [
-                    SizedBox(
-                      height: cellHeight,
-                      child: Center(
-                        child: Text(
-                          "Add New",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              )
             ],
           ),
         )

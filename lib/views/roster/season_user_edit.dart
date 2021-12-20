@@ -49,11 +49,9 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
   late int _teamUserType;
 
   // season fields
-  late int _sPosition;
   late List<SUStats> _stats;
   late bool _isManager;
   late bool _isPlaying;
-  late Jersey _jersey;
   late int _seasonUserStatus;
   late bool _isSub;
   late String _nickname;
@@ -68,16 +66,9 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     _pos = widget.user.teamFields?.pos ?? "";
     _teamUserNote = widget.user.teamFields?.teamUserNote ?? "";
     _teamUserType = widget.user.teamFields?.teamUserType ?? 0;
-    _sPosition = widget.user.seasonFields?.sPosition ?? 0;
     _stats = widget.user.seasonFields?.stats ?? [];
     _isManager = widget.user.seasonFields?.isManager ?? false;
     _isPlaying = widget.user.seasonFields?.isPlaying ?? true;
-    _jersey = widget.user.seasonFields?.jersey ??
-        Jersey(
-          size: widget.user.seasonFields?.jerseySize ?? "",
-          number:
-              int.tryParse(widget.user.seasonFields?.jerseyNumber ?? "0") ?? 0,
-        );
     _seasonUserStatus = widget.user.seasonFields?.seasonUserStatus ?? 0;
     _isSub = widget.user.seasonFields?.isSub ?? false;
     _nickname = widget.user.seasonFields?.nickname ?? "";
@@ -390,15 +381,15 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             ],
           ),
           // jersey
-          _UserTextField(
-            label: "Jersey Size",
-            initialValue: _jersey.size ?? "",
-            onChanged: (value) {
-              setState(() {
-                _jersey.size = value;
-              });
-            },
-          ),
+          // _UserTextField(
+          //   label: "Jersey Size",
+          //   initialValue: _jersey.size ?? "",
+          //   onChanged: (value) {
+          //     setState(() {
+          //       _jersey.size = value;
+          //     });
+          //   },
+          // ),
           // user status
           if (!widget.isAdd)
             cv.BasicButton(
@@ -500,11 +491,8 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             "teamUserType": _teamUserType,
           },
           "seasonFields": {
-            "sPosition": _sPosition,
             "stats": _stats.map((v) => v.toJson()).toList(),
             "isManager": _isManager,
-            "isPlaying": _isPlaying,
-            "jersey": _jersey.toJson(),
             "seasonUserStatus": _seasonUserStatus,
             "isSub": _isSub,
             "nickname": _nickname,

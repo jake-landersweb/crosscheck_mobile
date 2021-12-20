@@ -10,7 +10,7 @@ class Section extends StatefulWidget {
     required this.child,
     this.allowsCollapse = false,
     this.initOpen = false,
-    this.headerPadding = const EdgeInsets.fromLTRB(16, 8, 8, 4),
+    this.headerPadding = const EdgeInsets.fromLTRB(16, 8, 0, 4),
   }) : super(key: key);
 
   final String title;
@@ -122,7 +122,7 @@ class _SectionState extends State<Section> with TickerProviderStateMixin {
               child: Divider(height: 0.5),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(15, 4, 15, 0),
+              padding: widget.headerPadding,
               child: cv.BasicButton(
                 onTap: () {
                   _toggleContainer();

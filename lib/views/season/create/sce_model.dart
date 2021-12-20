@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pnflutter/client/root.dart';
 import 'package:pnflutter/extras/root.dart';
-import '../../../custom_views/root.dart' as cv;
-
 import '../../../data/root.dart';
 
-class SCEModel {
+class SCEModel extends ChangeNotifier {
   String title = "";
 
   String website = "";
@@ -16,16 +14,39 @@ class SCEModel {
 
   List<CustomField> customFields = [];
   List<CustomUserField> customUserFields = [];
+  List<CustomUserField> oldCustomUserFields = [];
 
   List<SeasonUser> teamUsers = [];
 
   TeamStat stats = TeamStat.empty();
+  TeamStat oldStats = TeamStat.empty();
 
   int index = 0;
 
   late bool isCreate;
 
-  SCEModel(this.isCreate);
+  int seasonStatus = 2;
+
+  SCEModel.create(Team team) {
+    isCreate = true;
+    positions = TeamPositions.of(team.positions);
+  }
+
+  SCEModel.update(Team team, Season season) {
+    isCreate = false;
+    positions = TeamPositions.of(team.positions);
+    title = season.title;
+    website = season.website;
+    seasonNote = season.seasonNote;
+    showNicknames = season.showNicknames;
+    positions = TeamPositions.of(season.positions);
+    customFields = List.of(season.customFields);
+    customUserFields = List.of(season.customUserFields);
+    oldCustomUserFields = List.of(season.customUserFields);
+    stats = TeamStat.of(season.stats);
+    oldStats = TeamStat.of(season.stats);
+    seasonStatus = season.seasonStatus;
+  }
 
   Widget status(BuildContext context, DataModel dmodel) {
     return Padding(
@@ -104,5 +125,54 @@ class SCEModel {
         ),
       ),
     );
+  }
+
+  void setIndex(int index) {
+    this.index = index;
+    notifyListeners();
+  }
+
+  void addStat(StatItem item) {
+    stats.stats.add(item);
+    notifyListeners();
+  }
+
+  void removeStat(int index) {
+    stats.stats.removeAt(index);
+    notifyListeners();
+  }
+
+  bool isAtEnd() {
+    if (isCreate && index == 4) {
+      return true;
+    } else if (!isCreate && index == 3) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  String buttonTitle() {
+    if (customFields.any((element) => element.title.isEmpty)) {
+      return "Custom Fields Need Title";
+    } else if (customUserFields.any((element) => element.title.isEmpty)) {
+      return "Custom User Fields Need Title";
+    } else if (stats.stats.any((element) => element.title.isEmpty)) {
+      return "Stats Need A Title";
+    } else {
+      return isCreate ? "Create Season" : "Edit Season";
+    }
+  }
+
+  bool isValidated() {
+    if (customFields.any((element) => element.title.isEmpty)) {
+      return false;
+    } else if (customUserFields.any((element) => element.title.isEmpty)) {
+      return false;
+    } else if (stats.stats.any((element) => element.title.isEmpty)) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

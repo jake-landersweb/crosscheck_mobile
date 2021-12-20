@@ -203,56 +203,51 @@ class _MenuHostState extends State<MenuHost> {
 
   Widget _menuRow(
       BuildContext context, MenuItem _item, MenuModel _menu, Size _size) {
-    return cv.BasicButton(
-      onTap: () {
-        // set the selected page to this items page
-        setState(() {
-          _menu.selectedPage = _item.page;
-        });
-        // close the menu
-        Future.delayed(const Duration(milliseconds: 200), () {
-          _menu.close();
-        });
-      },
-      child: Align(
-        alignment: AlignmentDirectional.topStart,
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: cv.RoundedLabel(
+        "",
+        width: (_size.width / _menu.sizeThreashold) - 32,
+        color: _menu.selectedPage == _item.page
+            ? Theme.of(context).colorScheme.primary
+            : Colors.transparent,
+        textColor: _menu.selectedPage == _item.page
+            ? Colors.white
+            : CustomColors.textColor(context),
         child: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Material(
-            color: _menu.selectedPage == _item.page
-                ? Theme.of(context).colorScheme.primary
-                : Colors.transparent,
-            shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.circular(30)),
-            child: SizedBox(
-              width: (_size.width / _menu.sizeThreashold) - 32,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    Icon(
-                      _item.icon,
-                      color: _menu.selectedPage == _item.page
-                          ? Colors.white
-                          : CustomColors.textColor(context),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      _item.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 20,
-                        color: _menu.selectedPage == _item.page
-                            ? Colors.white
-                            : CustomColors.textColor(context),
-                      ),
-                    ),
-                  ],
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Icon(
+                _item.icon,
+                color: _menu.selectedPage == _item.page
+                    ? Colors.white
+                    : CustomColors.textColor(context),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                _item.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20,
+                  color: _menu.selectedPage == _item.page
+                      ? Colors.white
+                      : CustomColors.textColor(context),
                 ),
               ),
-            ),
+            ],
           ),
         ),
+        onTap: () {
+          // set the selected page to this items page
+          setState(() {
+            _menu.selectedPage = _item.page;
+          });
+          // close the menu
+          Future.delayed(const Duration(milliseconds: 200), () {
+            _menu.close();
+          });
+        },
       ),
     );
   }

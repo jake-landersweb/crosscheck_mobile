@@ -188,42 +188,6 @@ class SeasonUser extends Equatable {
     }
   }
 
-  String jersyeSize() {
-    if (seasonFields?.jersey != null) {
-      if (seasonFields!.jersey!.size != null) {
-        return seasonFields!.jersey!.size.toString();
-      } else if (seasonFields?.jerseySize.isEmpty() ?? true) {
-        return '';
-      } else {
-        return seasonFields!.jerseySize!;
-      }
-    } else {
-      if (seasonFields?.jerseySize.isEmpty() ?? true) {
-        return '';
-      } else {
-        return seasonFields!.jerseySize!;
-      }
-    }
-  }
-
-  String jerseyNumber() {
-    if (seasonFields?.jersey != null) {
-      if (seasonFields!.jersey!.number != null) {
-        return seasonFields!.jersey!.number.toString();
-      } else if (seasonFields?.jerseyNumber.isEmpty() ?? true) {
-        return '';
-      } else {
-        return seasonFields!.jerseyNumber!;
-      }
-    } else {
-      if (seasonFields?.jerseyNumber.isEmpty() ?? true) {
-        return '';
-      } else {
-        return seasonFields!.jerseyNumber!;
-      }
-    }
-  }
-
   String getPosition(int status) {
     switch (status) {
       case 0:
@@ -242,26 +206,6 @@ class SeasonUser extends Equatable {
       return "";
     } else {
       return teamFields!.teamUserNote!;
-    }
-  }
-
-  /// Composes stat fields line by line
-  String getSeasonStats() {
-    if (seasonFields?.stats == null) {
-      return "";
-    } else {
-      if (seasonFields!.stats!.isEmpty) {
-        return "";
-      } else {
-        String stat = "";
-        for (var i in seasonFields!.stats!) {
-          stat = stat + "${i.title.capitalize()}: ${i.value}";
-          if (i != seasonFields!.stats!.last) {
-            stat = stat + "\n";
-          }
-        }
-        return stat;
-      }
     }
   }
 

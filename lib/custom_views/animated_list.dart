@@ -15,6 +15,7 @@ class AnimatedList<T> extends StatefulWidget {
     this.onTap,
     this.allowTap = false,
     this.enabled = true,
+    this.onRemove,
   }) : super(key: key);
 
   final List<T> children;
@@ -25,6 +26,7 @@ class AnimatedList<T> extends StatefulWidget {
   final Function(T item)? onTap;
   final bool allowTap;
   final bool enabled;
+  final Function(int)? onRemove;
 
   @override
   _AnimatedListState<T> createState() => _AnimatedListState<T>();
@@ -52,9 +54,15 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
                   onTap: widget.onTap,
                   allowTap: widget.allowTap,
                   onRemove: (index) {
-                    setState(() {
-                      widget.children.removeAt(index);
-                    });
+                    if (widget.onRemove == null) {
+                      setState(() {
+                        widget.children.removeAt(index);
+                      });
+                    } else {
+                      setState(() {
+                        widget.onRemove!(index);
+                      });
+                    }
                   },
                 ),
                 if (i != widget.children.length - 1)
@@ -140,16 +148,6 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
     super.dispose();
   }
 
-  _toggleContainer() {
-    if (_animation.status != AnimationStatus.completed) {
-      _controller.forward();
-    } else {
-      _controller.animateBack(0,
-          duration: const Duration(milliseconds: 300),
-          curve: Sprung.overDamped);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Slidable(
@@ -165,13 +163,19 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
             },
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: widget.buttonPadding),
-              child: Material(
-                color: Colors.red.withOpacity(0.3),
-                shape: ContinuousRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Center(
-                  child: Icon(Icons.delete, color: Colors.red),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.red.withOpacity(0.3),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.red[900],
+                    ),
+                  ),
                 ),
               ),
             ),

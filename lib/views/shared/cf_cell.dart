@@ -7,8 +7,10 @@ class CustomFieldField extends StatefulWidget {
   const CustomFieldField({
     Key? key,
     required this.item,
+    this.color = Colors.blue,
   }) : super(key: key);
   final DynamicField item;
+  final Color color;
 
   @override
   _CustomFieldFieldState createState() => _CustomFieldFieldState();
@@ -37,9 +39,27 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
           titles: const ["Word", "Number", "True/False"],
           selections: const ["S", "I", "B"],
           onSelection: (value) {
+            // change the type
             setState(() {
               widget.item.setType(value);
             });
+            // change the value
+            switch (value) {
+              case "S":
+                setState(() {
+                  widget.item.setValue("");
+                });
+                break;
+              case "I":
+                setState(() {
+                  widget.item.setValue("0");
+                });
+                break;
+              default:
+                setState(() {
+                  widget.item.setValue("false");
+                });
+            }
           },
         ),
         SizedBox(height: 50, child: Center(child: _valField(context))),
@@ -81,6 +101,7 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
                 ),
               ),
               cv.NumberPicker(
+                plusBackgroundColor: widget.color,
                 minValue: -100,
                 maxValue: 100,
                 onMinusClick: (value) {

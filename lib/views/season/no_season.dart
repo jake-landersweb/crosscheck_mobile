@@ -27,9 +27,13 @@ class _NoSeasonState extends State<NoSeason> {
             color: dmodel.color),
         const SizedBox(height: 16),
         if (dmodel.tus?.user.isTeamAdmin() ?? false)
-          _buttonCell(
+          cv.RoundedLabel(
             "Create Season",
-            () {
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+            color: dmodel.color,
+            textColor: Colors.white,
+            onTap: () {
               // create team
               if (dmodel.tus != null) {
                 showMaterialModalBottomSheet(
@@ -45,34 +49,8 @@ class _NoSeasonState extends State<NoSeason> {
                     true);
               }
             },
-            dmodel.color,
-            Colors.white,
-            dmodel,
-          ),
+          )
       ],
-    );
-  }
-
-  Widget _buttonCell(String title, VoidCallback onTap, Color color,
-      Color textColor, DataModel dmodel) {
-    return cv.BasicButton(
-      onTap: onTap,
-      child: Material(
-        color: color,
-        shape: ContinuousRectangleBorder(
-          borderRadius: BorderRadius.circular(35),
-        ),
-        child: SizedBox(
-          height: cellHeight,
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(
-                  color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
