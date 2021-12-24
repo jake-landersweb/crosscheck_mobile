@@ -305,17 +305,17 @@ class _MenuHostState extends State<MenuHost> {
     // ),
     const MenuItem(
       title: 'Schedule',
-      icon: Icons.list,
+      icon: Icons.event_note,
       page: Pages.schedule,
     ),
     const MenuItem(
       title: 'Roster',
-      icon: Icons.person,
+      icon: Icons.people,
       page: Pages.seasonRoster,
     ),
     const MenuItem(
       title: 'Season Select',
-      icon: Icons.fact_check,
+      icon: Icons.rule,
       page: Pages.seasonSettings,
     ),
     const MenuItem(
@@ -325,7 +325,7 @@ class _MenuHostState extends State<MenuHost> {
     ),
     const MenuItem(
       title: 'Team Admin',
-      icon: Icons.manage_accounts,
+      icon: Icons.admin_panel_settings,
       page: Pages.teamAdmin,
     ),
     const MenuItem(

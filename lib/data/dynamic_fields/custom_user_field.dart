@@ -1,6 +1,7 @@
 import 'root.dart';
+import 'package:equatable/equatable.dart';
 
-class CustomUserField extends DynamicField {
+class CustomUserField extends DynamicField with EquatableMixin {
   late String title;
   late String type;
   late String defaultValue;
@@ -74,4 +75,7 @@ class CustomUserField extends DynamicField {
       return false;
     }
   }
+
+  @override
+  List<Object?> get props => [title, type, defaultValue];
 }

@@ -85,14 +85,19 @@ class _SCERootState extends State<SCERoot> {
     SCEModel scemodel = Provider.of<SCEModel>(context);
     return Column(
       children: [
-        const SizedBox(height: 100),
-        scemodel.status(context, dmodel),
-        const SizedBox(height: 16),
-        const Divider(
-          height: 0.5,
-          indent: 0,
-          endIndent: 0,
+        Container(
+          color: CustomColors.textColor(context).withOpacity(0.05),
+          child: Column(children: [
+            const SizedBox(height: 100),
+            scemodel.status(context, dmodel, _controller),
+            const SizedBox(height: 16),
+          ]),
         ),
+        // const Divider(
+        //   height: 0.5,
+        //   indent: 0,
+        //   endIndent: 0,
+        // ),
         Expanded(
           child: PageView(
             controller: _controller,
@@ -227,19 +232,20 @@ class _SCERootState extends State<SCERoot> {
       "seasonStatus": scemodel.seasonStatus,
     };
 
-    bool customUserFieldsMatch() {
-      for (var i in scemodel.customUserFields) {
-        if (!scemodel.oldCustomUserFields
-            .any((element) => element.isEqual(i))) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    if (!customUserFieldsMatch()) {
+    void addUserFields() {
       body['customUserFields'] =
           scemodel.customUserFields.map((e) => e.toJson()).toList();
+    }
+
+    if (scemodel.customUserFields.length ==
+        scemodel.oldCustomUserFields.length) {
+      for (var i in scemodel.oldCustomUserFields) {
+        if (scemodel.customUserFields.any((element) => element != i)) {
+          addUserFields();
+        }
+      }
+    } else {
+      addUserFields();
     }
 
     if (scemodel.stats != scemodel.oldStats) {

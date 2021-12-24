@@ -73,18 +73,7 @@ class _SCEStatsState extends State<SCEStats> {
   Widget _statList(BuildContext context, DataModel dmodel, SCEModel scemodel) {
     return Column(
       children: [
-        cv.AnimatedList<StatItem>(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          buttonPadding: 20,
-          children: scemodel.stats.stats,
-          cellBuilder: (BuildContext context, StatItem item) {
-            // return CustomFieldField(item: item);
-            return StatCell(item: item, color: dmodel.color);
-          },
-          onRemove: (index) {
-            scemodel.removeStat(index);
-          },
-        ),
+        scemodel.statView(context, dmodel),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: cv.RoundedLabel(
@@ -107,9 +96,11 @@ class StatCell extends StatefulWidget {
     Key? key,
     required this.item,
     this.color = Colors.blue,
+    required this.onTitleChange,
   }) : super(key: key);
   final StatItem item;
   final Color color;
+  final Function(String) onTitleChange;
 
   @override
   _StatCellState createState() => _StatCellState();
@@ -119,6 +110,7 @@ class _StatCellState extends State<StatCell> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
+    SCEModel scemodel = Provider.of<SCEModel>(context);
     return Column(
       children: [
         cv.TextField(
@@ -127,7 +119,7 @@ class _StatCellState extends State<StatCell> {
           labelText: "Title",
           onChanged: (value) {
             setState(() {
-              widget.item.setTitle(value);
+              widget.onTitleChange(value);
             });
           },
           validator: (value) {},
@@ -153,6 +145,7 @@ class _StatCellState extends State<StatCell> {
               cv.NumberPicker(
                 plusBackgroundColor: widget.color,
                 minValue: -100,
+                initialValue: widget.item.defaultValue,
                 maxValue: 100,
                 onMinusClick: (value) {
                   setState(() {

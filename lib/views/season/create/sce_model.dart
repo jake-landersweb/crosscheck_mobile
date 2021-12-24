@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pnflutter/client/root.dart';
 import 'package:pnflutter/extras/root.dart';
 import '../../../data/root.dart';
+import '../../../custom_views/root.dart' as cv;
+import 'root.dart';
+import 'package:sprung/sprung.dart';
 
 class SCEModel extends ChangeNotifier {
   String title = "";
@@ -40,29 +43,85 @@ class SCEModel extends ChangeNotifier {
     seasonNote = season.seasonNote;
     showNicknames = season.showNicknames;
     positions = TeamPositions.of(season.positions);
-    customFields = List.of(season.customFields);
-    customUserFields = List.of(season.customUserFields);
-    oldCustomUserFields = List.of(season.customUserFields);
-    stats = TeamStat.of(season.stats);
-    oldStats = TeamStat.of(season.stats);
+    customFields = List.from(season.customFields);
+    customUserFields = [
+      for (var i in season.customUserFields) CustomUserField.of(i)
+    ];
+    oldCustomUserFields = [
+      for (var i in season.customUserFields) CustomUserField.of(i)
+    ];
+    stats = season.stats.clone();
+    oldStats = season.stats.clone();
     seasonStatus = season.seasonStatus;
   }
 
-  Widget status(BuildContext context, DataModel dmodel) {
+  Widget status(
+      BuildContext context, DataModel dmodel, PageController controller) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: isCreate ? 16 : 32.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _cell(context, dmodel, "Basic Info", 0, Icons.lightbulb),
+          cv.BasicButton(
+              onTap: () {
+                controller.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 700),
+                  curve: Sprung.overDamped,
+                );
+                notifyListeners();
+              },
+              child: _cell(context, dmodel, "Basic Info", 0, Icons.lightbulb)),
           _spacer(context, dmodel),
-          _cell(context, dmodel, "Positions", 1, Icons.engineering),
+          cv.BasicButton(
+            onTap: () {
+              controller.animateTo(
+                1,
+                duration: const Duration(milliseconds: 700),
+                curve: Sprung.overDamped,
+              );
+              notifyListeners();
+            },
+            child: _cell(context, dmodel, "Positions", 1, Icons.engineering),
+          ),
           _spacer(context, dmodel),
-          _cell(context, dmodel, "Custom", 2, Icons.settings),
+          cv.BasicButton(
+            onTap: () {
+              controller.animateTo(
+                2,
+                duration: const Duration(milliseconds: 700),
+                curve: Sprung.overDamped,
+              );
+              notifyListeners();
+            },
+            child: _cell(context, dmodel, "Custom", 2, Icons.settings),
+          ),
           _spacer(context, dmodel),
-          _cell(context, dmodel, "Stats", 3, Icons.signal_cellular_alt),
+          cv.BasicButton(
+            onTap: () {
+              controller.animateTo(
+                2,
+                duration: const Duration(milliseconds: 700),
+                curve: Sprung.overDamped,
+              );
+              notifyListeners();
+            },
+            child:
+                _cell(context, dmodel, "Stats", 3, Icons.signal_cellular_alt),
+          ),
           if (isCreate) _spacer(context, dmodel),
-          if (isCreate) _cell(context, dmodel, "Users", 4, Icons.person_add),
+          if (isCreate)
+            cv.BasicButton(
+              onTap: () {
+                controller.animateTo(
+                  3,
+                  duration: const Duration(milliseconds: 700),
+                  curve: Sprung.overDamped,
+                );
+                notifyListeners();
+              },
+              child: _cell(context, dmodel, "Users", 4, Icons.person_add),
+            ),
         ],
       ),
     );
@@ -124,6 +183,28 @@ class SCEModel extends ChangeNotifier {
           ],
         ),
       ),
+    );
+  }
+
+  Widget statView(BuildContext context, DataModel dmodel) {
+    return cv.AnimatedList<StatItem>(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      buttonPadding: 20,
+      children: stats.stats,
+      cellBuilder: (BuildContext context, StatItem item) {
+        // return CustomFieldField(item: item);
+        return StatCell(
+          item: item,
+          color: dmodel.color,
+          onTitleChange: (value) {
+            item.setTitle(value);
+            notifyListeners();
+          },
+        );
+      },
+      onRemove: (index) {
+        removeStat(index);
+      },
     );
   }
 

@@ -10,10 +10,8 @@ class TeamStat extends Equatable {
     required this.stats,
   });
 
-  TeamStat.of(TeamStat s) {
-    isActive = s.isActive;
-    stats = List.of(s.stats);
-  }
+  TeamStat clone() => TeamStat(
+      isActive: isActive, stats: [for (var i in stats) StatItem.of(i)]);
 
   TeamStat.empty() {
     isActive = true;
