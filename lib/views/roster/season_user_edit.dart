@@ -68,45 +68,37 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     _firstName = widget.user.userFields?.firstName ?? "";
     _lastName = widget.user.userFields?.lastName ?? "";
     _phone = widget.user.userFields?.phone ?? "";
-    if (widget.isAdd) {
-      _teamPos = widget.team.positions.defaultPosition;
-    } else {
-      _teamPos = widget.user.teamFields?.pos ?? "None";
-    }
     _teamUserNote = widget.user.teamFields?.teamUserNote ?? "";
     _teamUserType = widget.user.teamFields?.teamUserType ?? 0;
-    _teamCustomFields = widget.user.teamFields?.customFields ?? [];
-    if (widget.isAdd) {
-      _seasonPos = widget.season?.positions.defaultPosition ?? "None";
-    } else {
-      _seasonPos = widget.user.seasonFields?.pos ?? "None";
-    }
     _isManager = widget.user.seasonFields?.isManager ?? false;
-    // _isPlaying = widget.user.seasonFields?.isPlaying ?? true;
     _seasonUserStatus = widget.user.seasonFields?.seasonUserStatus ?? 0;
     _isSub = widget.user.seasonFields?.isSub ?? false;
     _nickname = widget.user.seasonFields?.nickname ?? "";
     if (widget.isAdd) {
+      _teamPos = widget.team.positions.defaultPosition;
+      _seasonPos = widget.season?.positions.defaultPosition ?? "None";
       if (widget.season != null) {
+        _teamCustomFields = widget.team.customUserFields
+            .map((e) => CustomField(
+                title: e.getTitle(), type: e.getType(), value: e.getValue()))
+            .toList();
         _seasonCustomFields = widget.season!.customUserFields
             .map((e) => CustomField(
                 title: e.getTitle(), type: e.getType(), value: e.getValue()))
             .toList();
-      } else {
-        _seasonCustomFields = [];
-      }
-    } else {
-      _seasonCustomFields = widget.user.seasonFields?.customFields ?? [];
-    }
-    if (widget.isAdd) {
-      if (widget.season != null) {
         _stats = widget.season!.stats.stats
             .map((e) => SUStats(title: e.title, value: e.defaultValue))
             .toList();
       } else {
+        _teamCustomFields = [];
+        _seasonCustomFields = [];
         _stats = [];
       }
     } else {
+      _teamPos = widget.user.teamFields?.pos ?? "None";
+      _teamCustomFields = widget.user.teamFields?.customFields ?? [];
+      _seasonPos = widget.user.seasonFields?.pos ?? "None";
+      _seasonCustomFields = widget.user.seasonFields?.customFields ?? [];
       _stats = widget.user.seasonFields?.stats ?? [];
     }
   }
@@ -163,7 +155,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           _statsView(context, dmodel),
         const SizedBox(height: 32),
         cv.RoundedLabel(widget.isAdd ? "Create User" : "Update User",
-            color: dmodel.color, onTap: () {
+            color: dmodel.color, textColor: Colors.white, onTap: () {
           _function(context, dmodel);
         }),
         const SizedBox(height: 48),
@@ -330,14 +322,18 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             children: [
               // nickname
               if (widget.season?.showNicknames ?? false)
-                _UserTextField(
-                  label: "Nickname",
-                  initialValue: _nickname,
+                cv.TextField(
+                  labelText: "Nickname",
+                  fieldPadding: EdgeInsets.zero,
+                  isLabeled: true,
+                  initialvalue: _nickname,
+                  keyboardType: TextInputType.name,
                   onChanged: (value) {
                     setState(() {
                       _nickname = value;
                     });
                   },
+                  validator: (value) {},
                 ),
               // season position
               cv.BasicButton(
@@ -553,50 +549,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
         });
       }
     }
-  }
-}
-
-class _UserTextField extends StatefulWidget {
-  _UserTextField({
-    Key? key,
-    required this.label,
-    this.initialValue = "",
-    this.keyboardType = TextInputType.text,
-    required this.onChanged,
-  }) : super(key: key);
-  String label;
-  String initialValue;
-  TextInputType keyboardType;
-  Function(String) onChanged;
-
-  @override
-  _UserTextFieldState createState() => _UserTextFieldState();
-}
-
-class _UserTextFieldState extends State<_UserTextField> {
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.centerEnd,
-      children: [
-        cv.TextField(
-          labelText: widget.label,
-          showBackground: false,
-          initialvalue: widget.initialValue,
-          keyboardType: widget.keyboardType,
-          validator: (value) {},
-          onChanged: widget.onChanged,
-        ),
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: CustomColors.textColor(context).withOpacity(0.7),
-          ),
-        ),
-      ],
-    );
   }
 }
 
