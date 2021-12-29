@@ -96,27 +96,38 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
   Widget _teamInfo(BuildContext context) {
     return cv.Section(
       "Team Info",
-      child: cv.NativeList(
+      child: Column(
         children: [
-          if (widget.team.positions.isActive)
-            cv.LabeledCell(
-                label: "Team Position",
-                value: widget.user.teamFields?.pos ?? "",
-                height: 40),
-          cv.LabeledCell(
-              label: "User Type",
-              value: widget.user.teamUserType(),
-              height: 40),
-          cv.LabeledCell(
-              label: "Team Note",
-              value: (widget.user.teamFields?.teamUserNote.isEmpty() ?? true)
-                  ? "Empty"
-                  : widget.user.teamFields!.teamUserNote!,
-              height: 40),
-          // custom fields
+          cv.NativeList(
+            children: [
+              if (widget.team.positions.isActive)
+                cv.LabeledCell(
+                    label: "Team Position",
+                    value: widget.user.teamFields?.pos ?? "",
+                    height: 40),
+              cv.LabeledCell(
+                  label: "User Type",
+                  value: widget.user.teamUserType(),
+                  height: 40),
+              cv.LabeledCell(
+                  label: "Team Note",
+                  value:
+                      (widget.user.teamFields?.teamUserNote.isEmpty() ?? true)
+                          ? "Empty"
+                          : widget.user.teamFields!.teamUserNote!,
+                  height: 40),
+              // custom fields
+            ],
+          ),
+          const SizedBox(height: 8),
           if (widget.user.teamFields?.customFields.isNotEmpty ?? false)
-            for (var i in widget.user.teamFields!.customFields)
-              cv.LabeledCell(label: i.title, value: i.getValue(), height: 40),
+            cv.NativeList(
+              children: [
+                for (var i in widget.user.teamFields!.customFields)
+                  cv.LabeledCell(
+                      label: i.title, value: i.getValue(), height: 40),
+              ],
+            ),
         ],
       ),
     );
@@ -125,43 +136,53 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
   Widget _seasonInfo(BuildContext context) {
     return cv.Section(
       "Season Info",
-      child: cv.NativeList(
+      child: Column(
         children: [
-          if (!(widget.user.seasonFields?.nickname).isEmpty() &&
-              (widget.season?.showNicknames ?? false))
-            cv.LabeledCell(
-                height: 40,
-                label: "Nickname",
-                value: widget.user.seasonFields!.nickname),
-          cv.LabeledCell(
-              height: 40,
-              label: "Season Position",
-              value: widget.user.seasonFields?.pos ?? ""),
-          cv.LabeledCell(
-              height: 40,
-              label: "User Status",
-              value: widget.user.seasonUserStatus(
-                  widget.user.seasonFields?.seasonUserStatus ?? 0)),
-          cv.LabeledCell(
-              height: 40,
-              label: "Is Manager",
-              value: (widget.user.seasonFields?.isManager ?? false)
-                  ? "True"
-                  : "False"),
-          cv.LabeledCell(
-              height: 40,
-              label: "Season Note",
-              value: widget.user.seasonFields?.seasonUserNote ?? ""),
-          cv.LabeledCell(
-              height: 40,
-              label: "Is A Sub",
-              value: (widget.user.seasonFields?.isSub ?? false)
-                  ? "True"
-                  : "False"),
-          // custom fields
+          cv.NativeList(
+            children: [
+              if (!(widget.user.seasonFields?.nickname).isEmpty() &&
+                  (widget.season?.showNicknames ?? false))
+                cv.LabeledCell(
+                    height: 40,
+                    label: "Nickname",
+                    value: widget.user.seasonFields!.nickname),
+              cv.LabeledCell(
+                  height: 40,
+                  label: "Season Position",
+                  value: widget.user.seasonFields?.pos ?? ""),
+              cv.LabeledCell(
+                  height: 40,
+                  label: "User Status",
+                  value: widget.user.seasonUserStatus(
+                      widget.user.seasonFields?.seasonUserStatus ?? 0)),
+              cv.LabeledCell(
+                  height: 40,
+                  label: "Is Manager",
+                  value: (widget.user.seasonFields?.isManager ?? false)
+                      ? "True"
+                      : "False"),
+              cv.LabeledCell(
+                  height: 40,
+                  label: "Season Note",
+                  value: widget.user.seasonFields?.seasonUserNote ?? ""),
+              cv.LabeledCell(
+                  height: 40,
+                  label: "Is A Sub",
+                  value: (widget.user.seasonFields?.isSub ?? false)
+                      ? "True"
+                      : "False"),
+              // custom fields
+            ],
+          ),
+          const SizedBox(height: 8),
           if (widget.user.seasonFields?.customFields.isNotEmpty ?? false)
-            for (var i in widget.user.seasonFields!.customFields)
-              cv.LabeledCell(label: i.title, value: i.getValue(), height: 40),
+            cv.NativeList(
+              children: [
+                for (var i in widget.user.seasonFields!.customFields)
+                  cv.LabeledCell(
+                      label: i.title, value: i.getValue(), height: 40),
+              ],
+            ),
         ],
       ),
     );
