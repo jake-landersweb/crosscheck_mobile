@@ -44,54 +44,11 @@ class DataModel extends ChangeNotifier {
       await getUser(prefs.getString("email")!, (user) {
         setUser(user);
       });
-      // if (prefs.containsKey("teamId") && prefs.containsKey("seasonId")) {
-      // get tus with fast call
-      //   print("attempting to getall info with fast call");
-      //   await getUserTUS(prefs.getString("email")!, prefs.getString("teamId"),
-      //       prefs.getString("seasonId"), (utus) {
-      //     if (utus.tus != null && utus.schedule != null) {
-      //       print("successfully got fast data");
-      //       // successfully found all information
-      //       user = utus.user;
-      //       tus = utus.tus!;
-      //       // set the color
-      //       if (tus!.team.teamStyle.color != null) {
-      //         color = CustomColors.fromHex(tus!.team.teamStyle.color!);
-      //       }
-      //       Season? tempSeason;
-      //       for (var i in utus.tus!.seasons) {
-      //         if (i.seasonId == prefs.getString("seasonId")) {
-      //           tempSeason = i;
-      //           break;
-      //         }
-      //       }
-      //       if (tempSeason != null) {
-      //         currentSeason = tempSeason;
-      //         setSchedule(utus.schedule!);
-      //         notifyListeners();
-      //       } else {
-      //         // there was an issue with the season data, reget all data (this will not happen often)
-      //         setUser(utus.user);
-      //       }
-      //     } else {
-      //       print(utus.schedule);
-      //       // there was some issues getting the data, use basic pathway
-      //       setUser(utus.user);
-      //     }
-      //   });
-      // } else {
-      //   // use basic pathway
-      //   await getUser(prefs.getString("email")!, (user) {
-      //     setUser(user);
-      //   });
-      // }
     } else {
       print("user does not have saved email, going to login");
       showSplash = false;
       notifyListeners();
     }
-    // showSplash = false;
-    // notifyListeners();
   }
 
   // client for api requests
@@ -102,6 +59,13 @@ class DataModel extends ChangeNotifier {
 
   Color color = CustomColors.fromHex("00a1ff");
   Color accentColor = CustomColors.fromHex("00a1ff");
+
+  bool hasMoreUpcomingEvents = true;
+  bool hasMorePreviousEvents = false;
+  int upcomingEventsStartIndex = 0;
+  int previousEventsStartIndex = 0;
+
+  bool isFetchingEvents = false;
 
   User? user;
   void setUser(User user) async {
@@ -182,23 +146,19 @@ class DataModel extends ChangeNotifier {
     prefs.setString("seasonId", season.seasonId);
     notifyListeners();
     print("set the current season");
-    // get the next 5 events
-    getNextEvents(tus!.team.teamId, season.seasonId, user!.email, false,
-        (events) {
+    // get the next events
+    getPagedEvents(tus!.team.teamId, season.seasonId, user!.email,
+        upcomingEventsStartIndex, false, (events) {
       setUpcomingEvents(events);
-    });
+    }, hasLoads: false);
   }
 
   bool noTeam = false;
   bool noSeason = false;
 
-  bool isLoadingSchedule = false;
-
   List<Event>? upcomingEvents;
-  bool hasLoadedAllEvents = false;
   void setUpcomingEvents(List<Event> events) {
     upcomingEvents = events;
-    hasLoadedAllEvents = false;
     showSplash = false;
     notifyListeners();
 
@@ -214,52 +174,39 @@ class DataModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Schedule? schedule;
-  void setSchedule(Schedule schedule) {
-    this.schedule = schedule;
-    isLoadingSchedule = false;
-    print("set schedule");
-    notifyListeners();
-    // get the season users
-    getSeasonRoster(tus!.team.teamId, currentSeason!.seasonId, (seasonUsers) {
-      setSeasonUsers(seasonUsers);
-    });
-  }
-
-  Future<void> reloadSchedule(
-      String teamId, String seasonId, String email) async {
-    isLoadingSchedule = true;
-    schedule = null;
-    notifyListeners();
-
-    await scheduleGet(teamId, seasonId, email, (schedule) {
-      setSchedule(schedule);
-    });
-  }
-
   bool isFetchingRestEvents = false;
 
-  Future<void> getRestEvents(
-      String teamId, String seasonId, String email) async {
-    isFetchingRestEvents = true;
-    notifyListeners();
-    // get the rest of the events
-    await getNextEvents(teamId, seasonId, email, true, (events) {
-      upcomingEvents!.addAll(events);
-      hasLoadedAllEvents = true;
+  Future<void> getMoreEvents(
+      String teamId, String seasonId, String email, bool isPrevious) async {
+    getPagedEvents(
+        teamId,
+        seasonId,
+        email,
+        isPrevious ? previousEventsStartIndex : upcomingEventsStartIndex,
+        isPrevious, (events) {
+      if (isPrevious) {
+        setPreviousEvents(events);
+      } else {
+        setUpcomingEvents(events);
+      }
     });
-    isFetchingRestEvents = false;
     notifyListeners();
   }
 
   Future<void> reloadHomePage(
       String teamId, String seasonId, String email, bool getPrevious) async {
     // get the first 5 events
-    await getNextEvents(teamId, seasonId, email, false, (events) {
+    hasMorePreviousEvents = true;
+    hasMoreUpcomingEvents = true;
+    upcomingEventsStartIndex = 0;
+    previousEventsStartIndex = 0;
+    await getPagedEvents(
+        teamId, seasonId, email, upcomingEventsStartIndex, false, (events) {
       setUpcomingEvents(events);
     });
     if (previousEvents != null && getPrevious) {
-      await getPreviousEvents(teamId, seasonId, email, (events) {
+      await getPagedEvents(
+          teamId, seasonId, email, previousEventsStartIndex, true, (events) {
         setPreviousEvents(events);
       });
     }
@@ -313,6 +260,31 @@ class DataModel extends ChangeNotifier {
     seasonUsers = null;
     upcomingEvents = null;
     previousEvents = null;
+    previousEventsStartIndex = 0;
+    upcomingEventsStartIndex = 0;
+    hasMorePreviousEvents = true;
+    hasMoreUpcomingEvents = true;
+  }
+
+  Future<void> getPagedEvents(
+    String teamId,
+    String seasonId,
+    String email,
+    int startIndex,
+    bool isPrevious,
+    Function(List<Event>) completion, {
+    bool hasLoads = true,
+  }) async {
+    if (hasLoads) {
+      isFetchingEvents = true;
+      notifyListeners();
+    }
+    await getPagedEventsHelper(teamId, seasonId, email, startIndex, isPrevious,
+        (events) => completion(events));
+    if (hasLoads) {
+      isFetchingEvents = false;
+      notifyListeners();
+    }
   }
 }
 

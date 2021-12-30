@@ -234,7 +234,9 @@ class SCEModel extends ChangeNotifier {
   }
 
   String buttonTitle() {
-    if (customFields.any((element) => element.title.isEmpty)) {
+    if (title.isEmpty) {
+      return "Title Cannot Be Blank";
+    } else if (customFields.any((element) => element.title.isEmpty)) {
       return "Custom Fields Need Title";
     } else if (customUserFields.any((element) => element.title.isEmpty)) {
       return "Custom User Fields Need Title";
@@ -246,7 +248,9 @@ class SCEModel extends ChangeNotifier {
   }
 
   bool isValidated() {
-    if (customFields.any((element) => element.title.isEmpty)) {
+    if (title.isEmpty) {
+      return false;
+    } else if (customFields.any((element) => element.title.isEmpty)) {
       return false;
     } else if (customUserFields.any((element) => element.title.isEmpty)) {
       return false;

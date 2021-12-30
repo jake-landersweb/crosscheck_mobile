@@ -200,10 +200,11 @@ class _TeamAdminState extends State<TeamAdmin> {
           context,
           FullTeamRoster(
             team: widget.team,
+            teamUser: dmodel.tus!.user,
             childBuilder: (user) {
               return UserCell(
                 user: user,
-                isClickable: false,
+                isClickable: true,
                 season: Season.empty(),
               );
             },

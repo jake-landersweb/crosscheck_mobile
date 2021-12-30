@@ -18,16 +18,22 @@ class SeasonUserEdit extends StatefulWidget {
     required this.team,
     required this.user,
     required this.teamId,
+    this.currentSeasonUser,
+    required this.teamUser,
     this.season,
     required this.completion,
     this.isAdd = false,
+    this.onTeamUserCreate,
   }) : super(key: key);
   final Team team;
   final SeasonUser user;
   final String teamId;
+  final SeasonUser? currentSeasonUser;
+  final SeasonUserTeamFields teamUser;
   final Season? season;
   final VoidCallback completion;
   final bool isAdd;
+  final Function(SeasonUser)? onTeamUserCreate;
 
   @override
   _SeasonUserEditState createState() => _SeasonUserEditState();
@@ -77,11 +83,11 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     if (widget.isAdd) {
       _teamPos = widget.team.positions.defaultPosition;
       _seasonPos = widget.season?.positions.defaultPosition ?? "None";
+      _teamCustomFields = widget.team.customUserFields
+          .map((e) => CustomField(
+              title: e.getTitle(), type: e.getType(), value: e.getValue()))
+          .toList();
       if (widget.season != null) {
-        _teamCustomFields = widget.team.customUserFields
-            .map((e) => CustomField(
-                title: e.getTitle(), type: e.getType(), value: e.getValue()))
-            .toList();
         _seasonCustomFields = widget.season!.customUserFields
             .map((e) => CustomField(
                 title: e.getTitle(), type: e.getType(), value: e.getValue()))
@@ -90,17 +96,26 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             .map((e) => SUStats(title: e.title, value: e.defaultValue))
             .toList();
       } else {
-        _teamCustomFields = [];
         _seasonCustomFields = [];
         _stats = [];
       }
     } else {
       _teamPos = widget.user.teamFields?.pos ?? "None";
-      _teamCustomFields = widget.user.teamFields?.customFields ?? [];
+      _teamCustomFields = [
+        for (var i in widget.user.teamFields?.customFields ?? []) i.clone()
+      ];
       _seasonPos = widget.user.seasonFields?.pos ?? "None";
-      _seasonCustomFields = widget.user.seasonFields?.customFields ?? [];
-      _stats = widget.user.seasonFields?.stats ?? [];
+      _seasonCustomFields = [
+        for (var i in widget.user.seasonFields?.customFields ?? []) i.clone()
+      ];
+      if (widget.user.seasonFields?.stats != null) {
+        _stats = [for (var i in widget.user.seasonFields!.stats) i.clone()];
+      } else {
+        _stats = [];
+      }
     }
+    print(widget.currentSeasonUser?.isSeasonAdmin());
+    print(widget.teamUser.isTeamAdmin());
   }
 
   @override
@@ -121,6 +136,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
       children: [
         const SizedBox(height: 16),
         cv.NativeList(
+          itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
           children: [
             if (widget.isAdd)
               cv.TextField(
@@ -146,16 +162,29 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
           ],
         ),
         _userFields(context),
-        if ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) ||
-            (dmodel.tus?.user.isTeamAdmin() ?? false))
+        if (widget.currentSeasonUser?.isTeamAdmin() ??
+            widget.teamUser.isTeamAdmin())
           _teamFields(context, dmodel),
-        if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+        if ((widget.currentSeasonUser?.isSeasonAdmin() ?? false) &&
+            (widget.season != null))
           _seasonFields(context, dmodel),
-        if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+        if ((widget.currentSeasonUser?.isSeasonAdmin() ?? false) &&
+            (widget.season != null))
           _statsView(context, dmodel),
         const SizedBox(height: 32),
-        cv.RoundedLabel(widget.isAdd ? "Create User" : "Update User",
-            color: dmodel.color, textColor: Colors.white, onTap: () {
+        cv.RoundedLabel("",
+            child: _isLoading
+                ? const cv.LoadingIndicator(color: Colors.white)
+                : Text(
+                    widget.isAdd ? "Create User" : "Update User",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+            color: dmodel.color,
+            textColor: Colors.white, onTap: () {
           _function(context, dmodel);
         }),
         const SizedBox(height: 48),
@@ -167,6 +196,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     return cv.Section(
       "User Fields",
       child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         children: [
           cv.TextField(
             labelText: "First Name",
@@ -218,6 +248,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
       child: Column(
         children: [
           cv.NativeList(
+            itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             children: [
               // team position
               cv.BasicButton(
@@ -267,42 +298,47 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
                 validator: (value) {},
               ),
               // team user type
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0),
-                    child: Row(
-                      children: [
-                        const Spacer(),
-                        Text(
-                          "Team User Type",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: CustomColors.textColor(context)
-                                .withOpacity(0.5),
+              if (widget.teamUser.isOwner())
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6.0),
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          Text(
+                            "Team User Type",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: CustomColors.textColor(context)
+                                  .withOpacity(0.5),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  cv.SegmentedPicker<int>(
-                    initialSelection: _teamUserType,
-                    titles: ["Inactive", "Active", "Owner"],
-                    selections: [-1, 1, 3],
-                    onSelection: (value) {
-                      setState(() {
-                        _teamUserType = value;
-                      });
-                    },
-                  )
-                ],
-              ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: cv.SegmentedPicker<int>(
+                        initialSelection: _teamUserType,
+                        titles: ["Inactive", "Active", "Owner"],
+                        selections: [-1, 1, 3],
+                        onSelection: (value) {
+                          setState(() {
+                            _teamUserType = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
           const SizedBox(height: 8),
           // team custom fields
           cv.NativeList(
+            itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             children: [
               for (var customField in _teamCustomFields)
                 CustomFieldCell(field: customField, color: dmodel.color),
@@ -319,6 +355,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
       child: Column(
         children: [
           cv.NativeList(
+            itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             children: [
               // nickname
               if (widget.season?.showNicknames ?? false)
@@ -384,67 +421,59 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
                   },
                 ),
               ),
-              // user status
-              if (!widget.isAdd)
-                cv.BasicButton(
-                  onTap: () {
-                    cv.showFloatingSheet(
-                      context: context,
-                      builder: (context) {
-                        return UserStatusSelect(
-                            isAdd: widget.isAdd,
-                            onSelect: (value) {
-                              setState(() {
-                                _seasonUserStatus = value;
-                              });
-                            },
-                            initialSelection: _seasonUserStatus);
-                      },
-                    );
-                  },
-                  child: cv.LabeledWidget(
-                    "User Status",
-                    child: Text(
-                      widget.user.seasonUserStatus(_seasonUserStatus),
-                      style: const TextStyle(
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18),
-                    ),
+              if (widget.isAdd)
+                cv.LabeledWidget(
+                  "Is A Sub",
+                  child: FlutterSwitch(
+                    value: _isSub,
+                    height: 25,
+                    width: 50,
+                    toggleSize: 18,
+                    activeColor: dmodel.color,
+                    onToggle: (value) {
+                      setState(() {
+                        _isSub = value;
+                      });
+                    },
                   ),
-                )
-              else
-                Row(
-                  children: [
-                    FlutterSwitch(
-                      value: _isSub,
-                      height: 25,
-                      width: 50,
-                      toggleSize: 18,
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      onToggle: (value) {
-                        setState(() {
-                          _isSub = value;
-                        });
-                      },
-                    ),
-                    const Spacer(),
-                    const SizedBox(height: 40),
-                    Text(
-                      "Is A Sub",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: CustomColors.textColor(context).withOpacity(0.7),
-                      ),
-                    ),
-                  ],
                 ),
+              // user status
+              cv.BasicButton(
+                onTap: () {
+                  cv.showFloatingSheet(
+                    context: context,
+                    builder: (context) {
+                      return cv.ModelSelector<int>(
+                        initialSelection: _seasonUserStatus,
+                        selections: [1, -1],
+                        titles: ["Active", "Inactive"],
+                        title: "User Status",
+                        onSelection: (value) {
+                          setState(() {
+                            _seasonUserStatus = value;
+                          });
+                        },
+                      );
+                    },
+                  );
+                },
+                child: cv.LabeledWidget(
+                  "User Status",
+                  child: Text(
+                    widget.user.seasonUserStatus(_seasonUserStatus),
+                    style: const TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18),
+                  ),
+                ),
+              )
             ],
           ),
           const SizedBox(height: 8),
           // season custom fields
           cv.NativeList(
+            itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             children: [
               for (var customField in _seasonCustomFields)
                 CustomFieldCell(field: customField, color: dmodel.color),
@@ -459,6 +488,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     return cv.Section(
       "Stats",
       child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         children: [
           for (var i in _stats) _StatEditCell(stat: i, color: dmodel.color),
         ],
@@ -490,7 +520,8 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
         };
 
         // if user is a team admin, create the team field portion
-        if (widget.user.isTeamAdmin()) {
+        if (widget.currentSeasonUser?.isTeamAdmin() ??
+            widget.teamUser.isTeamAdmin()) {
           body['teamFields'] = {
             "pos": _teamPos,
             "teamNote": _teamUserNote,
@@ -500,12 +531,14 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
         }
 
         // if season is not null, and if is season admin, add the season fields
-        if (widget.user.isSeasonAdmin()) {
+        if ((widget.currentSeasonUser?.isSeasonAdmin() ?? false) &&
+            widget.season != null) {
           body['seasonFields'] = {
             "pos": _seasonPos,
             "isManager": _isManager,
             "seasonUserStatus": _seasonUserStatus,
             "customFields": _seasonCustomFields.map((e) => e.toJson()).toList(),
+            "stats": _stats.map((e) => e.toJson()).toList(),
           };
         }
 
@@ -521,13 +554,18 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             });
           } else {
             // add user to the team
-            print("TODO");
+            await dmodel.createTeamUser(widget.teamId, body, (seasonUser) {
+              if (widget.onTeamUserCreate != null) {
+                widget.onTeamUserCreate!(seasonUser);
+              }
+              Navigator.of(context).pop();
+            });
           }
         } else {
           if (widget.season != null) {
             // update the season user
             await dmodel.seasonUserUpdate(
-                widget.teamId, widget.season!.seasonId, widget.user.email, body,
+                widget.teamId, widget.season!.seasonId, _email, body,
                 (seasonUser) {
               // replace the user with the returned one
               for (var i in dmodel.seasonUsers!) {

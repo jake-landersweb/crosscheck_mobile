@@ -181,20 +181,31 @@ class _MenuHostState extends State<MenuHost> {
               ),
             const SizedBox(height: 16),
             const Divider(height: 0.5),
-            const SizedBox(height: 16),
-            _menuRow(context, _menuItems[0], _menu, _size),
-            const SizedBox(height: 16),
-            _menuRow(context, _menuItems[1], _menu, _size),
-            const SizedBox(height: 16),
-            _menuRow(context, _menuItems[2], _menu, _size),
-            const SizedBox(height: 16),
-            _menuRow(context, _menuItems[3], _menu, _size),
-            const SizedBox(height: 16),
-            if (dmodel.tus?.user.isTeamAdmin() ?? false)
-              _menuRow(context, _menuItems[4], _menu, _size),
-            const SizedBox(height: 16),
-            if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
-              _menuRow(context, _menuItems[5], _menu, _size),
+            SizedBox(
+              width:
+                  (MediaQuery.of(context).size.width / _menu.sizeThreashold) -
+                      16,
+              child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                children: [
+                  const SizedBox(height: 16),
+                  _menuRow(context, _menuItems[0], _menu, _size),
+                  const SizedBox(height: 16),
+                  _menuRow(context, _menuItems[1], _menu, _size),
+                  const SizedBox(height: 16),
+                  _menuRow(context, _menuItems[2], _menu, _size),
+                  const SizedBox(height: 16),
+                  _menuRow(context, _menuItems[3], _menu, _size),
+                  const SizedBox(height: 16),
+                  if (dmodel.tus?.user.isTeamAdmin() ?? false)
+                    _menuRow(context, _menuItems[4], _menu, _size),
+                  const SizedBox(height: 16),
+                  if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+                    _menuRow(context, _menuItems[5], _menu, _size),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -268,6 +279,7 @@ class _MenuHostState extends State<MenuHost> {
             season: dmodel.currentSeason!,
             seasonUsers: dmodel.seasonUsers,
             teamUser: dmodel.tus!.user,
+            currentSeasonUser: dmodel.currentSeasonUser,
             isOnTeam: true,
           );
         }

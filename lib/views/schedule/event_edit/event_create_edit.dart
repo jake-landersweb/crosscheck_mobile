@@ -79,8 +79,15 @@ class _EventCreateEditState extends State<EventCreateEdit> {
           title: widget.isCreate ? "Create Event" : "Edit Event",
           isLarge: false,
           backgroundColor: CustomColors.backgroundColor(context),
-          itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
-          leading: [cv.BackButton(color: dmodel.color)],
+          // itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+          leading: [
+            cv.BackButton(
+              color: dmodel.color,
+              showText: true,
+              title: "Cancel",
+              showIcon: false,
+            ),
+          ],
           trailing: [if (!widget.isCreate) _editButton(context, dmodel)],
           children: [
             if (widget.isCreate)
@@ -376,69 +383,15 @@ class _EventCreateEditState extends State<EventCreateEdit> {
             isLabeled: true,
           ),
           cv.TextField(
-            labelText: "Address 1",
+            labelText: "Address",
             onChanged: (value) {
               setState(() {
-                _event.eventLocation?.address1 = value;
+                _event.eventLocation?.address = value;
               });
             },
             validator: (value) {},
             showBackground: false,
-            initialvalue: _event.eventLocation?.address1 ?? "",
-            isLabeled: true,
-          ),
-          cv.TextField(
-            labelText: "Address 2",
-            onChanged: (value) {
-              setState(() {
-                _event.eventLocation?.address2 = value;
-              });
-            },
-            validator: (value) {},
-            showBackground: false,
-            initialvalue: _event.eventLocation?.address2 ?? "",
-            isLabeled: true,
-          ),
-          cv.TextField(
-            labelText: "City",
-            onChanged: (value) {
-              setState(() {
-                _event.eventLocation?.city = value;
-              });
-            },
-            validator: (value) {},
-            showBackground: false,
-            initialvalue: _event.eventLocation?.city ?? "",
-            isLabeled: true,
-          ),
-          cv.TextField(
-            labelText: "State",
-            onChanged: (value) {
-              setState(() {
-                _event.eventLocation?.state = value;
-              });
-            },
-            validator: (value) {},
-            showBackground: false,
-            initialvalue: _event.eventLocation?.state ?? "",
-            isLabeled: true,
-          ),
-          cv.TextField(
-            labelText: "Zip",
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              try {
-                int zip = int.parse(value);
-                setState(() {
-                  _event.eventLocation?.zip = zip;
-                });
-              } catch (error) {
-                dmodel.setError("Invalid Character", true);
-              }
-            },
-            validator: (value) {},
-            showBackground: false,
-            initialvalue: "${_event.eventLocation?.zip ?? ""}",
+            initialvalue: _event.eventLocation?.address ?? "",
             isLabeled: true,
           ),
         ],
@@ -458,7 +411,8 @@ class _EventCreateEditState extends State<EventCreateEdit> {
           ),
         ),
         const SizedBox(height: 16),
-        cv.BasicButton(
+        cv.RoundedLabel(
+          "Add Sub",
           onTap: () {
             cv.Navigate(
               context,
@@ -468,18 +422,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
                   eventId: _event.eventId),
             );
           },
-          child: Material(
-            color: CustomColors.cellColor(context),
-            shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.circular(cornerRadius)),
-            child: const SizedBox(
-              height: 50,
-              width: double.infinity,
-              child: Center(
-                child: Text("Add Sub"),
-              ),
-            ),
-          ),
+          color: CustomColors.cellColor(context),
         ),
         const SizedBox(height: 24),
       ],
@@ -512,29 +455,27 @@ class _EventCreateEditState extends State<EventCreateEdit> {
   }
 
   Widget _actionButton(BuildContext context, DataModel dmodel) {
-    return cv.NativeList(
-      children: [
-        cv.BasicButton(
-          onTap: () {
-            _action(context, dmodel);
-          },
-          child: SizedBox(
-            height: 40,
-            child: Center(
-              child: _isLoading
-                  ? cv.LoadingIndicator()
-                  : Text(
-                      "Create Event",
-                      style: TextStyle(
-                        color: dmodel.color,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      ),
-                    ),
-            ),
-          ),
+    return cv.RoundedLabel(
+      "",
+      onTap: () {
+        _action(context, dmodel);
+      },
+      color: dmodel.color,
+      child: SizedBox(
+        height: 40,
+        child: Center(
+          child: _isLoading
+              ? const cv.LoadingIndicator()
+              : const Text(
+                  "Create Event",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
         ),
-      ],
+      ),
     );
   }
 
@@ -546,7 +487,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
       child: SizedBox(
         height: 20,
         child: _isLoading
-            ? Center(
+            ? const Center(
                 child: cv.LoadingIndicator(),
               )
             : Text(
@@ -678,15 +619,11 @@ class _EventCreateEditState extends State<EventCreateEdit> {
     _eventBody['awayTeam'] = awayTeam.toJson();
     _eventBody['teamId'] = widget.teamId;
     _eventBody['seasonId'] = widget.season.seasonId;
-    _eventBody['eLocation'] = _event.eventLocation?.name ?? "";
 
     // send the request
     if (widget.isCreate) {
       await dmodel
           .createEvent(widget.teamId, widget.season.seasonId, _eventBody, () {
-        setState(() {
-          dmodel.schedule == null;
-        });
         Navigator.of(context).pop();
         widget.completion();
       });

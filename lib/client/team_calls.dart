@@ -121,4 +121,23 @@ extension TeamCalls on DataModel {
       }
     });
   }
+
+  Future<void> createTeamUser(String teamId, Map<String, dynamic> body,
+      Function(SeasonUser) completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .post("/teams/$teamId/createUser", headers, jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue adding the user", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully added user", true);
+        completion(SeasonUser.fromJson(response['body']));
+      } else {
+        setError("There was an issue adding the user", true);
+        print(response['message']);
+      }
+    });
+  }
 }

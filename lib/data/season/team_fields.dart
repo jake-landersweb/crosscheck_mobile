@@ -8,6 +8,7 @@ class SeasonUserTeamFields {
   // new fields
   late String pos;
   late List<CustomField> customFields;
+  late int validationStatus;
 
   SeasonUserTeamFields({
     this.teamUserNote,
@@ -16,6 +17,7 @@ class SeasonUserTeamFields {
     required this.teamUserType,
     required this.pos,
     required this.customFields,
+    required this.validationStatus,
   });
 
   SeasonUserTeamFields.empty() {
@@ -25,6 +27,7 @@ class SeasonUserTeamFields {
     teamUserType = 1;
     pos = "";
     customFields = [];
+    validationStatus = 1;
   }
 
   SeasonUserTeamFields.of(SeasonUserTeamFields user) {
@@ -34,6 +37,7 @@ class SeasonUserTeamFields {
     teamUserType = user.teamUserType;
     pos = user.pos;
     customFields = user.customFields;
+    validationStatus = user.validationStatus;
   }
 
   SeasonUserTeamFields.fromJson(Map<String, dynamic> json) {
@@ -45,6 +49,7 @@ class SeasonUserTeamFields {
     teamUserType = json['teamUserType']?.round();
     pos = json['pos'] ?? "";
     customFields = [];
+    validationStatus = json['validationStatus'].round() ?? 1;
     if (json.containsKey("customFields")) {
       json['customFields']
           .forEach((v) => customFields.add(CustomField.fromJson(v)));
@@ -59,12 +64,30 @@ class SeasonUserTeamFields {
       data['lastSeason'] = lastSeason!.toJson();
     }
     data['teamUserType'] = teamUserType;
+    data['validationStatus'] = validationStatus;
 
     return data;
   }
 
   bool isTeamAdmin() {
     return teamUserType > 1 ? true : false;
+  }
+
+  bool isOwner() {
+    return teamUserType == 3 ? true : false;
+  }
+
+  String getValidationStatus() {
+    switch (validationStatus) {
+      case 1:
+        return "Active";
+      case 2:
+        return "Invited";
+      case 0:
+        return "Recuit";
+      default:
+        return "Unknown";
+    }
   }
 }
 

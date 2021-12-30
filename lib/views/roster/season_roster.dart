@@ -57,6 +57,8 @@ class _SeasonRosterState extends State<SeasonRoster> {
                 SeasonUserEdit(
                   team: widget.team,
                   user: SeasonUser.empty(),
+                  currentSeasonUser: widget.currentSeasonUser,
+                  teamUser: widget.teamUser,
                   teamId: widget.team.teamId,
                   season: widget.season,
                   completion: () {},
@@ -182,6 +184,8 @@ class _SeasonRosterState extends State<SeasonRoster> {
             season: widget.season,
             user: user,
             team: dmodel.tus!.team,
+            currentSeasonUser: widget.currentSeasonUser,
+            teamUser: widget.teamUser,
           ),
         );
       },

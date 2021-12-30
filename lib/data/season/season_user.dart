@@ -171,18 +171,8 @@ class SeasonUser extends Equatable {
     switch (status) {
       case 1:
         return "Active";
-      case 2:
-        return "Sub";
-      case 3:
-        return "Recruit";
-      case 4:
-        return "Invited";
-      case 5:
-        return "Sub Recruit";
-      case 6:
-        return "Sub Invited";
       case -1:
-        return "Innactive";
+        return "Inactive";
       default:
         return "Unknown";
     }

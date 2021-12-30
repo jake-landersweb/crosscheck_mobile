@@ -332,8 +332,14 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
           children: [
             if (!(widget.event.eventLocation?.name).isEmpty())
               EventMetaDataCell(
-                  title: widget.event.eventLocation!.name!,
-                  icon: Icons.near_me),
+                title: widget.event.eventLocation!.name!,
+                icon: Icons.home_outlined,
+              ),
+            if (!(widget.event.eventLocation?.address).isEmpty())
+              EventMetaDataCell(
+                title: widget.event.eventLocation!.address!,
+                icon: Icons.near_me,
+              ),
             if (!widget.event.eLink.isEmpty())
               EventMetaDataCell(title: widget.event.eLink!, icon: Icons.link),
             if (!widget.event.eDescription.isEmpty())

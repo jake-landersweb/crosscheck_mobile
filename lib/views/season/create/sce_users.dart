@@ -57,6 +57,7 @@ class _SCEUsersState extends State<SCEUsers> {
             FullTeamRoster(
               team: widget.team,
               allowSelect: true,
+              teamUser: dmodel.tus!.user,
               onSelection: (user) {
                 if (scemodel.teamUsers
                     .any((element) => element.email == user.email)) {

@@ -13,11 +13,15 @@ class SeasonUserDetail extends StatefulWidget {
     this.season,
     required this.user,
     required this.team,
+    required this.teamUser,
+    this.currentSeasonUser,
   }) : super(key: key);
 
   final Season? season;
   final SeasonUser user;
   final Team team;
+  final SeasonUser? currentSeasonUser;
+  final SeasonUserTeamFields teamUser;
 
   @override
   State<SeasonUserDetail> createState() => _SeasonUserDetailState();
@@ -102,20 +106,27 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
             children: [
               if (widget.team.positions.isActive)
                 cv.LabeledCell(
-                    label: "Team Position",
-                    value: widget.user.teamFields?.pos ?? "",
-                    height: 40),
+                  label: "Team Position",
+                  value: widget.user.teamFields?.pos ?? "",
+                  height: 40,
+                ),
               cv.LabeledCell(
-                  label: "User Type",
-                  value: widget.user.teamUserType(),
-                  height: 40),
+                label: "User Type",
+                value: widget.user.teamUserType(),
+                height: 40,
+              ),
               cv.LabeledCell(
-                  label: "Team Note",
-                  value:
-                      (widget.user.teamFields?.teamUserNote.isEmpty() ?? true)
-                          ? "Empty"
-                          : widget.user.teamFields!.teamUserNote!,
-                  height: 40),
+                label: "Team Note",
+                value: (widget.user.teamFields?.teamUserNote.isEmpty() ?? true)
+                    ? "Empty"
+                    : widget.user.teamFields!.teamUserNote!,
+                height: 40,
+              ),
+              cv.LabeledCell(
+                label: "Validation Status",
+                value: widget.user.teamFields?.getValidationStatus() ?? "",
+                height: 40,
+              ),
               // custom fields
             ],
           ),
@@ -210,6 +221,8 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
             team: dmodel.tus!.team,
             user: widget.user,
             teamId: widget.team.teamId,
+            currentSeasonUser: widget.currentSeasonUser,
+            teamUser: widget.teamUser,
             season: widget.season,
             completion: () {
               // do not need to fetch roster, getting returned value and replacing in list

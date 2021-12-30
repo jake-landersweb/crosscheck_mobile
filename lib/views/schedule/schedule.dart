@@ -99,43 +99,43 @@ class _ScheduleState extends State<Schedule> {
                     isPrevious: false,
                   ),
                   const SizedBox(height: 32),
-                  if (!dmodel.hasLoadedAllEvents)
-                    cv.BasicButton(
+                  if (dmodel.hasMoreUpcomingEvents)
+                    cv.RoundedLabel(
+                      "",
+                      width: MediaQuery.of(context).size.width / 2,
                       onTap: () {
-                        dmodel.getRestEvents(dmodel.tus!.team.teamId,
-                            dmodel.currentSeason!.seasonId, dmodel.user!.email);
+                        dmodel.getMoreEvents(
+                          dmodel.tus!.team.teamId,
+                          dmodel.currentSeason!.seasonId,
+                          dmodel.user!.email,
+                          false,
+                        );
                       },
-                      child: Material(
-                        color: CustomColors.cellColor(context),
-                        shape: ContinuousRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        child: SizedBox(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: dmodel.isFetchingRestEvents
-                              ? const cv.LoadingIndicator()
-                              : const Opacity(
-                                  opacity: 0.5,
-                                  child: Center(
-                                    child: Text(
-                                      "Get More",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                      child: Center(
+                        child: dmodel.isFetchingEvents
+                            ? const cv.LoadingIndicator()
+                            : const Opacity(
+                                opacity: 0.5,
+                                child: Center(
+                                  child: Text(
+                                    "Get More",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                 ),
-                        ),
+                              ),
                       ),
                     ),
                 ],
               )
           else
             PreviousEvents(
-                teamId: dmodel.tus!.team.teamId,
-                seasonId: dmodel.currentSeason!.seasonId,
-                email: dmodel.user!.email),
+              teamId: dmodel.tus!.team.teamId,
+              seasonId: dmodel.currentSeason!.seasonId,
+              email: dmodel.user!.email,
+            ),
           const SizedBox(height: 48),
         ],
       );
@@ -200,16 +200,50 @@ class _PreviousEventsState extends State<PreviousEvents> {
     } else if (dmodel.previousEvents!.isEmpty) {
       return cv.NoneFound("There are no previous events", color: dmodel.color);
     } else {
-      return EventList(list: dmodel.previousEvents!, isPrevious: true);
+      return Column(
+        children: [
+          EventList(list: dmodel.previousEvents!, isPrevious: true),
+          const SizedBox(height: 32),
+          if (dmodel.hasMorePreviousEvents)
+            cv.RoundedLabel(
+              "",
+              width: MediaQuery.of(context).size.width / 2,
+              onTap: () {
+                dmodel.getMoreEvents(
+                  dmodel.tus!.team.teamId,
+                  dmodel.currentSeason!.seasonId,
+                  dmodel.user!.email,
+                  true,
+                );
+              },
+              child: Center(
+                child: dmodel.isFetchingEvents
+                    ? const cv.LoadingIndicator()
+                    : const Opacity(
+                        opacity: 0.5,
+                        child: Center(
+                          child: Text(
+                            "Get More",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+        ],
+      );
     }
   }
 
   Future<void> _getPreviousEvents(DataModel dmodel) async {
     if (dmodel.previousEvents == null) {
-      dmodel.getPreviousEvents(widget.teamId, widget.seasonId, widget.email,
-          (events) {
+      dmodel.getPagedEvents(widget.teamId, widget.seasonId, widget.email,
+          dmodel.previousEventsStartIndex, true, (events) {
         dmodel.setPreviousEvents(events);
-      });
+      }, hasLoads: false);
     }
   }
 }

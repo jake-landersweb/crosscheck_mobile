@@ -17,6 +17,8 @@ class CustomField extends DynamicField {
     value = f.value;
   }
 
+  CustomField clone() => CustomField(title: title, type: type, value: value);
+
   CustomField.fromJson(dynamic json) {
     title = json['title'] ?? "";
     type = json['type'] ?? "S";

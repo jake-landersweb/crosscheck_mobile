@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'core/root.dart' as cv;
 
 class ModelSelector<T> extends StatefulWidget {
-  const ModelSelector(
-      {Key? key,
-      required this.title,
-      required this.selections,
-      required this.onSelection,
-      required this.initialSelection,
-      this.color = Colors.blue})
-      : super(key: key);
+  const ModelSelector({
+    Key? key,
+    required this.title,
+    required this.selections,
+    required this.onSelection,
+    required this.initialSelection,
+    this.color = Colors.blue,
+    this.textColor = Colors.white,
+    this.titles,
+  }) : super(key: key);
   final String title;
   final List<T> selections;
   final Function(T) onSelection;
   final T initialSelection;
   final Color color;
+  final Color textColor;
+  final List<String>? titles;
 
   @override
   _ModelSelectorState<T> createState() => _ModelSelectorState<T>();
@@ -73,13 +77,19 @@ class _ModelSelectorState<T> extends State<ModelSelector<T>> {
           ),
         ),
         const SizedBox(height: 16),
-        for (T val in widget.selections)
+        for (int index = 0; index < widget.selections.length; index++)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: [
-                _cell(context, val),
-                if (val != widget.selections.last) const SizedBox(height: 16),
+                _cell(
+                    context,
+                    widget.selections[index],
+                    widget.titles != null
+                        ? widget.titles![index]
+                        : widget.selections[index].toString()),
+                if (widget.selections[index] != widget.selections.last)
+                  const SizedBox(height: 16),
               ],
             ),
           ),
@@ -88,7 +98,7 @@ class _ModelSelectorState<T> extends State<ModelSelector<T>> {
     );
   }
 
-  Widget _cell(BuildContext context, T val) {
+  Widget _cell(BuildContext context, T val, String title) {
     return cv.BasicButton(
       onTap: () {
         setState(() {
@@ -97,8 +107,9 @@ class _ModelSelectorState<T> extends State<ModelSelector<T>> {
         widget.onSelection(val);
       },
       child: cv.RoundedLabel(
-        val.toString(),
+        title,
         color: val == _selection ? widget.color : Colors.transparent,
+        textColor: widget.textColor,
       ),
     );
   }

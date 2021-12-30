@@ -58,7 +58,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
       title: "Select Status",
       color: dmodel.color,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -87,7 +87,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                     (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)))
               Column(
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       SizedBox(
@@ -110,16 +110,17 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                   ),
                 ],
               ),
-            const SizedBox(height: 16),
             cv.Section(
               "Leave a Note",
               child: cv.NativeList(
                 color: CustomColors.textColor(context).withOpacity(0.1),
+                itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 children: [
                   if (_isLoaded)
                     cv.TextField(
                       key: const ValueKey("is loaded text field status sheet"),
                       showBackground: false,
+                      fieldPadding: EdgeInsets.zero,
                       labelText: "Note",
                       initialvalue: _message,
                       validator: (value) {},
@@ -131,6 +132,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                     cv.TextField(
                       key: const ValueKey("not loaded text field status sheet"),
                       showBackground: false,
+                      fieldPadding: EdgeInsets.zero,
                       labelText: "Note 2",
                       validator: (value) {},
                       onChanged: (value) {},
@@ -138,8 +140,9 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-            cv.BasicButton(
+            const SizedBox(height: 8),
+            cv.RoundedLabel(
+              "",
               onTap: () {
                 if (!_isLoading) {
                   setState(() {
@@ -148,26 +151,18 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                   _setStatus(context, dmodel);
                 }
               },
-              child: cv.NativeList(
-                color: CustomColors.textColor(context).withOpacity(0.1),
-                itemPadding: const EdgeInsets.all(16),
-                children: [
-                  SizedBox(
-                    height: 20,
-                    child: Center(
-                      child: (!_isLoading)
-                          ? Text(
-                              "Set Status",
-                              style: TextStyle(
-                                color: dmodel.color,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          : cv.LoadingIndicator(),
-                    ),
-                  )
-                ],
+              color: dmodel.color,
+              child: Center(
+                child: (!_isLoading)
+                    ? const Text(
+                        "Set Status",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )
+                    : const cv.LoadingIndicator(color: Colors.white),
               ),
             ),
           ],

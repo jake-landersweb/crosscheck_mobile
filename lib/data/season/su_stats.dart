@@ -4,6 +4,8 @@ class SUStats {
 
   SUStats({required this.title, required this.value});
 
+  SUStats clone() => SUStats(title: title, value: value);
+
   static List<SUStats> fromJson(dynamic json) {
     List<SUStats> list = [];
     if (json != null) {
