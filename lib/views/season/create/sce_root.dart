@@ -121,7 +121,8 @@ class _SCERootState extends State<SCERoot> {
     SCEModel scemodel = Provider.of<SCEModel>(context);
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.fromLTRB(
+            16, 0, 16, MediaQuery.of(context).padding.bottom == 0 ? 10 : 0),
         child: Row(
           children: [
             AnimatedOpacity(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pnflutter/custom_views/core/basic_button.dart';
+import 'loading_indicator.dart';
 
 /// For Creating Rounded Labels
 class RoundedLabel extends StatefulWidget {
@@ -15,6 +16,7 @@ class RoundedLabel extends StatefulWidget {
     this.fontSize = 16,
     this.fontWeight = FontWeight.w500,
     this.width = double.infinity,
+    this.isLoading,
   }) : super(key: key);
 
   final String label;
@@ -27,6 +29,7 @@ class RoundedLabel extends StatefulWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final double width;
+  final bool? isLoading;
 
   @override
   _RoundedLabelState createState() => _RoundedLabelState();
@@ -62,32 +65,40 @@ class _RoundedLabelState extends State<RoundedLabel> {
         padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
         child: Row(
           children: [
-            widget.child == null
-                ? Text(
-                    widget.label,
-                    style: TextStyle(
-                      fontSize: widget.fontSize,
-                      fontWeight: widget.fontWeight,
-                      color: widget.textColor,
-                    ),
-                  )
-                : widget.child!,
+            widget.child == null ? _loadingTitle(context) : widget.child!,
             const Spacer(),
             Icon(Icons.chevron_right, color: widget.textColor),
           ],
         ),
       );
     } else {
-      return widget.child == null
-          ? Text(
-              widget.label,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: widget.textColor,
-              ),
-            )
-          : widget.child!;
+      return widget.child == null ? _loadingTitle(context) : widget.child!;
+    }
+  }
+
+  Widget _loadingTitle(BuildContext context) {
+    if (widget.isLoading != null) {
+      if (widget.isLoading!) {
+        return LoadingIndicator(color: widget.textColor);
+      } else {
+        return Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: widget.fontSize,
+            fontWeight: widget.fontWeight,
+            color: widget.textColor,
+          ),
+        );
+      }
+    } else {
+      return Text(
+        widget.label,
+        style: TextStyle(
+          fontSize: widget.fontSize,
+          fontWeight: widget.fontWeight,
+          color: widget.textColor,
+        ),
+      );
     }
   }
 }

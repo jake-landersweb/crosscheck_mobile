@@ -27,14 +27,19 @@ class _SCEPositionsState extends State<SCEPositions> {
   @override
   Widget build(BuildContext context) {
     SCEModel scemodel = Provider.of<SCEModel>(context);
-    return ListView(padding: EdgeInsets.zero, shrinkWrap: true, children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: cv.Section(
-          "Positions",
-          child: PositionsCreate(positions: scemodel.positions),
+    return ListView(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: cv.Section(
+            "Positions",
+            child: PositionsCreate(positions: scemodel.positions),
+          ),
         ),
-      )
-    ]);
+        const SizedBox(height: 100),
+      ],
+    );
   }
 }

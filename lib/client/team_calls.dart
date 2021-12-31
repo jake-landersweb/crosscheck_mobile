@@ -20,12 +20,10 @@ extension TeamCalls on DataModel {
     } else {
       setError("There was an issue fetching your team information", true);
       print(response['message']);
-      if (response['status'] == 500) {
-        // the team was not found, remove from prefs
-        prefs.remove("teamId");
-        // reget the data if the team info failed
-        init();
-      }
+      prefs.remove("teamId");
+      // TODO -- fix issue when user team does not work
+      // reget the data if the team info failed
+      // init();
     }
   }
 
@@ -137,6 +135,29 @@ extension TeamCalls on DataModel {
       } else {
         setError("There was an issue adding the user", true);
         print(response['message']);
+      }
+    });
+  }
+
+  Future<void> validateUser(
+      String email, Map<String, dynamic> body, VoidCallback completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .put("/users/$email/validate", headers, jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue joining the team", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully joined team", true);
+        completion();
+      } else {
+        print(response.toString());
+        if (response['status'] < 400) {
+          setError(response['message'], true);
+        } else {
+          setError("There was an issue joining the team", true);
+        }
       }
     });
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/extras/root.dart';
 import 'core/root.dart' as cv;
 
 class ModelSelector<T> extends StatefulWidget {
@@ -109,7 +110,9 @@ class _ModelSelectorState<T> extends State<ModelSelector<T>> {
       child: cv.RoundedLabel(
         title,
         color: val == _selection ? widget.color : Colors.transparent,
-        textColor: widget.textColor,
+        textColor: val == _selection
+            ? widget.textColor
+            : CustomColors.textColor(context),
       ),
     );
   }

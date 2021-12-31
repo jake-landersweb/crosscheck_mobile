@@ -29,102 +29,92 @@ class _CreateTeamState extends State<CreateTeam> {
     return cv.AppBar(
       title: "Create Team",
       isLarge: true,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
       backgroundColor: CustomColors.backgroundColor(context),
       // refreshable: true,
       color: dmodel.color,
-      leading: [cv.BackButton()],
+      leading: [
+        cv.BackButton(
+          color: dmodel.color,
+          title: "Cancel",
+          showText: true,
+          showIcon: false,
+        )
+      ],
       children: [_body(context, dmodel)],
     );
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          cv.Section(
-            "Required",
-            child: cv.NativeList(children: [
-              cv.TextField(
-                labelText: "Title",
-                fieldPadding: const EdgeInsets.all(0),
-                validator: (value) {},
-                onChanged: (value) {
-                  setState(() {
-                    _title = value;
-                  });
-                },
-              )
-            ]),
-          ),
-          cv.Section(
-            "Optional",
-            child: cv.NativeList(children: [
-              cv.TextField(
-                labelText: "Color (hex string)",
-                textCapitalization: TextCapitalization.none,
-                fieldPadding: const EdgeInsets.all(0),
-                validator: (value) {},
-                onChanged: (value) {
-                  setState(() {
-                    _color = value;
-                  });
-                },
-              ),
-              cv.TextField(
-                labelText: "Image (url)",
-                textCapitalization: TextCapitalization.none,
-                fieldPadding: const EdgeInsets.all(0),
-                validator: (value) {},
-                onChanged: (value) {
-                  setState(() {
-                    _image = value;
-                  });
-                },
-              ),
-              cv.TextField(
-                labelText: "Website (url)",
-                textCapitalization: TextCapitalization.none,
-                fieldPadding: const EdgeInsets.all(0),
-                validator: (value) {},
-                onChanged: (value) {
-                  setState(() {
-                    _website = value;
-                  });
-                },
-              )
-            ]),
-          ),
-          const SizedBox(height: 16),
-          cv.BasicButton(
-            onTap: () {
-              //
-              _createTeam(context, dmodel);
-            },
-            child: Material(
-              color: dmodel.color,
-              shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.circular(35),
-              ),
-              child: SizedBox(
-                height: 50,
-                child: Center(
-                  child: _isLoading
-                      ? const cv.LoadingIndicator(color: Colors.white)
-                      : const Text(
-                          "Create Team",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                ),
-              ),
+    return Column(
+      children: [
+        cv.Section(
+          "Required",
+          child: cv.NativeList(children: [
+            cv.TextField(
+              labelText: "Title",
+              fieldPadding: const EdgeInsets.all(0),
+              validator: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  _title = value;
+                });
+              },
+            )
+          ]),
+        ),
+        cv.Section(
+          "Optional",
+          child: cv.NativeList(children: [
+            cv.TextField(
+              labelText: "Color (hex string)",
+              textCapitalization: TextCapitalization.none,
+              fieldPadding: const EdgeInsets.all(0),
+              validator: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  _color = value;
+                });
+              },
             ),
-          ),
-        ],
-      ),
+            cv.TextField(
+              labelText: "Image (url)",
+              textCapitalization: TextCapitalization.none,
+              fieldPadding: const EdgeInsets.all(0),
+              validator: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  _image = value;
+                });
+              },
+            ),
+            cv.TextField(
+              labelText: "Website (url)",
+              textCapitalization: TextCapitalization.none,
+              fieldPadding: const EdgeInsets.all(0),
+              validator: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  _website = value;
+                });
+              },
+            )
+          ]),
+        ),
+        const SizedBox(height: 16),
+        cv.RoundedLabel(
+          "Create Team",
+          isLoading: _isLoading,
+          color: dmodel.color,
+          textColor: Colors.white,
+          onTap: () {
+            if (_title.isEmpty) {
+              dmodel.setError("Title cannot be empty", true);
+            } else {
+              _createTeam(context, dmodel);
+            }
+          },
+        ),
+      ],
     );
   }
 

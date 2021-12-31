@@ -51,29 +51,14 @@ class _SettingsState extends State<Settings> {
             ],
           ),
         ),
-        cv.Section(
-          "",
-          child: cv.BasicButton(
-            onTap: () {
-              _showAlert(context, dmodel);
-            },
-            child: const cv.NativeList(
-              itemPadding: EdgeInsets.all(16),
-              children: [
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    "Log Out",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        const SizedBox(height: 32),
+        cv.RoundedLabel(
+          "Log Out",
+          color: Colors.red.withOpacity(0.5),
+          textColor: Colors.red[900],
+          onTap: () {
+            _showAlert(context, dmodel);
+          },
         ),
       ],
     );

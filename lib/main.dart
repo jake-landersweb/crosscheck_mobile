@@ -52,7 +52,9 @@ class Home extends StatelessWidget {
               ? const Update()
               : const SplashScreen()
           : dmodel.user == null
-              ? const Login()
+              ? const Login(
+                  isCreate: true,
+                )
               : const Dashboard(),
       builder: (context, child) {
         return Index(
@@ -85,7 +87,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
         print("app in resumed");
         // reload the data if app was in background for overg 5 minutes
         if (_closedTime?.isBefore(
-                DateTime.now().subtract(const Duration(seconds: 2))) ??
+                DateTime.now().subtract(const Duration(minutes: 5))) ??
             false) {
           _resetData(context.read<DataModel>());
         }
@@ -174,7 +176,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
                 backgroundColor: Colors.red,
                 opacity: 0.7,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     children: [
                       Expanded(

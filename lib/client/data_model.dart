@@ -30,10 +30,7 @@ class DataModel extends ChangeNotifier {
     // load chached data
     prefs = await SharedPreferences.getInstance();
 
-    // prefs.setString("email", "me@jakelanders.com");
-    // prefs.remove("teamId");
-    // prefs.remove("seasonId");
-    // prefs.remove("teamId");
+    // logout();
 
     if (prefs.containsKey('email')) {
       // check if there is a teamId and seasonId to use faster call,
@@ -143,6 +140,7 @@ class DataModel extends ChangeNotifier {
   Season? currentSeason;
   void setCurrentSeason(Season season) {
     currentSeason = season;
+    noSeason = false;
     prefs.setString("seasonId", season.seasonId);
     notifyListeners();
     print("set the current season");
@@ -185,9 +183,9 @@ class DataModel extends ChangeNotifier {
         isPrevious ? previousEventsStartIndex : upcomingEventsStartIndex,
         isPrevious, (events) {
       if (isPrevious) {
-        setPreviousEvents(events);
+        previousEvents?.addAll(events);
       } else {
-        setUpcomingEvents(events);
+        upcomingEvents?.addAll(events);
       }
     });
     notifyListeners();
@@ -255,6 +253,7 @@ class DataModel extends ChangeNotifier {
     prefs.remove('seasonId');
     user = null;
     tus = null;
+    color = Colors.blue;
     currentSeason = null;
     currentSeasonUser = null;
     seasonUsers = null;

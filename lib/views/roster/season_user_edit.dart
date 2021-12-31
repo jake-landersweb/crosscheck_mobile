@@ -77,7 +77,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     _teamUserNote = widget.user.teamFields?.teamUserNote ?? "";
     _teamUserType = widget.user.teamFields?.teamUserType ?? 0;
     _isManager = widget.user.seasonFields?.isManager ?? false;
-    _seasonUserStatus = widget.user.seasonFields?.seasonUserStatus ?? 0;
+    _seasonUserStatus = widget.user.seasonFields?.seasonUserStatus ?? 1;
     _isSub = widget.user.seasonFields?.isSub ?? false;
     _nickname = widget.user.seasonFields?.nickname ?? "";
     if (widget.isAdd) {
@@ -114,8 +114,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
         _stats = [];
       }
     }
-    print(widget.currentSeasonUser?.isSeasonAdmin());
-    print(widget.teamUser.isTeamAdmin());
   }
 
   @override

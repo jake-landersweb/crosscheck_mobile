@@ -103,6 +103,7 @@ class _ScheduleState extends State<Schedule> {
                     cv.RoundedLabel(
                       "",
                       width: MediaQuery.of(context).size.width / 2,
+                      color: CustomColors.cellColor(context),
                       onTap: () {
                         dmodel.getMoreEvents(
                           dmodel.tus!.team.teamId,
@@ -208,6 +209,7 @@ class _PreviousEventsState extends State<PreviousEvents> {
             cv.RoundedLabel(
               "",
               width: MediaQuery.of(context).size.width / 2,
+              color: CustomColors.cellColor(context),
               onTap: () {
                 dmodel.getMoreEvents(
                   dmodel.tus!.team.teamId,

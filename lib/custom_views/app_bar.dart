@@ -47,7 +47,7 @@ class AppBar extends StatefulWidget {
 }
 
 class _AppBarState extends State<AppBar> {
-  final double _barHeight = 80;
+  final double _barHeight = 50;
 
   // whether to show the shadow or not
   bool _showElevation = false;
@@ -194,7 +194,7 @@ class _AppBarState extends State<AppBar> {
               padding: EdgeInsets.only(
                   top: MediaQuery.of(context).padding.top +
                       (widget.isLarge ? 0 : 40) +
-                      (Platform.isIOS ? 0 : 10)),
+                      10),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: _scrollAmount != 0
@@ -240,8 +240,7 @@ class _AppBarState extends State<AppBar> {
   List<Widget> _children(BuildContext context) {
     return [
       Padding(
-        padding: EdgeInsets.only(
-            top: _barHeight - MediaQuery.of(context).padding.top),
+        padding: EdgeInsets.only(top: _barHeight),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -275,10 +274,11 @@ class _AppBarState extends State<AppBar> {
   }
 
   Widget _titleBar(BuildContext context) {
+    print(MediaQuery.of(context).padding.top);
     return Column(
       children: [
         GlassContainer(
-          height: _barHeight,
+          // height: _barHeight,
           width: double.infinity,
           borderRadius: BorderRadius.circular(0),
           backgroundColor: widget.backgroundColor ??
@@ -287,41 +287,49 @@ class _AppBarState extends State<AppBar> {
                   : Colors.black),
           opacity: _showElevation ? 0.7 : 0,
           blur: _showElevation ? 10 : 0,
-          child: Padding(
-            padding: widget.itemBarPadding,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Row(children: widget.leading),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Row(children: [
-                      const Spacer(),
-                      Row(children: widget.trailing),
-                    ]),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: AnimatedOpacity(
-                      opacity: _showSmallTitle ? 1 : 0,
-                      duration: const Duration(milliseconds: 150),
-                      child: Text(
-                        _title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).padding.top),
+              SizedBox(
+                height: _barHeight,
+                child: Padding(
+                  padding: widget.itemBarPadding,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Row(children: widget.leading),
                         ),
-                      ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Row(children: [
+                            const Spacer(),
+                            Row(children: widget.trailing),
+                          ]),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: AnimatedOpacity(
+                            opacity: _showSmallTitle ? 1 : 0,
+                            duration: const Duration(milliseconds: 150),
+                            child: Text(
+                              _title,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      fit: StackFit.expand,
                     ),
                   ),
-                ],
-                fit: StackFit.expand,
+                ),
               ),
-            ),
+            ],
           ),
         ),
         // for showing divider between bar and view

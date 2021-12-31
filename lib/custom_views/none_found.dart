@@ -20,7 +20,7 @@ class NoneFound extends StatelessWidget {
             height: 300,
             width: 300,
             child: SvgPicture.asset(
-              "assets/launch/not_found.svg",
+              "assets/svg/not_found.svg",
               semanticsLabel: 'Not found SVG',
               color: color,
             ),

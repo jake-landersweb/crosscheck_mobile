@@ -31,7 +31,7 @@ class SeasonUserSeasonFields {
   SeasonUserSeasonFields.empty() {
     seasonUserNote = "";
     seasonUserNote = "";
-    seasonUserStatus = 3;
+    seasonUserStatus = 1;
     email = "";
     isManager = false;
     isPlaying = true;

@@ -4,6 +4,7 @@ import 'package:pnflutter/client/root.dart';
 import 'package:pnflutter/extras/root.dart';
 import 'package:pnflutter/views/team/create_team.dart';
 import 'package:provider/provider.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../custom_views/root.dart' as cv;
 import 'root.dart';
@@ -21,17 +22,18 @@ class _NoTeamState extends State<NoTeam> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        const Text(
-          "It looks like you are not a member of any teams. To start using the app, pick from the following:",
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-          textAlign: TextAlign.center,
-        ),
+        cv.NoneFound("You are not on any teams", color: dmodel.color),
         const SizedBox(height: 32),
         _buttonCell(
           "Join Team",
           () {
             // join team
-            cv.Navigate(context, const JoinTeam());
+            showMaterialModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return JoinTeam(email: dmodel.user!.email);
+              },
+            );
           },
           dmodel.color,
           Colors.white,
@@ -42,7 +44,12 @@ class _NoTeamState extends State<NoTeam> {
           "Create Team",
           () {
             // create team
-            cv.Navigate(context, const CreateTeam());
+            showMaterialModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return const CreateTeam();
+              },
+            );
           },
           CustomColors.cellColor(context),
           CustomColors.textColor(context),
@@ -54,24 +61,11 @@ class _NoTeamState extends State<NoTeam> {
 
   Widget _buttonCell(String title, VoidCallback onTap, Color color,
       Color textColor, DataModel dmodel) {
-    return cv.BasicButton(
+    return cv.RoundedLabel(
+      title,
       onTap: onTap,
-      child: Material(
-        color: color,
-        shape: ContinuousRectangleBorder(
-          borderRadius: BorderRadius.circular(35),
-        ),
-        child: SizedBox(
-          height: 50,
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(
-                  color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-      ),
+      color: color,
+      textColor: textColor,
     );
   }
 }
