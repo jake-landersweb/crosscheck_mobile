@@ -36,6 +36,10 @@ class _SCECustomFState extends State<SCECustomF> {
         _customF(context, dmodel, scemodel),
         const SizedBox(height: 16),
         _customUserF(context, dmodel, scemodel),
+        const SizedBox(height: 16),
+        _eventCustomF(context, dmodel, scemodel),
+        const SizedBox(height: 16),
+        _eventCustomUserF(context, dmodel, scemodel),
         const SizedBox(height: 100),
       ],
     );
@@ -67,7 +71,41 @@ class _SCECustomFState extends State<SCECustomF> {
           color: dmodel.color,
           customFields: scemodel.customUserFields,
           onAdd: () {
-            return CustomUserField(title: "", type: "S", defaultValue: "");
+            return CustomField(title: "", type: "S", value: "");
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _eventCustomF(
+      BuildContext context, DataModel dmodel, SCEModel scemodel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: cv.Section(
+        "Custom Fields for Events Template",
+        child: CustomFieldCreate(
+          color: dmodel.color,
+          customFields: scemodel.eventCustomFieldsTemplate,
+          onAdd: () {
+            return CustomField(title: "", type: "S", value: "");
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _eventCustomUserF(
+      BuildContext context, DataModel dmodel, SCEModel scemodel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: cv.Section(
+        "Custom Fields for Event Users Template",
+        child: CustomFieldCreate(
+          color: dmodel.color,
+          customFields: scemodel.eventCustomUserFieldsTemplate,
+          onAdd: () {
+            return CustomField(title: "", type: "S", value: "");
           },
         ),
       ),

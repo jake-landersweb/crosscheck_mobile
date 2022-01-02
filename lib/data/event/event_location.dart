@@ -7,6 +7,8 @@ class EventLocation {
     this.address,
   });
 
+  EventLocation clone() => EventLocation(name: name, address: address);
+
   EventLocation.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     address = json['address'];

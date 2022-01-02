@@ -13,7 +13,7 @@ class StatusSelectSheet extends StatefulWidget {
     required this.email,
     required this.teamId,
     required this.seasonId,
-    required this.eventId,
+    required this.event,
     this.status,
     this.message,
     this.completion,
@@ -23,7 +23,7 @@ class StatusSelectSheet extends StatefulWidget {
   final String email;
   final String teamId;
   final String seasonId;
-  final String eventId;
+  final Event event;
   final int? status;
   final String? message;
   final VoidCallback? completion;
@@ -110,6 +110,12 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                   ),
                 ],
               ),
+            cv.Section("Custom Fields",
+                child: cv.NativeList(
+                  children: [
+                    for (var i in widget.event.customUserFields) Text(i.title),
+                  ],
+                )),
             cv.Section(
               "Leave a Note",
               child: cv.NativeList(
@@ -122,7 +128,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                       showBackground: false,
                       fieldPadding: EdgeInsets.zero,
                       labelText: "Note",
-                      initialvalue: _message,
+                      value: _message,
                       validator: (value) {},
                       onChanged: (value) {
                         _message = value;
@@ -179,13 +185,13 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
       _status = -2;
     }
     await dmodel.updateUserStatus(widget.teamId, widget.seasonId,
-        widget.eventId, widget.email, _status, _message, () {
+        widget.event.eventId, widget.email, _status, _message, () {
       // close the view
       Navigator.of(context).pop();
       // the specific event userStatus
       if (widget.isUpcoming) {
         for (var i in dmodel.upcomingEvents!) {
-          if (i.eventId == widget.eventId) {
+          if (i.eventId == widget.event.eventId) {
             // update any eventfields needed
             setState(() {
               if (widget.email == dmodel.user!.email) {
@@ -225,7 +231,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
         }
       } else {
         for (var i in dmodel.previousEvents!) {
-          if (i.eventId == widget.eventId) {
+          if (i.eventId == widget.event.eventId) {
             // update any event feilds needed
             setState(() {
               if (widget.email == dmodel.user!.email) {
@@ -275,7 +281,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
 
   void _getStatus(DataModel dmodel) async {
     dmodel.getUserStatus(
-        widget.teamId, widget.seasonId, widget.eventId, widget.email,
+        widget.teamId, widget.seasonId, widget.event.eventId, widget.email,
         (status, message) {
       setState(() {
         _status = status;

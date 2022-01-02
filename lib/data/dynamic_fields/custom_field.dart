@@ -1,6 +1,7 @@
 import 'root.dart';
+import 'package:equatable/equatable.dart';
 
-class CustomField extends DynamicField {
+class CustomField extends DynamicField with EquatableMixin {
   late String title;
   late String type;
   late String value;
@@ -10,12 +11,6 @@ class CustomField extends DynamicField {
     required this.type,
     required this.value,
   });
-
-  CustomField.of(CustomField f) {
-    title = f.title;
-    type = f.type;
-    value = f.value;
-  }
 
   CustomField clone() => CustomField(title: title, type: type, value: value);
 
@@ -74,4 +69,7 @@ class CustomField extends DynamicField {
       return false;
     }
   }
+
+  @override
+  List<Object?> get props => [title, type, value];
 }

@@ -35,7 +35,7 @@ class _CustomFieldCellState extends State<CustomFieldCell> {
   Widget _stringCell(BuildContext context) {
     return cv.TextField(
       labelText: widget.field.getTitle(),
-      initialvalue: widget.field.getValue(),
+      value: widget.field.getValue(),
       onChanged: (value) {
         setState(() {
           widget.field.setValue(value);

@@ -95,12 +95,12 @@ class _EventCreateEditState extends State<EventCreateEdit> {
                 children: [
                   // event type
                   cv.SegmentedPicker<int>(
-                    initialSelection: _event.eType,
+                    initialSelection: _event.eventType,
                     titles: const ["Game", "Practice", "Other"],
                     selections: const [1, 2, 0],
                     onSelection: (value) {
                       setState(() {
-                        _event.eType = value;
+                        _event.eventType = value;
                       });
                     },
                   ),
@@ -236,11 +236,11 @@ class _EventCreateEditState extends State<EventCreateEdit> {
     return cv.NativeList(
       itemPadding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
-        (_event.eType == 1)
+        (_event.eventType == 1)
             ? cv.TextField(
                 labelText: "Opponent",
                 showBackground: false,
-                initialvalue: _opponent,
+                value: _opponent,
                 isLabeled: true,
                 onChanged: (value) {
                   setState(() {
@@ -253,7 +253,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
                 labelText: "Title",
                 showBackground: false,
                 isLabeled: true,
-                initialvalue: _event.eTitle,
+                value: _event.eTitle,
                 onChanged: (value) {
                   setState(() {
                     _event.eTitle = value;
@@ -280,7 +280,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
             },
             validator: (value) {},
             showBackground: false,
-            initialvalue: _event.eDescription ?? "",
+            value: _event.eDescription ?? "",
             isLabeled: true,
           ),
 
@@ -315,7 +315,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
             child: Row(
               children: [
                 FlutterSwitch(
-                  value: _event.showAttendance!,
+                  value: _event.showAttendance,
                   height: 25,
                   width: 50,
                   toggleSize: 18,
@@ -334,7 +334,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
             ),
           ),
           //  is home or away
-          if (_event.eType == 1)
+          if (_event.eventType == 1)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Row(
@@ -374,24 +374,24 @@ class _EventCreateEditState extends State<EventCreateEdit> {
             labelText: "Name",
             onChanged: (value) {
               setState(() {
-                _event.eventLocation?.name = value;
+                _event.eventLocation.name = value;
               });
             },
             validator: (value) {},
             showBackground: false,
-            initialvalue: _event.eventLocation?.name ?? "",
+            value: _event.eventLocation.name ?? "",
             isLabeled: true,
           ),
           cv.TextField(
             labelText: "Address",
             onChanged: (value) {
               setState(() {
-                _event.eventLocation?.address = value;
+                _event.eventLocation.address = value;
               });
             },
             validator: (value) {},
             showBackground: false,
-            initialvalue: _event.eventLocation?.address ?? "",
+            value: _event.eventLocation.address ?? "",
             isLabeled: true,
           ),
         ],
@@ -578,7 +578,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
   }
 
   void _action(BuildContext context, DataModel dmodel) async {
-    if (_event.eType == 1) {
+    if (_event.eventType == 1) {
       if (_opponent == "") {
         dmodel.setError("Opponent cannot be empty", true);
         return;
@@ -596,7 +596,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
     EventTeam homeTeam = EventTeam.empty();
     EventTeam awayTeam = EventTeam.empty();
 
-    if (_event.eType == 1) {
+    if (_event.eventType == 1) {
       if (_isHome) {
         homeTeam = EventTeam(
             title: dmodel.tus!.team.title,

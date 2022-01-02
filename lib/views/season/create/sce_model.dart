@@ -16,8 +16,11 @@ class SCEModel extends ChangeNotifier {
   TeamPositions positions = TeamPositions.empty();
 
   List<CustomField> customFields = [];
-  List<CustomUserField> customUserFields = [];
-  List<CustomUserField> oldCustomUserFields = [];
+  List<CustomField> customUserFields = [];
+  List<CustomField> oldCustomUserFields = [];
+
+  List<CustomField> eventCustomFieldsTemplate = [];
+  List<CustomField> eventCustomUserFieldsTemplate = [];
 
   List<SeasonUser> teamUsers = [];
 
@@ -30,29 +33,39 @@ class SCEModel extends ChangeNotifier {
 
   int seasonStatus = 2;
 
+  int sportCode = 0;
+
   SCEModel.create(Team team) {
     isCreate = true;
     positions = TeamPositions.of(team.positions);
   }
 
   SCEModel.update(Team team, Season season) {
+    setSeasonData(team, season);
     isCreate = false;
+  }
+
+  void setSeasonData(Team team, Season season) {
     positions = TeamPositions.of(team.positions);
     title = season.title;
     website = season.website;
     seasonNote = season.seasonNote;
     showNicknames = season.showNicknames;
     positions = TeamPositions.of(season.positions);
-    customFields = List.from(season.customFields);
-    customUserFields = [
-      for (var i in season.customUserFields) CustomUserField.of(i)
-    ];
-    oldCustomUserFields = [
-      for (var i in season.customUserFields) CustomUserField.of(i)
-    ];
+    customFields = [for (var i in season.customFields) i.clone()];
+    customUserFields = [for (var i in season.customUserFields) i.clone()];
+    oldCustomUserFields = [for (var i in season.customUserFields) i.clone()];
     stats = season.stats.clone();
     oldStats = season.stats.clone();
     seasonStatus = season.seasonStatus;
+    sportCode = season.sportCode;
+    eventCustomFieldsTemplate = [
+      for (var i in season.eventCustomFieldsTemplate) i.clone()
+    ];
+    eventCustomUserFieldsTemplate = [
+      for (var i in season.eventCustomUserFieldsTemplate) i.clone()
+    ];
+    notifyListeners();
   }
 
   Widget status(
@@ -64,7 +77,7 @@ class SCEModel extends ChangeNotifier {
         children: [
           cv.BasicButton(
               onTap: () {
-                controller.animateTo(
+                controller.animateToPage(
                   0,
                   duration: const Duration(milliseconds: 700),
                   curve: Sprung.overDamped,
@@ -75,7 +88,7 @@ class SCEModel extends ChangeNotifier {
           _spacer(context, dmodel),
           cv.BasicButton(
             onTap: () {
-              controller.animateTo(
+              controller.animateToPage(
                 1,
                 duration: const Duration(milliseconds: 700),
                 curve: Sprung.overDamped,
@@ -87,7 +100,7 @@ class SCEModel extends ChangeNotifier {
           _spacer(context, dmodel),
           cv.BasicButton(
             onTap: () {
-              controller.animateTo(
+              controller.animateToPage(
                 2,
                 duration: const Duration(milliseconds: 700),
                 curve: Sprung.overDamped,
@@ -99,8 +112,8 @@ class SCEModel extends ChangeNotifier {
           _spacer(context, dmodel),
           cv.BasicButton(
             onTap: () {
-              controller.animateTo(
-                2,
+              controller.animateToPage(
+                3,
                 duration: const Duration(milliseconds: 700),
                 curve: Sprung.overDamped,
               );
@@ -113,8 +126,8 @@ class SCEModel extends ChangeNotifier {
           if (isCreate)
             cv.BasicButton(
               onTap: () {
-                controller.animateTo(
-                  3,
+                controller.animateToPage(
+                  4,
                   duration: const Duration(milliseconds: 700),
                   curve: Sprung.overDamped,
                 );
@@ -237,9 +250,15 @@ class SCEModel extends ChangeNotifier {
     if (title.isEmpty) {
       return "Title Cannot Be Blank";
     } else if (customFields.any((element) => element.title.isEmpty)) {
-      return "Custom Fields Need Title";
+      return "Custom Field Title Empty";
     } else if (customUserFields.any((element) => element.title.isEmpty)) {
-      return "Custom User Fields Need Title";
+      return "Custom Field Title Empty";
+    } else if (eventCustomFieldsTemplate
+        .any((element) => element.title.isEmpty)) {
+      return "Custom Field Title Empty";
+    } else if (eventCustomUserFieldsTemplate
+        .any((element) => element.title.isEmpty)) {
+      return "Custom Field Title Empty";
     } else if (stats.stats.any((element) => element.title.isEmpty)) {
       return "Stats Need A Title";
     } else {
@@ -253,6 +272,12 @@ class SCEModel extends ChangeNotifier {
     } else if (customFields.any((element) => element.title.isEmpty)) {
       return false;
     } else if (customUserFields.any((element) => element.title.isEmpty)) {
+      return false;
+    } else if (eventCustomFieldsTemplate
+        .any((element) => element.title.isEmpty)) {
+      return false;
+    } else if (eventCustomUserFieldsTemplate
+        .any((element) => element.title.isEmpty)) {
       return false;
     } else if (stats.stats.any((element) => element.title.isEmpty)) {
       return false;

@@ -54,7 +54,7 @@ class _SettingsState extends State<Settings> {
         const SizedBox(height: 32),
         cv.RoundedLabel(
           "Log Out",
-          color: Colors.red.withOpacity(0.5),
+          color: Colors.red.withOpacity(0.3),
           textColor: Colors.red[900],
           onTap: () {
             _showAlert(context, dmodel);

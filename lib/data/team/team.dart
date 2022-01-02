@@ -14,7 +14,7 @@ class Team extends Equatable {
   late bool isLight;
   late TeamPositions positions;
   late List<CustomField> customFields;
-  late List<CustomUserField> customUserFields;
+  late List<CustomField> customUserFields;
 
   Team({
     required this.teamId,
@@ -77,7 +77,7 @@ class Team extends Equatable {
         .forEach((v) => customFields.add(CustomField.fromJson(v)));
     customUserFields = [];
     json['customUserFields']
-        .forEach((v) => customUserFields.add(CustomUserField.fromJson(v)));
+        .forEach((v) => customUserFields.add(CustomField.fromJson(v)));
   }
 
   // converting to json

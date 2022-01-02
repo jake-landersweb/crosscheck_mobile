@@ -22,7 +22,7 @@ class TextField extends StatefulWidget {
   final Color highlightColor;
   final bool showCharacters;
   final int charLimit;
-  final String initialvalue;
+  String value;
   final TextStyle? style;
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
@@ -40,7 +40,7 @@ class TextField extends StatefulWidget {
     this.highlightColor = Colors.blue,
     this.showCharacters = false,
     this.charLimit = 100,
-    this.initialvalue = '',
+    this.value = '',
     this.style,
     this.keyboardType,
     this.textCapitalization = TextCapitalization.sentences,
@@ -56,14 +56,6 @@ class TextField extends StatefulWidget {
 }
 
 class _TextFieldState extends State<TextField> {
-  String _inputText = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _inputText = widget.initialvalue;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -101,7 +93,7 @@ class _TextFieldState extends State<TextField> {
             _getLabeledMaterial(context),
           if (widget.showCharacters)
             Text(
-              '${_inputText.length} / ${widget.charLimit}',
+              '${widget.value.length} / ${widget.charLimit}',
               style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
         ],
@@ -155,7 +147,7 @@ class _TextFieldState extends State<TextField> {
       textCapitalization: widget.textCapitalization,
       keyboardType: widget.keyboardType,
       keyboardAppearance: MediaQuery.of(context).platformBrightness,
-      initialValue: widget.initialvalue,
+      initialValue: widget.value,
       cursorColor: widget.highlightColor,
       obscureText: widget.obscureText,
       maxLength: widget.charLimit,
@@ -183,7 +175,7 @@ class _TextFieldState extends State<TextField> {
       onChanged: (value) {
         if (widget.showCharacters) {
           setState(() {
-            _inputText = value;
+            widget.value = value;
           });
         }
         widget.onChanged(value);
@@ -198,7 +190,7 @@ class _TextFieldState extends State<TextField> {
       textCapitalization: widget.textCapitalization,
       keyboardType: widget.keyboardType,
       keyboardAppearance: MediaQuery.of(context).platformBrightness,
-      initialValue: widget.initialvalue,
+      initialValue: widget.value,
       cursorColor: widget.highlightColor,
       obscureText: widget.obscureText,
       maxLength: widget.charLimit,
@@ -226,7 +218,7 @@ class _TextFieldState extends State<TextField> {
       onChanged: (value) {
         if (widget.showCharacters) {
           setState(() {
-            _inputText = value;
+            widget.value = value;
           });
         }
         widget.onChanged(value);

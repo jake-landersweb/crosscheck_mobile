@@ -168,8 +168,6 @@ class _SeasonAdminState extends State<SeasonAdmin> {
                 value: stat.title,
               ),
               cv.LabeledCell(
-                  label: "Default Value", value: stat.defaultValue.toString()),
-              cv.LabeledCell(
                 label: "Active",
                 value: stat.isActive ? "True" : "False",
               ),

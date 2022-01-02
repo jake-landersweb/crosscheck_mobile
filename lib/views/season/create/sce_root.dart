@@ -11,6 +11,7 @@ import '../../../data/root.dart';
 import '../../../extras/root.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SCERoot extends StatefulWidget {
   const SCERoot({
@@ -231,6 +232,8 @@ class _SCERootState extends State<SCERoot> {
       "positions": scemodel.positions.toJson(),
       "date": dateToString(DateTime.now()),
       "seasonStatus": scemodel.seasonStatus,
+      "eventCustomFieldsTemplate": scemodel.eventCustomFieldsTemplate,
+      "eventCustomUserFieldsTemplate": scemodel.eventCustomUserFieldsTemplate,
     };
 
     void addUserFields() {
@@ -241,8 +244,9 @@ class _SCERootState extends State<SCERoot> {
     if (scemodel.customUserFields.length ==
         scemodel.oldCustomUserFields.length) {
       for (var i in scemodel.oldCustomUserFields) {
-        if (scemodel.customUserFields.any((element) => element != i)) {
+        if (!scemodel.customUserFields.any((element) => element == i)) {
           addUserFields();
+          break;
         }
       }
     } else {
@@ -294,6 +298,9 @@ class _SCERootState extends State<SCERoot> {
       "customUserFields":
           scemodel.customUserFields.map((e) => e.toJson()).toList(),
       "stats": scemodel.stats.toJson(),
+      "sportCode": scemodel.sportCode,
+      "eventCustomFieldsTemplate": scemodel.eventCustomFieldsTemplate,
+      "eventCustomUserFieldsTemplate": scemodel.eventCustomUserFieldsTemplate,
     };
 
     print(body);

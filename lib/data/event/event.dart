@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:pnflutter/data/event/event_location.dart';
+import 'package:pnflutter/data/root.dart';
 import 'root.dart';
 import '../../extras/root.dart';
 
@@ -8,46 +9,47 @@ class Event extends Equatable {
   String? eDescription;
   late String eventId;
   late String eTitle;
-  String? eLocation;
+  late String eLocation;
   late bool hasAttendance;
-  String? teamId;
+  late String teamId;
   late String seasonId;
-  late int eType;
   EventTeam? homeTeam;
-  late String eDate;
-  String? eLink;
   EventTeam? awayTeam;
+  late String eDate;
+  late String eLink;
   late int inCount;
   late int outCount;
   late int undecidedCount;
   late int noResponse;
   int? userStatus;
-  // new fields
-  EventLocation? eventLocation;
-  bool? showAttendance;
+  late EventLocation eventLocation;
+  late bool showAttendance;
   late int eventType;
+  late List<CustomField> customFields;
+  late List<CustomField> customUserFields;
 
   Event({
     this.eDescription,
     required this.eventId,
     required this.eTitle,
-    this.eLocation,
+    required this.eLocation,
     required this.hasAttendance,
     required this.teamId,
     required this.seasonId,
-    required this.eType,
     this.homeTeam,
-    required this.eDate,
-    this.eLink,
     this.awayTeam,
+    required this.eDate,
+    required this.eLink,
     required this.inCount,
     required this.outCount,
     required this.undecidedCount,
     required this.noResponse,
     this.userStatus,
-    this.eventLocation,
-    this.showAttendance,
+    required this.eventLocation,
+    required this.showAttendance,
     required this.eventType,
+    required this.customFields,
+    required this.customUserFields,
   });
 
   // empty object
@@ -59,7 +61,6 @@ class Event extends Equatable {
     hasAttendance = true;
     teamId = "";
     seasonId = "";
-    eType = 2;
     homeTeam = EventTeam.empty();
     eDate = "2021-06-15 12:00:00";
     eLink = "";
@@ -72,6 +73,8 @@ class Event extends Equatable {
     eventLocation = EventLocation();
     showAttendance = true;
     eventType = 0;
+    customFields = [];
+    customUserFields = [];
   }
 
   // for creating a copy
@@ -83,7 +86,6 @@ class Event extends Equatable {
     hasAttendance = event.hasAttendance;
     teamId = event.teamId;
     seasonId = event.seasonId;
-    eType = event.eType;
     if (event.homeTeam != null) {
       homeTeam = EventTeam.of(event.homeTeam!);
     }
@@ -100,45 +102,67 @@ class Event extends Equatable {
     eventLocation = event.eventLocation;
     showAttendance = event.showAttendance;
     eventType = event.eventType;
+    customFields = [for (var i in event.customFields) i.clone()];
+    customUserFields = [for (var i in event.customUserFields) i.clone()];
   }
 
-  Event.fromRaw(EventRaw event) {
-    eDescription = event.eDescription;
-    eventId = event.eventId;
-    eTitle = event.eTitle;
-    eLocation = event.eLocation;
-    hasAttendance = event.hasAttendance;
-    teamId = event.teamId;
-    seasonId = event.seasonId;
-    eType = event.eType;
-    if (event.homeTeam != null) {
-      homeTeam = EventTeam.of(event.homeTeam!);
-    }
-    eDate = event.eDate;
-    eLink = event.eLink;
-    if (event.awayTeam != null) {
-      awayTeam = EventTeam.of(event.awayTeam!);
-    }
-    inCount = 0;
-    outCount = 0;
-    undecidedCount = 0;
-    noResponse = 0;
-    userStatus = 0;
-    eventLocation = event.eventLocation;
-    showAttendance = event.showAttendance;
-    eventType = event.eventType;
-  }
+  Event clone() => Event(
+        eventId: eventId,
+        eTitle: eTitle,
+        eLocation: eLocation,
+        hasAttendance: hasAttendance,
+        teamId: teamId,
+        seasonId: seasonId,
+        eDate: eDate,
+        eLink: eLink,
+        inCount: inCount,
+        outCount: outCount,
+        homeTeam: homeTeam?.clone(),
+        awayTeam: awayTeam?.clone(),
+        undecidedCount: undecidedCount,
+        noResponse: noResponse,
+        eventLocation: eventLocation.clone(),
+        showAttendance: showAttendance,
+        eventType: eventType,
+        customFields: [for (var i in customFields) i.clone()],
+        customUserFields: [for (var i in customUserFields) i.clone()],
+      );
+
+  // Event.fromRaw(EventRaw event) {
+  //   eDescription = event.eDescription;
+  //   eventId = event.eventId;
+  //   eTitle = event.eTitle;
+  //   eLocation = event.eLocation;
+  //   hasAttendance = event.hasAttendance;
+  //   teamId = event.teamId;
+  //   seasonId = event.seasonId;
+  //   if (event.homeTeam != null) {
+  //     homeTeam = EventTeam.of(event.homeTeam!);
+  //   }
+  //   eDate = event.eDate;
+  //   eLink = event.eLink;
+  //   if (event.awayTeam != null) {
+  //     awayTeam = EventTeam.of(event.awayTeam!);
+  //   }
+  //   inCount = 0;
+  //   outCount = 0;
+  //   undecidedCount = 0;
+  //   noResponse = 0;
+  //   userStatus = 0;
+  //   eventLocation = event.eventLocation;
+  //   showAttendance = event.showAttendance;
+  //   eventType = event.eventType;
+  // }
 
   // object from json
   Event.fromJson(Map<String, dynamic> json) {
     eDescription = json['eDescription'];
     eventId = json['eventId'];
     eTitle = json['eTitle'];
-    eLocation = json['eLocation'];
-    hasAttendance = json['hasAttendance'];
-    teamId = json['teamId'];
-    seasonId = json['seasonId'];
-    eType = json['eType']?.round() ?? 0;
+    eLocation = json['eLocation'] ?? "";
+    hasAttendance = json['hasAttendance'] ?? false;
+    teamId = json['teamId'] ?? "";
+    seasonId = json['seasonId'] ?? "";
     homeTeam =
         json['homeTeam'] != null ? EventTeam.fromJson(json['homeTeam']) : null;
     eDate = json['eDate'];
@@ -155,6 +179,16 @@ class Event extends Equatable {
     }
     showAttendance = json['showAttendance'];
     eventType = json['eventType']?.round() ?? 0;
+    customFields = [];
+    if (json['customFields'] != null) {
+      json['customFields']
+          .forEach((v) => customFields.add(CustomField.fromJson(v)));
+    }
+    customUserFields = [];
+    if (json['customUserFields'] != null) {
+      json['customUserFields']
+          .forEach((v) => customUserFields.add(CustomField.fromJson(v)));
+    }
   }
 
   // object to json
@@ -167,7 +201,6 @@ class Event extends Equatable {
     data['hasAttendance'] = hasAttendance;
     data['teamId'] = teamId;
     data['seasonId'] = seasonId;
-    data['eType'] = eType;
     if (homeTeam != null) {
       data['homeTeam'] = homeTeam!.toJson();
     }
@@ -181,7 +214,7 @@ class Event extends Equatable {
     data['undecidedCount'] = undecidedCount;
     data['noResponse'] = noResponse;
     data['userStatus'] = userStatus;
-    data['eventLocation'] = eventLocation?.toJson();
+    data['eventLocation'] = eventLocation.toJson();
     data['showAttendance'] = showAttendance;
     data['eventType'] = eventType;
     return data;
@@ -189,7 +222,7 @@ class Event extends Equatable {
 
   // for painting correct title
   String getTitle() {
-    if (eventType == 1 || eType == 1) {
+    if (eventType == 1) {
       if (homeTeam != null && awayTeam != null) {
         return "${homeTeam!.title} vs ${awayTeam!.title}";
       } else {
@@ -201,7 +234,7 @@ class Event extends Equatable {
   }
 
   String getOpponentTitle(String teamId) {
-    if (eventType == 1 || eType == 1) {
+    if (eventType == 1) {
       if (teamId == homeTeam!.teamId) {
         return awayTeam!.title;
       } else {
@@ -225,7 +258,7 @@ class Event extends Equatable {
   }
 
   bool isHome() {
-    if (eType == 1) {
+    if (eventType == 1) {
       if (teamId == homeTeam!.teamId) {
         return true;
       } else {
@@ -302,6 +335,8 @@ class EventTeam {
     score = team.score;
     teamId = team.teamId;
   }
+
+  EventTeam clone() => EventTeam(title: title, score: score, teamId: teamId);
 
   EventTeam.fromJson(Map<String, dynamic> json) {
     title = json['title'];

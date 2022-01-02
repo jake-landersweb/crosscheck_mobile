@@ -94,7 +94,7 @@ class _SectionState extends State<Section> with TickerProviderStateMixin {
           padding: widget.headerPadding,
           child: Row(
             children: [
-              _title(context),
+              Expanded(child: _title(context)),
               // so this and collapsable section are the same height above view
               const Opacity(
                 opacity: 0,

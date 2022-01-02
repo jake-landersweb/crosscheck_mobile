@@ -74,6 +74,12 @@ class _TeamAdminState extends State<TeamAdmin> {
                   label: "Image",
                   value: widget.team.image,
                 ),
+              if (!widget.team.teamNote.isEmpty())
+                cv.LabeledCell(
+                  height: cellHeight,
+                  label: "Team Note",
+                  value: widget.team.teamNote!,
+                ),
               cv.LabeledCell(
                 height: cellHeight,
                 label: "Is Light",
@@ -267,7 +273,7 @@ class _TeamAdminState extends State<TeamAdmin> {
             cv.LabeledCell(
               height: cellHeight,
               label: i.title,
-              value: "Default: ${i.defaultValue}",
+              value: "Default: ${i.value}",
             )
         ],
       ),

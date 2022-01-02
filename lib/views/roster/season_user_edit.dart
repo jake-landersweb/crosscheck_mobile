@@ -93,7 +93,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
                 title: e.getTitle(), type: e.getType(), value: e.getValue()))
             .toList();
         _stats = widget.season!.stats.stats
-            .map((e) => SUStats(title: e.title, value: e.defaultValue))
+            .map((e) => SUStats(title: e.title, value: 0))
             .toList();
       } else {
         _seasonCustomFields = [];
@@ -140,7 +140,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
               cv.TextField(
                 labelText: "Email",
                 fieldPadding: EdgeInsets.zero,
-                initialvalue: _email,
+                value: _email,
                 keyboardType: TextInputType.emailAddress,
                 onChanged: (value) {
                   setState(() {
@@ -200,7 +200,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             labelText: "First Name",
             fieldPadding: EdgeInsets.zero,
             isLabeled: true,
-            initialvalue: _firstName,
+            value: _firstName,
             keyboardType: TextInputType.name,
             onChanged: (value) {
               setState(() {
@@ -213,7 +213,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             labelText: "Last Name",
             fieldPadding: EdgeInsets.zero,
             isLabeled: true,
-            initialvalue: _lastName,
+            value: _lastName,
             keyboardType: TextInputType.name,
             onChanged: (value) {
               setState(() {
@@ -226,7 +226,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             labelText: "Phone",
             fieldPadding: EdgeInsets.zero,
             isLabeled: true,
-            initialvalue: _phone,
+            value: _phone,
             keyboardType: TextInputType.phone,
             onChanged: (value) {
               setState(() {
@@ -286,7 +286,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
                 labelText: "Team Note",
                 fieldPadding: EdgeInsets.zero,
                 isLabeled: true,
-                initialvalue: _teamUserNote,
+                value: _teamUserNote,
                 keyboardType: TextInputType.name,
                 onChanged: (value) {
                   setState(() {
@@ -361,7 +361,7 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
                   labelText: "Nickname",
                   fieldPadding: EdgeInsets.zero,
                   isLabeled: true,
-                  initialvalue: _nickname,
+                  value: _nickname,
                   keyboardType: TextInputType.name,
                   onChanged: (value) {
                     setState(() {
@@ -498,10 +498,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     if (!_isLoading) {
       if (_email == "") {
         dmodel.setError("Email cannot be blank", true);
-      } else if (_firstName == "") {
-        dmodel.setError("First name cannot be blank", true);
-      } else if (_lastName == "") {
-        dmodel.setError("Last name cannot be blank", true);
       } else {
         setState(() {
           _isLoading = true;

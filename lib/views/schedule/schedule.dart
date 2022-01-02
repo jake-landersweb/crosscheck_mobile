@@ -5,6 +5,7 @@ import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
@@ -41,22 +42,24 @@ class _ScheduleState extends State<Schedule> {
                     dmodel.currentSeason != null)
           cv.BasicButton(
             onTap: () {
-              cv.Navigate(
-                context,
-                EventCreateEdit(
-                  isCreate: true,
-                  teamId: dmodel.tus!.team.teamId,
-                  season: dmodel.currentSeason!,
-                  completion: () {
-                    // reload the schedule
-                    dmodel.reloadHomePage(
-                      dmodel.tus!.team.teamId,
-                      dmodel.currentSeason!.seasonId,
-                      dmodel.user!.email,
-                      true,
-                    );
-                  },
-                ),
+              showMaterialModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return EventCreateEdit(
+                    isCreate: true,
+                    teamId: dmodel.tus!.team.teamId,
+                    season: dmodel.currentSeason!,
+                    completion: () {
+                      // reload the schedule
+                      dmodel.reloadHomePage(
+                        dmodel.tus!.team.teamId,
+                        dmodel.currentSeason!.seasonId,
+                        dmodel.user!.email,
+                        true,
+                      );
+                    },
+                  );
+                },
               );
             },
             child: Icon(Icons.add, color: dmodel.color),

@@ -24,7 +24,7 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
         cv.TextField(
           fieldPadding: const EdgeInsets.all(0),
           showBackground: false,
-          initialvalue: widget.item.getTitle(),
+          value: widget.item.getTitle(),
           isLabeled: true,
           labelText: "Title",
           charLimit: 25,
@@ -74,7 +74,7 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
           fieldPadding: const EdgeInsets.all(0),
           showBackground: false,
           isLabeled: true,
-          initialvalue: widget.item.getValue(),
+          value: widget.item.getValue(),
           labelText: "Value",
           charLimit: 25,
           showCharacters: true,

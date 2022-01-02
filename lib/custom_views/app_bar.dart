@@ -47,7 +47,7 @@ class AppBar extends StatefulWidget {
 }
 
 class _AppBarState extends State<AppBar> {
-  final double _barHeight = 50;
+  final double _barHeight = 40;
 
   // whether to show the shadow or not
   bool _showElevation = false;
@@ -274,7 +274,6 @@ class _AppBarState extends State<AppBar> {
   }
 
   Widget _titleBar(BuildContext context) {
-    print(MediaQuery.of(context).padding.top);
     return Column(
       children: [
         GlassContainer(

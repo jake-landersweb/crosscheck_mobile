@@ -34,7 +34,10 @@ class _SCEBasicState extends State<SCEBasic> {
       children: [
         _required(context, dmodel, scemodel),
         _basicInfo(context, dmodel, scemodel),
-        if (!scemodel.isCreate) _status(context, dmodel, scemodel),
+        if (scemodel.isCreate)
+          _templates(context, dmodel, scemodel)
+        else
+          _status(context, dmodel, scemodel),
       ],
     );
   }
@@ -50,7 +53,7 @@ class _SCEBasicState extends State<SCEBasic> {
               height: cellHeight,
               child: cv.TextField(
                 labelText: "Title",
-                initialvalue: scemodel.title,
+                value: scemodel.title,
                 showBackground: false,
                 fieldPadding: EdgeInsets.zero,
                 isLabeled: true,
@@ -78,7 +81,7 @@ class _SCEBasicState extends State<SCEBasic> {
             SizedBox(
               height: cellHeight,
               child: cv.TextField(
-                initialvalue: scemodel.website,
+                value: scemodel.website,
                 labelText: "Website (url)",
                 showBackground: false,
                 fieldPadding: EdgeInsets.zero,
@@ -94,7 +97,7 @@ class _SCEBasicState extends State<SCEBasic> {
             SizedBox(
               height: cellHeight,
               child: cv.TextField(
-                initialvalue: scemodel.seasonNote,
+                value: scemodel.seasonNote,
                 labelText: "Season Note",
                 showBackground: false,
                 fieldPadding: EdgeInsets.zero,
@@ -147,6 +150,67 @@ class _SCEBasicState extends State<SCEBasic> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _templates(BuildContext context, DataModel dmodel, SCEModel scemodel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: cv.Section(
+        "Template",
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _templateItem(context, dmodel, scemodel, Season.hockey()),
+                _templateItem(context, dmodel, scemodel, Season.football()),
+                _templateItem(context, dmodel, scemodel, Season.basketball()),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _templateItem(context, dmodel, scemodel, Season.soccer()),
+                  _templateItem(context, dmodel, scemodel, Season.baseball()),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _templateItem(BuildContext context, DataModel dmodel,
+      SCEModel scemodel, Season season) {
+    return cv.BasicButton(
+      onTap: () {
+        if (scemodel.sportCode == season.sportCode) {
+          scemodel.setSeasonData(widget.team, Season.empty());
+        } else {
+          scemodel.setSeasonData(widget.team, season);
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: scemodel.sportCode == season.sportCode
+              ? dmodel.color
+              : CustomColors.cellColor(context),
+          shape: BoxShape.circle,
+        ),
+        height: 50,
+        width: 50,
+        child: Icon(
+          season.getSportIcon(),
+          color: scemodel.sportCode == season.sportCode
+              ? Colors.white
+              : CustomColors.textColor(context).withOpacity(0.7),
         ),
       ),
     );

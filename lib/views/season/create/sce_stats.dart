@@ -115,7 +115,7 @@ class _StatCellState extends State<StatCell> {
       children: [
         cv.TextField(
           fieldPadding: EdgeInsets.zero,
-          initialvalue: widget.item.getTitle(),
+          value: widget.item.getTitle(),
           labelText: "Title",
           onChanged: (value) {
             setState(() {
@@ -124,42 +124,6 @@ class _StatCellState extends State<StatCell> {
           },
           validator: (value) {},
           isLabeled: true,
-        ),
-        const Divider(height: 0.5, indent: 15),
-        cv.LabeledWidget(
-          "Default Value",
-          child: Row(
-            children: [
-              SizedBox(
-                width: 50,
-                child: Center(
-                  child: Text(
-                    widget.item.getValue(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              cv.NumberPicker(
-                plusBackgroundColor: widget.color,
-                minValue: -100,
-                initialValue: widget.item.defaultValue,
-                maxValue: 100,
-                onMinusClick: (value) {
-                  setState(() {
-                    widget.item.setValue(value);
-                  });
-                },
-                onPlusClick: (value) {
-                  setState(() {
-                    widget.item.setValue(value);
-                  });
-                },
-              ),
-            ],
-          ),
         ),
         const Divider(height: 0.5, indent: 15),
         cv.LabeledWidget(

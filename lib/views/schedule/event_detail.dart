@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pnflutter/theme/root.dart';
 import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
@@ -133,16 +134,16 @@ class _EventDetailState extends State<EventDetail> {
                 ],
               ),
             ),
-          if (!((widget.event.eventLocation?.name).isEmpty()))
+          if (!((widget.event.eventLocation.name).isEmpty()))
             EventMetaDataCell(
-                title: widget.event.eventLocation!.name!,
+                title: widget.event.eventLocation.name!,
                 icon: Icons.home_outlined),
-          if (!((widget.event.eventLocation?.address).isEmpty()))
+          if (!((widget.event.eventLocation.address).isEmpty()))
             EventMetaDataCell(
-                title: widget.event.eventLocation!.address!,
+                title: widget.event.eventLocation.address!,
                 icon: Icons.near_me),
-          if (!widget.event.eLink.isEmpty())
-            EventMetaDataCell(title: widget.event.eLink!, icon: Icons.link),
+          if (widget.event.eLink != "")
+            EventMetaDataCell(title: widget.event.eLink, icon: Icons.link),
           if (!widget.event.eDescription.isEmpty())
             EventMetaDataCell(
                 title: widget.event.eDescription!, icon: Icons.description),
@@ -271,7 +272,7 @@ class _EventDetailState extends State<EventDetail> {
                       email: user.email,
                       teamId: widget.teamId,
                       seasonId: widget.season.seasonId,
-                      eventId: widget.event.eventId,
+                      event: widget.event,
                       isUpcoming: widget.isUpcoming,
                       completion: () {
                         _getUsers(dmodel);
@@ -291,22 +292,24 @@ class _EventDetailState extends State<EventDetail> {
     if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) {
       return cv.BasicButton(
         onTap: () {
-          cv.Navigate(
-            context,
-            EventCreateEdit(
-              isCreate: false,
-              teamId: widget.teamId,
-              season: widget.season,
-              initialEvent: widget.event,
-              users: (_users != null) ? _users : null,
-              completion: () {
-                // reload the schedule
-                dmodel.reloadHomePage(
-                    widget.teamId, widget.season.seasonId, widget.email, true);
-                // go back a screen
-                Navigator.of(context).pop();
-              },
-            ),
+          showMaterialModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return EventCreateEdit(
+                isCreate: false,
+                teamId: widget.teamId,
+                season: widget.season,
+                initialEvent: widget.event,
+                users: (_users != null) ? _users : null,
+                completion: () {
+                  // reload the schedule
+                  dmodel.reloadHomePage(widget.teamId, widget.season.seasonId,
+                      widget.email, true);
+                  // go back a screen
+                  Navigator.of(context).pop();
+                },
+              );
+            },
           );
         },
         child: Text("Edit",

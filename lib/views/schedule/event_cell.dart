@@ -237,7 +237,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                               email: widget.email,
                               teamId: widget.teamId,
                               seasonId: widget.season.seasonId,
-                              eventId: widget.event.eventId,
+                              event: widget.event,
                               isUpcoming: widget.isUpcoming,
                             );
                           },
@@ -330,18 +330,18 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
           spacing: 16,
           hasTopSpacing: true,
           children: [
-            if (!(widget.event.eventLocation?.name).isEmpty())
+            if (!(widget.event.eventLocation.name).isEmpty())
               EventMetaDataCell(
-                title: widget.event.eventLocation!.name!,
+                title: widget.event.eventLocation.name!,
                 icon: Icons.home_outlined,
               ),
-            if (!(widget.event.eventLocation?.address).isEmpty())
+            if (!(widget.event.eventLocation.address).isEmpty())
               EventMetaDataCell(
-                title: widget.event.eventLocation!.address!,
+                title: widget.event.eventLocation.address!,
                 icon: Icons.near_me,
               ),
-            if (!widget.event.eLink.isEmpty())
-              EventMetaDataCell(title: widget.event.eLink!, icon: Icons.link),
+            if (widget.event.eLink != "")
+              EventMetaDataCell(title: widget.event.eLink, icon: Icons.link),
             if (!widget.event.eDescription.isEmpty())
               EventMetaDataCell(
                   title: widget.event.eDescription!, icon: Icons.description),

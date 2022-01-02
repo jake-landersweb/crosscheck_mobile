@@ -24,12 +24,13 @@ class EditTeam extends StatefulWidget {
 class _EditTeamState extends State<EditTeam> {
   late String _color;
   late String _image;
+  late String _teamNote;
   late bool _isLight;
 
   late TeamPositions _positions;
 
   late List<CustomField> _customFields;
-  late List<CustomUserField> _customUserFields;
+  late List<CustomField> _customUserFields;
 
   bool _isLoading = false;
 
@@ -39,9 +40,12 @@ class _EditTeamState extends State<EditTeam> {
     _color =
         context.read<DataModel>().color.value.toRadixString(16).substring(2);
     _image = widget.team.image;
+    _teamNote = widget.team.teamNote ?? "";
     _isLight = widget.team.isLight;
-    _customFields = List.of(widget.team.customFields);
-    _customUserFields = List.of(widget.team.customUserFields);
+    _customFields = [for (var i in widget.team.customFields) i.clone()];
+    _customUserFields = [
+      for (var i in List.of(widget.team.customUserFields)) i.clone()
+    ];
     _positions = TeamPositions.of(widget.team.positions);
   }
 
@@ -192,11 +196,23 @@ class _EditTeamState extends State<EditTeam> {
             ),
             cv.TextField(
               labelText: "Image (url)",
+              value: _image,
               fieldPadding: const EdgeInsets.all(0),
               validator: (value) {},
               onChanged: (value) {
                 setState(() {
                   _image = value;
+                });
+              },
+            ),
+            cv.TextField(
+              labelText: "Team Note",
+              value: _teamNote,
+              fieldPadding: const EdgeInsets.all(0),
+              validator: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  _teamNote = value;
                 });
               },
             ),
@@ -260,7 +276,7 @@ class _EditTeamState extends State<EditTeam> {
         child: CustomFieldCreate(
           customFields: _customUserFields,
           onAdd: () {
-            return CustomUserField(title: "", type: "S", defaultValue: "");
+            return CustomField(title: "", type: "S", value: "");
           },
         ),
       ),
@@ -312,18 +328,29 @@ class _EditTeamState extends State<EditTeam> {
       "color": _color,
       "image": _image,
       "isLight": _isLight,
+      "teamNote": _teamNote,
       "customFields": _customFields.map((e) => e.toJson()).toList(),
       "positions": _positions.toJson(),
+      // "customUserFields": _customUserFields.map((e) => e.toJson()).toList(),
     };
 
-    Map<String, dynamic> userFields = {
-      "customUserFields": _customUserFields.map((e) => e.toJson()).toList(),
-    };
+    void addUserFields() {
+      body['customUserFields'] =
+          _customUserFields.map((e) => e.toJson()).toList();
+    }
 
+    if (_customUserFields.length == widget.team.customUserFields.length) {
+      for (var i in widget.team.customUserFields) {
+        if (!_customUserFields.any((element) => element == i)) {
+          addUserFields();
+        }
+      }
+    } else {
+      addUserFields();
+    }
     print(body);
-    print(userFields);
 
-    await dmodel.updateTeam(widget.team.teamId, body, userFields, () {
+    await dmodel.updateTeam(widget.team.teamId, body, () {
       Navigator.of(context).pop();
       // get the new team data
       dmodel.teamUserSeasonsGet(widget.team.teamId, dmodel.user!.email, (tus) {

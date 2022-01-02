@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 
@@ -52,18 +53,20 @@ class _SeasonRosterState extends State<SeasonRoster> {
             false || widget.teamUser.isTeamAdmin())
           cv.BasicButton(
             onTap: () {
-              cv.Navigate(
-                context,
-                SeasonUserEdit(
-                  team: widget.team,
-                  user: SeasonUser.empty(),
-                  currentSeasonUser: widget.currentSeasonUser,
-                  teamUser: widget.teamUser,
-                  teamId: widget.team.teamId,
-                  season: widget.season,
-                  completion: () {},
-                  isAdd: true,
-                ),
+              showMaterialModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return SeasonUserEdit(
+                    team: widget.team,
+                    user: SeasonUser.empty(),
+                    currentSeasonUser: widget.currentSeasonUser,
+                    teamUser: widget.teamUser,
+                    teamId: widget.team.teamId,
+                    season: widget.season,
+                    completion: () {},
+                    isAdd: true,
+                  );
+                },
               );
             },
             child: Icon(Icons.add, color: dmodel.color),
