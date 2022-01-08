@@ -22,13 +22,14 @@ class TextField extends StatefulWidget {
   final Color highlightColor;
   final bool showCharacters;
   final int charLimit;
-  String value;
+  String? value;
   final TextStyle? style;
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
   final bool showBackground;
   final bool isLabeled;
   final EdgeInsets fieldPadding;
+  final TextEditingController? controller;
 
   TextField({
     Key? key,
@@ -40,13 +41,14 @@ class TextField extends StatefulWidget {
     this.highlightColor = Colors.blue,
     this.showCharacters = false,
     this.charLimit = 100,
-    this.value = '',
+    this.value,
     this.style,
     this.keyboardType,
     this.textCapitalization = TextCapitalization.sentences,
     this.showBackground = true,
     this.isLabeled = false,
     this.fieldPadding = const EdgeInsets.only(left: 16),
+    this.controller,
   })  : assert(
           validator != null,
         ),
@@ -93,7 +95,7 @@ class _TextFieldState extends State<TextField> {
             _getLabeledMaterial(context),
           if (widget.showCharacters)
             Text(
-              '${widget.value.length} / ${widget.charLimit}',
+              '${widget.value?.length} / ${widget.charLimit}',
               style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
         ],
@@ -103,9 +105,9 @@ class _TextFieldState extends State<TextField> {
 
   Widget _getLabeledMaterial(BuildContext context) {
     if (widget.isLabeled) {
-      return _labelWrapper(context, _materialTextField(context));
+      return _labelWrapper(context, _cupertinoTextField(context));
     } else {
-      return _materialTextField(context);
+      return _cupertinoTextField(context);
     }
   }
 
@@ -144,6 +146,7 @@ class _TextFieldState extends State<TextField> {
   Widget _materialTextField(BuildContext context) {
     return TextFormField(
       autocorrect: false,
+      controller: widget.controller,
       textCapitalization: widget.textCapitalization,
       keyboardType: widget.keyboardType,
       keyboardAppearance: MediaQuery.of(context).platformBrightness,
@@ -187,6 +190,7 @@ class _TextFieldState extends State<TextField> {
   Widget _cupertinoTextField(BuildContext context) {
     return TextFormField(
       autocorrect: false,
+      controller: widget.controller,
       textCapitalization: widget.textCapitalization,
       keyboardType: widget.keyboardType,
       keyboardAppearance: MediaQuery.of(context).platformBrightness,

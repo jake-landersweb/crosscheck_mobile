@@ -280,7 +280,7 @@ class _EventCreateEditState extends State<EventCreateEdit> {
             },
             validator: (value) {},
             showBackground: false,
-            value: _event.eDescription ?? "",
+            value: _event.eDescription,
             isLabeled: true,
           ),
 

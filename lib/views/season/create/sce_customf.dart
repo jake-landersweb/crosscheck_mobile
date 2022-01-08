@@ -51,6 +51,7 @@ class _SCECustomFState extends State<SCECustomF> {
       child: cv.Section(
         "Custom Fields",
         child: CustomFieldCreate(
+          key: ValueKey("scemodel.customFields"),
           color: dmodel.color,
           customFields: scemodel.customFields,
           onAdd: () {
@@ -68,6 +69,7 @@ class _SCECustomFState extends State<SCECustomF> {
       child: cv.Section(
         "Custom User Fields",
         child: CustomFieldCreate(
+          key: ValueKey("scemodel.customUserFields"),
           color: dmodel.color,
           customFields: scemodel.customUserFields,
           onAdd: () {
@@ -85,6 +87,7 @@ class _SCECustomFState extends State<SCECustomF> {
       child: cv.Section(
         "Custom Fields for Events Template",
         child: CustomFieldCreate(
+          key: ValueKey("scemodel.eventCustomFieldsTemplate"),
           color: dmodel.color,
           customFields: scemodel.eventCustomFieldsTemplate,
           onAdd: () {
@@ -102,6 +105,7 @@ class _SCECustomFState extends State<SCECustomF> {
       child: cv.Section(
         "Custom Fields for Event Users Template",
         child: CustomFieldCreate(
+          key: ValueKey("scemodel.eventCustomUserFieldsTemplate"),
           color: dmodel.color,
           customFields: scemodel.eventCustomUserFieldsTemplate,
           onAdd: () {

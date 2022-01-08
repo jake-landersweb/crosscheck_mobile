@@ -11,20 +11,22 @@ import '../../client/root.dart';
 import '../../extras/root.dart';
 import 'root.dart';
 import '../root.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter/services.dart';
 
 class EventDetail extends StatefulWidget {
   const EventDetail({
     Key? key,
     required this.event,
     required this.email,
-    required this.teamId,
+    required this.team,
     required this.season,
     required this.isUpcoming,
   }) : super(key: key);
 
   final Event event;
   final String email;
-  final String teamId;
+  final Team team;
   final Season season;
   final bool isUpcoming;
 
@@ -42,7 +44,203 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   @override
+  void dispose() {
+    _users = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
+    return cv.AppBar(
+      title: "",
+      // isLarge: true,
+      backgroundColor: widget.event.getColor()?.withOpacity(0.5) ??
+          CustomColors.backgroundColor(context),
+      color: _accentColor(),
+      leading: [
+        cv.BackButton(color: _accentColor()),
+      ],
+      trailing: [_editButton(context, dmodel)],
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+      titlePadding: const EdgeInsets.only(left: 8),
+      refreshable: true,
+      childPadding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
+      onRefresh: () => _getUsers(dmodel),
+      children: [
+        _body(context, dmodel),
+      ],
+    );
+  }
+
+  Widget _body(BuildContext context, DataModel dmodel) {
+    return Column(
+      children: [
+        _title(context, dmodel),
+        const SizedBox(height: 16),
+        _detail(context, dmodel),
+        const SizedBox(height: 16),
+        _customFields(context, dmodel),
+        const SizedBox(height: 16),
+        _participants(context, dmodel)
+      ],
+    );
+  }
+
+  Widget _title(BuildContext context, DataModel dmodel) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            widget.event.getTitle(),
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+              color: widget.event.eventColor.isEmpty
+                  ? CustomColors.textColor(context)
+                  : Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _detail(BuildContext context, DataModel dmodel) {
+    List<Widget> detailChildren = _detailChildren(context, dmodel);
+    switch (detailChildren.length) {
+      case 1:
+        return Column(
+          children: detailChildren,
+        );
+      default:
+        if (detailChildren.length % 2 == 0) {
+          return AlignedGridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            itemCount: detailChildren.length,
+            itemBuilder: (context, index) {
+              return detailChildren[index];
+            },
+          );
+        } else {
+          return Column(
+            children: [
+              AlignedGridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                itemCount: detailChildren.length - 1,
+                itemBuilder: (context, index) {
+                  return detailChildren[index];
+                },
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              detailChildren.last,
+            ],
+          );
+        }
+    }
+  }
+
+  List<Widget> _detailChildren(BuildContext context, DataModel dmodel) {
+    return [
+      _detailCell(
+          Icons.calendar_today_rounded,
+          "${widget.event.getDate()} ${widget.event.getTime()}",
+          "Date & Time",
+          dmodel),
+      if (widget.event.eventType == 1)
+        _detailCell(
+            Icons.person,
+            widget.event.getOpponentTitle(widget.team.teamId),
+            "Opponent",
+            dmodel),
+      if (widget.event.eventLocation.name != null)
+        _detailCell(
+            Icons.home, widget.event.eventLocation.name!, "Location", dmodel),
+      if (widget.event.eventLocation.address != null)
+        _detailCell(Icons.near_me, widget.event.eventLocation.address!,
+            "Address", dmodel),
+      if (widget.event.eDescription.isNotEmpty)
+        _detailCell(Icons.description, widget.event.eDescription, "Description",
+            dmodel),
+    ];
+  }
+
+  Widget _detailCell(
+      IconData icon, String value, String label, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        Clipboard.setData(ClipboardData(text: value));
+        print("set data");
+        dmodel.setSuccess("Successfully copied!", true);
+      },
+      child: Container(
+        width: double.infinity,
+        // height: MediaQuery.of(context).size.width / 3,
+        decoration: BoxDecoration(
+          color: CustomColors.cellColor(context)
+              .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            // mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: _accentColor(),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Icon(
+                icon,
+                size: 40,
+                color: widget.event.eventColor.isEmpty
+                    ? CustomColors.textColor(context)
+                    : Colors.white,
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: widget.event.eventColor.isEmpty
+                              ? CustomColors.textColor(context)
+                              : Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget build2(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: "",
@@ -68,6 +266,8 @@ class _EventDetailState extends State<EventDetail> {
         ),
         // event details
         _details(context),
+        const SizedBox(height: 8),
+        _customFields(context, dmodel),
         if (_users != null)
           Padding(
             padding: const EdgeInsets.only(top: 16.0),
@@ -95,7 +295,7 @@ class _EventDetailState extends State<EventDetail> {
               icon: Icons.calendar_today),
           if (widget.event.eventType == 1)
             EventMetaDataCell(
-                title: widget.event.getOpponentTitle(widget.teamId),
+                title: widget.event.getOpponentTitle(widget.team.teamId),
                 icon: Icons.person),
           if (widget.event.eventType == 1)
             EventMetaDataCell(
@@ -144,11 +344,25 @@ class _EventDetailState extends State<EventDetail> {
                 icon: Icons.near_me),
           if (widget.event.eLink != "")
             EventMetaDataCell(title: widget.event.eLink, icon: Icons.link),
-          if (!widget.event.eDescription.isEmpty())
-            EventMetaDataCell(
-                title: widget.event.eDescription!, icon: Icons.description),
         ],
       ),
+    );
+  }
+
+  Widget _customFields(BuildContext context, DataModel dmodel) {
+    return cv.NativeList(
+      color: CustomColors.cellColor(context)
+          .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
+      children: [
+        for (var i in widget.event.customFields)
+          cv.LabeledCell(
+            label: i.getTitle(),
+            value: i.getValue(),
+            textColor: widget.event.eventColor.isEmpty
+                ? CustomColors.textColor(context)
+                : Colors.white,
+          ),
+      ],
     );
   }
 
@@ -183,15 +397,41 @@ class _EventDetailState extends State<EventDetail> {
   Widget _participants(BuildContext context, DataModel dmodel) {
     if (widget.event.hasAttendance) {
       return cv.Section(
-        "Participants - ${_users?.where((element) => element.eventFields?.isParticipant == true).length ?? ""}",
-        child: cv.NativeList(
+        // "Participants - ${_users?.where((element) => element.eventFields?.isParticipant == true).length ?? ""}",
+        _users == null
+            ? ""
+            : _users!.length > 0
+                ? "Users"
+                : "",
+        child: Column(
           children: [
             if (_users != null)
               for (SeasonUser i in _users!
                   .where((element) => element.eventFields!.isParticipant))
-                _userRow(context, dmodel, i)
+                Column(
+                  children: [
+                    _userRow(context, dmodel, i),
+                    const SizedBox(height: 8),
+                  ],
+                )
             else
-              for (int i = 0; i < 25; i++) const UserCellLoading(),
+              for (int i = 0; i < 25; i++)
+                Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: CustomColors.cellColor(context).withOpacity(
+                            widget.event.eventColor.isEmpty ? 1 : 0.3),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: UserCellLoading(),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
           ],
         ),
       );
@@ -221,70 +461,101 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   Widget _userRow(BuildContext context, DataModel dmodel, SeasonUser user) {
-    return Row(
-      children: [
-        // user avatar cell
-        Expanded(
-          child: UserCell(user: user, season: widget.season),
-        ),
-        // show a message icon if the user left a message
-        if (!user.eventFields!.message.isEmpty())
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: cv.BasicButton(
-              onTap: () {
-                cv.showFloatingSheet(
-                  context: context,
-                  builder: (context) {
-                    return UserCommentSheet(
-                      user: user,
-                      event: widget.event,
-                      email: widget.email,
-                      teamId: widget.teamId,
-                      season: widget.season,
-                      completion: () {
-                        // refresh user data when added reply
-                        _getUsers(dmodel);
-                      },
-                    );
-                  },
-                );
-              },
-              child: const Icon(Icons.chat),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: CustomColors.cellColor(context)
+            .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
+        child: Row(
+          children: [
+            // user avatar cell
+            Opacity(
+              opacity: 0.7,
+              child: UserAvatar(
+                user: user,
+                season: widget.season,
+                diameter: 45,
+                fontSize: 24,
+              ),
             ),
-          ),
-        // show their status, and only let the model open if it is them
-        Opacity(
-          opacity: dmodel.user!.email == user.email ? 1 : 0.5,
-          child: EventUserStatus(
-            email: user.email,
-            status: user.eventFields!.eStatus,
-            showTitle: false,
-            onTap: () {
-              if ((user.email == widget.email &&
-                      stringToDate(widget.event.eDate)
-                          .isAfter(DateTime.now())) ||
-                  dmodel.currentSeasonUser!.isSeasonAdmin()) {
-                cv.showFloatingSheet(
-                  context: context,
-                  builder: (context) {
-                    return StatusSelectSheet(
-                      email: user.email,
-                      teamId: widget.teamId,
-                      seasonId: widget.season.seasonId,
-                      event: widget.event,
-                      isUpcoming: widget.isUpcoming,
-                      completion: () {
-                        _getUsers(dmodel);
+            const SizedBox(width: 8),
+            Expanded(
+              // child: UserCell(user: user, season: widget.season),
+              child: Text(
+                user.name(false),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+              ),
+            ),
+            // show a message icon if the user left a message
+            if (!user.eventFields!.message.isEmpty())
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: cv.BasicButton(
+                  onTap: () {
+                    cv.showFloatingSheet(
+                      context: context,
+                      builder: (context) {
+                        return UserCommentSheet(
+                          user: user,
+                          event: widget.event,
+                          email: widget.email,
+                          teamId: widget.team.teamId,
+                          season: widget.season,
+                          completion: () {
+                            // refresh user data when added reply
+                            _getUsers(dmodel);
+                          },
+                        );
                       },
                     );
                   },
-                );
-              }
-            },
-          ),
+                  child: Icon(
+                    Icons.comment,
+                    color: widget.event.eventColor.isEmpty
+                        ? CustomColors.textColor(context).withOpacity(0.7)
+                        : Colors.white,
+                  ),
+                ),
+              ),
+            // show their status, and only let the model open if it is them
+            Opacity(
+              opacity: dmodel.user!.email == user.email ? 1 : 0.5,
+              child: EventUserStatus(
+                email: user.email,
+                status: user.eventFields!.eStatus,
+                event: widget.event,
+                showTitle: false,
+                onTap: () {
+                  if ((user.email == widget.email &&
+                          stringToDate(widget.event.eDate)
+                              .isAfter(DateTime.now())) ||
+                      dmodel.currentSeasonUser!.isSeasonAdmin()) {
+                    cv.showFloatingSheet(
+                      context: context,
+                      builder: (context) {
+                        return StatusSelectSheet(
+                          email: user.email,
+                          teamId: widget.team.teamId,
+                          seasonId: widget.season.seasonId,
+                          event: widget.event,
+                          isUpcoming: widget.isUpcoming,
+                          completion: () {
+                            _getUsers(dmodel);
+                          },
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -295,19 +566,14 @@ class _EventDetailState extends State<EventDetail> {
           showMaterialModalBottomSheet(
             context: context,
             builder: (context) {
-              return EventCreateEdit(
+              return ECERoot(
                 isCreate: false,
-                teamId: widget.teamId,
+                team: widget.team,
                 season: widget.season,
-                initialEvent: widget.event,
-                users: (_users != null) ? _users : null,
-                completion: () {
-                  // reload the schedule
-                  dmodel.reloadHomePage(widget.teamId, widget.season.seasonId,
-                      widget.email, true);
-                  // go back a screen
-                  Navigator.of(context).pop();
-                },
+                teamUser: dmodel.tus!.user,
+                user: dmodel.user!,
+                seasonUser: dmodel.currentSeasonUser,
+                event: widget.event,
               );
             },
           );
@@ -315,7 +581,8 @@ class _EventDetailState extends State<EventDetail> {
         child: Text("Edit",
             style: TextStyle(
               fontSize: 18,
-              color: dmodel.color,
+              fontWeight: FontWeight.w500,
+              color: _accentColor(),
             )),
       );
     } else {
@@ -325,7 +592,7 @@ class _EventDetailState extends State<EventDetail> {
 
   Future<void> _getUsers(DataModel dmodel) async {
     await dmodel.getEventUsers(
-        widget.teamId, widget.season.seasonId, widget.event.eventId,
+        widget.team.teamId, widget.season.seasonId, widget.event.eventId,
         (eventUsers) {
       List<SeasonUser> seasonUsers = List.from(dmodel.seasonUsers!);
 
@@ -374,5 +641,13 @@ class _EventDetailState extends State<EventDetail> {
       default:
         return Colors.grey;
     }
+  }
+
+  Color _accentColor() {
+    return widget.event.eventColor.isEmpty
+        ? CustomColors.textColor(context).withOpacity(0.5)
+        : MediaQuery.of(context).platformBrightness == Brightness.light
+            ? widget.event.getColor()!.darken(0.3).withOpacity(0.7)
+            : widget.event.getColor()!.lighten(0.1);
   }
 }

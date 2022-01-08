@@ -103,6 +103,11 @@ String monthFromInt(int month) {
   }
 }
 
+String timeFromDate(DateTime date) {
+  date = date.toLocal();
+  return "${date.hour}:${date.minute}";
+}
+
 int intFromString(String char) {
   switch (char) {
     case "a":

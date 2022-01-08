@@ -49,7 +49,7 @@ class SeasonUserTeamFields {
     teamUserType = json['teamUserType']?.round();
     pos = json['pos'] ?? "";
     customFields = [];
-    validationStatus = json['validationStatus'].round() ?? 1;
+    validationStatus = json['validationStatus']?.round() ?? 1;
     if (json.containsKey("customFields")) {
       json['customFields']
           .forEach((v) => customFields.add(CustomField.fromJson(v)));

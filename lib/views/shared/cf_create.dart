@@ -10,10 +10,16 @@ class CustomFieldCreate extends StatefulWidget {
     required this.customFields,
     required this.onAdd,
     this.color = Colors.blue,
+    this.isCreate = true,
+    this.cellColor,
+    this.enabled = true,
   }) : super(key: key);
   final List<DynamicField> customFields;
   final DynamicField Function() onAdd;
   final Color color;
+  final bool isCreate;
+  final Color? cellColor;
+  final bool enabled;
 
   @override
   _CustomFieldCreateState createState() => _CustomFieldCreateState();
@@ -25,26 +31,33 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
     return Column(
       children: [
         cv.AnimatedList<DynamicField>(
+          enabled: widget.enabled,
+          cellColor: widget.cellColor,
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
           buttonPadding: 20,
           children: widget.customFields,
           cellBuilder: (BuildContext context, DynamicField item) {
-            return CustomFieldField(item: item, color: widget.color);
+            return CustomFieldField(
+              item: item,
+              color: widget.color,
+              isCreate: widget.isCreate,
+            );
           },
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: cv.RoundedLabel(
-            "Add New",
-            color: CustomColors.cellColor(context),
-            textColor: CustomColors.textColor(context),
-            onTap: () {
-              setState(() {
-                widget.customFields.add(widget.onAdd());
-              });
-            },
+        if (widget.isCreate)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: cv.RoundedLabel(
+              "Add New",
+              color: CustomColors.cellColor(context),
+              textColor: CustomColors.textColor(context),
+              onTap: () {
+                setState(() {
+                  widget.customFields.add(widget.onAdd());
+                });
+              },
+            ),
           ),
-        ),
       ],
     );
   }

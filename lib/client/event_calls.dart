@@ -40,7 +40,7 @@ extension EventCalls on DataModel {
   // }
 
   void getUserStatus(String teamId, String seasonId, String eventId,
-      String email, Function(int, String) completion) async {
+      String email, Function(SeasonUserEventFields) completion) async {
     final response = await client
         .fetch("/teams/$teamId/seasons/$seasonId/events/$eventId/users/$email");
 
@@ -48,8 +48,7 @@ extension EventCalls on DataModel {
       setError("There was an issue getting your status", true);
     } else if (response['status'] == 200) {
       setSuccess("Successfully got user status", false);
-      completion(response['body']['eStatus']?.round() ?? 0,
-          response['body']['message']);
+      completion(SeasonUserEventFields.fromJson(response['body']));
     } else {
       print(response['message']);
       setError("There was an issue getting your status", true);
@@ -57,12 +56,7 @@ extension EventCalls on DataModel {
   }
 
   Future<void> updateUserStatus(String teamId, String seasonId, String eventId,
-      String email, int status, String message, VoidCallback completion) async {
-    Map<String, dynamic> body = {
-      'eStatus': status,
-      "message": message,
-    };
-
+      String email, Map<String, dynamic> body, VoidCallback completion) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     final response = await client.put(
@@ -291,6 +285,8 @@ extension EventCalls on DataModel {
         if (isPrevious) {
           hasMorePreviousEvents = response['body']['hasMoreResults'];
           previousEventsStartIndex = response['body']['lastIndex'];
+          print(previousEventsStartIndex);
+          print(list.length);
         } else {
           hasMoreUpcomingEvents = response['body']['hasMoreResults'];
           upcomingEventsStartIndex = response['body']['lastIndex'];

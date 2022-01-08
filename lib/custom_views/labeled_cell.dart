@@ -8,11 +8,13 @@ class LabeledCell extends StatelessWidget {
     required this.value,
     this.height,
     this.padding = const EdgeInsets.fromLTRB(0, 8, 0, 8),
+    this.textColor,
   }) : super(key: key);
   final String label;
   final String value;
   final EdgeInsets padding;
   final double? height;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +27,10 @@ class LabeledCell extends StatelessWidget {
             Expanded(
               child: SelectableText(
                 value,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: textColor),
               ),
             ),
             Text(

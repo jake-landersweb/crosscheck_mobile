@@ -67,6 +67,18 @@ class User extends Equatable {
     };
   }
 
+  String getName() {
+    if (firstName?.isNotEmpty ?? false) {
+      if (lastName?.isNotEmpty ?? false) {
+        return "${firstName!} ${lastName!.substring(0, 1)}.";
+      } else {
+        return firstName!;
+      }
+    } else {
+      return email;
+    }
+  }
+
   // values to compare
   @override
   List<Object> get props => [email];

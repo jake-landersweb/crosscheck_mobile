@@ -91,6 +91,27 @@ extension CustomColors on Colors {
     return Color((math.Random(num.toInt()).nextDouble() * 0xFFFFFF).toInt())
         .withOpacity(1.0);
   }
+}
+
+extension ShadeUtility on Color {
+  Color darken([double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+
+    final hsl = HSLColor.fromColor(this);
+    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+
+    return hslDark.toColor();
+  }
+
+  Color lighten([double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+
+    final hsl = HSLColor.fromColor(this);
+    final hslLight =
+        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+
+    return hslLight.toColor();
+  }
 
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
   // String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'

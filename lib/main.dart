@@ -9,12 +9,14 @@ import 'extras/root.dart';
 import 'custom_views/root.dart' as cv;
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (context) => DataModel()),
-      ChangeNotifierProvider(create: (context) => MenuModel())
-    ],
-    child: const MyApp(),
+  runApp(RestartWidget(
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => DataModel()),
+        ChangeNotifierProvider(create: (context) => MenuModel())
+      ],
+      child: const MyApp(),
+    ),
   ));
 }
 
@@ -30,6 +32,40 @@ class MyApp extends StatelessWidget {
         }
       },
       child: const Home(),
+    );
+  }
+}
+
+// for allowing absoute reset when needed
+class RestartWidget extends StatefulWidget {
+  RestartWidget({
+    required this.child,
+  });
+
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
     );
   }
 }
@@ -50,7 +86,9 @@ class Home extends StatelessWidget {
       home: dmodel.showSplash
           ? dmodel.showUpdate
               ? const Update()
-              : const SplashScreen()
+              : dmodel.showMaintenance
+                  ? const Maintenance()
+                  : const SplashScreen()
           : dmodel.user == null
               ? const Login(
                   isCreate: true,
@@ -85,28 +123,31 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         print("app in resumed");
-        // reload the data if app was in background for overg 5 minutes
+        // reload the data if app was in background for over 30 seconds
         if (_closedTime?.isBefore(
-                DateTime.now().subtract(const Duration(minutes: 5))) ??
+                DateTime.now().subtract(const Duration(seconds: 30))) ??
             false) {
-          _resetData(context.read<DataModel>());
+          print("resetting");
+          // _resetData(context.read<DataModel>());
+          RestartWidget.restartApp(context);
         }
         break;
       case AppLifecycleState.inactive:
-        print("app in inactive");
-        _closedTime = DateTime.now();
+        print("app is inactive");
         break;
       case AppLifecycleState.paused:
-        print("app in paused");
+        print("app is paused");
         _closedTime = DateTime.now();
         break;
       case AppLifecycleState.detached:
-        print("app in detached");
+        print("app is detached");
         break;
     }
   }
 
   void _resetData(DataModel dmodel) {
+    dmodel.currentSeason = null;
+    dmodel.currentSeasonUser = null;
     dmodel.upcomingEvents = null;
     dmodel.previousEvents = null;
     dmodel.tus = null;
@@ -146,58 +187,62 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
           // for showing custom messages
           if (dmodel.successText != "")
             StatusBar(
-                backgroundColor: CustomColors.textColor(context),
-                opacity: 0.1,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(dmodel.successText,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: CustomColors.textColor(context),
-                            )),
-                      ),
-                      Icon(
-                        Icons.check_circle_outline,
-                        color: CustomColors.textColor(context).withOpacity(0.7),
-                      )
-                    ],
-                  ),
+              key: UniqueKey(),
+              backgroundColor: CustomColors.textColor(context),
+              opacity: 0.1,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(dmodel.successText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: CustomColors.textColor(context),
+                          )),
+                    ),
+                    Icon(
+                      Icons.check_circle_outline,
+                      color: CustomColors.textColor(context).withOpacity(0.7),
+                    )
+                  ],
                 ),
-                completion: () {
-                  setState(() {
-                    dmodel.successText = "";
-                  });
-                }),
+              ),
+              completion: () {
+                setState(() {
+                  dmodel.successText = "";
+                });
+              },
+            ),
           if (dmodel.errorText != "")
             StatusBar(
-                backgroundColor: Colors.red,
-                opacity: 0.7,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(dmodel.errorText,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            )),
-                      ),
-                      const Icon(
-                        Icons.warning_rounded,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
+              key: UniqueKey(),
+              backgroundColor: Colors.red,
+              opacity: 0.7,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(dmodel.errorText,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                          )),
+                    ),
+                    const Icon(
+                      Icons.warning_rounded,
+                      color: Colors.white,
+                    ),
+                  ],
                 ),
-                completion: () {
-                  setState(() {
-                    dmodel.errorText = "";
-                  });
-                }),
+              ),
+              completion: () {
+                setState(() {
+                  dmodel.errorText = "";
+                });
+              },
+            ),
         ],
       ),
     );
@@ -238,6 +283,16 @@ class _StatusBarState extends State<StatusBar>
 
     controller.forward();
 
+    _close();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _close() async {
     Future.delayed(const Duration(seconds: 3), () {
       setState(() {
         controller.reverse();
@@ -246,12 +301,6 @@ class _StatusBarState extends State<StatusBar>
         widget.completion();
       });
     });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 
   @override

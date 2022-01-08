@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
@@ -44,6 +45,8 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
   int _oldStatus = 0;
 
   bool _isNoShow = false;
+
+  List<CustomField> _customFields = [];
 
   @override
   void initState() {
@@ -110,12 +113,20 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                   ),
                 ],
               ),
-            cv.Section("Custom Fields",
-                child: cv.NativeList(
-                  children: [
-                    for (var i in widget.event.customUserFields) Text(i.title),
-                  ],
-                )),
+            if (_customFields.isNotEmpty)
+              cv.Section(
+                "Custom Fields",
+                child: CustomFieldCreate(
+                  enabled: false,
+                  cellColor: CustomColors.textColor(context).withOpacity(0.1),
+                  customFields: _customFields,
+                  isCreate: false,
+                  color: dmodel.color,
+                  onAdd: () {
+                    return CustomField(title: "", type: "S", value: "");
+                  },
+                ),
+              ),
             cv.Section(
               "Leave a Note",
               child: cv.NativeList(
@@ -184,8 +195,14 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
     if (_isNoShow) {
       _status = -2;
     }
+    Map<String, dynamic> body = {
+      "eStatus": _status,
+      "message": _message,
+      "customFields": _customFields.map((e) => e.toJson()).toList(),
+    };
+
     await dmodel.updateUserStatus(widget.teamId, widget.seasonId,
-        widget.event.eventId, widget.email, _status, _message, () {
+        widget.event.eventId, widget.email, body, () {
       // close the view
       Navigator.of(context).pop();
       // the specific event userStatus
@@ -282,15 +299,16 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
   void _getStatus(DataModel dmodel) async {
     dmodel.getUserStatus(
         widget.teamId, widget.seasonId, widget.event.eventId, widget.email,
-        (status, message) {
+        (user) {
       setState(() {
-        _status = status;
-        _oldStatus = status;
-        _message = message;
+        _status = user.eStatus;
+        _oldStatus = user.eStatus;
+        _message = user.message ?? "";
         _isLoaded = true;
         if (_status == -2) {
           _isNoShow = true;
         }
+        _customFields = [for (var i in user.customFields) i.clone()];
       });
     });
   }

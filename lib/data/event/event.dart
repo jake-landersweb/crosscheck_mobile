@@ -4,9 +4,10 @@ import 'package:pnflutter/data/event/event_location.dart';
 import 'package:pnflutter/data/root.dart';
 import 'root.dart';
 import '../../extras/root.dart';
+import 'package:flutter/material.dart';
 
 class Event extends Equatable {
-  String? eDescription;
+  late String eDescription;
   late String eventId;
   late String eTitle;
   late String eLocation;
@@ -27,9 +28,10 @@ class Event extends Equatable {
   late int eventType;
   late List<CustomField> customFields;
   late List<CustomField> customUserFields;
+  late String eventColor;
 
   Event({
-    this.eDescription,
+    required this.eDescription,
     required this.eventId,
     required this.eTitle,
     required this.eLocation,
@@ -50,6 +52,7 @@ class Event extends Equatable {
     required this.eventType,
     required this.customFields,
     required this.customUserFields,
+    required this.eventColor,
   });
 
   // empty object
@@ -62,7 +65,7 @@ class Event extends Equatable {
     teamId = "";
     seasonId = "";
     homeTeam = EventTeam.empty();
-    eDate = "2021-06-15 12:00:00";
+    eDate = dateToString(DateTime.now());
     eLink = "";
     awayTeam = EventTeam.empty();
     inCount = 0;
@@ -70,11 +73,12 @@ class Event extends Equatable {
     undecidedCount = 0;
     noResponse = 0;
     userStatus = 0;
-    eventLocation = EventLocation();
+    eventLocation = EventLocation.empty();
     showAttendance = true;
     eventType = 0;
     customFields = [];
     customUserFields = [];
+    eventColor = "";
   }
 
   // for creating a copy
@@ -104,9 +108,11 @@ class Event extends Equatable {
     eventType = event.eventType;
     customFields = [for (var i in event.customFields) i.clone()];
     customUserFields = [for (var i in event.customUserFields) i.clone()];
+    eventColor = event.eventColor;
   }
 
   Event clone() => Event(
+        eDescription: eDescription,
         eventId: eventId,
         eTitle: eTitle,
         eLocation: eLocation,
@@ -126,6 +132,7 @@ class Event extends Equatable {
         eventType: eventType,
         customFields: [for (var i in customFields) i.clone()],
         customUserFields: [for (var i in customUserFields) i.clone()],
+        eventColor: eventColor,
       );
 
   // Event.fromRaw(EventRaw event) {
@@ -156,7 +163,7 @@ class Event extends Equatable {
 
   // object from json
   Event.fromJson(Map<String, dynamic> json) {
-    eDescription = json['eDescription'];
+    eDescription = json['eDescription'] ?? "";
     eventId = json['eventId'];
     eTitle = json['eTitle'];
     eLocation = json['eLocation'] ?? "";
@@ -189,6 +196,7 @@ class Event extends Equatable {
       json['customUserFields']
           .forEach((v) => customUserFields.add(CustomField.fromJson(v)));
     }
+    eventColor = json['eventColor'] ?? "";
   }
 
   // object to json
@@ -209,14 +217,11 @@ class Event extends Equatable {
     if (awayTeam != null) {
       data['awayTeam'] = awayTeam!.toJson();
     }
-    data['inCount'] = inCount;
-    data['outCount'] = outCount;
-    data['undecidedCount'] = undecidedCount;
-    data['noResponse'] = noResponse;
-    data['userStatus'] = userStatus;
     data['eventLocation'] = eventLocation.toJson();
     data['showAttendance'] = showAttendance;
     data['eventType'] = eventType;
+    data['customFields'] = customFields.map((e) => e.toJson()).toList();
+    data['eventColor'] = eventColor;
     return data;
   }
 
@@ -305,6 +310,38 @@ class Event extends Equatable {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Color? getStatusColor(int userStatus) {
+    switch (userStatus) {
+      case -1:
+        return Colors.red[300];
+      case 1:
+        return Colors.green[300];
+      case 2:
+        return Colors.amber[300];
+    }
+  }
+
+  IconData getStatusIcon() {
+    switch (userStatus) {
+      case -1:
+        return Icons.close;
+      case 1:
+        return Icons.done;
+      case 2:
+        return Icons.more_horiz;
+      default:
+        return Icons.horizontal_rule;
+    }
+  }
+
+  Color? getColor() {
+    try {
+      return CustomColors.fromHex(eventColor);
+    } catch (e) {
+      // ignore
     }
   }
 

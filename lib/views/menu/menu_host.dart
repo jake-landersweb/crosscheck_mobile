@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pnflutter/views/chat/season_chat.dart';
 import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
@@ -151,12 +152,9 @@ class _MenuHostState extends State<MenuHost> {
                   dmodel.tus!.team.image,
                   width: (_size.width / _menu.sizeThreashold) - 32,
                   errorBuilder: (context, error, stackTrace) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Image.asset(
-                        "assets/launch/x.png",
-                        width: (_size.width / _menu.sizeThreashold) - 32,
-                      ),
+                    return Image.asset(
+                      "assets/launch/x.png",
+                      width: (_size.width / _menu.sizeThreashold) - 32,
                     );
                   },
                   loadingBuilder: (context, child, loadingProgress) {
@@ -166,18 +164,15 @@ class _MenuHostState extends State<MenuHost> {
                     return SizedBox(
                       width: (_size.width / _menu.sizeThreashold) - 32,
                       height: (_size.width / _menu.sizeThreashold) - 32,
-                      child: cv.LoadingIndicator(),
+                      child: const cv.LoadingIndicator(),
                     );
                   },
                 ),
               )
             else
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Image.asset(
-                  "assets/launch/x.png",
-                  width: (_size.width / _menu.sizeThreashold) - 32,
-                ),
+              Image.asset(
+                "assets/launch/x.png",
+                width: (_size.width / _menu.sizeThreashold) - 32,
               ),
             const SizedBox(height: 16),
             const Divider(height: 0.5),
@@ -200,12 +195,15 @@ class _MenuHostState extends State<MenuHost> {
                   if (!dmodel.noSeason) const SizedBox(height: 16),
                   _menuRow(context, _menuItems[3], _menu, _size),
                   const SizedBox(height: 16),
-                  if (dmodel.tus?.user.isTeamAdmin() ?? false)
+                  if (!dmodel.noSeason)
                     _menuRow(context, _menuItems[4], _menu, _size),
+                  const SizedBox(height: 16),
+                  if (dmodel.tus?.user.isTeamAdmin() ?? false)
+                    _menuRow(context, _menuItems[5], _menu, _size),
                   const SizedBox(height: 16),
                   if ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) &&
                       !dmodel.noSeason)
-                    _menuRow(context, _menuItems[5], _menu, _size),
+                    _menuRow(context, _menuItems[6], _menu, _size),
                 ],
               ),
             ),
@@ -307,6 +305,17 @@ class _MenuHostState extends State<MenuHost> {
       case Pages.seasonAdmin:
         return SeasonAdmin(
             season: dmodel.currentSeason!, team: dmodel.tus!.team);
+      case Pages.chat:
+        if (dmodel.currentSeason != null && dmodel.currentSeasonUser != null) {
+          return ChatHome(
+            team: dmodel.tus!.team,
+            season: dmodel.currentSeason!,
+            user: dmodel.user!,
+            seasonUser: dmodel.currentSeasonUser!,
+          );
+        } else {
+          return Container();
+        }
       default:
         return Text('Home');
     }
@@ -332,6 +341,11 @@ class _MenuHostState extends State<MenuHost> {
       title: 'Season Select',
       icon: Icons.rule,
       page: Pages.seasonSettings,
+    ),
+    const MenuItem(
+      title: 'Chat',
+      icon: Icons.chat,
+      page: Pages.chat,
     ),
     const MenuItem(
       title: 'Settings',

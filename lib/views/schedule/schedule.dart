@@ -22,14 +22,12 @@ class Schedule extends StatefulWidget {
 }
 
 class _ScheduleState extends State<Schedule> {
-  String _currentTitle = "Upcoming";
-
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: "Schedule",
-      // isLarge: true,
+      isLarge: true,
       refreshable: true,
       backgroundColor: CustomColors.backgroundColor(context),
       color: dmodel.color,
@@ -45,20 +43,28 @@ class _ScheduleState extends State<Schedule> {
               showMaterialModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return EventCreateEdit(
+                  return ECERoot(
                     isCreate: true,
-                    teamId: dmodel.tus!.team.teamId,
+                    team: dmodel.tus!.team,
                     season: dmodel.currentSeason!,
-                    completion: () {
-                      // reload the schedule
-                      dmodel.reloadHomePage(
-                        dmodel.tus!.team.teamId,
-                        dmodel.currentSeason!.seasonId,
-                        dmodel.user!.email,
-                        true,
-                      );
-                    },
+                    user: dmodel.user!,
+                    teamUser: dmodel.tus!.user,
+                    seasonUser: dmodel.currentSeasonUser,
                   );
+                  // return EventCreateEdit(
+                  //   isCreate: true,
+                  //   teamId: dmodel.tus!.team.teamId,
+                  //   season: dmodel.currentSeason!,
+                  //   completion: () {
+                  //     // reload the schedule
+                  //     dmodel.reloadHomePage(
+                  //       dmodel.tus!.team.teamId,
+                  //       dmodel.currentSeason!.seasonId,
+                  //       dmodel.user!.email,
+                  //       true,
+                  //     );
+                  //   },
+                  // );
                 },
               );
             },
@@ -86,12 +92,12 @@ class _ScheduleState extends State<Schedule> {
             titles: const ["Upcoming", "Previous"],
             onSelection: (selection) {
               setState(() {
-                _currentTitle = selection;
+                dmodel.currentScheduleTitle = selection;
               });
             },
             initialSelection: "Upcoming",
           ),
-          if (_currentTitle == "Upcoming")
+          if (dmodel.currentScheduleTitle == "Upcoming")
             if (dmodel.upcomingEvents!.isEmpty)
               cv.NoneFound("There are no upcoming events", color: dmodel.color)
             else
@@ -158,12 +164,27 @@ class _ScheduleState extends State<Schedule> {
 
   Future<void> _refreshAction(DataModel dmodel) async {
     if (dmodel.currentSeason != null) {
-      await dmodel.reloadHomePage(
-        dmodel.tus!.team.teamId,
-        dmodel.currentSeason!.seasonId,
-        dmodel.user!.email,
-        false,
-      );
+      if (dmodel.currentScheduleTitle == "Upcoming") {
+        dmodel.upcomingEventsStartIndex = 0;
+        await dmodel.getPagedEvents(
+            dmodel.tus!.team.teamId,
+            dmodel.currentSeason!.seasonId,
+            dmodel.user!.email,
+            0,
+            false, (events) {
+          dmodel.setUpcomingEvents(events);
+        });
+      } else {
+        dmodel.previousEventsStartIndex = 0;
+        await dmodel.getPagedEvents(
+            dmodel.tus!.team.teamId,
+            dmodel.currentSeason!.seasonId,
+            dmodel.user!.email,
+            0,
+            true, (events) {
+          dmodel.setPreviousEvents(events);
+        });
+      }
     } else if (!dmodel.noTeam && dmodel.tus != null) {
       await dmodel.teamUserSeasonsGet(
           dmodel.tus!.team.teamId, dmodel.user!.email, (tus) {
@@ -214,6 +235,7 @@ class _PreviousEventsState extends State<PreviousEvents> {
               width: MediaQuery.of(context).size.width / 2,
               color: CustomColors.cellColor(context),
               onTap: () {
+                print(dmodel.hasMorePreviousEvents);
                 dmodel.getMoreEvents(
                   dmodel.tus!.team.teamId,
                   dmodel.currentSeason!.seasonId,
@@ -321,7 +343,7 @@ class _EventListState extends State<EventList> {
                       child: EventCell(
                         event: widget.list[index],
                         email: dmodel.user!.email,
-                        teamId: dmodel.tus!.team.teamId,
+                        team: dmodel.tus!.team,
                         season: dmodel.currentSeason!,
                         isExpaded: widget.isPrevious ? false : true,
                         isUpcoming: !widget.isPrevious,
@@ -346,7 +368,7 @@ class _EventListState extends State<EventList> {
                     child: EventCell(
                       event: widget.list[index],
                       email: dmodel.user!.email,
-                      teamId: dmodel.tus!.team.teamId,
+                      team: dmodel.tus!.team,
                       season: dmodel.currentSeason!,
                       isUpcoming: !widget.isPrevious,
                     ),
@@ -398,7 +420,7 @@ class _EventListState extends State<EventList> {
                         child: EventCell(
                             event: widget.list[index],
                             email: dmodel.user!.email,
-                            teamId: dmodel.tus!.team.teamId,
+                            team: dmodel.tus!.team,
                             season: dmodel.currentSeason!,
                             isUpcoming: !widget.isPrevious),
                       ),

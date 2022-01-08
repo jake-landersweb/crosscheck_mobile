@@ -16,6 +16,7 @@ class AnimatedList<T> extends StatefulWidget {
     this.allowTap = false,
     this.enabled = true,
     this.onRemove,
+    this.cellColor,
   }) : super(key: key);
 
   final List<T> children;
@@ -27,6 +28,7 @@ class AnimatedList<T> extends StatefulWidget {
   final bool allowTap;
   final bool enabled;
   final Function(int)? onRemove;
+  final Color? cellColor;
 
   @override
   _AnimatedListState<T> createState() => _AnimatedListState<T>();
@@ -53,6 +55,7 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
                   buttonPadding: widget.buttonPadding,
                   onTap: widget.onTap,
                   allowTap: widget.allowTap,
+                  cellColor: widget.cellColor,
                   onRemove: (index) {
                     if (widget.onRemove == null) {
                       setState(() {
@@ -85,7 +88,7 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
           Container(
               height: 0.5,
               width: double.infinity,
-              color: CustomColors.cellColor(context)),
+              color: widget.cellColor ?? CustomColors.cellColor(context)),
           const Divider(indent: 15),
         ],
       ),
@@ -106,6 +109,7 @@ class SwipeListCell<T> extends StatefulWidget {
     this.onTap,
     required this.allowTap,
     required this.enabled,
+    this.cellColor,
   }) : super(key: key);
   final List<T> children;
   final int index;
@@ -117,6 +121,7 @@ class SwipeListCell<T> extends StatefulWidget {
   final Function(T item)? onTap;
   final bool allowTap;
   final bool enabled;
+  final Color? cellColor;
 
   @override
   _SwipeListCellState<T> createState() => _SwipeListCellState<T>();
@@ -187,7 +192,7 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
           ? Padding(
               padding: EdgeInsets.fromLTRB(widget.padding.left, 0, 0, 0),
               child: Material(
-                color: CustomColors.cellColor(context),
+                color: widget.cellColor ?? CustomColors.cellColor(context),
                 shape:
                     ContinuousRectangleBorder(borderRadius: _getborderRadius()),
                 child: SizeTransition(
@@ -206,7 +211,7 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
                   widget.onTap!(widget.children[widget.index]);
                 },
                 child: Material(
-                  color: CustomColors.cellColor(context),
+                  color: widget.cellColor ?? CustomColors.cellColor(context),
                   shape: ContinuousRectangleBorder(
                       borderRadius: _getborderRadius()),
                   child: SizeTransition(

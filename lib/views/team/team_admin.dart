@@ -70,7 +70,6 @@ class _TeamAdminState extends State<TeamAdmin> {
                 ),
               if (widget.team.image != "")
                 cv.LabeledCell(
-                  height: cellHeight,
                   label: "Image",
                   value: widget.team.image,
                 ),

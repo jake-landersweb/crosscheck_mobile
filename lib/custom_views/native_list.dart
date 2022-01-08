@@ -66,7 +66,9 @@ class _NativeListState extends State<NativeList> {
   Widget iOSStyle(BuildContext context) {
     return Material(
       color: widget.color ?? ViewColors.cellColor(context),
-      shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(35)),
+      shape: widget.children.length == 1
+          ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))
+          : ContinuousRectangleBorder(borderRadius: BorderRadius.circular(35)),
       child: Padding(
         padding: widget.padding,
         child: Column(
@@ -94,7 +96,9 @@ class _NativeListState extends State<NativeList> {
   Widget androidStyle(BuildContext context) {
     return Material(
       color: widget.color ?? ViewColors.cellColor(context),
-      shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(35)),
+      shape: widget.children.length == 1
+          ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))
+          : ContinuousRectangleBorder(borderRadius: BorderRadius.circular(35)),
       child: Padding(
         padding: widget.padding,
         child: Column(

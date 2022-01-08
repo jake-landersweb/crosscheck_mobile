@@ -88,22 +88,26 @@ class Season extends Equatable {
         ? TeamPositions.empty()
         : TeamPositions.fromJson(json['positions']);
     customFields = [];
-    json['customFields']
-        .forEach((v) => customFields.add(CustomField.fromJson(v)));
+    if (json['customFields'] != null) {
+      json['customFields']
+          .forEach((v) => customFields.add(CustomField.fromJson(v)));
+    }
     customUserFields = [];
-    json['customUserFields']
-        .forEach((v) => customUserFields.add(CustomField.fromJson(v)));
+    if (json['customUserFields'] != null) {
+      json['customUserFields']
+          .forEach((v) => customUserFields.add(CustomField.fromJson(v)));
+    }
     website = json['website'] ?? "";
-    sportCode = json['sportCode'].round() ?? 0;
+    sportCode = json['sportCode']?.round() ?? 0;
     eventCustomFieldsTemplate = [];
     if (json['eventCustomFieldsTemplate'] != null) {
-      json['eventCustomFieldsTemplate']
-          .forEach((v) => customFields.add(CustomField.fromJson(v)));
+      json['eventCustomFieldsTemplate'].forEach(
+          (v) => eventCustomFieldsTemplate.add(CustomField.fromJson(v)));
     }
     eventCustomUserFieldsTemplate = [];
     if (json['eventCustomUserFieldsTemplate'] != null) {
-      json['eventCustomUserFieldsTemplate']
-          .forEach((v) => customFields.add(CustomField.fromJson(v)));
+      json['eventCustomUserFieldsTemplate'].forEach(
+          (v) => eventCustomUserFieldsTemplate.add(CustomField.fromJson(v)));
     }
   }
 

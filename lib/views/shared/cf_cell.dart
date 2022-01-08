@@ -8,9 +8,11 @@ class CustomFieldField extends StatefulWidget {
     Key? key,
     required this.item,
     this.color = Colors.blue,
+    this.isCreate = true,
   }) : super(key: key);
   final DynamicField item;
   final Color color;
+  final bool isCreate;
 
   @override
   _CustomFieldFieldState createState() => _CustomFieldFieldState();
@@ -21,47 +23,51 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        cv.TextField(
-          fieldPadding: const EdgeInsets.all(0),
-          showBackground: false,
-          value: widget.item.getTitle(),
-          isLabeled: true,
-          labelText: "Title",
-          charLimit: 25,
-          showCharacters: true,
-          onChanged: (value) {
-            widget.item.setTitle(value);
-          },
-          validator: (value) {},
-        ),
-        cv.SegmentedPicker(
-          initialSelection: widget.item.getType(),
-          titles: const ["Word", "Number", "True/False"],
-          selections: const ["S", "I", "B"],
-          onSelection: (value) {
-            // change the type
-            setState(() {
-              widget.item.setType(value);
-            });
-            // change the value
-            switch (value) {
-              case "S":
-                setState(() {
-                  widget.item.setValue("");
-                });
-                break;
-              case "I":
-                setState(() {
-                  widget.item.setValue("0");
-                });
-                break;
-              default:
-                setState(() {
-                  widget.item.setValue("false");
-                });
-            }
-          },
-        ),
+        if (widget.isCreate)
+          cv.TextField(
+            fieldPadding: const EdgeInsets.all(0),
+            showBackground: false,
+            value: widget.item.getTitle(),
+            isLabeled: true,
+            labelText: "Title",
+            charLimit: 25,
+            showCharacters: true,
+            onChanged: (value) {
+              widget.item.setTitle(value);
+            },
+            validator: (value) {},
+          )
+        else
+          cv.LabeledWidget("Title", child: Text(widget.item.getTitle())),
+        if (widget.isCreate)
+          cv.SegmentedPicker(
+            initialSelection: widget.item.getType(),
+            titles: const ["Word", "Number", "True/False"],
+            selections: const ["S", "I", "B"],
+            onSelection: (value) {
+              // change the type
+              setState(() {
+                widget.item.setType(value);
+              });
+              // change the value
+              switch (value) {
+                case "S":
+                  setState(() {
+                    widget.item.setValue("");
+                  });
+                  break;
+                case "I":
+                  setState(() {
+                    widget.item.setValue("0");
+                  });
+                  break;
+                default:
+                  setState(() {
+                    widget.item.setValue("false");
+                  });
+              }
+            },
+          ),
         SizedBox(height: 50, child: Center(child: _valField(context))),
       ],
     );
@@ -126,7 +132,7 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
             height: 25,
             width: 50,
             toggleSize: 18,
-            activeColor: Theme.of(context).colorScheme.primary,
+            activeColor: widget.color,
             onToggle: (value) {
               setState(() {
                 widget.item.setValue(value);

@@ -15,7 +15,7 @@ class EventCell extends StatefulWidget {
     Key? key,
     required this.event,
     required this.email,
-    required this.teamId,
+    required this.team,
     required this.season,
     this.isExpaded = false,
     this.showStatus,
@@ -24,7 +24,7 @@ class EventCell extends StatefulWidget {
 
   final Event event;
   final String email;
-  final String teamId;
+  final Team team;
   final Season season;
   final bool? isExpaded;
   final bool? showStatus;
@@ -80,6 +80,221 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            widget.event.getColor() ?? CustomColors.cellColor(context),
+            widget.event.eventColor.isEmpty
+                ? CustomColors.cellColor(context)
+                : widget.event.getColor()!.lighten(),
+          ],
+          end: Alignment.topLeft,
+          begin: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: cv.BasicButton(
+                        onTap: () {
+                          if (dmodel.seasonUsers != null) {
+                            cv.Navigate(
+                              context,
+                              EventDetail(
+                                event: widget.event,
+                                email: widget.email,
+                                team: widget.team,
+                                season: widget.season,
+                                isUpcoming: widget.isUpcoming,
+                              ),
+                            );
+                          } else {
+                            dmodel.setError("Fetching user list ...", true);
+                          }
+                        },
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            widget.event.getTitle(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 24,
+                              color: widget.event.eventColor.isEmpty
+                                  ? CustomColors.textColor(context)
+                                  : Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // status button
+                    if (widget.event.userStatus != null)
+                      EventUserStatus(
+                        status: widget.event.userStatus!,
+                        email: widget.email,
+                        event: widget.event,
+                        onTap: () {
+                          if (dmodel.currentSeasonUser == null &&
+                              dmodel.seasonUsers != null) {
+                            dmodel.setError("You are not on this season", true);
+                          } else {
+                            if (stringToDate(widget.event.eDate)
+                                    .isAfter(DateTime.now()) ||
+                                (dmodel.currentSeasonUser?.isSeasonAdmin() ??
+                                    false)) {
+                              cv.showFloatingSheet(
+                                context: context,
+                                builder: (context) {
+                                  return StatusSelectSheet(
+                                    email: widget.email,
+                                    teamId: widget.team.teamId,
+                                    seasonId: widget.season.seasonId,
+                                    event: widget.event,
+                                    isUpcoming: widget.isUpcoming,
+                                  );
+                                },
+                              );
+                            }
+                          }
+                        },
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // date and time
+                Text(
+                  "${widget.event.getDate()} ${widget.event.getTime()}",
+                  style: TextStyle(
+                    color: widget.event.eventColor.isEmpty
+                        ? CustomColors.textColor(context).withOpacity(0.5)
+                        : Colors.white.withOpacity(0.75),
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizeTransition(
+                  sizeFactor: _animation,
+                  axis: Axis.vertical,
+                  child: AnimatedOpacity(
+                    duration: Duration(milliseconds: 300),
+                    opacity: _isOpen ? 1 : 0,
+                    child: Column(
+                      children: [
+                        if (widget.event.eventLocation.name != null)
+                          _detailCell(
+                              Icons.home, widget.event.eventLocation.name!),
+                        if (widget.event.eventLocation.address != null)
+                          _detailCell(Icons.near_me,
+                              widget.event.eventLocation.address!),
+                        if (widget.event.eDescription.isNotEmpty)
+                          _detailCell(
+                              Icons.description, widget.event.eDescription),
+                      ],
+                    ),
+                  ),
+                ),
+                // detail toggle
+                Row(
+                  children: [
+                    cv.BasicButton(
+                      onTap: () {
+                        _toggleContainer();
+                      },
+                      child: AnimatedRotation(
+                        duration: Duration(milliseconds: 550),
+                        curve: Sprung.overDamped,
+                        turns: _isOpen ? 0.25 : -0.25,
+                        child: Icon(
+                          Icons.chevron_left,
+                          color: widget.event.eventColor.isEmpty
+                              ? CustomColors.textColor(context).withOpacity(0.7)
+                              : Colors.white,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    if (widget.event.hasAttendance)
+                      Row(
+                        children: [
+                          Text(
+                            widget.event.inCount.toString(),
+                            style: TextStyle(
+                              color: widget.event.eventColor.isEmpty
+                                  ? CustomColors.textColor(context)
+                                      .withOpacity(0.7)
+                                  : Colors.white,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(Icons.check,
+                              size: 16,
+                              color: widget.event.eventColor.isEmpty
+                                  ? CustomColors.textColor(context)
+                                      .withOpacity(0.7)
+                                  : Colors.white),
+                        ],
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _detailCell(IconData icon, String value) {
+    return Column(
+      children: [
+        Row(children: [
+          SizedBox(
+            width: 36,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Icon(
+                icon,
+                color: widget.event.eventColor.isEmpty
+                    ? CustomColors.textColor(context)
+                    : Colors.white,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: widget.event.eventColor.isEmpty
+                    ? CustomColors.textColor(context)
+                    : Colors.white,
+              ),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  @override
+  Widget build2(BuildContext context) {
     return Material(
       color: CustomColors.cellColor(context),
       // color: Colors.red,
@@ -140,7 +355,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                   EventDetail(
                     event: widget.event,
                     email: widget.email,
-                    teamId: widget.teamId,
+                    team: widget.team,
                     season: widget.season,
                     isUpcoming: widget.isUpcoming,
                   ),
@@ -211,7 +426,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
       children: [
         if (widget.event.hasAttendance) SizedBox(height: 8),
         if (widget.event.hasAttendance)
-          if (widget.showStatus ?? true)
+          if (widget.showStatus ?? true && widget.event.userStatus != null)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -235,7 +450,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                           builder: (context) {
                             return StatusSelectSheet(
                               email: widget.email,
-                              teamId: widget.teamId,
+                              teamId: widget.team.teamId,
                               seasonId: widget.season.seasonId,
                               event: widget.event,
                               isUpcoming: widget.isUpcoming,
@@ -284,51 +499,13 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                // Row(
-                //   children: [
-                //     // status select
-                //     EventUserStatus(
-                //       status: widget.event.userStatus ?? 0,
-                //       email: dmodel.user!.email,
-                //       showTitle: false,
-                //       onTap: () {
-                // // make sure this event has not passed
-                // if (stringToDate(widget.event.eDate)
-                //         .isAfter(DateTime.now()) ||
-                //     dmodel.currentSeasonUser!.isSeasonAdmin()) {
-                //   cv.showFloatingSheet(
-                //     context: context,
-                //     builder: (context) {
-                //       return StatusSelectSheet(
-                //         email: widget.email,
-                //         teamId: widget.teamId,
-                //         seasonId: widget.seasonId,
-                //         eventId: widget.event.eventId,
-                //         isUpcoming: widget.isUpcoming,
-                //       );
-                //     },
-                //   );
-                // }
-                //       },
-                //     ),
-                //     Spacer(),
-                //     // status indicators
-                //     _countCell(widget.event.inCount, Colors.green),
-                //     SizedBox(width: 16),
-                //     _countCell(widget.event.outCount, Colors.red),
-                //     SizedBox(width: 16),
-                //     _countCell(widget.event.undecidedCount,
-                //         const Color.fromRGBO(235, 197, 9, 1)),
-                //     SizedBox(width: 16),
-                //     _countCell(widget.event.noResponse, Colors.grey),
-                //   ],
-                // ),
+                const SizedBox(height: 16),
               ],
             ),
         // metadata
         cv.SpacedColumn(
           spacing: 16,
-          hasTopSpacing: true,
+          hasTopSpacing: false,
           children: [
             if (!(widget.event.eventLocation.name).isEmpty())
               EventMetaDataCell(
@@ -342,9 +519,6 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
               ),
             if (widget.event.eLink != "")
               EventMetaDataCell(title: widget.event.eLink, icon: Icons.link),
-            if (!widget.event.eDescription.isEmpty())
-              EventMetaDataCell(
-                  title: widget.event.eDescription!, icon: Icons.description),
           ],
         ),
       ],

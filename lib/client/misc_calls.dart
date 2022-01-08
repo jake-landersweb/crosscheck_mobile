@@ -7,7 +7,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 
 extension MiscCalls on DataModel {
-  Future<double> getVersion() async {
+  Future<void> getVersion(Function(double, bool) completion) async {
     final response = await client.fetch("/version");
 
     if (response == null) {
@@ -15,11 +15,10 @@ extension MiscCalls on DataModel {
     } else if (response['status'] == 200) {
       setSuccess("Successfully got version", false);
       print(response['message']);
-      return response['message'];
+      completion(response['message'], response['showMaintenance']);
     } else {
       print(response['message']);
       setError("There was an issue getting the app version", true);
     }
-    return 0;
   }
 }

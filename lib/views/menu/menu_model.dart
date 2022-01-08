@@ -28,6 +28,13 @@ class MenuModel extends ChangeNotifier {
     // update state
     notifyListeners();
   }
+
+  void resetMenu() {
+    // close();
+    selectedPage = Pages.schedule;
+    notifyListeners();
+    print(selectedPage);
+  }
 }
 
 enum Pages {
@@ -38,5 +45,6 @@ enum Pages {
   seasonSettings,
   settings,
   teamAdmin,
-  seasonAdmin
+  seasonAdmin,
+  chat,
 }

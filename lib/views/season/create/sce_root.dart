@@ -94,11 +94,6 @@ class _SCERootState extends State<SCERoot> {
             const SizedBox(height: 16),
           ]),
         ),
-        // const Divider(
-        //   height: 0.5,
-        //   indent: 0,
-        //   endIndent: 0,
-        // ),
         Expanded(
           child: PageView(
             controller: _controller,

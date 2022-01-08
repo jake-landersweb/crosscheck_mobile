@@ -175,37 +175,40 @@ class _AppBarState extends State<AppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: false,
-      left: false,
-      right: false,
-      child: Stack(
-        children: [
-          AnimatedPadding(
-            duration: const Duration(milliseconds: 800),
-            curve: Sprung.overDamped,
-            padding: EdgeInsets.only(top: -_scrollAmount / 2),
-            child: _body(context),
-          ),
-          _titleBar(context),
-          if (widget.refreshable)
-            Padding(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top +
-                      (widget.isLarge ? 0 : 40) +
-                      10),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: _scrollAmount != 0
-                    ? CircularProgressIndicator(color: widget.color)
-                    : CircularProgressIndicator(
-                        value: _loadAmount,
-                        color: widget.color,
-                      ),
-              ),
+    return Scaffold(
+      backgroundColor: widget.backgroundColor,
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        left: false,
+        right: false,
+        child: Stack(
+          children: [
+            AnimatedPadding(
+              duration: const Duration(milliseconds: 800),
+              curve: Sprung.overDamped,
+              padding: EdgeInsets.only(top: -_scrollAmount / 2),
+              child: _body(context),
             ),
-        ],
+            _titleBar(context),
+            if (widget.refreshable)
+              Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top +
+                        (widget.isLarge ? 0 : 40) +
+                        10),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _scrollAmount != 0
+                      ? CircularProgressIndicator(color: widget.color)
+                      : CircularProgressIndicator(
+                          value: _loadAmount,
+                          color: widget.color,
+                        ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -228,7 +231,9 @@ class _AppBarState extends State<AppBar> {
       child: widget.canScroll
           ? ListView(
               controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
+              physics: Platform.isIOS
+                  ? const AlwaysScrollableScrollPhysics()
+                  : const BouncingScrollPhysics(),
               children: _children(context),
             )
           : Column(

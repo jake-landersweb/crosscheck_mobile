@@ -137,4 +137,26 @@ extension SeasonCalls on DataModel {
       }
     });
   }
+
+  Future<void> sendChatNotification(String teamId, String seasonId,
+      Map<String, dynamic> body, VoidCallback completion) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    // first create the season
+    await client
+        .put("/teams/$teamId/seasons/$seasonId/sendChatNotification", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue sending the notification", false);
+      } else if (response['status'] == 200) {
+        completion();
+        print(response);
+        setSuccess("Successfully sent chat notifications", false);
+      } else {
+        print(response);
+        setError("There was an issue sending the notification", false);
+      }
+    });
+  }
 }

@@ -18,12 +18,12 @@ class FloatingSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(10, 0, 10, Platform.isIOS ? 50 : 10),
+      padding: EdgeInsets.fromLTRB(
+          10, 0, 10, MediaQuery.of(context).padding.bottom + 10),
       child: Material(
         color: backgroundColor,
         clipBehavior: Clip.antiAlias,
-        shape:
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(35)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: child,
       ),
     );

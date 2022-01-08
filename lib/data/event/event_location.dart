@@ -9,6 +9,11 @@ class EventLocation {
 
   EventLocation clone() => EventLocation(name: name, address: address);
 
+  EventLocation.empty() {
+    name = "";
+    address = "";
+  }
+
   EventLocation.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     address = json['address'];

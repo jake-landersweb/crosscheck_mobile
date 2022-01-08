@@ -7,8 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'root.dart';
 import '../data/root.dart';
 import '../extras/root.dart';
+import 'package:graphql/client.dart';
 
-double appVersion = 1.3;
+const double appVersion = 2.0;
 
 class DataModel extends ChangeNotifier {
   // constructor init
@@ -16,14 +17,29 @@ class DataModel extends ChangeNotifier {
     init();
   }
   init() async {
+    // reset all values for when app is reloaded from background
+    hasMorePreviousEvents = true;
+    hasMoreUpcomingEvents = true;
+    upcomingEventsStartIndex = 0;
+    previousEventsStartIndex = 0;
+    currentScheduleTitle = "Upcoming";
     print("init");
 
     // check the version
-    double currentVersion = await getVersion();
-    if (currentVersion > appVersion) {
-      print("app version is lower than api version");
-      showUpdate = true;
-      notifyListeners();
+    await getVersion((version, hasMaintenence) {
+      if (version > appVersion) {
+        print("app version is lower than api version");
+        showUpdate = true;
+        notifyListeners();
+      }
+      if (hasMaintenence) {
+        showMaintenance = true;
+        notifyListeners();
+      }
+      print("app versions match and no maintenance found");
+    });
+
+    if (showUpdate || showMaintenance) {
       return;
     }
 
@@ -38,9 +54,17 @@ class DataModel extends ChangeNotifier {
 
       // TODO -- fix this call to use the faster new method. for now, using basic pathway
       // use basic pathway
-      await getUser(prefs.getString("email")!, (user) {
-        setUser(user);
-      });
+      try {
+        await getUser(prefs.getString("email")!, (user) {
+          setUser(user);
+        });
+      } catch (error) {
+        print("There was an error: $error");
+        prefs.remove("teamId");
+        showSplash = true;
+        showMaintenance = true;
+        notifyListeners();
+      }
     } else {
       print("user does not have saved email, going to login");
       showSplash = false;
@@ -51,6 +75,7 @@ class DataModel extends ChangeNotifier {
   // client for api requests
   Client client = Client(client: http.Client());
   bool showUpdate = false;
+  bool showMaintenance = false;
   bool showSplash = true;
   late SharedPreferences prefs;
 
@@ -64,8 +89,11 @@ class DataModel extends ChangeNotifier {
 
   bool isFetchingEvents = false;
 
+  String currentScheduleTitle = "Upcoming";
+
   User? user;
   void setUser(User user) async {
+    // try {
     this.user = user;
     showSplash = false;
     notifyListeners();
@@ -98,10 +126,18 @@ class DataModel extends ChangeNotifier {
         notifyListeners();
       }
     }
+    // } catch (error) {
+    //   print("There was an error: $error");
+    //   prefs.remove("teamId");
+    //   showSplash = true;
+    //   showMaintenance = true;
+    //   notifyListeners();
+    // }
   }
 
   TeamUserSeasons? tus;
   void setTUS(TeamUserSeasons tus) {
+    // try {
     this.tus = tus;
     prefs.setString("teamId", tus.team.teamId);
     print("set tus");
@@ -135,20 +171,35 @@ class DataModel extends ChangeNotifier {
       showSplash = false;
       notifyListeners();
     }
+    // } catch (error) {
+    //   print("There was an error: $error");
+    //   prefs.remove("teamId");
+    //   showSplash = true;
+    //   showMaintenance = true;
+    //   notifyListeners();
+    // }
   }
 
   Season? currentSeason;
   void setCurrentSeason(Season season) {
-    currentSeason = season;
-    noSeason = false;
-    prefs.setString("seasonId", season.seasonId);
-    notifyListeners();
-    print("set the current season");
-    // get the next events
-    getPagedEvents(tus!.team.teamId, season.seasonId, user!.email,
-        upcomingEventsStartIndex, false, (events) {
-      setUpcomingEvents(events);
-    }, hasLoads: false);
+    try {
+      currentSeason = season;
+      noSeason = false;
+      prefs.setString("seasonId", season.seasonId);
+      notifyListeners();
+      print("set the current season");
+      // get the next events
+      getPagedEvents(tus!.team.teamId, season.seasonId, user!.email,
+          upcomingEventsStartIndex, false, (events) {
+        setUpcomingEvents(events);
+      }, hasLoads: false);
+    } catch (error) {
+      print("There was an error: $error");
+      prefs.remove("teamId");
+      showSplash = true;
+      showMaintenance = true;
+      notifyListeners();
+    }
   }
 
   bool noTeam = false;
@@ -198,16 +249,13 @@ class DataModel extends ChangeNotifier {
     hasMoreUpcomingEvents = true;
     upcomingEventsStartIndex = 0;
     previousEventsStartIndex = 0;
+    currentScheduleTitle = "Upcoming";
     await getPagedEvents(
         teamId, seasonId, email, upcomingEventsStartIndex, false, (events) {
       setUpcomingEvents(events);
     });
-    if (previousEvents != null && getPrevious) {
-      await getPagedEvents(
-          teamId, seasonId, email, previousEventsStartIndex, true, (events) {
-        setPreviousEvents(events);
-      });
-    }
+    previousEvents = null;
+    notifyListeners();
   }
 
   List<SeasonUser>? seasonUsers;
@@ -232,6 +280,8 @@ class DataModel extends ChangeNotifier {
   void setError(String message, bool? showMessage) {
     print(message);
     if (showMessage ?? true) {
+      errorText = "";
+      notifyListeners();
       errorText = message;
       notifyListeners();
     }
@@ -242,6 +292,8 @@ class DataModel extends ChangeNotifier {
   void setSuccess(String message, bool? showMessage) {
     print(message);
     if (showMessage ?? true) {
+      successText = "";
+      notifyListeners();
       successText = message;
       notifyListeners();
     }
@@ -263,6 +315,7 @@ class DataModel extends ChangeNotifier {
     upcomingEventsStartIndex = 0;
     hasMorePreviousEvents = true;
     hasMoreUpcomingEvents = true;
+    currentScheduleTitle = "Upcoming";
   }
 
   Future<void> getPagedEvents(

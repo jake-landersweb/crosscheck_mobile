@@ -73,11 +73,15 @@ class Team extends Equatable {
     isLight = json['isLight'] ?? false;
     positions = TeamPositions.fromJson(json['positions']);
     customFields = [];
-    json['customFields']
-        .forEach((v) => customFields.add(CustomField.fromJson(v)));
+    if (json['customFields'] != null) {
+      json['customFields']
+          .forEach((v) => customFields.add(CustomField.fromJson(v)));
+    }
     customUserFields = [];
-    json['customUserFields']
-        .forEach((v) => customUserFields.add(CustomField.fromJson(v)));
+    if (json['customUserFields'] != null) {
+      json['customUserFields']
+          .forEach((v) => customUserFields.add(CustomField.fromJson(v)));
+    }
   }
 
   // converting to json

@@ -13,6 +13,7 @@ class SeasonUserSeasonFields {
   late String nickname;
   late List<CustomField> customFields;
   late String pos;
+  late bool allowChatNotifications;
 
   SeasonUserSeasonFields({
     this.seasonUserNote,
@@ -26,6 +27,7 @@ class SeasonUserSeasonFields {
     required this.nickname,
     required this.customFields,
     required this.pos,
+    required this.allowChatNotifications,
   });
 
   SeasonUserSeasonFields.empty() {
@@ -40,6 +42,7 @@ class SeasonUserSeasonFields {
     nickname = "";
     customFields = [];
     pos = "";
+    allowChatNotifications = false;
   }
 
   SeasonUserSeasonFields.of(SeasonUserSeasonFields user) {
@@ -54,6 +57,7 @@ class SeasonUserSeasonFields {
     nickname = user.nickname;
     customFields = List.of(user.customFields);
     pos = user.pos;
+    allowChatNotifications = user.allowChatNotifications;
   }
 
   SeasonUserSeasonFields.fromJson(Map<String, dynamic> json) {
@@ -67,10 +71,13 @@ class SeasonUserSeasonFields {
     isSub = json['isSub'] ?? false;
     nickname = json['nickname'] ?? "";
     customFields = [];
-    for (var i in json['customFields']) {
-      customFields.add(CustomField.fromJson(i));
+    if (json['customFields'] != null) {
+      for (var i in json['customFields']) {
+        customFields.add(CustomField.fromJson(i));
+      }
     }
     pos = json['pos'] ?? "";
+    allowChatNotifications = json['allowChatNotifications'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -86,6 +93,7 @@ class SeasonUserSeasonFields {
     data['nickname'] = nickname;
     data['customFields'] = customFields.map((e) => e.toJson());
     data['pos'] = pos;
+    data['allowChatNotifications'] = allowChatNotifications;
     return data;
   }
 }

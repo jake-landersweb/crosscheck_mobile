@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.4.1+8
+version: 2.0.0+9
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -48,6 +48,12 @@ dependencies:
   flutter_slidable: ^1.1.0 # for slide actions in a list
   flutter_colorpicker: ^1.0.2 # picking color for a team
   flutter_svg: ^1.0.0 # for svg rendering
+  graphql: ^5.0.0 # for graphql chat
+  uuid: ^3.0.5 # for message id's
+  amplify_flutter: ^0.2.0 # for graphql subs
+  amplify_api: ^0.2.10 # for graphql subs
+  flutter_staggered_grid_view: ^0.6.0 # for better grids
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -131,6 +137,7 @@ flutter:
     - assets/svg/not_found.svg
     - assets/svg/wave1.svg
     - assets/svg/wave2.svg
+    - assets/svg/maintenance.svg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
