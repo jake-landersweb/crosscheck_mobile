@@ -314,8 +314,8 @@ class _EventListState extends State<EventList> {
                           style: TextStyle(
                               color: CustomColors.textColor(context)
                                   .withOpacity(0.5),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400),
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700),
                         ),
                         const Divider(),
                       ],
@@ -389,8 +389,8 @@ class _EventListState extends State<EventList> {
                               style: TextStyle(
                                   color: CustomColors.textColor(context)
                                       .withOpacity(0.5),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400),
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w700),
                             ),
                             const Divider(),
                           ],

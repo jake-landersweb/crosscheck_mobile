@@ -9,15 +9,17 @@ import 'extras/root.dart';
 import 'custom_views/root.dart' as cv;
 
 void main() {
-  runApp(RestartWidget(
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => DataModel()),
-        ChangeNotifierProvider(create: (context) => MenuModel())
-      ],
-      child: const MyApp(),
+  runApp(
+    RestartWidget(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => DataModel()),
+          ChangeNotifierProvider(create: (context) => MenuModel())
+        ],
+        child: const MyApp(),
+      ),
     ),
-  ));
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -38,7 +40,8 @@ class MyApp extends StatelessWidget {
 
 // for allowing absoute reset when needed
 class RestartWidget extends StatefulWidget {
-  RestartWidget({
+  const RestartWidget({
+    Key? key,
     required this.child,
   });
 
@@ -187,11 +190,10 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
           // for showing custom messages
           if (dmodel.successText != "")
             StatusBar(
-              key: UniqueKey(),
               backgroundColor: CustomColors.textColor(context),
               opacity: 0.1,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
                     Expanded(
@@ -202,7 +204,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
                           )),
                     ),
                     Icon(
-                      Icons.check_circle_outline,
+                      Icons.done,
                       color: CustomColors.textColor(context).withOpacity(0.7),
                     )
                   ],
@@ -216,7 +218,6 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
             ),
           if (dmodel.errorText != "")
             StatusBar(
-              key: UniqueKey(),
               backgroundColor: Colors.red,
               opacity: 0.7,
               child: Padding(
@@ -231,7 +232,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
                           )),
                     ),
                     const Icon(
-                      Icons.warning_rounded,
+                      Icons.priority_high,
                       color: Colors.white,
                     ),
                   ],
@@ -274,6 +275,7 @@ class _StatusBarState extends State<StatusBar>
 
   @override
   void initState() {
+    print("INIT");
     super.initState();
 
     controller = AnimationController(
@@ -288,19 +290,22 @@ class _StatusBarState extends State<StatusBar>
 
   @override
   void dispose() {
+    print("DISPOSE!");
     controller.dispose();
     super.dispose();
   }
 
   Future<void> _close() async {
-    Future.delayed(const Duration(seconds: 3), () {
+    await Future.delayed(const Duration(seconds: 3));
+    if (mounted) {
       setState(() {
         controller.reverse();
       });
-      Future.delayed(const Duration(milliseconds: 800), () {
-        widget.completion();
-      });
-    });
+    } else {
+      print("NOT MOUNTED");
+    }
+    await Future.delayed(const Duration(milliseconds: 800));
+    widget.completion();
   }
 
   @override

@@ -87,7 +87,9 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
           colors: [
             widget.event.getColor() ?? CustomColors.cellColor(context),
             widget.event.eventColor.isEmpty
-                ? CustomColors.cellColor(context)
+                ? MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? CustomColors.cellColor(context).darken(0.05)
+                    : CustomColors.cellColor(context).lighten(0.1)
                 : widget.event.getColor()!.lighten(),
           ],
           end: Alignment.topLeft,
@@ -177,7 +179,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                 const SizedBox(height: 16),
                 // date and time
                 Text(
-                  "${widget.event.getDate()} ${widget.event.getTime()}",
+                  "${widget.event.getDate()} @ ${widget.event.getTime()}",
                   style: TextStyle(
                     color: widget.event.eventColor.isEmpty
                         ? CustomColors.textColor(context).withOpacity(0.5)
@@ -194,39 +196,31 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                     duration: Duration(milliseconds: 300),
                     opacity: _isOpen ? 1 : 0,
                     child: Column(
-                      children: [
-                        if (widget.event.eventLocation.name != null)
-                          _detailCell(
-                              Icons.home, widget.event.eventLocation.name!),
-                        if (widget.event.eventLocation.address != null)
-                          _detailCell(Icons.near_me,
-                              widget.event.eventLocation.address!),
-                        if (widget.event.eDescription.isNotEmpty)
-                          _detailCell(
-                              Icons.description, widget.event.eDescription),
-                      ],
+                      children: _detailChildren(context),
                     ),
                   ),
                 ),
                 // detail toggle
                 Row(
                   children: [
-                    cv.BasicButton(
-                      onTap: () {
-                        _toggleContainer();
-                      },
-                      child: AnimatedRotation(
-                        duration: Duration(milliseconds: 550),
-                        curve: Sprung.overDamped,
-                        turns: _isOpen ? 0.25 : -0.25,
-                        child: Icon(
-                          Icons.chevron_left,
-                          color: widget.event.eventColor.isEmpty
-                              ? CustomColors.textColor(context).withOpacity(0.7)
-                              : Colors.white,
+                    if (_detailChildren(context).isNotEmpty)
+                      cv.BasicButton(
+                        onTap: () {
+                          _toggleContainer();
+                        },
+                        child: AnimatedRotation(
+                          duration: Duration(milliseconds: 550),
+                          curve: Sprung.overDamped,
+                          turns: _isOpen ? 0.25 : -0.25,
+                          child: Icon(
+                            Icons.chevron_left,
+                            color: widget.event.eventColor.isEmpty
+                                ? CustomColors.textColor(context)
+                                    .withOpacity(0.7)
+                                : Colors.white,
+                          ),
                         ),
                       ),
-                    ),
                     const Spacer(),
                     if (widget.event.hasAttendance)
                       Row(
@@ -257,6 +251,17 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  List<Widget> _detailChildren(BuildContext context) {
+    return [
+      if (!widget.event.eventLocation.name.isEmpty())
+        _detailCell(Icons.place, widget.event.eventLocation.name!),
+      if (!widget.event.eventLocation.address.isEmpty())
+        _detailCell(Icons.near_me, widget.event.eventLocation.address!),
+      if (widget.event.eDescription.isNotEmpty)
+        _detailCell(Icons.description, widget.event.eDescription),
+    ];
   }
 
   Widget _detailCell(IconData icon, String value) {

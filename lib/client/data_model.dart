@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -277,11 +278,9 @@ class DataModel extends ChangeNotifier {
 
   // for showing error popup
   String errorText = "";
-  void setError(String message, bool? showMessage) {
+  Future<void> setError(String message, bool? showMessage) async {
     print(message);
     if (showMessage ?? true) {
-      errorText = "";
-      notifyListeners();
       errorText = message;
       notifyListeners();
     }
@@ -289,11 +288,10 @@ class DataModel extends ChangeNotifier {
 
   // for showing success message popup
   String successText = "";
-  void setSuccess(String message, bool? showMessage) {
+  Future<void> setSuccess(String message, bool? showMessage) async {
     print(message);
     if (showMessage ?? true) {
-      successText = "";
-      notifyListeners();
+      print("SHOW!");
       successText = message;
       notifyListeners();
     }

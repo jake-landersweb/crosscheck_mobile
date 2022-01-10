@@ -163,10 +163,10 @@ class _EventDetailState extends State<EventDetail> {
             widget.event.getOpponentTitle(widget.team.teamId),
             "Opponent",
             dmodel),
-      if (widget.event.eventLocation.name != null)
+      if (!widget.event.eventLocation.name.isEmpty())
         _detailCell(
-            Icons.home, widget.event.eventLocation.name!, "Location", dmodel),
-      if (widget.event.eventLocation.address != null)
+            Icons.place, widget.event.eventLocation.name!, "Location", dmodel),
+      if (!widget.event.eventLocation.address.isEmpty())
         _detailCell(Icons.near_me, widget.event.eventLocation.address!,
             "Address", dmodel),
       if (widget.event.eDescription.isNotEmpty)

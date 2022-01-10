@@ -324,8 +324,8 @@ class Event extends Equatable {
     }
   }
 
-  IconData getStatusIcon() {
-    switch (userStatus) {
+  IconData getStatusIcon(int status) {
+    switch (status) {
       case -1:
         return Icons.close;
       case 1:

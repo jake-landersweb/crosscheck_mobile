@@ -36,9 +36,9 @@ class _EventUserStatusState extends State<EventUserStatus> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Icon(
-            widget.event.getStatusIcon(),
+            widget.event.getStatusIcon(widget.status),
             color: Colors.white,
           ),
         ),
