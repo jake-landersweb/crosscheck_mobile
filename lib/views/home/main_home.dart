@@ -20,10 +20,15 @@ class _MainHomeState extends State<MainHome> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Stack(
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.topCenter,
       children: [
         _currentPage(context, dmodel),
-        _tabBar(context, dmodel),
+        Column(
+          children: [
+            const Spacer(),
+            _tabBar(context, dmodel),
+          ],
+        ),
       ],
     );
   }
@@ -34,11 +39,15 @@ class _MainHomeState extends State<MainHome> {
         return const Schedule();
       case 1:
         if (dmodel.currentSeason != null && dmodel.currentSeasonUser != null) {
-          return ChatHome(
-            team: dmodel.tus!.team,
-            season: dmodel.currentSeason!,
-            user: dmodel.user!,
-            seasonUser: dmodel.currentSeasonUser!,
+          return Container(
+            height: MediaQuery.of(context).size.height -
+                (MediaQuery.of(context).padding.bottom + 40),
+            child: ChatHome(
+              team: dmodel.tus!.team,
+              season: dmodel.currentSeason!,
+              user: dmodel.user!,
+              seasonUser: dmodel.currentSeasonUser!,
+            ),
           );
           // return SeasonRoster(
           //   team: dmodel.tus!.team,

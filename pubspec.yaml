@@ -134,10 +134,10 @@ flutter:
     - assets/launch/crosscheck.png
     - assets/launch/x.png
     - assets/launch/x_white_centered.png
-    # - assets/svg/not_found.svg
-    # - assets/svg/wave1.svg
-    # - assets/svg/wave2.svg
-    # - assets/svg/maintenance.svg
+    - assets/svg/not_found.svg
+    - assets/svg/wave1.svg
+    - assets/svg/wave2.svg
+    - assets/svg/maintenance.svg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
