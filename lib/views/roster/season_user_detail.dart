@@ -61,7 +61,6 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
         if (widget.user.userFields != null) _userInfo(context),
         if (widget.user.teamFields != null) _teamInfo(context),
         if (widget.user.seasonFields != null) _seasonInfo(context),
-        if (widget.user.seasonFields?.stats != null) _stats(context, dmodel),
         const SizedBox(height: 48),
       ],
     );
@@ -194,19 +193,6 @@ class _SeasonUserDetailState extends State<SeasonUserDetail> {
                       label: i.title, value: i.getValue(), height: 40),
               ],
             ),
-        ],
-      ),
-    );
-  }
-
-  Widget _stats(BuildContext context, DataModel dmodel) {
-    return cv.Section(
-      "Stats",
-      child: cv.NativeList(
-        children: [
-          for (var i in widget.user.seasonFields!.stats)
-            cv.LabeledCell(
-                height: 40, value: i.value.toString(), label: i.title)
         ],
       ),
     );

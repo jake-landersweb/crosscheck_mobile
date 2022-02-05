@@ -199,18 +199,6 @@ class SeasonUser extends Equatable {
     }
   }
 
-  String getEventStats() {
-    if (eventFields?.stats == null) {
-      return "";
-    } else {
-      String stat = "";
-      for (var i in eventFields!.stats!) {
-        stat = stat + "${i.title}: ${i.value} ";
-      }
-      return stat;
-    }
-  }
-
   bool isPlayingSeason() {
     if (seasonFields?.isPlaying == null) {
       return false;

@@ -12,3 +12,5 @@ export 'team/root.dart';
 export 'update.dart';
 export 'chat/root.dart';
 export 'maintenance.dart';
+export 'stats/root.dart';
+export 'home/root.dart';

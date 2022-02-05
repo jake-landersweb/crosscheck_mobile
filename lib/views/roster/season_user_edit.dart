@@ -65,7 +65,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
   late List<CustomField> _seasonCustomFields;
 
   // stats
-  late List<SUStats> _stats;
 
   @override
   void initState() {
@@ -92,12 +91,8 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             .map((e) => CustomField(
                 title: e.getTitle(), type: e.getType(), value: e.getValue()))
             .toList();
-        _stats = widget.season!.stats.stats
-            .map((e) => SUStats(title: e.title, value: 0))
-            .toList();
       } else {
         _seasonCustomFields = [];
-        _stats = [];
       }
     } else {
       _teamPos = widget.user.teamFields?.pos ?? "None";
@@ -108,11 +103,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
       _seasonCustomFields = [
         for (var i in widget.user.seasonFields?.customFields ?? []) i.clone()
       ];
-      if (widget.user.seasonFields?.stats != null) {
-        _stats = [for (var i in widget.user.seasonFields!.stats) i.clone()];
-      } else {
-        _stats = [];
-      }
     }
   }
 
@@ -166,9 +156,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
         if ((widget.currentSeasonUser?.isSeasonAdmin() ?? false) &&
             (widget.season != null))
           _seasonFields(context, dmodel),
-        if ((widget.currentSeasonUser?.isSeasonAdmin() ?? false) &&
-            (widget.season != null))
-          _statsView(context, dmodel),
         const SizedBox(height: 32),
         cv.RoundedLabel("",
             child: _isLoading
@@ -482,18 +469,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
     );
   }
 
-  Widget _statsView(BuildContext context, DataModel dmodel) {
-    return cv.Section(
-      "Stats",
-      child: cv.NativeList(
-        itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-        children: [
-          for (var i in _stats) _StatEditCell(stat: i, color: dmodel.color),
-        ],
-      ),
-    );
-  }
-
   void _function(BuildContext context, DataModel dmodel) async {
     if (!_isLoading) {
       if (_email == "") {
@@ -532,7 +507,6 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
             "isManager": _isManager,
             "seasonUserStatus": _seasonUserStatus,
             "customFields": _seasonCustomFields.map((e) => e.toJson()).toList(),
-            "stats": _stats.map((e) => e.toJson()).toList(),
           };
         }
 
@@ -584,55 +558,55 @@ class _SeasonUserEditState extends State<SeasonUserEdit> {
   }
 }
 
-class _StatEditCell extends StatefulWidget {
-  _StatEditCell({
-    Key? key,
-    required this.stat,
-    this.color = Colors.blue,
-  }) : super(key: key);
-  SUStats stat;
-  Color color;
+// class _StatEditCell extends StatefulWidget {
+//   _StatEditCell({
+//     Key? key,
+//     required this.stat,
+//     this.color = Colors.blue,
+//   }) : super(key: key);
+//   SUStats stat;
+//   Color color;
 
-  @override
-  _StatEditCellState createState() => _StatEditCellState();
-}
+//   @override
+//   _StatEditCellState createState() => _StatEditCellState();
+// }
 
-class _StatEditCellState extends State<_StatEditCell> {
-  @override
-  Widget build(BuildContext context) {
-    return cv.LabeledWidget(
-      widget.stat.title,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 50,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                widget.stat.value.toString(),
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-              ),
-            ),
-          ),
-          cv.NumberPicker(
-            initialValue: widget.stat.value,
-            plusBackgroundColor: widget.color,
-            minusBackgroundColor:
-                CustomColors.textColor(context).withOpacity(0.1),
-            onMinusClick: (value) {
-              setState(() {
-                widget.stat.value = value;
-              });
-            },
-            onPlusClick: (value) {
-              setState(() {
-                widget.stat.value = value;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
+// class _StatEditCellState extends State<_StatEditCell> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return cv.LabeledWidget(
+//       widget.stat.title,
+//       child: Row(
+//         children: [
+//           SizedBox(
+//             width: 50,
+//             child: Align(
+//               alignment: Alignment.center,
+//               child: Text(
+//                 widget.stat.value.toString(),
+//                 style:
+//                     const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+//               ),
+//             ),
+//           ),
+//           cv.NumberPicker(
+//             initialValue: widget.stat.value,
+//             plusBackgroundColor: widget.color,
+//             minusBackgroundColor:
+//                 CustomColors.textColor(context).withOpacity(0.1),
+//             onMinusClick: (value) {
+//               setState(() {
+//                 widget.stat.value = value;
+//               });
+//             },
+//             onPlusClick: (value) {
+//               setState(() {
+//                 widget.stat.value = value;
+//               });
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

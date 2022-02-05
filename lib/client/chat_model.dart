@@ -5,7 +5,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 import 'package:graphql/client.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../amplifyconfiguration.dart' as config;
+// import '../amplifyconfiguration.dart' as config;
 import 'dart:convert';
 
 class ChatModel extends ChangeNotifier {
@@ -100,7 +100,7 @@ class ChatModel extends ChangeNotifier {
       Amplify.addPlugin(AmplifyAPI());
 
       try {
-        await Amplify.configure(config.amplifyconfig);
+        // await Amplify.configure(config.amplifyconfig);
       } on AmplifyAlreadyConfiguredException {
         print(
             "Tried to reconfigure Amplify; this can occur when your app restarts on Android.");

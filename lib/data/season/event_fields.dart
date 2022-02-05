@@ -9,7 +9,6 @@ class SeasonUserEventFields {
   late int eStatus;
   late bool isPlaying;
   late bool isParticipant;
-  List<SUStats>? stats;
   int? ePosition;
   late List<CustomField> customFields;
 
@@ -21,7 +20,6 @@ class SeasonUserEventFields {
     required this.eStatus,
     required this.isPlaying,
     required this.isParticipant,
-    this.stats,
     this.ePosition,
     required this.customFields,
   });
@@ -34,7 +32,6 @@ class SeasonUserEventFields {
     eStatus = 0;
     isPlaying = true;
     isParticipant = true;
-    stats = [];
     ePosition = 0;
     customFields = [];
   }
@@ -47,7 +44,6 @@ class SeasonUserEventFields {
     eStatus = user.eStatus;
     isPlaying = user.isPlaying;
     isParticipant = user.isParticipant;
-    stats = user.stats;
     ePosition = user.ePosition;
     customFields = [for (var i in user.customFields) i.clone()];
   }
@@ -67,7 +63,6 @@ class SeasonUserEventFields {
     eStatus = json['eStatus']?.round() ?? 0;
     isPlaying = json['isPlaying'] ?? true;
     isParticipant = json['isParticipant'] ?? json['isPlaying'] ?? true;
-    stats = SUStats.fromJson(json['stats']);
     ePosition = json['ePosition']?.round() ?? 0;
     customFields = [];
     if (json['customFields'] != null) {
@@ -86,7 +81,6 @@ class SeasonUserEventFields {
     data['eStatus'] = eStatus.round();
     data['isPlaying'] = isPlaying;
     data['isParticipant'] = isParticipant;
-    data['stats'] = stats?.map((v) => v.toJson()).toList();
     data['ePosition'] = ePosition;
     data['customFields'] = customFields.map((e) => e.toJson()).toList();
     return data;

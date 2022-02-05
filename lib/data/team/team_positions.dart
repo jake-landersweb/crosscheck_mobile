@@ -19,7 +19,7 @@ class TeamPositions {
     isActive = json['isActive'] ?? true;
     defaultPosition = json['defaultPosition'] ?? "";
     List<String> temp = [];
-    if (json.containsKey("available")) {
+    if (json['available'] != null) {
       for (var i in json['available']) {
         temp.add(i);
       }

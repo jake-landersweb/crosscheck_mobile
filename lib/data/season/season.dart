@@ -10,7 +10,6 @@ class Season extends Equatable {
   late String seasonCode;
   late int seasonStatus;
   late String seasonNote;
-  late TeamStat stats;
   late bool showNicknames;
   late TeamPositions positions;
   late List<CustomField> customFields;
@@ -27,7 +26,6 @@ class Season extends Equatable {
     required this.seasonCode,
     required this.seasonStatus,
     required this.seasonNote,
-    required this.stats,
     required this.showNicknames,
     required this.positions,
     required this.customFields,
@@ -46,7 +44,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 1;
     seasonNote = "";
-    stats = TeamStat.empty();
     showNicknames = false;
     positions = TeamPositions.empty();
     customFields = [];
@@ -65,7 +62,6 @@ class Season extends Equatable {
     seasonCode = season.seasonCode;
     seasonStatus = season.seasonStatus;
     seasonNote = season.seasonNote;
-    stats = season.stats;
     showNicknames = season.showNicknames;
     positions = season.positions;
     customFields = season.customFields;
@@ -82,7 +78,6 @@ class Season extends Equatable {
     seasonCode = json['seasonCode'] ?? "";
     seasonStatus = json['seasonStatus'].round();
     seasonNote = json['seasonNote'] ?? "";
-    stats = TeamStat.fromJson(json['stats']);
     showNicknames = json['showNicknames'] ?? false;
     positions = json['positions'] == null
         ? TeamPositions.empty()
@@ -120,7 +115,6 @@ class Season extends Equatable {
       "seasonCode": seasonCode,
       "seasonStatus": seasonStatus,
       "seasonNote": seasonNote,
-      "stats": stats.toJson(),
       "showNicknames": showNicknames,
       "positions": positions.toJson(),
       "customFields": customFields.map((e) => e.toJson()).toList(),
@@ -149,12 +143,7 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    stats = TeamStat(isActive: true, stats: [
-      StatItem(title: "Goals", isActive: true),
-      StatItem(title: "Assists", isActive: true),
-      StatItem(title: "Penalty Minutes", isActive: true),
-      StatItem(title: "Plus / Minus", isActive: true),
-    ]);
+
     showNicknames = false;
     positions = TeamPositions(
       isActive: true,
@@ -187,18 +176,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    stats = TeamStat(isActive: true, stats: [
-      StatItem(title: "Passing", isActive: true),
-      StatItem(title: "Rushing", isActive: true),
-      StatItem(title: "Recieving", isActive: true),
-      StatItem(title: "Touchdowns", isActive: true),
-      StatItem(title: "Tackles", isActive: true),
-      StatItem(title: "Sacks", isActive: true),
-      StatItem(title: "Interceptions", isActive: true),
-      StatItem(title: "Returning", isActive: true),
-      StatItem(title: "Kicking", isActive: true),
-      StatItem(title: "Punting", isActive: true),
-    ]);
     showNicknames = false;
     positions = TeamPositions(
       isActive: true,
@@ -246,13 +223,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    stats = TeamStat(isActive: true, stats: [
-      StatItem(title: "Points", isActive: true),
-      StatItem(title: "Rebounds", isActive: true),
-      StatItem(title: "Assists", isActive: true),
-      StatItem(title: "Blocks", isActive: true),
-      StatItem(title: "Steals", isActive: true),
-    ]);
     showNicknames = false;
     positions = TeamPositions(
       isActive: true,
@@ -284,12 +254,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    stats = TeamStat(isActive: true, stats: [
-      StatItem(title: "Goals", isActive: true),
-      StatItem(title: "Assists", isActive: true),
-      StatItem(title: "Yellow Cards", isActive: true),
-      StatItem(title: "Red Cards", isActive: true),
-    ]);
     showNicknames = false;
     positions = TeamPositions(
       isActive: true,
@@ -328,17 +292,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    stats = TeamStat(isActive: true, stats: [
-      StatItem(title: "Batting Average", isActive: true),
-      StatItem(title: "Home Runs", isActive: true),
-      StatItem(title: "Runs Batted In", isActive: true),
-      StatItem(title: "Hits", isActive: true),
-      StatItem(title: "Stolen Bases", isActive: true),
-      StatItem(title: "Wins", isActive: true),
-      StatItem(title: "Earned Run Average", isActive: true),
-      StatItem(title: "Saves", isActive: true),
-      StatItem(title: "Strikeouts", isActive: true),
-    ]);
     showNicknames = false;
     positions = TeamPositions(
       isActive: true,

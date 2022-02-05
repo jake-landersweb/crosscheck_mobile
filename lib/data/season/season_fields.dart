@@ -8,7 +8,6 @@ class SeasonUserSeasonFields {
   late String email;
   late bool isManager;
   late bool isPlaying;
-  late List<SUStats> stats;
   late bool isSub;
   late String nickname;
   late List<CustomField> customFields;
@@ -22,7 +21,6 @@ class SeasonUserSeasonFields {
     required this.email,
     required this.isManager,
     required this.isPlaying,
-    required this.stats,
     required this.isSub,
     required this.nickname,
     required this.customFields,
@@ -37,7 +35,6 @@ class SeasonUserSeasonFields {
     email = "";
     isManager = false;
     isPlaying = true;
-    stats = [];
     isSub = false;
     nickname = "";
     customFields = [];
@@ -52,7 +49,6 @@ class SeasonUserSeasonFields {
     email = user.email;
     isManager = user.isManager;
     isPlaying = user.isPlaying;
-    stats = user.stats;
     isSub = user.isSub;
     nickname = user.nickname;
     customFields = List.of(user.customFields);
@@ -67,7 +63,6 @@ class SeasonUserSeasonFields {
     email = json['email'];
     isManager = json['isManager'] ?? false;
     isPlaying = json['isPlaying'] ?? true;
-    stats = SUStats.fromJson(json['stats']);
     isSub = json['isSub'] ?? false;
     nickname = json['nickname'] ?? "";
     customFields = [];
@@ -88,7 +83,6 @@ class SeasonUserSeasonFields {
     data['email'] = email;
     data['isManager'] = isManager;
     data['isPlaying'] = isPlaying;
-    data['stats'] = stats.map((v) => v.toJson()).toList();
     data['isSub'] = isSub;
     data['nickname'] = nickname;
     data['customFields'] = customFields.map((e) => e.toJson());

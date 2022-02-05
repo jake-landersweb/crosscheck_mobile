@@ -157,26 +157,6 @@ class _SeasonAdminState extends State<SeasonAdmin> {
     );
   }
 
-  Widget _seasonStats(BuildContext context) {
-    return cv.NativeList(
-      children: [
-        for (var stat in widget.season.stats.stats)
-          Column(
-            children: [
-              cv.LabeledCell(
-                label: "Stat Name",
-                value: stat.title,
-              ),
-              cv.LabeledCell(
-                label: "Active",
-                value: stat.isActive ? "True" : "False",
-              ),
-            ],
-          ),
-      ],
-    );
-  }
-
   Widget _edit(BuildContext context, DataModel dmodel) {
     return cv.BasicButton(
       onTap: () {

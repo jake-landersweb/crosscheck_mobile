@@ -18,6 +18,7 @@ class DataModel extends ChangeNotifier {
     init();
   }
   init() async {
+    // return;
     // reset all values for when app is reloaded from background
     hasMorePreviousEvents = true;
     hasMoreUpcomingEvents = true;

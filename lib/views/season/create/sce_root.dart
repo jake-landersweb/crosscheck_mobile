@@ -101,7 +101,6 @@ class _SCERootState extends State<SCERoot> {
               SCEBasic(team: widget.team),
               SCEPositions(team: widget.team),
               SCECustomF(team: widget.team),
-              SCEStats(team: widget.team),
               if (scemodel.isCreate) SCEUsers(team: widget.team),
             ],
             onPageChanged: (page) {
@@ -248,10 +247,6 @@ class _SCERootState extends State<SCERoot> {
       addUserFields();
     }
 
-    if (scemodel.stats != scemodel.oldStats) {
-      body['stats'] = scemodel.stats.toJson();
-    }
-
     print(body);
 
     await dmodel.updateSeason(widget.team.teamId, widget.season!.seasonId, body,
@@ -292,7 +287,6 @@ class _SCERootState extends State<SCERoot> {
       "date": dateToString(DateTime.now()),
       "customUserFields":
           scemodel.customUserFields.map((e) => e.toJson()).toList(),
-      "stats": scemodel.stats.toJson(),
       "sportCode": scemodel.sportCode,
       "eventCustomFieldsTemplate": scemodel.eventCustomFieldsTemplate,
       "eventCustomUserFieldsTemplate": scemodel.eventCustomUserFieldsTemplate,

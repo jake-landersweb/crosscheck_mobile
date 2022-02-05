@@ -190,9 +190,9 @@ class _MenuHostState extends State<MenuHost> {
                   if (!dmodel.noSeason)
                     _menuRow(context, _menuItems[1], _menu, _size),
                   if (!dmodel.noSeason) const SizedBox(height: 16),
-                  if (!dmodel.noSeason)
-                    _menuRow(context, _menuItems[2], _menu, _size),
-                  if (!dmodel.noSeason) const SizedBox(height: 16),
+                  // if (!dmodel.noSeason)
+                  //   _menuRow(context, _menuItems[2], _menu, _size),
+                  // if (!dmodel.noSeason) const SizedBox(height: 16),
                   _menuRow(context, _menuItems[3], _menu, _size),
                   const SizedBox(height: 16),
                   if (!dmodel.noSeason)
@@ -268,7 +268,7 @@ class _MenuHostState extends State<MenuHost> {
   Widget _getView(Pages _selection, DataModel dmodel) {
     switch (_selection) {
       case Pages.schedule:
-        return const Schedule();
+        return const MainHome();
       case Pages.calendar:
         return Container();
       case Pages.seasonRoster:
@@ -307,12 +307,13 @@ class _MenuHostState extends State<MenuHost> {
             season: dmodel.currentSeason!, team: dmodel.tus!.team);
       case Pages.chat:
         if (dmodel.currentSeason != null && dmodel.currentSeasonUser != null) {
-          return ChatHome(
-            team: dmodel.tus!.team,
-            season: dmodel.currentSeason!,
-            user: dmodel.user!,
-            seasonUser: dmodel.currentSeasonUser!,
-          );
+          // return ChatHome(
+          //   team: dmodel.tus!.team,
+          //   season: dmodel.currentSeason!,
+          //   user: dmodel.user!,
+          //   seasonUser: dmodel.currentSeasonUser!,
+          // );
+          return TeamStats(team: dmodel.tus!.team);
         } else {
           return Container();
         }
