@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:pnflutter/client/root.dart';
+import 'package:pnflutter/data/root.dart';
 import 'package:pnflutter/views/chat/season_chat.dart';
 import 'package:pnflutter/views/stats/team/root.dart';
 import 'package:provider/provider.dart';
 import '../root.dart';
 import '../../custom_views/root.dart' as cv;
 
-class MainHome extends StatefulWidget {
-  const MainHome({Key? key}) : super(key: key);
+class TeamHome extends StatefulWidget {
+  const TeamHome({Key? key}) : super(key: key);
 
   @override
-  _MainHomeState createState() => _MainHomeState();
+  _TeamHomeState createState() => _TeamHomeState();
 }
 
-class _MainHomeState extends State<MainHome> {
+class _TeamHomeState extends State<TeamHome> {
   int index = 0;
 
   @override
@@ -30,7 +31,7 @@ class _MainHomeState extends State<MainHome> {
               const Spacer(),
               cv.TabBar(
                 index: index,
-                icons: const [Icons.home, Icons.chat, Icons.bar_chart],
+                icons: const [Icons.bar_chart, Icons.people],
                 color: dmodel.color,
                 onViewChange: (idx) {
                   setState(() {
@@ -49,33 +50,28 @@ class _MainHomeState extends State<MainHome> {
   Widget _currentPage(BuildContext context, DataModel dmodel) {
     switch (index) {
       case 0:
-        return const Schedule();
-      case 1:
-        if (dmodel.currentSeason != null && dmodel.currentSeasonUser != null) {
-          return Container(
-            height: MediaQuery.of(context).size.height -
-                (MediaQuery.of(context).viewPadding.bottom + 40),
-            child: ChatHome(
-              team: dmodel.tus!.team,
-              season: dmodel.currentSeason!,
-              user: dmodel.user!,
-              seasonUser: dmodel.currentSeasonUser!,
-            ),
-          );
+        if (dmodel.tus != null) {
+          return StatsTeam(team: dmodel.tus!.team, teamUser: dmodel.tus!.user);
         } else {
           return Container();
         }
-      case 2:
-        if (dmodel.currentSeasonUser != null) {
-          return StatsSeason(
+      case 1:
+        if (dmodel.tus != null) {
+          return FullTeamRoster(
             team: dmodel.tus!.team,
             teamUser: dmodel.tus!.user,
-            season: dmodel.currentSeason!,
-            seasonUser: dmodel.currentSeasonUser!,
+            childBuilder: (user) {
+              return UserCell(
+                user: user,
+                isClickable: true,
+                season: Season.empty(),
+              );
+            },
           );
         } else {
           return Container();
         }
+
       default:
         return Container();
     }

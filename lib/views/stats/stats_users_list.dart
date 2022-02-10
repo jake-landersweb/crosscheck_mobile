@@ -7,20 +7,18 @@ import 'package:provider/provider.dart';
 
 import '../../custom_views/root.dart' as cv;
 
-class StatsUserList extends StatefulWidget {
-  const StatsUserList({
+class StatsUsersList extends StatefulWidget {
+  const StatsUsersList({
     Key? key,
     required this.statList,
-    required this.team,
   }) : super(key: key);
   final List<UserStat> statList;
-  final Team team;
 
   @override
-  _StatsUserListState createState() => _StatsUserListState();
+  _StatsUsersListState createState() => _StatsUsersListState();
 }
 
-class _StatsUserListState extends State<StatsUserList> {
+class _StatsUsersListState extends State<StatsUsersList> {
   String filterValue = "";
 
   @override
@@ -44,7 +42,8 @@ class _StatsUserListState extends State<StatsUserList> {
         for (UserStat i in sortedUsers())
           Column(
             children: [
-              UserStatCell(
+              StatsUserCell(
+                key: ValueKey(i.email),
                 userStat: i,
                 currentStat: filterValue,
               ),
@@ -127,44 +126,6 @@ class _StatsUserListState extends State<StatsUserList> {
               )
           ],
         ),
-        // child: Row(
-        //   // mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //   children: [
-        //     for (var i in widget.statList.first.stats)
-        //       cv.BasicButton(
-        //         onTap: () {
-        //           setState(() {
-        //             if (i.title == filterValue) {
-        //               filterValue = "";
-        //             } else {
-        //               filterValue = i.title;
-        //             }
-        //           });
-        //         },
-        //         child: Container(
-        //           decoration: BoxDecoration(
-        //             borderRadius: BorderRadius.circular(10),
-        //             color: filterValue == i.title
-        //                 ? dmodel.color
-        //                 : CustomColors.cellColor(context),
-        //           ),
-        //           child: Padding(
-        //             padding: const EdgeInsets.all(8),
-        //             child: Text(
-        //               "${i.title[0].toUpperCase()}${i.title.substring(1)}",
-        //               style: TextStyle(
-        //                 fontWeight: FontWeight.w600,
-        //                 fontSize: 16,
-        //                 color: filterValue == i.title
-        //                     ? Colors.white
-        //                     : CustomColors.textColor(context),
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //   ],
-        // ),
       );
     }
   }

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pnflutter/theme/root.dart';
-import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
+import 'package:pnflutter/views/stats/team/root.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom_views/root.dart' as cv;
@@ -80,8 +80,27 @@ class _EventDetailState extends State<EventDetail> {
         const SizedBox(height: 16),
         _detail(context, dmodel),
         const SizedBox(height: 16),
-        _customFields(context, dmodel),
-        const SizedBox(height: 16),
+        if (widget.event.customFields.isNotEmpty)
+          Column(
+            children: [
+              _customFields(context, dmodel),
+              const SizedBox(height: 16),
+            ],
+          ),
+        if (widget.event.eventType == 1)
+          Column(
+            children: [
+              _stats(context, dmodel),
+              const SizedBox(height: 16),
+            ],
+          ),
+        if (widget.event.hasAttendance)
+          Column(
+            children: [
+              _statusCounts(context),
+              const SizedBox(height: 16),
+            ],
+          ),
         _participants(context, dmodel)
       ],
     );
@@ -95,7 +114,7 @@ class _EventDetailState extends State<EventDetail> {
             widget.event.getTitle(),
             style: TextStyle(
               fontSize: 32,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w800,
               color: widget.event.eventColor.isEmpty
                   ? CustomColors.textColor(context)
                   : Colors.white,
@@ -240,115 +259,6 @@ class _EventDetailState extends State<EventDetail> {
     );
   }
 
-  Widget build2(BuildContext context) {
-    DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
-      title: "",
-      // isLarge: true,
-      backgroundColor: CustomColors.backgroundColor(context),
-      color: dmodel.color,
-      leading: [cv.BackButton(color: dmodel.color)],
-      trailing: [_editButton(context, dmodel)],
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
-      titlePadding: const EdgeInsets.only(left: 8),
-      refreshable: true,
-      onRefresh: () => _getUsers(dmodel),
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(widget.event.getTitle(),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 30),
-                  textAlign: TextAlign.start),
-            ),
-          ],
-        ),
-        // event details
-        _details(context),
-        const SizedBox(height: 8),
-        _customFields(context, dmodel),
-        if (_users != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: cv.NativeList(
-              children: [
-                _userStatusCounts(context, dmodel),
-              ],
-            ),
-          ),
-        if (widget.event.hasAttendance) _participants(context, dmodel),
-        if (widget.event.hasAttendance) _nonParticipants(context, dmodel),
-        const SizedBox(height: 48),
-      ],
-    );
-  }
-
-  Widget _details(BuildContext context) {
-    return cv.Section(
-      "Details",
-      child: cv.NativeList(
-        itemPadding: const EdgeInsets.all(10),
-        children: [
-          EventMetaDataCell(
-              title: "${widget.event.getDate()}  ${widget.event.getTime()}",
-              icon: Icons.calendar_today),
-          if (widget.event.eventType == 1)
-            EventMetaDataCell(
-                title: widget.event.getOpponentTitle(widget.team.teamId),
-                icon: Icons.person),
-          if (widget.event.eventType == 1)
-            EventMetaDataCell(
-              title: "",
-              icon: Icons.sports_score,
-              child: Row(
-                children: [
-                  Text(
-                    "${widget.event.homeTeam!.score}",
-                    style: TextStyle(
-                      color: CustomColors.textColor(context)
-                          .withOpacity(widget.event.isHome() ? 1 : 0.5),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                    ),
-                  ),
-                  Text(
-                    " - ",
-                    style: TextStyle(
-                      color: CustomColors.textColor(context),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                    ),
-                  ),
-                  Text(
-                    "${widget.event.awayTeam!.score}",
-                    style: TextStyle(
-                      color: CustomColors.textColor(context)
-                          .withOpacity(widget.event.isHome() ? 0.5 : 1),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                    ),
-                  ),
-                  Text(widget.event.isHome() ? "  (Home)" : "  (Away)",
-                      style: const TextStyle(fontSize: 14)),
-                ],
-              ),
-            ),
-          if (!((widget.event.eventLocation.name).isEmpty()))
-            EventMetaDataCell(
-                title: widget.event.eventLocation.name!,
-                icon: Icons.home_outlined),
-          if (!((widget.event.eventLocation.address).isEmpty()))
-            EventMetaDataCell(
-                title: widget.event.eventLocation.address!,
-                icon: Icons.near_me),
-          if (widget.event.eLink != "")
-            EventMetaDataCell(title: widget.event.eLink, icon: Icons.link),
-        ],
-      ),
-    );
-  }
-
   Widget _customFields(BuildContext context, DataModel dmodel) {
     return cv.NativeList(
       color: CustomColors.cellColor(context)
@@ -366,41 +276,107 @@ class _EventDetailState extends State<EventDetail> {
     );
   }
 
-  Widget _userStatusCounts(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Widget _stats(BuildContext context, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        cv.Navigate(
+          context,
+          StatsEvent(
+            team: dmodel.tus!.team,
+            teamUser: dmodel.tus!.user,
+            season: dmodel.currentSeason!,
+            seasonUser: dmodel.currentSeasonUser!,
+            event: widget.event,
+          ),
+        );
+      },
+      child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        color: CustomColors.cellColor(context)
+            .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
         children: [
-          _userStatusCountCell(context, -1, widget.event.outCount),
-          _userStatusCountCell(context, 1, widget.event.inCount),
-          _userStatusCountCell(context, 2, widget.event.undecidedCount),
-          _userStatusCountCell(context, 0, widget.event.noResponse),
+          Row(
+            children: [
+              Icon(
+                Icons.bar_chart,
+                color: widget.event.eventColor.isEmpty
+                    ? CustomColors.textColor(context)
+                    : Colors.white,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  "Statistics",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: _accentColor(),
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: widget.event.eventColor.isEmpty
+                    ? CustomColors.textColor(context)
+                    : Colors.white,
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _userStatusCountCell(BuildContext context, int status, int value) {
-    return Row(
+  Widget _statusCounts(BuildContext context) {
+    return cv.NativeList(
+      itemPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      color: CustomColors.cellColor(context)
+          .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
       children: [
-        Icon(_getIcon(status), color: _getColor(status)),
-        const SizedBox(width: 8),
-        Text(
-          "$value",
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _statusCountCell(context, 0, widget.event.noResponse),
+            _statusCountCell(context, -1, widget.event.outCount),
+            _statusCountCell(context, 2, widget.event.undecidedCount),
+            _statusCountCell(context, 1, widget.event.inCount),
+          ],
         ),
       ],
+    );
+  }
+
+  Widget _statusCountCell(BuildContext context, int status, int count) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: CustomColors.cellColor(context)
+            .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Row(
+        children: [
+          Icon(widget.event.getStatusIcon(status),
+              color: widget.event.getStatusColor(status)),
+          const SizedBox(width: 4),
+          Text(
+            count.toString(),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _participants(BuildContext context, DataModel dmodel) {
     if (widget.event.hasAttendance) {
       return cv.Section(
-        // "Participants - ${_users?.where((element) => element.eventFields?.isParticipant == true).length ?? ""}",
         _users == null
             ? ""
-            : _users!.length > 0
+            : _users!.isNotEmpty
                 ? "Users"
                 : "",
         child: Column(
@@ -432,26 +408,6 @@ class _EventDetailState extends State<EventDetail> {
                     const SizedBox(height: 8),
                   ],
                 ),
-          ],
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget _nonParticipants(BuildContext context, DataModel dmodel) {
-    if (widget.event.hasAttendance) {
-      return cv.Section(
-        "Non-Participants - ${_users?.where((element) => element.eventFields?.isParticipant == false).length ?? ""}",
-        child: cv.NativeList(
-          children: [
-            if (_users != null)
-              for (SeasonUser i in _users!
-                  .where((element) => !element.eventFields!.isParticipant))
-                _userRow(context, dmodel, i)
-            else
-              for (int i = 0; i < 25; i++) const UserCellLoading(),
           ],
         ),
       );
@@ -578,12 +534,14 @@ class _EventDetailState extends State<EventDetail> {
             },
           );
         },
-        child: Text("Edit",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: _accentColor(),
-            )),
+        child: Text(
+          "Edit",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: _accentColor(),
+          ),
+        ),
       );
     } else {
       return Container(height: 0);

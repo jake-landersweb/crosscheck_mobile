@@ -34,7 +34,7 @@ class UserCommentSheet extends StatefulWidget {
 class _UserCommentSheetState extends State<UserCommentSheet> {
   late List<StatusReply> _replies;
 
-  String _reply = "";
+  late TextEditingController controller;
 
   bool _isLoading = false;
 
@@ -42,6 +42,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
   void initState() {
     super.initState();
     _replies = widget.user.eventFields!.statusReplies;
+    controller = TextEditingController();
   }
 
   @override
@@ -50,9 +51,9 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
     return cv.Sheet(
       color: dmodel.color,
       closeText: "Close",
-      title: "Comments",
+      title: widget.user.name(widget.season.showNicknames),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 500),
+        constraints: const BoxConstraints(maxHeight: 400),
         child: _body(context),
       ),
     );
@@ -65,19 +66,15 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
       children: [
         cv.Section(
           "Message",
-          child: cv.NativeList(
-            color: CustomColors.textColor(context).withOpacity(0.1),
-            itemPadding: const EdgeInsets.all(16),
-            children: [
-              Text(
-                widget.user.eventFields?.message ?? "",
-                style: const TextStyle(fontSize: 18),
-              ),
-            ],
+          headerPadding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+          child: Text(
+            widget.user.eventFields?.message ?? "",
+            style: const TextStyle(fontSize: 18),
           ),
         ),
         cv.Section(
           "Comments",
+          headerPadding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
           child: cv.NativeList(
             itemPadding: const EdgeInsets.all(8),
             color: CustomColors.textColor(context).withOpacity(0.1),
@@ -86,7 +83,8 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
             ],
           ),
         ),
-        cv.Section("", child: _replyCell(context)),
+        const SizedBox(height: 16),
+        _replyCell(context)
       ],
     );
   }
@@ -142,37 +140,26 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
 
   Widget _replyCell(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.NativeList(
-      color: CustomColors.textColor(context).withOpacity(0.1),
+    return Column(
       children: [
         cv.TextField(
-          labelText: "Reply Message ...",
-          charLimit: 50,
-          showCharacters: true,
+          fieldPadding: EdgeInsets.zero,
+          controller: controller,
           showBackground: false,
+          labelText: "Type here ...",
           validator: (value) {},
-          onChanged: (value) {
-            _reply = value;
-          },
+          onChanged: (value) {},
         ),
-        SizedBox(
-          height: 50,
-          child: cv.BasicButton(
-            onTap: () {
-              _replyToStatus(context, dmodel);
-            },
-            child: Center(
-              child: (_isLoading)
-                  ? cv.LoadingIndicator()
-                  : Text(
-                      "Reply",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: dmodel.color,
-                      ),
-                    ),
-            ),
+        const SizedBox(height: 16),
+        cv.BasicButton(
+          onTap: () {
+            _replyToStatus(context, dmodel);
+          },
+          child: cv.RoundedLabel(
+            "Reply",
+            color: dmodel.color,
+            textColor: Colors.white,
+            isLoading: _isLoading,
           ),
         ),
       ],
@@ -181,7 +168,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
 
   void _replyToStatus(BuildContext context, DataModel dmodel) async {
     if (!_isLoading) {
-      if (_reply == "") {
+      if (controller.text == "") {
         dmodel.setError("Reply cannot be empty", true);
       } else {
         setState(() {
@@ -193,18 +180,18 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
             widget.event.eventId,
             widget.user.email,
             dmodel.currentSeasonUser!.name(widget.season.showNicknames),
-            _reply,
+            controller.text,
             widget.event.getTitle(), () {
           setState(() {
             _replies.add(
               StatusReply(
                 date: dateToString(DateTime.now()),
-                message: _reply,
+                message: controller.text,
                 name:
                     dmodel.currentSeasonUser!.name(widget.season.showNicknames),
               ),
             );
-            _reply = "";
+            controller.text = "";
           });
           widget.completion();
         }).then((value) {

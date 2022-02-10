@@ -31,24 +31,20 @@ class _SeasonSelectState extends State<SeasonSelect> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
-      title: "Season Select",
-      isLarge: true,
-      backgroundColor: CustomColors.backgroundColor(context),
-      leading: const [MenuButton()],
-      children: [
-        cv.NativeList(
-          itemPadding: kIsWeb
-              ? const EdgeInsets.all(8)
-              : Platform.isIOS || Platform.isMacOS
-                  ? const EdgeInsets.all(16)
-                  : const EdgeInsets.all(8),
-          children: [
-            for (Season i in widget.tus.seasons)
-              _seasonSelectCell(context, i, dmodel),
-          ],
-        ),
-      ],
+    return cv.Sheet(
+      title: "Select Season",
+      color: dmodel.color,
+      child: cv.NativeList(
+        itemPadding: kIsWeb
+            ? const EdgeInsets.all(8)
+            : Platform.isIOS || Platform.isMacOS
+                ? const EdgeInsets.all(16)
+                : const EdgeInsets.all(8),
+        children: [
+          for (Season i in widget.tus.seasons)
+            _seasonSelectCell(context, i, dmodel),
+        ],
+      ),
     );
   }
 
@@ -56,11 +52,9 @@ class _SeasonSelectState extends State<SeasonSelect> {
       BuildContext context, Season season, DataModel dmodel) {
     return cv.BasicButton(
       onTap: () {
-        if (widget.currentSeason.seasonId != season.seasonId) {
-          // TODO - Add roster fetch
-          dmodel.setCurrentSeason(season);
-          dmodel.seasonUsers = null;
-        }
+        dmodel.setCurrentSeason(season);
+        dmodel.seasonUsers = null;
+        Navigator.of(context).pop();
       },
       child: Row(
         children: [

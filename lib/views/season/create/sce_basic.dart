@@ -137,19 +137,15 @@ class _SCEBasicState extends State<SCEBasic> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: cv.Section(
         "Status",
-        child: cv.NativeList(
-          children: [
-            cv.SegmentedPicker(
-              titles: const ["Past", "Active", "Future"],
-              selections: const [-1, 1, 2],
-              initialSelection: scemodel.seasonStatus,
-              onSelection: (value) {
-                setState(() {
-                  scemodel.seasonStatus = value;
-                });
-              },
-            ),
-          ],
+        child: cv.SegmentedPicker(
+          titles: const ["Past", "Active", "Future"],
+          selections: const [-1, 1, 2],
+          initialSelection: scemodel.seasonStatus,
+          onSelection: (value) {
+            setState(() {
+              scemodel.seasonStatus = value;
+            });
+          },
         ),
       ),
     );

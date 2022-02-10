@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pnflutter/views/chat/season_chat.dart';
-import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 
@@ -187,23 +186,17 @@ class _MenuHostState extends State<MenuHost> {
                   const SizedBox(height: 16),
                   _menuRow(context, _menuItems[0], _menu, _size),
                   const SizedBox(height: 16),
-                  if (!dmodel.noSeason)
-                    _menuRow(context, _menuItems[1], _menu, _size),
-                  if (!dmodel.noSeason) const SizedBox(height: 16),
-                  // if (!dmodel.noSeason)
-                  //   _menuRow(context, _menuItems[2], _menu, _size),
-                  // if (!dmodel.noSeason) const SizedBox(height: 16),
-                  _menuRow(context, _menuItems[3], _menu, _size),
+                  _menuRow(context, _menuItems[1], _menu, _size),
                   const SizedBox(height: 16),
                   if (!dmodel.noSeason)
-                    _menuRow(context, _menuItems[4], _menu, _size),
+                    _menuRow(context, _menuItems[2], _menu, _size),
                   const SizedBox(height: 16),
                   if (dmodel.tus?.user.isTeamAdmin() ?? false)
-                    _menuRow(context, _menuItems[5], _menu, _size),
+                    _menuRow(context, _menuItems[3], _menu, _size),
                   const SizedBox(height: 16),
                   if ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) &&
                       !dmodel.noSeason)
-                    _menuRow(context, _menuItems[6], _menu, _size),
+                    _menuRow(context, _menuItems[4], _menu, _size),
                 ],
               ),
             ),
@@ -284,6 +277,8 @@ class _MenuHostState extends State<MenuHost> {
             isOnTeam: true,
           );
         }
+      case Pages.team:
+        return const TeamHome();
       case Pages.seasonSettings:
         if (dmodel.currentSeason == null) {
           return Container();
@@ -313,7 +308,7 @@ class _MenuHostState extends State<MenuHost> {
           //   user: dmodel.user!,
           //   seasonUser: dmodel.currentSeasonUser!,
           // );
-          return TeamStats(team: dmodel.tus!.team);
+          return Container();
         } else {
           return Container();
         }
@@ -329,24 +324,14 @@ class _MenuHostState extends State<MenuHost> {
     //   page: Pages.team,
     // ),
     const MenuItem(
-      title: 'Schedule',
+      title: 'Season',
       icon: Icons.event_note,
       page: Pages.schedule,
     ),
     const MenuItem(
-      title: 'Roster',
-      icon: Icons.people,
-      page: Pages.seasonRoster,
-    ),
-    const MenuItem(
-      title: 'Season Select',
-      icon: Icons.rule,
-      page: Pages.seasonSettings,
-    ),
-    const MenuItem(
-      title: 'Chat',
-      icon: Icons.chat,
-      page: Pages.chat,
+      title: 'Team',
+      icon: Icons.groups,
+      page: Pages.team,
     ),
     const MenuItem(
       title: 'Settings',

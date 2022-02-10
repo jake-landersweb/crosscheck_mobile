@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pnflutter/theme/root.dart';
 import 'package:pnflutter/views/root.dart';
-import 'package:pnflutter/views/schedule/event_edit/event_create_edit.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +12,7 @@ import '../../extras/root.dart';
 import '../../data/root.dart';
 import 'root.dart';
 import '../team/root.dart';
+import 'dart:math' as math;
 
 class Schedule extends StatefulWidget {
   const Schedule({Key? key}) : super(key: key);
@@ -26,8 +26,8 @@ class _ScheduleState extends State<Schedule> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
-      title: "Schedule",
-      isLarge: true,
+      title: "",
+      isLarge: false,
       refreshable: true,
       backgroundColor: CustomColors.backgroundColor(context),
       color: dmodel.color,
@@ -51,20 +51,6 @@ class _ScheduleState extends State<Schedule> {
                     teamUser: dmodel.tus!.user,
                     seasonUser: dmodel.currentSeasonUser,
                   );
-                  // return EventCreateEdit(
-                  //   isCreate: true,
-                  //   teamId: dmodel.tus!.team.teamId,
-                  //   season: dmodel.currentSeason!,
-                  //   completion: () {
-                  //     // reload the schedule
-                  //     dmodel.reloadHomePage(
-                  //       dmodel.tus!.team.teamId,
-                  //       dmodel.currentSeason!.seasonId,
-                  //       dmodel.user!.email,
-                  //       true,
-                  //     );
-                  //   },
-                  // );
                 },
               );
             },
@@ -79,8 +65,50 @@ class _ScheduleState extends State<Schedule> {
           )
       ],
       children: [
+        // season selector
+        _seasonSelect(context, dmodel),
+        const SizedBox(height: 16),
+        // event list manager
         _body(context, dmodel),
       ],
+    );
+  }
+
+  Widget _seasonSelect(BuildContext context, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        if (dmodel.currentSeason != null) {
+          cv.showFloatingSheet(
+            context: context,
+            builder: (context) {
+              return SeasonSelect(
+                  email: dmodel.user!.email,
+                  tus: dmodel.tus!,
+                  currentSeason: dmodel.currentSeason!);
+            },
+          );
+        }
+      },
+      child: Row(
+        children: [
+          // season title
+          Text(
+            dmodel.currentSeason?.title ?? "",
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: CustomColors.textColor(context),
+            ),
+          ),
+          const SizedBox(width: 4),
+          // icon to show this is clickable
+          Transform.rotate(
+            angle: math.pi * 1.5,
+            child: Icon(Icons.chevron_left,
+                color: CustomColors.textColor(context).withOpacity(0.7)),
+          ),
+        ],
+      ),
     );
   }
 

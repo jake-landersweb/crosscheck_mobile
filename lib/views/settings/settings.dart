@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/data/root.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,6 +42,7 @@ class _SettingsState extends State<Settings> {
       backgroundColor: CustomColors.backgroundColor(context),
       leading: const [MenuButton()],
       children: [
+        _userInfo(context, dmodel),
         cv.Section(
           "Notifications",
           child: cv.NativeList(
@@ -61,6 +63,33 @@ class _SettingsState extends State<Settings> {
           },
         ),
       ],
+    );
+  }
+
+  Widget _userInfo(BuildContext context, DataModel dmodel) {
+    return cv.Section(
+      "User Info",
+      child: cv.RoundedLabel(
+        "My Profile",
+        color: CustomColors.cellColor(context),
+        textColor: CustomColors.textColor(context),
+        onTap: () {
+          cv.Navigate(
+            context,
+            SeasonUserDetail(
+              team: dmodel.tus!.team,
+              user: SeasonUser(
+                email: dmodel.user!.email,
+                userFields: SeasonUserUserFields(
+                  firstName: dmodel.user!.firstName,
+                  lastName: dmodel.user!.lastName,
+                ),
+              ),
+              teamUser: dmodel.tus!.user,
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -139,7 +168,7 @@ class _SettingsState extends State<Settings> {
   void _showAlert(BuildContext context, DataModel dmodel) {
     cv.showAlert(
       context: context,
-      title: "Confirm Logout",
+      title: "Are You Sure?",
       body: const Center(
         child: Text(
           "You will have to re-login to access your data.",

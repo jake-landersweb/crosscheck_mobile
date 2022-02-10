@@ -126,7 +126,7 @@ class _UserCellLoadingState extends State<UserCellLoading>
 
   Widget _avatar(BuildContext context) {
     return cv.Circle(
-      60,
+      45,
       Theme.of(context).brightness == Brightness.light
           ? Colors.black.withOpacity(0.3)
           : Colors.white.withOpacity(0.3),

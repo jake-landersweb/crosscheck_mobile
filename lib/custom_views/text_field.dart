@@ -30,6 +30,7 @@ class TextField extends StatefulWidget {
   final bool isLabeled;
   final EdgeInsets fieldPadding;
   final TextEditingController? controller;
+  final List<TextInputFormatter> formatters;
 
   TextField({
     Key? key,
@@ -48,6 +49,7 @@ class TextField extends StatefulWidget {
     this.showBackground = true,
     this.isLabeled = false,
     this.fieldPadding = const EdgeInsets.only(left: 16),
+    this.formatters = const [],
     this.controller,
   })  : assert(
           validator != null,
@@ -191,6 +193,7 @@ class _TextFieldState extends State<TextField> {
     return TextFormField(
       autocorrect: false,
       controller: widget.controller,
+      inputFormatters: widget.formatters,
       textCapitalization: widget.textCapitalization,
       keyboardType: widget.keyboardType,
       keyboardAppearance: MediaQuery.of(context).platformBrightness,
@@ -419,7 +422,7 @@ class _DynamicTextFieldState extends State<DynamicTextField> {
       textCapitalization: widget.textCapitalization,
       keyboardType: widget.keyboardType,
       keyboardAppearance: MediaQuery.of(context).platformBrightness,
-      initialValue: widget.value,
+      // initialValue: widget.value,
       cursorColor: widget.highlightColor,
       obscureText: widget.obscureText,
       maxLength: widget.charLimit,
@@ -445,15 +448,13 @@ class _DynamicTextFieldState extends State<DynamicTextField> {
                 : Colors.white.withOpacity(0.5)),
       ),
       onChanged: (value) {
-        if (widget.showCharacters) {
-          if (widget.enforceCharLimit &&
-              widget.value.length > widget.charLimit) {
-            // do nothing
-          } else {
-            setState(() {
-              widget.onChanged(value);
-            });
-          }
+        if (widget.enforceCharLimit && widget.value.length > widget.charLimit) {
+          // do nothing'
+        } else {
+          print("value = $value");
+          setState(() {
+            widget.onChanged(value);
+          });
         }
       },
     );

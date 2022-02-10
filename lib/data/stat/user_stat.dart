@@ -28,7 +28,7 @@ class UserStat extends Equatable {
         id: id,
         sortKey: sortKey,
         email: email,
-        stats: stats,
+        stats: [for (var i in stats) i.clone()],
         seasonId: seasonId,
         eventId: eventId,
         firstName: firstName,
@@ -49,6 +49,18 @@ class UserStat extends Equatable {
     firstName = json['firstName'];
     lastName = json['lastName'];
     title = json['title'];
+  }
+
+  String getName() {
+    if (firstName?.isNotEmpty ?? false) {
+      if (lastName?.isNotEmpty ?? false) {
+        return "$firstName $lastName";
+      } else {
+        return firstName!;
+      }
+    } else {
+      return email;
+    }
   }
 
   @override

@@ -258,9 +258,13 @@ class _AppBarState extends State<AppBar> {
                   scale: _titleScale > 1 ? _titleScale : 1,
                   child: Text(
                     _title,
+                    // style: const TextStyle(
+                    //   fontWeight: FontWeight.w700,
+                    //   fontSize: 40,
+                    // ),
                     style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 40,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),

@@ -27,6 +27,7 @@ class _ECEBasicState extends State<ECEBasic> {
       children: [
         _required(context, dmodel, ecemodel),
         _config(context, dmodel, ecemodel),
+        if (!ecemodel.isCreate) _delete(context, dmodel, ecemodel),
       ],
     );
   }
@@ -302,5 +303,52 @@ class _ECEBasicState extends State<ECEBasic> {
         ),
       ),
     );
+  }
+
+  Widget _delete(BuildContext context, DataModel dmodel, ECEModel ecemodel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: cv.Section(
+        "",
+        child: cv.BasicButton(
+          onTap: () {
+            cv.showAlert(
+              context: context,
+              title: "Delete Event",
+              body: const Text("Are you sure you want to delete?"),
+              cancelText: "Cancel",
+              cancelBolded: true,
+              onCancel: () {},
+              submitText: "Delete",
+              submitColor: Colors.red,
+              onSubmit: () => _deleteAction(context, dmodel, ecemodel),
+            );
+          },
+          child: const cv.RoundedLabel(
+            "Delete",
+            color: Colors.red,
+            textColor: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _deleteAction(
+      BuildContext context, DataModel dmodel, ECEModel ecemodel) async {
+    await dmodel.deleteEvent(
+        ecemodel.team!.teamId, ecemodel.season.seasonId, ecemodel.event.eventId,
+        () {
+      _reloadAfterDelete(context, dmodel, ecemodel);
+    });
+  }
+
+  Future<void> _reloadAfterDelete(
+      BuildContext context, DataModel dmodel, ECEModel ecemodel) async {
+    // reload the homescreen
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+    await dmodel.reloadHomePage(ecemodel.team!.teamId, ecemodel.season.seasonId,
+        dmodel.user!.email, false);
   }
 }

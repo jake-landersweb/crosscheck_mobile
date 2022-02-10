@@ -14,10 +14,12 @@ class ECEModel extends ChangeNotifier {
   String opponentName = "";
   bool isHome = true;
   List<String> subEmails = [];
+  Team? team;
+  Season season;
 
   List<CustomField> oldCustomUserFields = [];
 
-  ECEModel.create(Season season) {
+  ECEModel.create(this.season) {
     isCreate = true;
     this.event.customFields = [
       for (var i in season.eventCustomFieldsTemplate) i.clone()
@@ -27,9 +29,9 @@ class ECEModel extends ChangeNotifier {
     ];
   }
 
-  ECEModel.update(Team team, Season season, Event event) {
+  ECEModel.update(this.team, this.season, Event event) {
     isCreate = false;
-    setSeasonData(team, season, event);
+    setSeasonData(team!, season, event);
   }
 
   void setSeasonData(Team team, Season season, Event event) {

@@ -87,9 +87,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
           colors: [
             widget.event.getColor() ?? CustomColors.cellColor(context),
             widget.event.eventColor.isEmpty
-                ? MediaQuery.of(context).platformBrightness == Brightness.light
-                    ? CustomColors.cellColor(context).darken(0.05)
-                    : CustomColors.cellColor(context).lighten(0.1)
+                ? CustomColors.cellColor(context)
                 : widget.event.getColor()!.lighten(),
           ],
           end: Alignment.topLeft,

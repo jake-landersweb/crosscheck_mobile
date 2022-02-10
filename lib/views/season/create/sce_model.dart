@@ -109,7 +109,7 @@ class SCEModel extends ChangeNotifier {
             cv.BasicButton(
               onTap: () {
                 controller.animateToPage(
-                  4,
+                  3,
                   duration: const Duration(milliseconds: 700),
                   curve: Sprung.overDamped,
                 );
@@ -209,9 +209,9 @@ class SCEModel extends ChangeNotifier {
   }
 
   bool isAtEnd() {
-    if (isCreate && index == 4) {
+    if (isCreate && index == 3) {
       return true;
-    } else if (!isCreate && index == 3) {
+    } else if (!isCreate && index == 2) {
       return true;
     } else {
       return false;

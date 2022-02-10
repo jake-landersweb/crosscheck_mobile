@@ -34,6 +34,8 @@ class _EditTeamState extends State<EditTeam> {
 
   bool _isLoading = false;
 
+  bool _showColorError = false;
+
   @override
   void initState() {
     super.initState();
@@ -155,6 +157,8 @@ class _EditTeamState extends State<EditTeam> {
                         fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                 ),
+                if (_showColorError)
+                  const Icon(Icons.priority_high, color: Colors.red),
                 cv.BasicButton(
                   onTap: () {
                     showDialog(
@@ -181,6 +185,10 @@ class _EditTeamState extends State<EditTeam> {
                                   _color = color.value
                                       .toRadixString(16)
                                       .substring(2);
+                                  _showColorError =
+                                      ThemeData.estimateBrightnessForColor(
+                                              color) ==
+                                          Brightness.light;
                                 });
                               },
                               displayThumbColor: false,

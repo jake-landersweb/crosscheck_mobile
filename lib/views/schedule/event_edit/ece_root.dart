@@ -239,11 +239,11 @@ class _ECERootState extends State<ECERoot> {
     body['teamId'] = widget.team.teamId;
     body['seasonId'] = widget.season.seasonId;
 
+    print(body);
+
     if (ecemodel.isCreate) {
       body['customUserFields'] =
           ecemodel.event.customUserFields.map((e) => e.toJson()).toList();
-
-      print(body);
 
       // send the create request
       await dmodel.createEvent(widget.team.teamId, widget.season.seasonId, body,

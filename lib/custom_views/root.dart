@@ -18,3 +18,4 @@ export 'animated_list.dart';
 export 'labeled_widget.dart';
 export 'none_found.dart';
 export 'basic_model_selector.dart';
+export 'tab_bar.dart';

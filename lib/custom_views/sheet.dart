@@ -104,31 +104,31 @@ class _SheetState extends State<Sheet> {
       children: [
         Container(
           color: cv.ViewColors.cellColor(context),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SheetHeader(
-                title: widget.title,
-                height: widget.headerHeight,
-                color: widget.color,
-                closeText: widget.closeText,
-              ),
-              const Divider(
-                height: 0.5,
-                indent: 0,
-              ),
-              widget.child,
-            ],
-          ),
-        ),
-        // make it keyboard safe
-        AnimatedSize(
-          curve: Sprung.overDamped,
-          duration: const Duration(milliseconds: 650),
-          child: SizedBox(
-            height: MediaQuery.of(context).viewInsets.bottom > 0
-                ? MediaQuery.of(context).viewInsets.bottom
-                : 0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.title,
+                        style: TextStyle(
+                          color: cv.ViewColors.textColor(context),
+                          fontSize: 26,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    cv.BasicButton(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Icon(Icons.close, color: widget.color)),
+                  ],
+                ),
+                widget.child,
+              ],
+            ),
           ),
         ),
       ],

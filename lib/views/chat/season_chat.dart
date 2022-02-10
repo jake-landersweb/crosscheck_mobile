@@ -83,45 +83,33 @@ class _SeasonChatState extends State<SeasonChat> {
   }
 
   Widget _chatHolder(BuildContext context, DataModel dmodel, ChatModel cmodel) {
-    print(MediaQuery.of(context).viewInsets.bottom -
-        (MediaQuery.of(context).padding.bottom + 40));
     return Scaffold(
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
-          AnimatedContainer(
-            curve: Curves.easeOutQuad,
-            duration: const Duration(milliseconds: 5075),
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom == 0
+          Column(
+            children: [
+              Expanded(
+                child: _messageList(context, dmodel, cmodel),
+              ),
+              _messageInput(context, dmodel, cmodel),
+              // for artificial safe area, prevents screen jitter
+              const SizedBox(height: 8),
+              // push view up to reveal keyboard
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                curve: Sprung.custom(damping: 36),
+                width: double.infinity,
+                height: (MediaQuery.of(context).viewInsets.bottom -
+                            (MediaQuery.of(context).viewPadding.bottom + 40)) <
+                        0
                     ? 0
-                    : MediaQuery.of(context).viewInsets.bottom -
-                        (MediaQuery.of(context).padding.bottom + 40)),
-            child: Column(
-              children: [
-                Expanded(
-                  child: _messageList(context, dmodel, cmodel),
-                ),
-                _messageInput(context, dmodel, cmodel),
-                // for artificial safe area, prevents screen jitter
-                // AnimatedContainer(
-                //   duration: const Duration(milliseconds: 500),
-                //   curve: Sprung.custom(damping: 36),
-                //   width: double.infinity,
-                //   height: MediaQuery.of(context).viewInsets.bottom == 0 ? 8 : 0,
-                // ),
-                const SizedBox(height: 8),
-                // push view up to reveal keyboard
-                // AnimatedContainer(
-                //   duration: const Duration(milliseconds: 5000),
-                //   curve: Sprung.custom(damping: 36),
-                //   width: double.infinity,
-                //   height: MediaQuery.of(context).viewInsets.bottom == 0 ? 0 : 500,
-                // ),
-              ],
-            ),
+                    : (MediaQuery.of(context).viewInsets.bottom -
+                        (MediaQuery.of(context).viewPadding.bottom + 40)),
+              ),
+            ],
           ),
           _topBar(context, dmodel, cmodel),
         ],

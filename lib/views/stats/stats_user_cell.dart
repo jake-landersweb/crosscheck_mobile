@@ -4,8 +4,8 @@ import 'package:pnflutter/extras/root.dart';
 import 'package:sprung/sprung.dart';
 import '../../custom_views/root.dart' as cv;
 
-class UserStatCell extends StatefulWidget {
-  const UserStatCell({
+class StatsUserCell extends StatefulWidget {
+  const StatsUserCell({
     Key? key,
     required this.userStat,
     this.currentStat = "",
@@ -14,10 +14,10 @@ class UserStatCell extends StatefulWidget {
   final String currentStat;
 
   @override
-  _UserStatCellState createState() => _UserStatCellState();
+  _StatsUserCellState createState() => _StatsUserCellState();
 }
 
-class _UserStatCellState extends State<UserStatCell>
+class _StatsUserCellState extends State<StatsUserCell>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -67,7 +67,7 @@ class _UserStatCellState extends State<UserStatCell>
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           color: CustomColors.cellColor(context),
         ),
         width: double.infinity,
@@ -84,7 +84,7 @@ class _UserStatCellState extends State<UserStatCell>
                     children: [
                       cv.Circle(50, CustomColors.random(widget.userStat.email)),
                       Text(
-                        (widget.userStat.firstName ?? " ")[0].toUpperCase(),
+                        (widget.userStat.getName())[0].toUpperCase(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -96,7 +96,7 @@ class _UserStatCellState extends State<UserStatCell>
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
-                      "${widget.userStat.firstName} ${widget.userStat.lastName}",
+                      widget.userStat.getName(),
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 18,

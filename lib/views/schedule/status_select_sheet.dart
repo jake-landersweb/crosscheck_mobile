@@ -36,7 +36,6 @@ class StatusSelectSheet extends StatefulWidget {
 
 class _StatusSelectSheetState extends State<StatusSelectSheet> {
   int _status = 0;
-  late String _message = "";
 
   bool _isLoaded = false;
 
@@ -48,10 +47,13 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
 
   List<CustomField> _customFields = [];
 
+  late TextEditingController controller;
+
   @override
   void initState() {
     super.initState();
     _getStatus(context.read<DataModel>());
+    controller = TextEditingController();
   }
 
   @override
@@ -60,130 +62,107 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
     return cv.Sheet(
       title: "Select Status",
       color: dmodel.color,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            cv.Section(
-              "Select Status",
-              child: _isLoaded
-                  ? cv.SegmentedPicker(
-                      key: const ValueKey("is loaded picker status sheet"),
-                      titles: const ["NOT GOING", "UNSURE", "GOING"],
-                      selections: const [-1, 2, 1],
-                      initialSelection: _status,
-                      onSelection: (value) {
-                        _status = value;
-                      },
-                    )
-                  : cv.SegmentedPicker(
-                      initialSelection: "",
-                      key: const ValueKey("not loaded picker status sheet"),
-                      titles: const [""],
-                      onSelection: (value) {},
-                    ),
-            ),
-            // for managers if there wsa a no show
-            if (!widget.isUpcoming &&
-                ((dmodel.tus?.user.isTeamAdmin() ?? false) ||
-                    (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)))
-              Column(
-                children: [
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: 25,
-                        child: FlutterSwitch(
-                          value: _isNoShow,
-                          height: 25,
-                          width: 50,
-                          toggleSize: 18,
-                          activeColor: dmodel.color,
-                          onToggle: (value) {
-                            setState(() {
-                              _isNoShow = value;
-                            });
-                          },
-                        ),
-                      ),
-                      const cv.BasicLabel(label: "   Was No Show"),
-                    ],
-                  ),
-                ],
-              ),
-            if (_customFields.isNotEmpty)
-              cv.Section(
-                "Custom Fields",
-                child: CustomFieldCreate(
-                  enabled: false,
-                  cellColor: CustomColors.textColor(context).withOpacity(0.1),
-                  customFields: _customFields,
-                  isCreate: false,
-                  color: dmodel.color,
-                  onAdd: () {
-                    return CustomField(title: "", type: "S", value: "");
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 16),
+          _isLoaded
+              ? cv.SegmentedPicker(
+                  key: const ValueKey("is loaded picker status sheet"),
+                  titles: const ["NOT GOING", "UNSURE", "GOING"],
+                  selections: const [-1, 2, 1],
+                  initialSelection: _status,
+                  onSelection: (value) {
+                    _status = value;
                   },
+                )
+              : cv.SegmentedPicker(
+                  initialSelection: "",
+                  key: const ValueKey("not loaded picker status sheet"),
+                  titles: const [""],
+                  onSelection: (value) {},
                 ),
-              ),
-            cv.Section(
-              "Leave a Note",
-              child: cv.NativeList(
-                color: CustomColors.textColor(context).withOpacity(0.1),
-                itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                children: [
-                  if (_isLoaded)
-                    cv.TextField(
-                      key: const ValueKey("is loaded text field status sheet"),
-                      showBackground: false,
-                      fieldPadding: EdgeInsets.zero,
-                      labelText: "Note",
-                      value: _message,
-                      validator: (value) {},
-                      onChanged: (value) {
-                        _message = value;
-                      },
-                    )
-                  else
-                    cv.TextField(
-                      key: const ValueKey("not loaded text field status sheet"),
-                      showBackground: false,
-                      fieldPadding: EdgeInsets.zero,
-                      labelText: "Note 2",
-                      validator: (value) {},
-                      onChanged: (value) {},
+          // for managers if there wsa a no show
+          if (!widget.isUpcoming &&
+              ((dmodel.tus?.user.isTeamAdmin() ?? false) ||
+                  (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)))
+            Column(
+              children: [
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 25,
+                      child: FlutterSwitch(
+                        value: _isNoShow,
+                        height: 25,
+                        width: 50,
+                        toggleSize: 18,
+                        activeColor: dmodel.color,
+                        onToggle: (value) {
+                          setState(() {
+                            _isNoShow = value;
+                          });
+                        },
+                      ),
                     ),
-                ],
+                    const cv.BasicLabel(label: "   Was No Show"),
+                  ],
+                ),
+              ],
+            ),
+          if (_customFields.isNotEmpty)
+            cv.Section(
+              "Custom Fields",
+              child: CustomFieldCreate(
+                enabled: false,
+                cellColor: CustomColors.textColor(context).withOpacity(0.1),
+                customFields: _customFields,
+                isCreate: false,
+                color: dmodel.color,
+                onAdd: () {
+                  return CustomField(title: "", type: "S", value: "");
+                },
               ),
             ),
-            const SizedBox(height: 8),
-            cv.RoundedLabel(
-              "",
-              onTap: () {
-                if (!_isLoading) {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  _setStatus(context, dmodel);
-                }
-              },
-              color: dmodel.color,
-              child: Center(
-                child: (!_isLoading)
-                    ? const Text(
-                        "Set Status",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )
-                    : const cv.LoadingIndicator(color: Colors.white),
-              ),
+          cv.Section("Leave a Note",
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: cv.TextField(
+                  fieldPadding: EdgeInsets.zero,
+                  controller: controller,
+                  showBackground: false,
+                  labelText: "Type here ...",
+                  validator: (value) {},
+                  onChanged: (value) {},
+                ),
+              )),
+          const SizedBox(height: 8),
+          cv.RoundedLabel(
+            "",
+            onTap: () {
+              if (!_isLoading) {
+                setState(() {
+                  _isLoading = true;
+                });
+                _setStatus(context, dmodel);
+              }
+            },
+            color: dmodel.color,
+            child: Center(
+              child: (!_isLoading)
+                  ? const Text(
+                      "Set Status",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  : const cv.LoadingIndicator(color: Colors.white),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -197,7 +176,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
     }
     Map<String, dynamic> body = {
       "eStatus": _status,
-      "message": _message,
+      "message": controller.text,
       "customFields": _customFields.map((e) => e.toJson()).toList(),
     };
 
@@ -303,7 +282,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
       setState(() {
         _status = user.eStatus;
         _oldStatus = user.eStatus;
-        _message = user.message ?? "";
+        controller.text = user.message ?? "";
         _isLoaded = true;
         if (_status == -2) {
           _isNoShow = true;

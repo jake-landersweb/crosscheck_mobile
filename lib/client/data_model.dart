@@ -185,6 +185,14 @@ class DataModel extends ChangeNotifier {
   Season? currentSeason;
   void setCurrentSeason(Season season) {
     try {
+      // wipe old event data in case of switching season
+      hasMorePreviousEvents = true;
+      hasMoreUpcomingEvents = true;
+      upcomingEventsStartIndex = 0;
+      previousEventsStartIndex = 0;
+      currentScheduleTitle = "Upcoming";
+      upcomingEvents = null;
+      previousEvents = null;
       currentSeason = season;
       noSeason = false;
       prefs.setString("seasonId", season.seasonId);
@@ -212,6 +220,8 @@ class DataModel extends ChangeNotifier {
     upcomingEvents = events;
     showSplash = false;
     notifyListeners();
+
+    print(events.map((e) => e.eTitle));
 
     // get the season user list
     getSeasonRoster(tus!.team.teamId, currentSeason!.seasonId, (seasonUsers) {

@@ -17,14 +17,25 @@ class FloatingSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-          10, 0, 10, MediaQuery.of(context).padding.bottom + 10),
-      child: Material(
-        color: backgroundColor,
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: child,
+    final double bottomPadding = MediaQuery.of(context).viewPadding.bottom;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      curve: Sprung(36),
+      padding: EdgeInsets.only(
+          bottom: (MediaQuery.of(context).viewInsets.bottom -
+                      MediaQuery.of(context).viewPadding.bottom) <
+                  0
+              ? 0
+              : (MediaQuery.of(context).viewInsets.bottom - bottomPadding)),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(10, 0, 10, bottomPadding + 10),
+        child: Material(
+          color: backgroundColor,
+          clipBehavior: Clip.antiAlias,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: child,
+        ),
       ),
     );
   }
@@ -41,8 +52,8 @@ Future<T> showFloatingSheet<T>({
   final result = await showCustomModalBottomSheet(
     context: context,
     builder: builder,
-    animationCurve: curve ?? Sprung.overDamped,
-    duration: const Duration(milliseconds: 700),
+    animationCurve: curve ?? Sprung(36),
+    duration: const Duration(milliseconds: 500),
     containerWidget: (_, animation, child) => FloatingSheet(
       child: child,
       backgroundColor: backgroundColor,

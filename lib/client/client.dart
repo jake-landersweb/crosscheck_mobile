@@ -63,4 +63,18 @@ class Client {
 
     return jsonDecode(response.body);
   }
+
+  // generic fetch function
+  Future<dynamic> delete(String path) async {
+    // start the response
+    final response = await client
+        .delete(Uri(scheme: 'https', host: host, path: '/api/$path'));
+    // check for basic network errors
+    if (response.statusCode != 200) {
+      throw Exception('There was an error fetching: ${response.body}');
+    }
+
+    // return the decoded information
+    return jsonDecode(response.body);
+  }
 }

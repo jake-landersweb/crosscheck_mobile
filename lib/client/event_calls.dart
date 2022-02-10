@@ -320,4 +320,21 @@ extension EventCalls on DataModel {
       }
     });
   }
+
+  Future<void> deleteEvent(String teamId, String seasonId, String eventId,
+      VoidCallback completion) async {
+    await client
+        .delete("/teams/$teamId/seasons/$seasonId/events/$eventId/delete")
+        .then((response) {
+      if (response == null) {
+        setError("There was an issue deleting the event", true);
+      } else if (response['status'] == 200) {
+        setSuccess("Successfully deleted event", true);
+        completion();
+      } else {
+        setError("There was an issue deleting the event", true);
+        print(response['message']);
+      }
+    });
+  }
 }

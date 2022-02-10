@@ -21,6 +21,14 @@ extension ViewColors on Colors {
     }
   }
 
+  static Color backgroundColor(BuildContext context) {
+    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+      return lightList;
+    } else {
+      return const Color.fromRGBO(30, 30, 33, 1);
+    }
+  }
+
   // static Color subCellColor(BuildContext context) {
   //   if (MediaQuery.of(context).platformBrightness == Brightness.light) {
   //     return lightList;
