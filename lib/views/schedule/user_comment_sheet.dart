@@ -16,14 +16,14 @@ class UserCommentSheet extends StatefulWidget {
     required this.user,
     required this.event,
     required this.email,
-    required this.teamId,
+    required this.team,
     required this.season,
     required this.completion,
   }) : super(key: key);
   final SeasonUser user;
   final Event event;
   final String email;
-  final String teamId;
+  final Team team;
   final Season season;
   final VoidCallback completion;
 
@@ -51,7 +51,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
     return cv.Sheet(
       color: dmodel.color,
       closeText: "Close",
-      title: widget.user.name(widget.season.showNicknames),
+      title: widget.user.name(widget.team.showNicknames),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 400),
         child: _body(context),
@@ -175,11 +175,11 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
           _isLoading = true;
         });
         await dmodel.replyToStatus(
-            widget.teamId,
+            widget.team.teamId,
             widget.season.seasonId,
             widget.event.eventId,
             widget.user.email,
-            dmodel.currentSeasonUser!.name(widget.season.showNicknames),
+            dmodel.currentSeasonUser!.name(widget.team.showNicknames),
             controller.text,
             widget.event.getTitle(), () {
           setState(() {
@@ -187,8 +187,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
               StatusReply(
                 date: dateToString(DateTime.now()),
                 message: controller.text,
-                name:
-                    dmodel.currentSeasonUser!.name(widget.season.showNicknames),
+                name: dmodel.currentSeasonUser!.name(widget.team.showNicknames),
               ),
             );
             controller.text = "";

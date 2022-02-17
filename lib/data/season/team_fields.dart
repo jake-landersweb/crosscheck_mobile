@@ -9,6 +9,10 @@ class SeasonUserTeamFields {
   late String pos;
   late List<CustomField> customFields;
   late int validationStatus;
+  late String jerseySize;
+  late String jerseyNumber;
+  late String nickname;
+  late String email;
 
   SeasonUserTeamFields({
     this.teamUserNote,
@@ -18,6 +22,10 @@ class SeasonUserTeamFields {
     required this.pos,
     required this.customFields,
     required this.validationStatus,
+    required this.jerseySize,
+    required this.jerseyNumber,
+    required this.nickname,
+    required this.email,
   });
 
   SeasonUserTeamFields.empty() {
@@ -27,7 +35,11 @@ class SeasonUserTeamFields {
     teamUserType = 1;
     pos = "";
     customFields = [];
-    validationStatus = 1;
+    validationStatus = 0;
+    jerseySize = "";
+    jerseyNumber = "";
+    nickname = "";
+    email = "";
   }
 
   SeasonUserTeamFields.of(SeasonUserTeamFields user) {
@@ -36,8 +48,12 @@ class SeasonUserTeamFields {
     lastSeason = user.lastSeason;
     teamUserType = user.teamUserType;
     pos = user.pos;
-    customFields = user.customFields;
+    customFields = [for (var i in user.customFields) i.clone()];
     validationStatus = user.validationStatus;
+    jerseySize = user.jerseySize;
+    jerseyNumber = user.jerseyNumber;
+    nickname = user.nickname;
+    email = user.email;
   }
 
   SeasonUserTeamFields.fromJson(Map<String, dynamic> json) {
@@ -54,19 +70,24 @@ class SeasonUserTeamFields {
       json['customFields']
           .forEach((v) => customFields.add(CustomField.fromJson(v)));
     }
+    jerseySize = json['jerseySize'] ?? "";
+    jerseyNumber = json['jerseyNumber'] ?? "";
+    nickname = json['nickname'] ?? "";
+    email = json['email'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['teamUserNote'] = teamUserNote;
-    data['orgId'] = orgId;
-    if (lastSeason != null) {
-      data['lastSeason'] = lastSeason!.toJson();
-    }
-    data['teamUserType'] = teamUserType;
-    data['validationStatus'] = validationStatus;
-
-    return data;
+    return {
+      "teamUserNote": teamUserNote,
+      "teamUserType": teamUserType,
+      "pos": pos,
+      "customFields": customFields.map((e) => e.toJson()).toList(),
+      "validationStatus": validationStatus,
+      "jerseySize": jerseySize,
+      "jerseyNumber": jerseyNumber,
+      "nickname": nickname,
+      "email": email,
+    };
   }
 
   bool isTeamAdmin() {

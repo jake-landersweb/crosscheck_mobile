@@ -93,7 +93,7 @@ extension UserCalls on DataModel {
     });
   }
 
-  void updateUser(
+  Future<void> updateUser(
       String email, Map<String, dynamic> body, VoidCallback completion) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 

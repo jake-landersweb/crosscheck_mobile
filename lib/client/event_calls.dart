@@ -179,6 +179,7 @@ extension EventCalls on DataModel {
       if (response == null) {
         setError("There was an issue updating the event", true);
       } else if (response['status'] == 200) {
+        print(response);
         setSuccess("Successfully updated event", true);
         completion();
       } else {

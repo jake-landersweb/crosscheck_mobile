@@ -30,7 +30,12 @@ class _MainHomeState extends State<MainHome> {
               const Spacer(),
               cv.TabBar(
                 index: index,
-                icons: const [Icons.home, Icons.chat, Icons.bar_chart],
+                icons: const [
+                  Icons.home,
+                  Icons.chat,
+                  Icons.bar_chart,
+                  Icons.people
+                ],
                 color: dmodel.color,
                 onViewChange: (idx) {
                   setState(() {
@@ -52,7 +57,7 @@ class _MainHomeState extends State<MainHome> {
         return const Schedule();
       case 1:
         if (dmodel.currentSeason != null && dmodel.currentSeasonUser != null) {
-          return Container(
+          return SizedBox(
             height: MediaQuery.of(context).size.height -
                 (MediaQuery.of(context).viewPadding.bottom + 40),
             child: ChatHome(
@@ -63,19 +68,25 @@ class _MainHomeState extends State<MainHome> {
             ),
           );
         } else {
-          return Container();
+          return Padding(
+            padding: const EdgeInsets.only(top: 50),
+            child:
+                cv.NoneFound("Cannot find the chat room.", color: dmodel.color),
+          );
         }
       case 2:
-        if (dmodel.currentSeasonUser != null) {
+        if (dmodel.currentSeason != null) {
           return StatsSeason(
             team: dmodel.tus!.team,
             teamUser: dmodel.tus!.user,
             season: dmodel.currentSeason!,
-            seasonUser: dmodel.currentSeasonUser!,
+            seasonUser: dmodel.currentSeasonUser,
           );
         } else {
           return Container();
         }
+      case 3:
+        return const SeasonRoster();
       default:
         return Container();
     }

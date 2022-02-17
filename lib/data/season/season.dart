@@ -10,7 +10,6 @@ class Season extends Equatable {
   late String seasonCode;
   late int seasonStatus;
   late String seasonNote;
-  late bool showNicknames;
   late TeamPositions positions;
   late List<CustomField> customFields;
   late List<CustomField> customUserFields;
@@ -26,7 +25,6 @@ class Season extends Equatable {
     required this.seasonCode,
     required this.seasonStatus,
     required this.seasonNote,
-    required this.showNicknames,
     required this.positions,
     required this.customFields,
     required this.customUserFields,
@@ -44,7 +42,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 1;
     seasonNote = "";
-    showNicknames = false;
     positions = TeamPositions.empty();
     customFields = [];
     customUserFields = [];
@@ -62,7 +59,6 @@ class Season extends Equatable {
     seasonCode = season.seasonCode;
     seasonStatus = season.seasonStatus;
     seasonNote = season.seasonNote;
-    showNicknames = season.showNicknames;
     positions = season.positions;
     customFields = season.customFields;
     customUserFields = season.customUserFields;
@@ -78,7 +74,6 @@ class Season extends Equatable {
     seasonCode = json['seasonCode'] ?? "";
     seasonStatus = json['seasonStatus'].round();
     seasonNote = json['seasonNote'] ?? "";
-    showNicknames = json['showNicknames'] ?? false;
     positions = json['positions'] == null
         ? TeamPositions.empty()
         : TeamPositions.fromJson(json['positions']);
@@ -115,7 +110,6 @@ class Season extends Equatable {
       "seasonCode": seasonCode,
       "seasonStatus": seasonStatus,
       "seasonNote": seasonNote,
-      "showNicknames": showNicknames,
       "positions": positions.toJson(),
       "customFields": customFields.map((e) => e.toJson()).toList(),
       "customUserFields": customUserFields.map((e) => e.toJson()).toList(),
@@ -143,8 +137,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-
-    showNicknames = false;
     positions = TeamPositions(
       isActive: true,
       defaultPosition: "Forward",
@@ -176,7 +168,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    showNicknames = false;
     positions = TeamPositions(
       isActive: true,
       defaultPosition: "Quaterback",
@@ -223,7 +214,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    showNicknames = false;
     positions = TeamPositions(
       isActive: true,
       defaultPosition: "Point Guard",
@@ -254,7 +244,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    showNicknames = false;
     positions = TeamPositions(
       isActive: true,
       defaultPosition: "Center Forward",
@@ -292,7 +281,6 @@ class Season extends Equatable {
     seasonCode = "";
     seasonStatus = 2;
     seasonNote = "";
-    showNicknames = false;
     positions = TeamPositions(
       isActive: true,
       defaultPosition: "Pitcher",

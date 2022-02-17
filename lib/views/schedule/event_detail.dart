@@ -374,42 +374,46 @@ class _EventDetailState extends State<EventDetail> {
   Widget _participants(BuildContext context, DataModel dmodel) {
     if (widget.event.hasAttendance) {
       return cv.Section(
-        _users == null
-            ? ""
-            : _users!.isNotEmpty
-                ? "Users"
-                : "",
-        child: Column(
-          children: [
-            if (_users != null)
-              for (SeasonUser i in _users!
-                  .where((element) => element.eventFields!.isParticipant))
-                Column(
+        "Users",
+        child: (_users != null)
+            ? Column(
+                children: [
+                  if (_users != null)
+                    for (SeasonUser i in _users!
+                        .where((element) => element.eventFields!.isParticipant))
+                      Column(
+                        children: [
+                          _userRow(context, dmodel, i),
+                          const SizedBox(height: 8),
+                        ],
+                      )
+                ],
+              )
+            : cv.LoadingWrapper(
+                child: Column(
                   children: [
-                    _userRow(context, dmodel, i),
-                    const SizedBox(height: 8),
-                  ],
-                )
-            else
-              for (int i = 0; i < 25; i++)
-                Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: CustomColors.cellColor(context).withOpacity(
-                            widget.event.eventColor.isEmpty ? 1 : 0.3),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: UserCellLoading(),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
+                    for (int i = 0; i < 25; i++)
+                      Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: CustomColors.cellColor(context)
+                                  .withOpacity(widget.event.eventColor.isEmpty
+                                      ? 1
+                                      : 0.3),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: RosterLoadingCell(size: 40),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      )
                   ],
                 ),
-          ],
-        ),
+              ),
       );
     } else {
       return Container();
@@ -427,15 +431,11 @@ class _EventDetailState extends State<EventDetail> {
         padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
         child: Row(
           children: [
-            // user avatar cell
-            Opacity(
-              opacity: 0.7,
-              child: UserAvatar(
-                user: user,
-                season: widget.season,
-                diameter: 45,
-                fontSize: 24,
-              ),
+            RosterAvatar(
+              name: user.name(widget.team.showNicknames),
+              seed: user.email,
+              size: 40,
+              fontSize: 24,
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -459,7 +459,7 @@ class _EventDetailState extends State<EventDetail> {
                           user: user,
                           event: widget.event,
                           email: widget.email,
-                          teamId: widget.team.teamId,
+                          team: widget.team,
                           season: widget.season,
                           completion: () {
                             // refresh user data when added reply
@@ -530,6 +530,7 @@ class _EventDetailState extends State<EventDetail> {
                 user: dmodel.user!,
                 seasonUser: dmodel.currentSeasonUser,
                 event: widget.event,
+                eventUsers: _users,
               );
             },
           );
@@ -569,36 +570,6 @@ class _EventDetailState extends State<EventDetail> {
         _users = users;
       });
     });
-  }
-
-  IconData _getIcon(int status) {
-    switch (status) {
-      case 0:
-        return Icons.remove_circle_outline;
-      case -1:
-        return Icons.cancel;
-      case 1:
-        return Icons.check_circle;
-      case 2:
-        return Icons.help_outline;
-      default:
-        return Icons.remove_circle_outline;
-    }
-  }
-
-  Color _getColor(int status) {
-    switch (status) {
-      case 0:
-        return Colors.grey;
-      case -1:
-        return Colors.red;
-      case 1:
-        return Colors.green;
-      case 2:
-        return const Color.fromRGBO(235, 197, 9, 1);
-      default:
-        return Colors.grey;
-    }
   }
 
   Color _accentColor() {

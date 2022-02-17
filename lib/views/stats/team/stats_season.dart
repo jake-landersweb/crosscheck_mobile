@@ -13,12 +13,12 @@ class StatsSeason extends StatefulWidget {
     required this.team,
     required this.teamUser,
     required this.season,
-    required this.seasonUser,
+    this.seasonUser,
   }) : super(key: key);
   final Team team;
   final SeasonUserTeamFields teamUser;
   final Season season;
-  final SeasonUser seasonUser;
+  final SeasonUser? seasonUser;
 
   @override
   _StatsSeasonState createState() => _StatsSeasonState();
@@ -47,7 +47,7 @@ class _StatsSeasonState extends State<StatsSeason> {
       color: dmodel.color,
       leading: const [MenuButton()],
       trailing: [
-        if (widget.seasonUser.isSeasonAdmin() && !smodel.isLoading)
+        if ((widget.seasonUser?.isSeasonAdmin() ?? false) && !smodel.isLoading)
           _editButton(context, dmodel, smodel),
       ],
       onRefresh: () => smodel.userStatsGet(

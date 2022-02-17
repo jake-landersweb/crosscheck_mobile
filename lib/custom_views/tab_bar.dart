@@ -35,8 +35,8 @@ class _TabBarState extends State<TabBar> {
           width: double.infinity,
           borderRadius: BorderRadius.circular(0),
           backgroundColor: ViewColors.backgroundColor(context),
-          opacity: 0.9,
-          blur: 15,
+          opacity: 0.8,
+          blur: 12,
           height: MediaQuery.of(context).viewPadding.bottom + 40,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

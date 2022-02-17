@@ -9,10 +9,11 @@ class SeasonUserSeasonFields {
   late bool isManager;
   late bool isPlaying;
   late bool isSub;
-  late String nickname;
   late List<CustomField> customFields;
   late String pos;
   late bool allowChatNotifications;
+  late String jerseySize;
+  late String jerseyNumber;
 
   SeasonUserSeasonFields({
     this.seasonUserNote,
@@ -22,10 +23,11 @@ class SeasonUserSeasonFields {
     required this.isManager,
     required this.isPlaying,
     required this.isSub,
-    required this.nickname,
     required this.customFields,
     required this.pos,
     required this.allowChatNotifications,
+    required this.jerseySize,
+    required this.jerseyNumber,
   });
 
   SeasonUserSeasonFields.empty() {
@@ -36,10 +38,11 @@ class SeasonUserSeasonFields {
     isManager = false;
     isPlaying = true;
     isSub = false;
-    nickname = "";
     customFields = [];
     pos = "";
     allowChatNotifications = false;
+    jerseySize = "";
+    jerseyNumber = "";
   }
 
   SeasonUserSeasonFields.of(SeasonUserSeasonFields user) {
@@ -50,10 +53,11 @@ class SeasonUserSeasonFields {
     isManager = user.isManager;
     isPlaying = user.isPlaying;
     isSub = user.isSub;
-    nickname = user.nickname;
-    customFields = List.of(user.customFields);
+    customFields = [for (var i in user.customFields) i.clone()];
     pos = user.pos;
     allowChatNotifications = user.allowChatNotifications;
+    jerseySize = user.jerseySize;
+    jerseyNumber = user.jerseyNumber;
   }
 
   SeasonUserSeasonFields.fromJson(Map<String, dynamic> json) {
@@ -64,7 +68,6 @@ class SeasonUserSeasonFields {
     isManager = json['isManager'] ?? false;
     isPlaying = json['isPlaying'] ?? true;
     isSub = json['isSub'] ?? false;
-    nickname = json['nickname'] ?? "";
     customFields = [];
     if (json['customFields'] != null) {
       for (var i in json['customFields']) {
@@ -73,6 +76,8 @@ class SeasonUserSeasonFields {
     }
     pos = json['pos'] ?? "";
     allowChatNotifications = json['allowChatNotifications'] ?? false;
+    jerseySize = json['jerseySize'] ?? "";
+    jerseyNumber = json['jerseyNumber'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -84,29 +89,11 @@ class SeasonUserSeasonFields {
     data['isManager'] = isManager;
     data['isPlaying'] = isPlaying;
     data['isSub'] = isSub;
-    data['nickname'] = nickname;
-    data['customFields'] = customFields.map((e) => e.toJson());
+    data['customFields'] = customFields.map((e) => e.toJson()).toList();
     data['pos'] = pos;
     data['allowChatNotifications'] = allowChatNotifications;
-    return data;
-  }
-}
-
-class Jersey {
-  String? size;
-  int? number;
-
-  Jersey({this.size, this.number});
-
-  Jersey.fromJson(Map<String, dynamic> json) {
-    size = json['size'];
-    // number = json['number']?.round();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['size'] = size;
-    data['number'] = number;
+    data["jerseySize"] = jerseySize;
+    data["jerseyNumber"] = jerseyNumber;
     return data;
   }
 }

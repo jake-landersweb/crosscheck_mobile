@@ -85,11 +85,6 @@ class _SeasonAdminState extends State<SeasonAdmin> {
                   label: "Website",
                   value: widget.season.website,
                 ),
-              cv.LabeledCell(
-                height: cellHeight,
-                label: "Show Nicknames",
-                value: widget.season.showNicknames ? "True" : "False",
-              ),
             ],
           )
         ],

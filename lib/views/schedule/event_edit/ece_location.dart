@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pnflutter/extras/root.dart';
+import 'package:pnflutter/views/root.dart';
 import 'root.dart';
 import '../../../client/root.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,8 @@ class _ECELocationState extends State<ECELocation> {
       children: [
         _location(context, dmodel, ecemodel),
         _color(context, dmodel, ecemodel),
+        // if (ecemodel.isCreate) _subs(context, dmodel, ecemodel),
+        const SizedBox(height: 100),
       ],
     );
   }
@@ -66,13 +69,20 @@ class _ECELocationState extends State<ECELocation> {
     );
   }
 
-  List<String> _avaliableColors = [
+  final List<String> _avaliableColors = [
     "f97180",
-    "f3ab8d",
-    "f9d26e",
-    "5ee498",
-    "6caff2",
-    "dbb3f2"
+    "9cadce",
+    "bbccc2",
+    "ffd466",
+    "d4afb9",
+    "6facc8",
+    "95b594",
+    "f0bea6",
+    "cb99a7",
+    "7bc5d6",
+    "989ba8",
+    "dbb3f2",
+    // "89c17f",
   ];
 
   Widget _color(BuildContext context, DataModel dmodel, ECEModel ecemodel) {
@@ -85,7 +95,7 @@ class _ECELocationState extends State<ECELocation> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                for (var i in _avaliableColors.sublist(0, 3))
+                for (var i in _avaliableColors.sublist(0, 4))
                   _colorCell(context, dmodel, ecemodel, i)
               ],
             ),
@@ -93,7 +103,15 @@ class _ECELocationState extends State<ECELocation> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                for (var i in _avaliableColors.sublist(3, 6))
+                for (var i in _avaliableColors.sublist(4, 8))
+                  _colorCell(context, dmodel, ecemodel, i)
+              ],
+            ),
+            const SizedBox(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                for (var i in _avaliableColors.sublist(8, 12))
                   _colorCell(context, dmodel, ecemodel, i)
               ],
             ),

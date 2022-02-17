@@ -1,31 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:pnflutter/client/root.dart';
+import 'package:pnflutter/data/root.dart';
+import 'package:pnflutter/views/root.dart';
 import 'package:provider/provider.dart';
-import '../../extras/root.dart';
-
-import '../../client/root.dart';
-import '../../data/root.dart';
+import 'package:pnflutter/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
-import '../menu/root.dart';
-import 'root.dart';
-import '../shared/root.dart';
 
 class SeasonRoster extends StatefulWidget {
-  const SeasonRoster({
-    Key? key,
-    required this.team,
-    required this.season,
-    required this.seasonUsers,
-    this.currentSeasonUser,
-    required this.teamUser,
-    required this.isOnTeam,
-  }) : super(key: key);
-  final Team team;
-  final Season season;
-  final List<SeasonUser>? seasonUsers;
-  final SeasonUser? currentSeasonUser;
-  final SeasonUserTeamFields teamUser;
-  final bool isOnTeam;
+  const SeasonRoster({Key? key}) : super(key: key);
 
   @override
   _SeasonRosterState createState() => _SeasonRosterState();
@@ -33,192 +16,173 @@ class SeasonRoster extends StatefulWidget {
 
 class _SeasonRosterState extends State<SeasonRoster> {
   @override
-  void initState() {
-    super.initState();
-    _checkRoster(context.read<DataModel>());
-  }
-
-  @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
       title: "Roster",
       isLarge: true,
+      refreshable: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      refreshable: true,
       color: dmodel.color,
+      trailing: [_createUser(context, dmodel)],
       leading: const [MenuButton()],
-      trailing: [
-        if (widget.currentSeasonUser?.isSeasonAdmin() ??
-            false || widget.teamUser.isTeamAdmin())
-          cv.BasicButton(
-            onTap: () {
-              showMaterialModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return SeasonUserEdit(
-                    team: widget.team,
-                    user: SeasonUser.empty(),
-                    currentSeasonUser: widget.currentSeasonUser,
-                    teamUser: widget.teamUser,
-                    teamId: widget.team.teamId,
-                    season: widget.season,
-                    completion: () {},
-                    isAdd: true,
-                  );
-                },
+      children: [
+        // season selector
+        if (dmodel.seasonUsers != null)
+          RosterList(
+            users: dmodel.seasonUsers!,
+            team: dmodel.tus!.team,
+            type: RosterListType.navigator,
+            onNavigate: (user) {
+              cv.Navigate(
+                context,
+                RosterUserDetail(
+                  team: dmodel.tus!.team,
+                  season: dmodel.currentSeason!,
+                  seasonUser: user,
+                  teamUser: dmodel.tus!.user,
+                  appSeasonUser: dmodel.currentSeasonUser,
+                  onUserEdit: (body) async {
+                    await dmodel.seasonUserUpdate(
+                      dmodel.tus!.team.teamId,
+                      dmodel.currentSeason!.seasonId,
+                      user.email,
+                      body,
+                      (seasonUser) async {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        // get latest season roster data
+                        setState(() {
+                          dmodel.seasonUsers = null;
+                        });
+                        await dmodel.getSeasonRoster(
+                          dmodel.tus!.team.teamId,
+                          dmodel.currentSeason!.seasonId,
+                          (p0) => dmodel.setSeasonUsers(p0),
+                        );
+                      },
+                    );
+                  },
+                ),
               );
             },
-            child: Icon(Icons.add, color: dmodel.color),
-          ),
-      ],
-      onRefresh: () => _refreshAction(dmodel),
-      children: [
-        _body(context, dmodel),
+          )
+        else
+          const RosterLoading(),
       ],
     );
   }
 
-  Widget _body(BuildContext context, DataModel dmodel) {
-    if (widget.seasonUsers == null) {
-      // show loading
-      return cv.NativeList(
-        children: [
-          for (int i = 0; i < 15; i++) const UserCellLoading(),
-        ],
-      );
-    } else {
-      if (widget.seasonUsers!.isEmpty) {
-        return const Padding(
-          padding: EdgeInsets.only(top: 20),
-          child: Text(
-            "There are no users a part of this season",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
-          ),
+  Widget _createUser(BuildContext context, DataModel dmodel) {
+    if (dmodel.currentSeason != null) {
+      if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
+          dmodel.tus!.user.isTeamAdmin()) {
+        return cv.BasicButton(
+          onTap: () {
+            showMaterialModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return SeasonUserAdd(
+                  team: dmodel.tus!.team,
+                  teamUser: dmodel.tus!.user,
+                  season: dmodel.currentSeason!,
+                  seasonUser: dmodel.currentSeasonUser!,
+                );
+              },
+            );
+          },
+          child: Icon(Icons.add, color: dmodel.color),
         );
       } else {
-        Iterable<SeasonUser> active = widget.seasonUsers!
-            .where((element) => element.seasonFields!.seasonUserStatus == 1);
-        Iterable<SeasonUser> subs =
-            widget.seasonUsers!.where((element) => element.seasonFields!.isSub);
-        Iterable<SeasonUser> recruits = widget.seasonUsers!.where((element) =>
-            element.seasonFields!.seasonUserStatus == 3 &&
-            !element.seasonFields!.isSub);
-        Iterable<SeasonUser> invited = widget.seasonUsers!.where((element) =>
-            element.seasonFields!.seasonUserStatus == 4 &&
-            !element.seasonFields!.isSub);
-        Iterable<SeasonUser> inactive = widget.seasonUsers!.where((element) =>
-            element.seasonFields!.seasonUserStatus == -1 &&
-            !element.seasonFields!.isSub);
-        Iterable<SeasonUser> unknown = widget.seasonUsers!
-            .where((element) => element.seasonFields!.seasonUserStatus == null);
-        return Column(children: [
-          if (active.isNotEmpty)
-            cv.Section(
-              "Active",
-              child: cv.NativeList(
-                children: [
-                  for (SeasonUser i in active) _rosterCell(context, i, dmodel),
-                ],
-              ),
-            ),
-          if (subs.isNotEmpty)
-            cv.Section(
-              "Subs",
-              child: cv.NativeList(
-                children: [
-                  for (SeasonUser i in subs) _rosterCell(context, i, dmodel),
-                ],
-              ),
-            ),
-          if (recruits.isNotEmpty)
-            cv.Section(
-              "Recruits",
-              child: cv.NativeList(
-                children: [
-                  for (SeasonUser i in recruits)
-                    _rosterCell(context, i, dmodel),
-                ],
-              ),
-            ),
-          if (invited.isNotEmpty)
-            cv.Section(
-              "Invited",
-              child: cv.NativeList(
-                children: [
-                  for (SeasonUser i in invited) _rosterCell(context, i, dmodel),
-                ],
-              ),
-            ),
-          if (inactive.isNotEmpty)
-            cv.Section(
-              "Inactive",
-              child: cv.NativeList(
-                children: [
-                  for (SeasonUser i in inactive)
-                    _rosterCell(context, i, dmodel),
-                ],
-              ),
-            ),
-          if (unknown.isNotEmpty)
-            cv.Section(
-              "Unknown",
-              child: cv.NativeList(
-                children: [
-                  for (SeasonUser i in unknown) _rosterCell(context, i, dmodel),
-                ],
-              ),
-            ),
-          const SizedBox(height: 48),
-        ]);
+        return Container();
       }
+    } else {
+      return Container();
     }
   }
+}
 
-  Widget _rosterCell(BuildContext context, SeasonUser user, DataModel dmodel) {
-    return cv.BasicButton(
-      onTap: () {
-        cv.Navigate(
-          context,
-          SeasonUserDetail(
-            season: widget.season,
-            user: user,
-            team: dmodel.tus!.team,
-            currentSeasonUser: widget.currentSeasonUser,
-            teamUser: widget.teamUser,
+class SeasonUserAdd extends StatefulWidget {
+  const SeasonUserAdd({
+    Key? key,
+    required this.team,
+    required this.teamUser,
+    required this.season,
+    required this.seasonUser,
+  }) : super(key: key);
+  final Team team;
+  final SeasonUserTeamFields teamUser;
+  final Season season;
+  final SeasonUser seasonUser;
+
+  @override
+  _SeasonUserAddState createState() => _SeasonUserAddState();
+}
+
+class _SeasonUserAddState extends State<SeasonUserAdd> {
+  @override
+  Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
+    return cv.AppBar(
+      title: "Add User",
+      isLarge: true,
+      refreshable: false,
+      backgroundColor: CustomColors.backgroundColor(context),
+      color: dmodel.color,
+      leading: [
+        cv.BackButton(
+          color: dmodel.color,
+          showIcon: false,
+          showText: true,
+          title: "Cancel",
+        ),
+      ],
+      children: [
+        cv.Section(
+          "Existing Users",
+          child: cv.RoundedLabel(
+            "Team Roster List (not implemented)",
+            color: CustomColors.cellColor(context),
+            textColor: CustomColors.textColor(context),
+            isNavigator: true,
           ),
-        );
-      },
-      child: UserCell(
-        user: user,
-        isClickable: true,
-        season: widget.season,
-      ),
+        ),
+        const SizedBox(height: 16),
+        cv.Section(
+          "New User",
+          child: cv.RoundedLabel(
+            "Create User",
+            color: CustomColors.cellColor(context),
+            textColor: CustomColors.textColor(context),
+            isNavigator: true,
+            onTap: () => cv.Navigate(
+              context,
+              _newUser(context, dmodel),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  void _checkRoster(DataModel dmodel) async {
-    if (widget.seasonUsers == null) {
-      await dmodel.getSeasonRoster(
-          dmodel.tus!.team.teamId, widget.season.seasonId, (users) {
-        if (widget.isOnTeam) {
-          dmodel.setSeasonUsers(users);
-        }
-      });
-    } else {
-      print('already have roster');
-    }
-  }
-
-  Future<void> _refreshAction(DataModel dmodel) async {
-    await dmodel.getSeasonRoster(
-        dmodel.tus!.team.teamId, widget.season.seasonId, (users) {
-      if (widget.isOnTeam) {
-        dmodel.setSeasonUsers(users);
-      }
-    });
+  Widget _newUser(BuildContext context, DataModel dmodel) {
+    return RUCERoot(
+      team: widget.team,
+      season: widget.season,
+      isCreate: true,
+      hasBackButton: true,
+      onFunction: (body) async {
+        // create the season user
+        await dmodel.seasonUserAdd(
+            widget.team.teamId, widget.season.seasonId, body, (seasonUser) {
+          // add the user to this list
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+          setState(() {
+            dmodel.seasonUsers!.add(seasonUser);
+          });
+        });
+      },
+    );
   }
 }

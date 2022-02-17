@@ -203,17 +203,18 @@ class _TeamAdminState extends State<TeamAdmin> {
       onTap: () {
         cv.Navigate(
           context,
-          FullTeamRoster(
-            team: widget.team,
-            teamUser: dmodel.tus!.user,
-            childBuilder: (user) {
-              return UserCell(
-                user: user,
-                isClickable: true,
-                season: Season.empty(),
-              );
-            },
-          ),
+          Container(),
+          // FullTeamRoster(
+          //   team: widget.team,
+          //   teamUser: dmodel.tus!.user,
+          //   childBuilder: (user) {
+          //     return UserCell(
+          //       user: user,
+          //       isClickable: true,
+          //       season: Season.empty(),
+          //     );
+          //   },
+          // ),
         );
       },
     );

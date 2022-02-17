@@ -44,6 +44,11 @@ class SeasonUser extends Equatable {
     }
   }
 
+  SeasonUser.fromTeamUser(String email, SeasonUserTeamFields teamUser) {
+    email = email;
+    teamFields = SeasonUserTeamFields.of(teamUser);
+  }
+
   // json to object
   SeasonUser.fromJson(dynamic json) {
     email = json['email'];
@@ -96,8 +101,8 @@ class SeasonUser extends Equatable {
   // for team user name
   String name(bool showNicknames) {
     if (showNicknames) {
-      if (!(seasonFields?.nickname).isEmpty()) {
-        return seasonFields!.nickname;
+      if (false) {
+        return "";
       } else {
         if (userFields == null) {
           return email;

@@ -54,46 +54,47 @@ class _SCEUsersState extends State<SCEUsers> {
         onTap: () {
           cv.Navigate(
             context,
-            FullTeamRoster(
-              team: widget.team,
-              allowSelect: true,
-              teamUser: dmodel.tus!.user,
-              onSelection: (user) {
-                if (scemodel.teamUsers
-                    .any((element) => element.email == user.email)) {
-                  setState(() {
-                    scemodel.teamUsers
-                        .removeWhere((element) => element.email == user.email);
-                  });
-                } else {
-                  setState(() {
-                    scemodel.teamUsers.add(user);
-                  });
-                }
-              },
-              childBuilder: (user) {
-                return Stack(
-                  alignment: AlignmentDirectional.centerEnd,
-                  children: [
-                    UserCell(
-                      user: user,
-                      isClickable: false,
-                      season: Season.empty(),
-                    ),
-                    Icon(
-                      scemodel.teamUsers
-                              .any((element) => element.email == user.email)
-                          ? Icons.radio_button_checked
-                          : Icons.circle,
-                      color: scemodel.teamUsers
-                              .any((element) => element.email == user.email)
-                          ? dmodel.color
-                          : null,
-                    ),
-                  ],
-                );
-              },
-            ),
+            Container(),
+            // FullTeamRoster(
+            //   team: widget.team,
+            //   allowSelect: true,
+            //   teamUser: dmodel.tus!.user,
+            //   onSelection: (user) {
+            //     if (scemodel.teamUsers
+            //         .any((element) => element.email == user.email)) {
+            //       setState(() {
+            //         scemodel.teamUsers
+            //             .removeWhere((element) => element.email == user.email);
+            //       });
+            //     } else {
+            //       setState(() {
+            //         scemodel.teamUsers.add(user);
+            //       });
+            //     }
+            //   },
+            //   childBuilder: (user) {
+            //     return Stack(
+            //       alignment: AlignmentDirectional.centerEnd,
+            //       children: [
+            //         UserCell(
+            //           user: user,
+            //           isClickable: false,
+            //           season: Season.empty(),
+            //         ),
+            //         Icon(
+            //           scemodel.teamUsers
+            //                   .any((element) => element.email == user.email)
+            //               ? Icons.radio_button_checked
+            //               : Icons.circle,
+            //           color: scemodel.teamUsers
+            //                   .any((element) => element.email == user.email)
+            //               ? dmodel.color
+            //               : null,
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // ),
           );
         },
       ),
@@ -125,11 +126,11 @@ class _SCEUsersState extends State<SCEUsers> {
                         child: Stack(
                           alignment: AlignmentDirectional.centerEnd,
                           children: [
-                            UserCell(
-                              user: item,
-                              isClickable: false,
-                              season: Season.empty(),
-                            ),
+                            // UserCell(
+                            //   user: item,
+                            //   isClickable: false,
+                            //   season: Season.empty(),
+                            // ),
                             Icon(Icons.radio_button_checked,
                                 color: dmodel.color),
                           ],

@@ -11,7 +11,6 @@ class SCEModel extends ChangeNotifier {
 
   String website = "";
   String seasonNote = "";
-  bool showNicknames = false;
 
   TeamPositions positions = TeamPositions.empty();
 
@@ -47,7 +46,6 @@ class SCEModel extends ChangeNotifier {
     title = season.title;
     website = season.website;
     seasonNote = season.seasonNote;
-    showNicknames = season.showNicknames;
     positions = TeamPositions.of(season.positions);
     customFields = [for (var i in season.customFields) i.clone()];
     customUserFields = [for (var i in season.customUserFields) i.clone()];

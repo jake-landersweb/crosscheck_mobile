@@ -23,6 +23,8 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   String? _deviceId;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -76,17 +78,18 @@ class _SettingsState extends State<Settings> {
         onTap: () {
           cv.Navigate(
             context,
-            SeasonUserDetail(
-              team: dmodel.tus!.team,
-              user: SeasonUser(
-                email: dmodel.user!.email,
-                userFields: SeasonUserUserFields(
-                  firstName: dmodel.user!.firstName,
-                  lastName: dmodel.user!.lastName,
-                ),
-              ),
-              teamUser: dmodel.tus!.user,
-            ),
+            // SeasonUserDetail(
+            //   team: dmodel.tus!.team,
+            //   user: SeasonUser(
+            //     email: dmodel.user!.email,
+            //     userFields: SeasonUserUserFields(
+            //       firstName: dmodel.user!.firstName,
+            //       lastName: dmodel.user!.lastName,
+            //     ),
+            //   ),
+            //   teamUser: dmodel.tus!.user,
+            // ),
+            Container(),
           );
         },
       ),
@@ -102,21 +105,30 @@ class _SettingsState extends State<Settings> {
         if (dmodel.user != null)
           SizedBox(
             height: 25,
-            child: FlutterSwitch(
-              value: dmodel.user!.emailNotifications!,
-              height: 25,
-              width: 50,
-              toggleSize: 18,
-              activeColor: Theme.of(context).colorScheme.primary,
-              onToggle: (value) {
-                dmodel.updateUser(
-                    dmodel.user!.email, {"emailNotifications": value}, () {
-                  setState(() {
-                    dmodel.user!.emailNotifications = value;
-                  });
-                });
-              },
-            ),
+            child: _isLoading
+                ? const cv.LoadingIndicator()
+                : FlutterSwitch(
+                    value: dmodel.user!.emailNotifications!,
+                    height: 25,
+                    width: 50,
+                    toggleSize: 18,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    onToggle: (value) async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      await dmodel.updateUser(
+                          dmodel.user!.email, {"emailNotifications": value},
+                          () {
+                        setState(() {
+                          dmodel.user!.emailNotifications = value;
+                        });
+                      });
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    },
+                  ),
           ),
       ],
     );
@@ -130,36 +142,41 @@ class _SettingsState extends State<Settings> {
         const Spacer(),
         SizedBox(
           height: 25,
-          child: FlutterSwitch(
-            value: dmodel.user!.mobileNotifications.any((element) =>
-                element.deviceId == _deviceId && element.allow == true),
-            height: 25,
-            width: 50,
-            toggleSize: 18,
-            activeColor: Theme.of(context).colorScheme.primary,
-            onToggle: (value) {
-              if (value) {
-                _registerNotification(dmodel);
-              } else {
-                // user has turned off notifications, no need to do any permissions set up
-                dmodel.updateUser(
-                    dmodel.user!.email, {"mobileAppNotifications": value}, () {
-                  Map<String, dynamic> body = {
-                    "allow": false,
-                    "deviceId": _deviceId ?? "",
-                    "token": null,
-                  };
-                  dmodel.updateUserNotifications(dmodel.user!.email, body,
-                      (user) {
-                    setState(() {
-                      dmodel.user!.mobileNotifications =
-                          user.mobileNotifications;
-                    });
-                  });
-                });
-              }
-            },
-          ),
+          child: _isLoading
+              ? const cv.LoadingIndicator()
+              : FlutterSwitch(
+                  value: dmodel.user!.mobileNotifications.any((element) =>
+                      element.deviceId == _deviceId && element.allow == true),
+                  height: 25,
+                  width: 50,
+                  toggleSize: 18,
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  onToggle: (value) async {
+                    if (value) {
+                      _registerNotification(dmodel);
+                    } else {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      // user has turned off notifications, no need to do any permissions set up
+                      Map<String, dynamic> body = {
+                        "allow": false,
+                        "deviceId": _deviceId ?? "",
+                        "token": null,
+                      };
+                      await dmodel.updateUserNotifications(
+                          dmodel.user!.email, body, (user) {
+                        setState(() {
+                          dmodel.user!.mobileNotifications =
+                              user.mobileNotifications;
+                        });
+                      });
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    }
+                  },
+                ),
         ),
       ],
     );
@@ -194,7 +211,7 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  void _registerNotification(DataModel dmodel) async {
+  Future<void> _registerNotification(DataModel dmodel) async {
     late final FirebaseMessaging _messaging;
     // 1. Initialize the Firebase app
     await Firebase.initializeApp();
@@ -211,14 +228,20 @@ class _SettingsState extends State<Settings> {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      setState(() {
+        _isLoading = true;
+      });
       print('User granted permission');
-      _messaging.getToken().then((token) {
+      _messaging.getToken().then((token) async {
         Map<String, dynamic> body = {
           "allow": true,
           "deviceId": _deviceId ?? "",
           "token": token,
         };
-        dmodel.updateUserNotifications(dmodel.user!.email, body, (user) {
+        await dmodel.updateUserNotifications(dmodel.user!.email, body, (user) {
+          setState(() {
+            _isLoading = false;
+          });
           setState(() {
             dmodel.user!.mobileNotifications = user.mobileNotifications;
           });
@@ -228,6 +251,10 @@ class _SettingsState extends State<Settings> {
       print('User declined or has not accepted permission');
       dmodel.setSuccess("Blocked notifications successfully", true);
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<String?> _getId() async {

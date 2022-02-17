@@ -110,22 +110,6 @@ class _SCEBasicState extends State<SCEBasic> {
                 validator: (value) {},
               ),
             ),
-            cv.LabeledWidget(
-              "Show Nicknames",
-              height: cellHeight,
-              child: FlutterSwitch(
-                value: scemodel.showNicknames,
-                height: 25,
-                width: 50,
-                toggleSize: 18,
-                activeColor: dmodel.color,
-                onToggle: (value) {
-                  setState(() {
-                    scemodel.showNicknames = value;
-                  });
-                },
-              ),
-            ),
           ],
         ),
       ),

@@ -17,6 +17,7 @@ class ECERoot extends StatefulWidget {
     required this.season,
     required this.teamUser,
     required this.user,
+    this.eventUsers,
     this.seasonUser,
     this.event,
   }) : super(key: key);
@@ -24,6 +25,7 @@ class ECERoot extends StatefulWidget {
   final Team team;
   final Season season;
   final Event? event;
+  final List<SeasonUser>? eventUsers;
   final User user;
   final SeasonUserTeamFields teamUser;
   final SeasonUser? seasonUser;
@@ -54,8 +56,9 @@ class _ECERootState extends State<ECERoot> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return ChangeNotifierProvider<ECEModel>(
       create: (_) => widget.isCreate
-          ? ECEModel.create(widget.season)
-          : ECEModel.update(widget.team, widget.season, widget.event!),
+          ? ECEModel.create(widget.team, widget.season, dmodel.seasonUsers!)
+          : ECEModel.update(widget.team, widget.season, widget.event!,
+              dmodel.seasonUsers!, widget.eventUsers!),
       // we use `builder` to obtain a new `BuildContext` that has access to the provider
       builder: (context, child) {
         // No longer throws
@@ -104,6 +107,7 @@ class _ECERootState extends State<ECERoot> {
             children: const [
               ECEBasic(),
               ECECustom(),
+              ECEUsers(),
               ECELocation(),
             ],
             onPageChanged: (page) {
@@ -238,12 +242,16 @@ class _ECERootState extends State<ECERoot> {
     body['awayTeam'] = awayTeam.toJson();
     body['teamId'] = widget.team.teamId;
     body['seasonId'] = widget.season.seasonId;
+    body['addUsers'] = ecemodel.addUsers.map((e) => e.email).toList();
 
     print(body);
+    // return;
 
     if (ecemodel.isCreate) {
       body['customUserFields'] =
           ecemodel.event.customUserFields.map((e) => e.toJson()).toList();
+
+      print(body);
 
       // send the create request
       await dmodel.createEvent(widget.team.teamId, widget.season.seasonId, body,
@@ -271,6 +279,8 @@ class _ECERootState extends State<ECERoot> {
       } else {
         addUserFields();
       }
+
+      print(body);
 
       // send the update request
       await dmodel.updateEvent(widget.team.teamId, widget.season.seasonId,

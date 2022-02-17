@@ -77,6 +77,7 @@ extension SeasonCalls on DataModel {
       if (response == null) {
         setError("There was an issue adding the user", true);
       } else if (response['status'] == 200) {
+        print(response);
         setSuccess("Successfully added user", true);
         completion(SeasonUser.fromJson(response['body']));
       } else {

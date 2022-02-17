@@ -29,6 +29,7 @@ class _ScheduleState extends State<Schedule> {
       title: "",
       isLarge: false,
       refreshable: true,
+      childPadding: const EdgeInsets.fromLTRB(15, 0, 15, 48),
       backgroundColor: CustomColors.backgroundColor(context),
       color: dmodel.color,
       leading: const [MenuButton()],
@@ -37,7 +38,7 @@ class _ScheduleState extends State<Schedule> {
         if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
             false ||
                 (dmodel.tus?.user.isTeamAdmin() ?? false) &&
-                    dmodel.currentSeason != null)
+                    dmodel.seasonUsers != null)
           cv.BasicButton(
             onTap: () {
               showMaterialModalBottomSheet(

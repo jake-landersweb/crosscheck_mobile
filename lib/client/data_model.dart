@@ -81,8 +81,7 @@ class DataModel extends ChangeNotifier {
   bool showSplash = true;
   late SharedPreferences prefs;
 
-  Color color = CustomColors.fromHex("00a1ff");
-  Color accentColor = CustomColors.fromHex("00a1ff");
+  Color color = CustomColors.fromHex("7bc5d6");
 
   bool hasMoreUpcomingEvents = true;
   bool hasMorePreviousEvents = false;

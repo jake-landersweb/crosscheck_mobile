@@ -13,13 +13,15 @@ class ECEModel extends ChangeNotifier {
   DateTime eventDate = DateTime.now();
   String opponentName = "";
   bool isHome = true;
-  List<String> subEmails = [];
   Team? team;
   Season season;
 
-  List<CustomField> oldCustomUserFields = [];
+  List<SeasonUser> users;
 
-  ECEModel.create(this.season) {
+  List<CustomField> oldCustomUserFields = [];
+  List<SeasonUser> addUsers = [];
+
+  ECEModel.create(this.team, this.season, this.users) {
     isCreate = true;
     this.event.customFields = [
       for (var i in season.eventCustomFieldsTemplate) i.clone()
@@ -27,11 +29,19 @@ class ECEModel extends ChangeNotifier {
     this.event.customUserFields = [
       for (var i in season.eventCustomUserFieldsTemplate) i.clone()
     ];
+    // add all users to add list that are not subs
+    for (var i in users) {
+      if (!i.seasonFields!.isSub) {
+        addUsers.add(i);
+      }
+    }
   }
 
-  ECEModel.update(this.team, this.season, Event event) {
+  ECEModel.update(this.team, this.season, Event event, this.users,
+      List<SeasonUser> eventUsers) {
     isCreate = false;
     setSeasonData(team!, season, event);
+    addUsers = List.of(eventUsers);
   }
 
   void setSeasonData(Team team, Season season, Event event) {
@@ -46,7 +56,7 @@ class ECEModel extends ChangeNotifier {
   Widget status(
       BuildContext context, DataModel dmodel, PageController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -82,7 +92,19 @@ class ECEModel extends ChangeNotifier {
               );
               notifyListeners();
             },
-            child: _cell(context, dmodel, "Extra", 2, Icons.map),
+            child: _cell(context, dmodel, "Users", 2, Icons.person),
+          ),
+          _spacer(context, dmodel),
+          cv.BasicButton(
+            onTap: () {
+              controller.animateToPage(
+                3,
+                duration: const Duration(milliseconds: 700),
+                curve: Sprung.overDamped,
+              );
+              notifyListeners();
+            },
+            child: _cell(context, dmodel, "Extra", 3, Icons.map),
           ),
         ],
       ),
@@ -156,7 +178,7 @@ class ECEModel extends ChangeNotifier {
   void addCustomField() {}
 
   bool isAtEnd() {
-    if (index > 1) {
+    if (index > 2) {
       return true;
     } else {
       return false;

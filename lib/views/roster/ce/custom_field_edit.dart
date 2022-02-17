@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../data/root.dart';
-import '../../custom_views/root.dart' as cv;
-import '../../extras/root.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:pnflutter/data/root.dart';
+import 'package:pnflutter/extras/root.dart';
+import '../../../custom_views/root.dart' as cv;
 
-class CustomFieldCell extends StatefulWidget {
-  const CustomFieldCell({
+class CustomFieldEdit extends StatefulWidget {
+  const CustomFieldEdit({
     Key? key,
     required this.field,
     this.color = Colors.blue,
@@ -14,10 +14,10 @@ class CustomFieldCell extends StatefulWidget {
   final Color color;
 
   @override
-  _CustomFieldCellState createState() => _CustomFieldCellState();
+  _CustomFieldEditState createState() => _CustomFieldEditState();
 }
 
-class _CustomFieldCellState extends State<CustomFieldCell> {
+class _CustomFieldEditState extends State<CustomFieldEdit> {
   @override
   Widget build(BuildContext context) {
     switch (widget.field.getType()) {
@@ -41,7 +41,7 @@ class _CustomFieldCellState extends State<CustomFieldCell> {
           widget.field.setValue(value);
         });
       },
-      validator: (value) {},
+      validator: (value) => null,
       isLabeled: true,
       fieldPadding: EdgeInsets.zero,
     );

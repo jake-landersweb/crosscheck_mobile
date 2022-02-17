@@ -268,14 +268,7 @@ class _MenuHostState extends State<MenuHost> {
         if (dmodel.currentSeason == null) {
           return Container();
         } else {
-          return SeasonRoster(
-            team: dmodel.tus!.team,
-            season: dmodel.currentSeason!,
-            seasonUsers: dmodel.seasonUsers,
-            teamUser: dmodel.tus!.user,
-            currentSeasonUser: dmodel.currentSeasonUser,
-            isOnTeam: true,
-          );
+          return Container();
         }
       case Pages.team:
         return const TeamHome();

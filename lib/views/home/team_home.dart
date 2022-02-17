@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pnflutter/client/root.dart';
 import 'package:pnflutter/data/root.dart';
 import 'package:pnflutter/views/chat/season_chat.dart';
+import 'package:pnflutter/views/roster/team_roster.dart';
 import 'package:pnflutter/views/stats/team/root.dart';
 import 'package:provider/provider.dart';
 import '../root.dart';
@@ -57,17 +58,7 @@ class _TeamHomeState extends State<TeamHome> {
         }
       case 1:
         if (dmodel.tus != null) {
-          return FullTeamRoster(
-            team: dmodel.tus!.team,
-            teamUser: dmodel.tus!.user,
-            childBuilder: (user) {
-              return UserCell(
-                user: user,
-                isClickable: true,
-                season: Season.empty(),
-              );
-            },
-          );
+          return TeamRoster(team: dmodel.tus!.team, teamUser: dmodel.tus!.user);
         } else {
           return Container();
         }
