@@ -95,6 +95,7 @@ extension TeamCalls on DataModel {
       if (response == null) {
         setError("There was an issue updating the team", true);
       } else if (response['status'] == 200) {
+        print(response);
         setSuccess("Successfully updated your team", true);
         completion();
       } else {

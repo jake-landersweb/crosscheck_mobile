@@ -16,6 +16,7 @@ class Team extends Equatable {
   late List<CustomField> customFields;
   late List<CustomField> customUserFields;
   late bool showNicknames;
+  late TeamStat stats;
 
   Team({
     required this.teamId,
@@ -30,6 +31,7 @@ class Team extends Equatable {
     required this.customFields,
     required this.customUserFields,
     required this.showNicknames,
+    required this.stats,
   });
 
   // empty object
@@ -47,6 +49,7 @@ class Team extends Equatable {
     customFields = [];
     customUserFields = [];
     showNicknames = false;
+    stats = TeamStat.empty();
   }
 
   // for making copies
@@ -63,6 +66,7 @@ class Team extends Equatable {
     customFields = team.customFields;
     customUserFields = team.customUserFields;
     showNicknames = team.showNicknames;
+    stats = team.stats.clone();
   }
 
   // converting from json
@@ -87,6 +91,11 @@ class Team extends Equatable {
           .forEach((v) => customUserFields.add(CustomField.fromJson(v)));
     }
     showNicknames = json['showNicknames'] ?? false;
+    if (json['stats'] == null) {
+      stats = TeamStat.empty();
+    } else {
+      stats = TeamStat.fromJson(json['stats']);
+    }
   }
 
   // converting to json
@@ -97,6 +106,7 @@ class Team extends Equatable {
       'teamCode': teamCode,
       'teamNote': teamNote,
       'positions': positions.toJson(),
+      "stats": stats.toJson(),
     };
   }
 

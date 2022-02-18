@@ -46,7 +46,7 @@ class _StatsUsersLoadingState extends State<StatsUsersLoading>
         children: [
           // header for all stats
           _header(context),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           // actual stat list
           for (int i = 0; i < 20; i++)
             Column(
@@ -113,39 +113,22 @@ class _StatsUsersLoadingState extends State<StatsUsersLoading>
   }
 
   Widget _header(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              for (var index = 0; index < 3; index++)
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: CustomColors.cellColor(context),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          "",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: CustomColors.textColor(context),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      childAspectRatio: 3,
+      crossAxisCount: 2,
+      children: [
+        for (var i = 0; i < 4; i++)
+          Container(
+            decoration: BoxDecoration(
+              color: CustomColors.cellColor(context),
+              borderRadius: BorderRadius.circular(25),
+            ),
           ),
-        ],
-      ),
+      ],
     );
   }
 }

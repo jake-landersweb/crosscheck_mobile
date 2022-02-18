@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:pnflutter/data/root.dart';
-import 'package:pnflutter/data/season/season_stat.dart';
+import 'package:pnflutter/data/team/team_stat.dart';
 import 'package:flutter/material.dart';
 
 class Season extends Equatable {

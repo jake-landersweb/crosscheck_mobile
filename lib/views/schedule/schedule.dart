@@ -66,9 +66,6 @@ class _ScheduleState extends State<Schedule> {
           )
       ],
       children: [
-        // season selector
-        _seasonSelect(context, dmodel),
-        const SizedBox(height: 16),
         // event list manager
         _body(context, dmodel),
       ],
@@ -117,6 +114,9 @@ class _ScheduleState extends State<Schedule> {
     if (dmodel.upcomingEvents != null) {
       return Column(
         children: [
+          // season selector
+          _seasonSelect(context, dmodel),
+          const SizedBox(height: 16),
           cv.SegmentedPicker(
             titles: const ["Upcoming", "Previous"],
             onSelection: (selection) {
@@ -305,13 +305,13 @@ class _PreviousEventsState extends State<PreviousEvents> {
 }
 
 class EventList extends StatefulWidget {
-  EventList({
+  const EventList({
     Key? key,
     required this.list,
     required this.isPrevious,
   }) : super(key: key);
-  List<Event> list;
-  bool isPrevious;
+  final List<Event> list;
+  final bool isPrevious;
 
   @override
   _EventListState createState() => _EventListState();
@@ -335,7 +335,7 @@ class _EventListState extends State<EventList> {
               children: [
                 Column(
                   children: [
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Text(
@@ -349,7 +349,7 @@ class _EventListState extends State<EventList> {
                         const Divider(),
                       ],
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 16),
                   ],
                 ),
                 Row(

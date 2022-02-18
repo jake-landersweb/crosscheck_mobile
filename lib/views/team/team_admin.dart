@@ -88,8 +88,6 @@ class _TeamAdminState extends State<TeamAdmin> {
           ),
         ),
         const SizedBox(height: 16),
-        _teamRoster(context, dmodel),
-        const SizedBox(height: 16),
         _seasons(context, dmodel),
         if (widget.team.positions.isActive)
           Column(
@@ -112,6 +110,12 @@ class _TeamAdminState extends State<TeamAdmin> {
               _customUserFields(context),
             ],
           ),
+        Column(
+          children: [
+            const SizedBox(height: 16),
+            _stats(context),
+          ],
+        ),
       ],
     );
   }
@@ -194,32 +198,6 @@ class _TeamAdminState extends State<TeamAdmin> {
     );
   }
 
-  Widget _teamRoster(BuildContext context, DataModel dmodel) {
-    return cv.RoundedLabel(
-      "Full Team Roster",
-      color: CustomColors.cellColor(context),
-      textColor: CustomColors.textColor(context).withOpacity(0.7),
-      isNavigator: true,
-      onTap: () {
-        cv.Navigate(
-          context,
-          Container(),
-          // FullTeamRoster(
-          //   team: widget.team,
-          //   teamUser: dmodel.tus!.user,
-          //   childBuilder: (user) {
-          //     return UserCell(
-          //       user: user,
-          //       isClickable: true,
-          //       season: Season.empty(),
-          //     );
-          //   },
-          // ),
-        );
-      },
-    );
-  }
-
   Widget _teamPositions(BuildContext context, DataModel dmodel) {
     return cv.Section(
       "Positions",
@@ -274,6 +252,25 @@ class _TeamAdminState extends State<TeamAdmin> {
               height: cellHeight,
               label: i.title,
               value: "Default: ${i.value}",
+            )
+        ],
+      ),
+    );
+  }
+
+  Widget _stats(BuildContext context) {
+    return cv.Section(
+      "Stats",
+      allowsCollapse: true,
+      initOpen: false,
+      child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+        children: [
+          for (var i in widget.team.stats.stats)
+            cv.LabeledCell(
+              height: cellHeight,
+              label: "Title",
+              value: i.title,
             )
         ],
       ),

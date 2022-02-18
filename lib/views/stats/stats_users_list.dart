@@ -11,21 +11,23 @@ class StatsUsersList extends StatefulWidget {
   const StatsUsersList({
     Key? key,
     required this.statList,
+    required this.available,
   }) : super(key: key);
   final List<UserStat> statList;
+  final List<String> available;
 
   @override
   _StatsUsersListState createState() => _StatsUsersListState();
 }
 
 class _StatsUsersListState extends State<StatsUsersList> {
-  String filterValue = "";
+  String _filterValue = "";
 
   @override
   void initState() {
     if (widget.statList.isNotEmpty) {
       if (widget.statList[0].stats.isNotEmpty) {
-        filterValue = widget.statList[0].stats[0].title;
+        _filterValue = widget.statList[0].stats[0].title;
       }
     }
     super.initState();
@@ -45,7 +47,7 @@ class _StatsUsersListState extends State<StatsUsersList> {
               StatsUserCell(
                 key: ValueKey(i.email),
                 userStat: i,
-                currentStat: filterValue,
+                currentStat: _filterValue,
               ),
               const SizedBox(height: 8),
             ],
@@ -56,76 +58,53 @@ class _StatsUsersListState extends State<StatsUsersList> {
 
   Widget _statHeader(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    if (widget.statList.isEmpty) {
+    print(widget.available);
+    if (widget.available.isEmpty) {
       return Container();
     } else {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          children: [
-            for (var i = 1;
-                i < (widget.statList.first.stats.length / 3) + 1;
-                i++)
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      for (var index = 1; index < 4; index++)
-                        if (index * i < widget.statList.first.stats.length + 1)
-                          Row(
-                            children: [
-                              cv.BasicButton(
-                                onTap: () {
-                                  setState(() {
-                                    if (widget.statList.first
-                                            .stats[(index * i) - 1].title ==
-                                        filterValue) {
-                                      filterValue = "";
-                                    } else {
-                                      filterValue = widget.statList.first
-                                          .stats[(index * i) - 1].title;
-                                    }
-                                  });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: filterValue ==
-                                            widget.statList.first
-                                                .stats[(index * i) - 1].title
-                                        ? dmodel.color
-                                        : CustomColors.cellColor(context),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Text(
-                                      "${widget.statList.first.stats[(index * i) - 1].title[0].toUpperCase()}${widget.statList.first.stats[(index * i) - 1].title.substring(1)}",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                        color: filterValue ==
-                                                widget
-                                                    .statList
-                                                    .first
-                                                    .stats[(index * i) - 1]
-                                                    .title
-                                            ? Colors.white
-                                            : CustomColors.textColor(context),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                            ],
-                          ),
-                    ],
+      return GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 3,
+        crossAxisCount: 2,
+        children: [
+          for (var i in widget.available)
+            cv.BasicButton(
+              onTap: () {
+                if (_filterValue == i) {
+                  setState(() {
+                    _filterValue = "";
+                  });
+                } else {
+                  setState(() {
+                    _filterValue = i;
+                  });
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: _filterValue == i
+                      ? dmodel.color
+                      : CustomColors.cellColor(context),
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Center(
+                  child: Text(
+                    "${i[0].toUpperCase()}${i.substring(1)}",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: _filterValue == i
+                          ? Colors.white
+                          : CustomColors.textColor(context),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                ],
-              )
-          ],
-        ),
+                ),
+              ),
+            ),
+        ],
       );
     }
   }
@@ -133,11 +112,11 @@ class _StatsUsersListState extends State<StatsUsersList> {
   List<UserStat> sortedUsers() {
     widget.statList.sort((a, b) {
       if (a.stats
-              .firstWhere((element) => element.title == filterValue,
+              .firstWhere((element) => element.title == _filterValue,
                   orElse: () => StatObject(title: "", value: -1))
               .value >
           b.stats
-              .firstWhere((element) => element.title == filterValue,
+              .firstWhere((element) => element.title == _filterValue,
                   orElse: () => StatObject(title: "", value: -1))
               .value) {
         return -1;

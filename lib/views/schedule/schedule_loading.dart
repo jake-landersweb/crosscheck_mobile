@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../extras/root.dart';
 import 'dart:math' as math;
+import '../../custom_views/root.dart' as cv;
 
 class ScheduleLoading extends StatefulWidget {
   const ScheduleLoading({Key? key}) : super(key: key);
@@ -12,155 +13,136 @@ class ScheduleLoading extends StatefulWidget {
 class _ScheduleLoadingState extends State<ScheduleLoading> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Divider(),
-        const EventCellLoading(
-          isExpanded: true,
-        ),
-        for (var i = 0; i < 10; i++)
-          Column(
-            children: const [
-              SizedBox(height: 16),
-              EventCellLoading(
-                isExpanded: false,
-              ),
-            ],
+    return cv.LoadingWrapper(
+      child: Column(
+        children: [
+          _header(context),
+          const SizedBox(height: 16),
+          cv.SegmentedPicker(
+            titles: const ["Upcoming", "Previous"],
+            onSelection: (selection) {},
+            initialSelection: "Upcoming",
           ),
-        const SizedBox(height: 48),
-      ],
-    );
-  }
-}
-
-class EventCellLoading extends StatefulWidget {
-  const EventCellLoading({
-    Key? key,
-    this.isExpanded = false,
-  }) : super(key: key);
-  final bool isExpanded;
-
-  @override
-  State<EventCellLoading> createState() => _EventCellLoadingState();
-}
-
-class _EventCellLoadingState extends State<EventCellLoading>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation _animation;
-
-  @override
-  void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _animationController.repeat(reverse: true);
-    _animation = Tween(begin: 0.3, end: 1.0).animate(_animationController)
-      ..addListener(() {
-        setState(() {});
-      });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: CustomColors.cellColor(context),
-      shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Opacity(
-              opacity: _animation.value,
-              child: _title(context),
+          const SizedBox(height: 16),
+          _month(context),
+          const SizedBox(height: 16),
+          for (var i = 0; i < 5; i++)
+            Column(
+              children: [_cell(context), const SizedBox(height: 16)],
             ),
-            if (widget.isExpanded)
-              Opacity(
-                opacity: _animation.value,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Container(
-                        height: 10,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.black.withOpacity(0.3)
-                            : Colors.white.withOpacity(0.3),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Container(
-                        height: 10,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.black.withOpacity(0.3)
-                            : Colors.white.withOpacity(0.3),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Container(
-                        height: 10,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.black.withOpacity(0.3)
-                            : Colors.white.withOpacity(0.3),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-          ],
-        ),
+        ],
       ),
     );
   }
 
-  Widget _title(BuildContext context) {
+  Widget _header(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  height: 20,
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black.withOpacity(0.3)
-                      : Colors.white.withOpacity(0.3),
-                ),
+        // season title
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              " ",
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w800,
+                color: CustomColors.textColor(context),
               ),
-              const SizedBox(height: 8),
-              Container(
-                height: 20,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black.withOpacity(0.3)
-                    : Colors.white.withOpacity(0.3),
-              ),
-            ],
-          ),
+            ),
+            Container(
+              color: _cellColor(context),
+              height: 20,
+              width: MediaQuery.of(context).size.width / 2.5,
+            ),
+          ],
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 4),
+        // icon to show this is clickable
         Transform.rotate(
-          angle: -math.pi / 2,
-          child: Icon(
-            Icons.chevron_left,
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black.withOpacity(0.3)
-                : Colors.white.withOpacity(0.3),
-          ),
-        )
+          angle: math.pi * 1.5,
+          child: Icon(Icons.chevron_left,
+              color: CustomColors.textColor(context).withOpacity(0.7)),
+        ),
       ],
     );
+  }
+
+  Widget _month(BuildContext context) {
+    return Row(
+      children: [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              "",
+              style: TextStyle(
+                  color: CustomColors.textColor(context).withOpacity(0.5),
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700),
+            ),
+            Container(
+              color: _cellColor(context),
+              height: 18,
+              width: MediaQuery.of(context).size.width / 3,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _cell(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 15,
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Text(
+                      "",
+                      style: TextStyle(
+                        color: CustomColors.textColor(context).withOpacity(0.7),
+                        fontSize: 12,
+                      ),
+                    ),
+                    Container(color: _cellColor(context), height: 8, width: 14),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    cv.Circle(35, Colors.transparent),
+                    cv.Circle(30, _cellColor(context)),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 85,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: CustomColors.cellColor(context),
+            ),
+            height: 120,
+            width: double.infinity,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _cellColor(BuildContext context) {
+    return CustomColors.textColor(context).withOpacity(0.2);
   }
 }

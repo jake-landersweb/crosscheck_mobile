@@ -5,3 +5,5 @@ export 'team/stats_team_model.dart';
 export 'stats_users_edit.dart';
 export 'stats_user_edit_cell.dart';
 export 'stats_users_loading.dart';
+export 'stat_ce_cell.dart';
+export 'stat_ce_list.dart';

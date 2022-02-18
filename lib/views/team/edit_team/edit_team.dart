@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pnflutter/views/root.dart';
 import 'package:pnflutter/views/shared/positions_create.dart';
 import 'package:provider/provider.dart';
 import '../../../client/root.dart';
@@ -32,6 +33,8 @@ class _EditTeamState extends State<EditTeam> {
   late List<CustomField> _customFields;
   late List<CustomField> _customUserFields;
 
+  late TeamStat _stats;
+
   bool _isLoading = false;
 
   bool _showColorError = false;
@@ -49,6 +52,7 @@ class _EditTeamState extends State<EditTeam> {
       for (var i in List.of(widget.team.customUserFields)) i.clone()
     ];
     _positions = TeamPositions.of(widget.team.positions);
+    _stats = widget.team.stats.clone();
   }
 
   @override
@@ -83,6 +87,8 @@ class _EditTeamState extends State<EditTeam> {
         _customF(context, dmodel),
         const SizedBox(height: 16),
         _customUserF(context, dmodel),
+        const SizedBox(height: 16),
+        _statsView(context, dmodel),
         const SizedBox(height: 16),
         _editButton(context, dmodel),
       ],
@@ -291,6 +297,22 @@ class _EditTeamState extends State<EditTeam> {
     );
   }
 
+  Widget _statsView(BuildContext context, DataModel dmodel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: cv.Section(
+        "Stats",
+        allowsCollapse: true,
+        initOpen: false,
+        child: StatCEList(
+          color: dmodel.color,
+          team: widget.team,
+          stats: _stats,
+        ),
+      ),
+    );
+  }
+
   Widget _editButton(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -339,9 +361,9 @@ class _EditTeamState extends State<EditTeam> {
       "teamNote": _teamNote,
       "customFields": _customFields.map((e) => e.toJson()).toList(),
       "positions": _positions.toJson(),
-      // "customUserFields": _customUserFields.map((e) => e.toJson()).toList(),
     };
 
+    // determine whether to add customUserFields
     void addUserFields() {
       body['customUserFields'] =
           _customUserFields.map((e) => e.toJson()).toList();
@@ -356,6 +378,24 @@ class _EditTeamState extends State<EditTeam> {
     } else {
       addUserFields();
     }
+
+    // determine whether to add stats
+    void addStats() {
+      body['stats'] = _stats.toJson();
+    }
+
+    // check length
+    if (_stats.stats.length != widget.team.stats.stats.length) {
+      addStats();
+    } else {
+      // check for new items
+      for (var i in widget.team.stats.stats) {
+        if (!_stats.stats.any((element) => element.title == i.title)) {
+          addStats();
+        }
+      }
+    }
+
     print(body);
 
     await dmodel.updateTeam(widget.team.teamId, body, () {

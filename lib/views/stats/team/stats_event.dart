@@ -92,7 +92,10 @@ class _StatsEventState extends State<StatsEvent> {
     } else if (smodel.userStats!.isEmpty) {
       return Text("There were no users with stats found for this season");
     } else {
-      return StatsUsersList(statList: smodel.userStats!);
+      return StatsUsersList(
+        statList: smodel.userStats!,
+        available: widget.team.stats.stats.map((e) => e.title).toList(),
+      );
     }
   }
 

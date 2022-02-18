@@ -1,4 +1,4 @@
-import 'root.dart';
+import '../dynamic_fields/root.dart';
 import 'package:equatable/equatable.dart';
 
 class TeamStat extends Equatable {
@@ -31,6 +31,10 @@ class TeamStat extends Equatable {
       "isActive": isActive,
       "stats": stats.map((e) => e.toJson()).toList(),
     };
+  }
+
+  void addStat(String title) {
+    stats.add(StatItem(title: title, isActive: true));
   }
 
   @override
