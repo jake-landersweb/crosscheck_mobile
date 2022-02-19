@@ -233,9 +233,9 @@ class ChatModel extends ChangeNotifier {
     const String qstring = r'''
         mutation sendMessage($input: CreateMessageInput!) {
       createMessage(input: $input) {
-        created
         message
         messageId
+        created
         roomId
         sender
         email

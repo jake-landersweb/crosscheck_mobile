@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pnflutter/client/api_helpers.dart';
 import 'package:pnflutter/views/root.dart';
+import 'package:pnflutter/views/roster/team_roster.dart';
 import 'package:pnflutter/views/season/create/sce_model.dart';
 import 'package:pnflutter/views/season/create/sce_customf.dart';
 import 'package:pnflutter/views/shared/positions_create.dart';
@@ -54,47 +55,24 @@ class _SCEUsersState extends State<SCEUsers> {
         onTap: () {
           cv.Navigate(
             context,
-            Container(),
-            // FullTeamRoster(
-            //   team: widget.team,
-            //   allowSelect: true,
-            //   teamUser: dmodel.tus!.user,
-            //   onSelection: (user) {
-            //     if (scemodel.teamUsers
-            //         .any((element) => element.email == user.email)) {
-            //       setState(() {
-            //         scemodel.teamUsers
-            //             .removeWhere((element) => element.email == user.email);
-            //       });
-            //     } else {
-            //       setState(() {
-            //         scemodel.teamUsers.add(user);
-            //       });
-            //     }
-            //   },
-            //   childBuilder: (user) {
-            //     return Stack(
-            //       alignment: AlignmentDirectional.centerEnd,
-            //       children: [
-            //         UserCell(
-            //           user: user,
-            //           isClickable: false,
-            //           season: Season.empty(),
-            //         ),
-            //         Icon(
-            //           scemodel.teamUsers
-            //                   .any((element) => element.email == user.email)
-            //               ? Icons.radio_button_checked
-            //               : Icons.circle,
-            //           color: scemodel.teamUsers
-            //                   .any((element) => element.email == user.email)
-            //               ? dmodel.color
-            //               : null,
-            //         ),
-            //       ],
-            //     );
-            //   },
-            // ),
+            _TeamUserSelect(
+              team: widget.team,
+              selected: scemodel.teamUsers,
+              onSelect: (user) {
+                if (scemodel.teamUsers
+                    .any((element) => element.email == user.email)) {
+                  // remove
+                  setState(() {
+                    scemodel.teamUsers
+                        .removeWhere((element) => element.email == user.email);
+                  });
+                } else {
+                  setState(() {
+                    scemodel.teamUsers.add(user);
+                  });
+                }
+              },
+            ),
           );
         },
       ),
@@ -108,79 +86,102 @@ class _SCEUsersState extends State<SCEUsers> {
           ? Container()
           : cv.Section(
               "Team Users",
-              child: cv.NativeList(
-                children: [
-                  cv.AnimatedList<SeasonUser>(
-                    childPadding: EdgeInsets.zero,
-                    padding: EdgeInsets.zero,
-                    enabled: false,
-                    children: scemodel.teamUsers,
-                    cellBuilder: (context, item) {
-                      return cv.BasicButton(
-                        onTap: () {
-                          setState(() {
-                            scemodel.teamUsers.removeWhere(
-                                (element) => element.email == item.email);
-                          });
-                        },
-                        child: Stack(
-                          alignment: AlignmentDirectional.centerEnd,
-                          children: [
-                            // UserCell(
-                            //   user: item,
-                            //   isClickable: false,
-                            //   season: Season.empty(),
-                            // ),
-                            Icon(Icons.radio_button_checked,
-                                color: dmodel.color),
-                          ],
-                        ),
-                      );
-                    },
-                  )
-                ],
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: cv.AnimatedList<SeasonUser>(
+                  childPadding: EdgeInsets.zero,
+                  padding: EdgeInsets.zero,
+                  enabled: false,
+                  children: scemodel.teamUsers,
+                  cellBuilder: (context, item) {
+                    return cv.BasicButton(
+                      onTap: () {
+                        setState(() {
+                          scemodel.teamUsers.removeWhere(
+                              (element) => element.email == item.email);
+                        });
+                      },
+                      child: RosterCell(
+                        // padding: EdgeInsets.zero,
+                        name: item.name(widget.team.showNicknames),
+                        seed: item.email,
+                        color: dmodel.color,
+                        type: RosterListType.selector,
+                        isSelected: scemodel.teamUsers
+                            .any((element) => element.email == item.email),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
     );
   }
+}
 
-  // Future<void> _create(BuildContext context, DataModel dmodel) async {
-  //   List<String> teamUserEmails = [];
+class _TeamUserSelect extends StatefulWidget {
+  const _TeamUserSelect({
+    Key? key,
+    required this.team,
+    required this.selected,
+    required this.onSelect,
+  }) : super(key: key);
+  final Team team;
+  final List<SeasonUser> selected;
+  final Function(SeasonUser) onSelect;
 
-  //   // create email list
-  //   for (var i in scemodel.teamUsers) {
-  //     teamUserEmails.add(i.email);
-  //   }
+  @override
+  __TeamUserSelectState createState() => __TeamUserSelectState();
+}
 
-  //   Map<String, dynamic> body = {
-  //     "title": widget.model.title,
-  //     "website": widget.model.website,
-  //     "seasonNote": widget.model.seasonNote,
-  //     "showNicknames": widget.model.showNicknames,
-  //     "customFields": widget.model.customFields.map((e) => e.toJson()).toList(),
-  //     "positions": widget.model.positions.toJson(),
-  //     "teamUserEmails": teamUserEmails,
-  //     "date": dateToString(DateTime.now()),
-  //     "customUserFields":
-  //         widget.model.customUserFields.map((e) => e.toJson()).toList(),
-  //     "stats": widget.model.stats.toJson(),
-  //   };
+class __TeamUserSelectState extends State<_TeamUserSelect> {
+  List<SeasonUser>? _users;
 
-  //   print(body);
+  @override
+  void initState() {
+    super.initState();
+    _getTeamUsers(context, context.read<DataModel>());
+  }
 
-  //   await dmodel.createSeason(widget.team.teamId, body, () {
-  //     // success, get out of widget
-  //     Navigator.of(context).pop();
-  //     Navigator.of(context).pop();
-  //     Navigator.of(context).pop();
-  //     Navigator.of(context).pop();
-  //     if (widget.model.isCreate) {
-  //       Navigator.of(context).pop();
-  //     }
-  //     // get tus
-  //     dmodel.teamUserSeasonsGet(widget.team.teamId, dmodel.user!.email, (tus) {
-  //       dmodel.setTUS(tus);
-  //     });
-  //   });
-  // }
+  @override
+  void dispose() {
+    _users = null;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
+    return cv.AppBar(
+      title: "Select Users",
+      isLarge: false,
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+      leading: [
+        cv.BackButton(color: dmodel.color),
+      ],
+      children: [
+        if (_users != null)
+          RosterList(
+            users: _users!,
+            color: dmodel.color,
+            team: widget.team,
+            type: RosterListType.selector,
+            selected: widget.selected,
+            onSelect: (user) => widget.onSelect(user),
+          )
+        else
+          const RosterLoading(),
+      ],
+    );
+  }
+
+  Future<void> _getTeamUsers(BuildContext context, DataModel dmodel) async {
+    if (_users == null) {
+      await dmodel.getTeamRoster(widget.team.teamId, (p0) {
+        setState(() {
+          _users = p0;
+        });
+      });
+    }
+  }
 }

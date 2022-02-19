@@ -21,8 +21,10 @@ class TeamStat extends Equatable {
   TeamStat.fromJson(dynamic json) {
     isActive = json['isActive'] ?? true;
     stats = [];
-    for (var i in json['stats']) {
-      stats.add(StatItem.fromJson(i));
+    if (json['stats'] != null) {
+      for (var i in json['stats']) {
+        stats.add(StatItem.fromJson(i));
+      }
     }
   }
 

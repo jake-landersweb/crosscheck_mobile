@@ -30,11 +30,11 @@ class _MainHomeState extends State<MainHome> {
               const Spacer(),
               cv.TabBar(
                 index: index,
-                icons: const [
+                icons: [
                   Icons.home,
-                  Icons.chat,
-                  Icons.bar_chart,
-                  Icons.people
+                  if (!dmodel.noSeason) Icons.chat,
+                  if (!dmodel.noSeason) Icons.bar_chart,
+                  if (!dmodel.noSeason) Icons.people
                 ],
                 color: dmodel.color,
                 onViewChange: (idx) {

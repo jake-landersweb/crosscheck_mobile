@@ -64,7 +64,7 @@ class RUCEModel extends ChangeNotifier {
   }
 
   bool isValid() {
-    if (email == "") {
+    if (!emailIsValid(email)) {
       return false;
     } else if (userFields.firstName == "") {
       return false;
@@ -74,8 +74,8 @@ class RUCEModel extends ChangeNotifier {
   }
 
   String validationText() {
-    if (email == "") {
-      return "Email cannot be empty";
+    if (!emailIsValid(email)) {
+      return "Please enter a valid email address";
     } else if (userFields.firstName == "") {
       return "First name cannot be empty";
     } else {

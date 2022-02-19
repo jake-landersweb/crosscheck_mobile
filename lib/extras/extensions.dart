@@ -83,13 +83,25 @@ extension CustomColors on Colors {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 
-  static Color random(String seed) {
+  static Color random2(String seed) {
     double num = 0;
     for (int i = 0; i < seed.length; i++) {
       num += intFromString(seed[i].toLowerCase()) / 2.2;
     }
     return Color((math.Random(num.toInt()).nextDouble() * 0xFFFFFF).toInt())
         .withOpacity(1.0);
+  }
+
+  static Color random(String seed) {
+    int num = 0;
+    for (int i = 0; i < seed.length; i++) {
+      num += seed[i].codeUnitAt(0);
+    }
+    // add lightness to make it look better overall
+    Color col = Color((math.Random(num).nextDouble() * 0xFFFFFF).toInt())
+        .withOpacity(1.0);
+    HSLColor hsl = HSLColor.fromColor(col);
+    return hsl.withLightness(0.75).toColor();
   }
 }
 

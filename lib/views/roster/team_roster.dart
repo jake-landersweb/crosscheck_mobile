@@ -11,10 +11,10 @@ class TeamRoster extends StatefulWidget {
   const TeamRoster({
     Key? key,
     required this.team,
-    required this.teamUser,
+    this.teamUser,
   }) : super(key: key);
   final Team team;
-  final SeasonUserTeamFields teamUser;
+  final SeasonUserTeamFields? teamUser;
 
   @override
   _TeamRosterState createState() => _TeamRosterState();
@@ -98,7 +98,7 @@ class _TeamRosterState extends State<TeamRoster> {
   }
 
   Widget _createUser(BuildContext context, DataModel dmodel) {
-    if (widget.teamUser.isTeamAdmin()) {
+    if (widget.teamUser?.isTeamAdmin() ?? false) {
       return cv.BasicButton(
         onTap: () {
           showMaterialModalBottomSheet(

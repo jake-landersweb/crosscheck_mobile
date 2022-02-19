@@ -30,21 +30,19 @@ class Message extends Equatable {
 
   Message.empty() {
     roomId = "";
-    messageId = "${DateTime.now().toUtc()}-${Uuid().v4()}";
+    messageId = "";
     message = "";
     sender = "";
     email = "";
-    created = dateToString(DateTime.now().toUtc());
+    created = "";
   }
 
   Map<String, dynamic> toJson() {
     return {
       "roomId": roomId,
-      "messageId": messageId,
       "message": message,
       "sender": sender,
       "email": email,
-      "created": created,
     };
   }
 

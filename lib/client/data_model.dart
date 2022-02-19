@@ -313,7 +313,7 @@ class DataModel extends ChangeNotifier {
     prefs.remove('seasonId');
     user = null;
     tus = null;
-    color = Colors.blue;
+    color = CustomColors.fromHex("7bc5d6");
     currentSeason = null;
     currentSeasonUser = null;
     seasonUsers = null;

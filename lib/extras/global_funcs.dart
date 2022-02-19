@@ -194,3 +194,8 @@ int intFromString(String char) {
       return 100;
   }
 }
+
+bool emailIsValid(String email) {
+  final validEmail = RegExp("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+  return validEmail.hasMatch(email);
+}

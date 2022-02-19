@@ -268,12 +268,6 @@ class _SCERootState extends State<SCERoot> {
     setState(() {
       _isLoading = true;
     });
-    List<String> teamUserEmails = [];
-
-    // create email list
-    for (var i in scemodel.teamUsers) {
-      teamUserEmails.add(i.email);
-    }
 
     Map<String, dynamic> body = {
       "title": scemodel.title,
@@ -281,7 +275,7 @@ class _SCERootState extends State<SCERoot> {
       "seasonNote": scemodel.seasonNote,
       "customFields": scemodel.customFields.map((e) => e.toJson()).toList(),
       "positions": scemodel.positions.toJson(),
-      "teamUserEmails": teamUserEmails,
+      "teamUserEmails": scemodel.teamUsers.map((e) => e.email).toList(),
       "date": dateToString(DateTime.now()),
       "customUserFields":
           scemodel.customUserFields.map((e) => e.toJson()).toList(),

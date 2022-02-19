@@ -44,7 +44,7 @@ class _SettingsState extends State<Settings> {
       backgroundColor: CustomColors.backgroundColor(context),
       leading: const [MenuButton()],
       children: [
-        _userInfo(context, dmodel),
+        if (dmodel.user != null) _userInfo(context, dmodel),
         cv.Section(
           "Notifications",
           child: cv.NativeList(
@@ -69,30 +69,24 @@ class _SettingsState extends State<Settings> {
   }
 
   Widget _userInfo(BuildContext context, DataModel dmodel) {
-    return cv.Section(
-      "User Info",
-      child: cv.RoundedLabel(
-        "My Profile",
-        color: CustomColors.cellColor(context),
-        textColor: CustomColors.textColor(context),
-        onTap: () {
-          cv.Navigate(
-            context,
-            // SeasonUserDetail(
-            //   team: dmodel.tus!.team,
-            //   user: SeasonUser(
-            //     email: dmodel.user!.email,
-            //     userFields: SeasonUserUserFields(
-            //       firstName: dmodel.user!.firstName,
-            //       lastName: dmodel.user!.lastName,
-            //     ),
-            //   ),
-            //   teamUser: dmodel.tus!.user,
-            // ),
-            Container(),
-          );
-        },
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        RosterAvatar(
+          name: dmodel.user!.getName(),
+          seed: dmodel.user!.email,
+          size: 100,
+          fontSize: 50,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          dmodel.user!.getName(),
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 

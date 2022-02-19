@@ -4,7 +4,11 @@ import 'dart:math' as math;
 import '../../custom_views/root.dart' as cv;
 
 class ScheduleLoading extends StatefulWidget {
-  const ScheduleLoading({Key? key}) : super(key: key);
+  const ScheduleLoading({
+    Key? key,
+    this.includeHeader = true,
+  }) : super(key: key);
+  final bool includeHeader;
 
   @override
   _ScheduleLoadingState createState() => _ScheduleLoadingState();
@@ -16,13 +20,18 @@ class _ScheduleLoadingState extends State<ScheduleLoading> {
     return cv.LoadingWrapper(
       child: Column(
         children: [
-          _header(context),
-          const SizedBox(height: 16),
-          cv.SegmentedPicker(
-            titles: const ["Upcoming", "Previous"],
-            onSelection: (selection) {},
-            initialSelection: "Upcoming",
-          ),
+          if (widget.includeHeader)
+            Column(
+              children: [
+                _header(context),
+                const SizedBox(height: 16),
+                cv.SegmentedPicker(
+                  titles: const ["Upcoming", "Previous"],
+                  onSelection: (selection) {},
+                  initialSelection: "Upcoming",
+                ),
+              ],
+            ),
           const SizedBox(height: 16),
           _month(context),
           const SizedBox(height: 16),
@@ -51,7 +60,10 @@ class _ScheduleLoadingState extends State<ScheduleLoading> {
               ),
             ),
             Container(
-              color: _cellColor(context),
+              decoration: BoxDecoration(
+                color: _cellColor(context),
+                borderRadius: BorderRadius.circular(5),
+              ),
               height: 20,
               width: MediaQuery.of(context).size.width / 2.5,
             ),
@@ -82,7 +94,10 @@ class _ScheduleLoadingState extends State<ScheduleLoading> {
                   fontWeight: FontWeight.w700),
             ),
             Container(
-              color: _cellColor(context),
+              decoration: BoxDecoration(
+                color: _cellColor(context),
+                borderRadius: BorderRadius.circular(5),
+              ),
               height: 18,
               width: MediaQuery.of(context).size.width / 3,
             ),
@@ -112,7 +127,14 @@ class _ScheduleLoadingState extends State<ScheduleLoading> {
                         fontSize: 12,
                       ),
                     ),
-                    Container(color: _cellColor(context), height: 8, width: 14),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: _cellColor(context),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      height: 8,
+                      width: 14,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -131,7 +153,7 @@ class _ScheduleLoadingState extends State<ScheduleLoading> {
           flex: 85,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(10),
               color: CustomColors.cellColor(context),
             ),
             height: 120,

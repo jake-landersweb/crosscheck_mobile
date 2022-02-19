@@ -31,8 +31,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    // print(MediaQuery.of(context).padding.top);
-    // print(MediaQuery.of(context).padding.bottom);
     DataModel dmodel = Provider.of<DataModel>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -43,17 +41,7 @@ class _LoginState extends State<Login> {
           Container(
             // gradient background for the form
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    widget.isCreate
-                        ? CustomColors.fromHex("00ff8f").withOpacity(0.5)
-                        : CustomColors.fromHex("00a1ff").withOpacity(0.5),
-                    widget.isCreate
-                        ? CustomColors.fromHex("00a1ff").withOpacity(0.5)
-                        : CustomColors.fromHex("00ff8f").withOpacity(0.5),
-                  ]),
+              color: dmodel.color.withOpacity(0.5),
             ),
             width: double.infinity,
             // actual form
@@ -61,7 +49,7 @@ class _LoginState extends State<Login> {
               top: true,
               left: false,
               right: false,
-              bottom: true,
+              bottom: false,
               child: Column(
                 children: [
                   // title
@@ -84,20 +72,15 @@ class _LoginState extends State<Login> {
             ),
           ),
           // wave
-          Opacity(
-            opacity: 0.5,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.1,
+            width: double.infinity,
+            child: SvgPicture.asset(
+              "assets/svg/wave1.svg",
+              semanticsLabel: 'wave',
+              color: dmodel.color.withOpacity(0.5),
               width: double.infinity,
-              child: SvgPicture.asset(
-                "assets/svg/wave1.svg",
-                semanticsLabel: 'wave',
-                color: widget.isCreate
-                    ? CustomColors.fromHex("00a1ff")
-                    : CustomColors.fromHex("00ff8f"),
-                width: double.infinity,
-                fit: BoxFit.fill,
-              ),
+              fit: BoxFit.fill,
             ),
           ),
           const Spacer(),
@@ -307,10 +290,7 @@ class _LoginState extends State<Login> {
   }
 
   bool _formIsValid(DataModel dmodel) {
-    if (!_email.contains("@") ||
-        _email.endsWith(".") ||
-        _email.endsWith("@") ||
-        !_email.contains(".")) {
+    if (!emailIsValid(_email)) {
       dmodel.setError("Please enter a valid email", true);
       return false;
     } else if (_password == "") {
@@ -339,7 +319,7 @@ class _LoginState extends State<Login> {
       Map<String, dynamic> body = {
         "firstName": _firstName.toLowerCase(),
         "lastName": _lastName,
-        "email": _email,
+        "email": _email.toLowerCase(),
         "password": _password,
       };
       await dmodel.createUser(body, (user) {

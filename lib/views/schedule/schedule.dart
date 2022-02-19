@@ -250,7 +250,9 @@ class _PreviousEventsState extends State<PreviousEvents> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     if (dmodel.previousEvents == null) {
-      return const ScheduleLoading();
+      return const ScheduleLoading(
+        includeHeader: false,
+      );
     } else if (dmodel.previousEvents!.isEmpty) {
       return cv.NoneFound("There are no previous events", color: dmodel.color);
     } else {

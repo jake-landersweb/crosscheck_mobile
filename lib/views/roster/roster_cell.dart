@@ -14,6 +14,7 @@ class RosterCell extends StatelessWidget {
     this.size = 50,
     this.fontSize = 30,
     this.isSelected,
+    this.padding = const EdgeInsets.all(8),
   }) : super(key: key);
   final String name;
   final String? seed;
@@ -22,13 +23,14 @@ class RosterCell extends StatelessWidget {
   final double size;
   final double fontSize;
   final bool? isSelected;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: CustomColors.cellColor(context),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: padding,
         child: Row(
           children: [
             RosterAvatar(name: name, seed: seed),
