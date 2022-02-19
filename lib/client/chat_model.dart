@@ -7,6 +7,7 @@ import 'package:graphql/client.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../amplifyconfiguration.dart' as config;
 import 'dart:convert';
+import 'env.dart' as env;
 
 class ChatModel extends ChangeNotifier {
   Room? room;
@@ -25,11 +26,9 @@ class ChatModel extends ChangeNotifier {
 
   ChatModel(Team team, Season season, DataModel dmodel, this.name, this.email) {
     // set the name to use as the sender
-    final httpLink = HttpLink(
-        'https://ouetza3cm5brrohopg2z4utwj4.appsync-api.us-west-2.amazonaws.com/graphql',
-        defaultHeaders: {
-          "x-api-key": "da2-qckx2gmrbbabrgife56ym557mi",
-        });
+    final httpLink = HttpLink(env.GRAPH, defaultHeaders: {
+      "x-api-key": env.GRAPH_API_KEY,
+    });
     Link link = httpLink;
 
     client = GraphQLClient(
