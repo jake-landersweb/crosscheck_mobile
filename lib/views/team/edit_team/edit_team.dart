@@ -333,13 +333,15 @@ class _EditTeamState extends State<EditTeam> {
           // check custom fields
           for (var i in _customFields) {
             if (i.title == "") {
-              dmodel.setError("Custom field title cannot be blank", true);
+              dmodel.addIndicator(
+                  IndicatorItem.error("Custom field title cannot be blank"));
               return;
             }
           }
           for (var i in _customUserFields) {
             if (i.title == "") {
-              dmodel.setError("Custom user field title cannot be blank", true);
+              dmodel.addIndicator(IndicatorItem.error(
+                  "Custom user field title cannot be blank"));
               return;
             }
           }

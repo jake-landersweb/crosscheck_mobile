@@ -119,11 +119,14 @@ class _PositionsCreateState extends State<PositionsCreate> {
                 textColor: CustomColors.textColor(context),
                 onTap: () {
                   if (_newPos.isEmpty) {
-                    dmodel.setError("New position title cannot be empty", true);
+                    dmodel.addIndicator(IndicatorItem.error(
+                        "New position title cannot be empty"));
                   } else if (widget.positions.available.contains(_newPos)) {
-                    dmodel.setError("This position already exists", true);
+                    dmodel.addIndicator(
+                        IndicatorItem.error("This position already exists"));
                   } else if (widget.positions.available.length > 20) {
-                    dmodel.setError("Max of 20 positions", true);
+                    dmodel.addIndicator(
+                        IndicatorItem.error("Max of 20 positions"));
                   } else {
                     setState(() {
                       widget.positions.available.add(_newPos);

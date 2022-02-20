@@ -93,13 +93,15 @@ class DataModel extends ChangeNotifier {
   String currentScheduleTitle = "Upcoming";
 
   User? user;
-  void setUser(User user) async {
+  void setUser(User user, {bool? showLogin}) async {
     // try {
     this.user = user;
     showSplash = false;
     notifyListeners();
     prefs.setString("email", user.email);
-    setSuccess("Logged in as ${user.email}", true);
+    // if (showLogin ?? true) {
+    //   addIndicator(IndicatorItem.success("Logged in as ${user.email}"));
+    // }
     print("set user");
     // get the user tus
     if (prefs.containsKey("teamId")) {
@@ -108,15 +110,37 @@ class DataModel extends ChangeNotifier {
       await teamUserSeasonsGet(prefs.getString("teamId")!, user.email, (tus) {
         setTUS(tus);
         return;
+      }, onError: () {
+        // remove preference value then retry with saved team list
+        prefs.remove("teamId");
+        setUser(user, showLogin: false);
       });
     } else {
       // check the user list for a team
       if (user.teams.isNotEmpty) {
         print("getting tus with first team in team list");
         // fetch tus with first team
-        await teamUserSeasonsGet(user.teams.first.teamId, user.email, (tus) {
+        await teamUserSeasonsGet(user.teams[tusRetryCounter].teamId, user.email,
+            (tus) {
           setTUS(tus);
           return;
+        }, onError: () {
+          print(
+              "error getting the teams, if there is another team in the user's list, increment and try it. If not, invalidate data.");
+          tusRetryCounter += 1;
+          if (user.teams.length > tusRetryCounter) {
+            print(
+                "Attempting to get team with teamId: ${user.teams[tusRetryCounter].teamId}");
+            setUser(user, showLogin: false);
+          } else {
+            print("no valid teams were found, invalidating data");
+            prefs.remove("teamId");
+            prefs.remove("seasonId");
+            noTeam = true;
+            noSeason = true;
+            showSplash = false;
+            notifyListeners();
+          }
         });
       } else {
         // user has no teams
@@ -127,15 +151,9 @@ class DataModel extends ChangeNotifier {
         notifyListeners();
       }
     }
-    // } catch (error) {
-    //   print("There was an error: $error");
-    //   prefs.remove("teamId");
-    //   showSplash = true;
-    //   showMaintenance = true;
-    //   notifyListeners();
-    // }
   }
 
+  int tusRetryCounter = 0;
   TeamUserSeasons? tus;
   void setTUS(TeamUserSeasons tus) {
     // try {
@@ -286,24 +304,27 @@ class DataModel extends ChangeNotifier {
 
   SeasonUser? currentSeasonUser;
 
-  // for showing error popup
-  String errorText = "";
-  Future<void> setError(String message, bool? showMessage) async {
-    print(message);
-    if (showMessage ?? true) {
-      errorText = message;
-      notifyListeners();
-    }
-  }
-
-  // for showing success message popup
-  String successText = "";
-  Future<void> setSuccess(String message, bool? showMessage) async {
-    print(message);
-    if (showMessage ?? true) {
-      print("SHOW!");
-      successText = message;
-      notifyListeners();
+  // code for handling the indicator queue
+  List<IndicatorItem> indicators = [];
+  IndicatorItem? currentIndicator;
+  final double animationTime = 0.8;
+  Future<void> addIndicator(IndicatorItem item) async {
+    // await Future.delayed(const Duration(milliseconds: 700));
+    indicators.add(item);
+    if (indicators.length < 2) {
+      do {
+        currentIndicator = indicators[0].clone();
+        notifyListeners();
+        var duration =
+            ((currentIndicator!.duration + (animationTime * 1.5)) * 1000)
+                .toInt();
+        print(duration);
+        await Future.delayed(Duration(milliseconds: duration));
+        print(currentIndicator!.title);
+        currentIndicator = null;
+        notifyListeners();
+        indicators.removeAt(0);
+      } while (indicators.isNotEmpty);
     }
   }
 

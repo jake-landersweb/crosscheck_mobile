@@ -45,7 +45,8 @@ class ChatModel extends ChangeNotifier {
     await roomSetUp(teamId, seasonId);
     if (room == null) {
       print("There was an error setting up the room");
-      dmodel.setError("There was an error setting up chat", true);
+      dmodel.addIndicator(
+          IndicatorItem.error("There was an error setting up chat"));
       return;
     }
     print("Successfully set up chat room with roomId: ${room!.roomId}");

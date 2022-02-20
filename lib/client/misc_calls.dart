@@ -11,14 +11,16 @@ extension MiscCalls on DataModel {
     final response = await client.fetch("/version");
 
     if (response == null) {
-      setError("There was an issue getting the app version", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue getting the app version"));
     } else if (response['status'] == 200) {
-      setSuccess("Successfully got version", false);
+      print("Successfully got version");
       print(response['message']);
       completion(response['message'], response['showMaintenance']);
     } else {
       print(response['message']);
-      setError("There was an issue getting the app version", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue getting the app version"));
     }
   }
 }

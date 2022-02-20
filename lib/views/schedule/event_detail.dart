@@ -200,7 +200,7 @@ class _EventDetailState extends State<EventDetail> {
       onTap: () {
         Clipboard.setData(ClipboardData(text: value));
         print("set data");
-        dmodel.setSuccess("Successfully copied!", true);
+        dmodel.addIndicator(IndicatorItem.success("Successfully copied!"));
       },
       child: Container(
         width: double.infinity,

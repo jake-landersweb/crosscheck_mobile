@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pnflutter/client/root.dart';
+import 'package:pnflutter/data/root.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 import '../menu/root.dart';
@@ -108,7 +109,7 @@ class _CreateTeamState extends State<CreateTeam> {
           textColor: Colors.white,
           onTap: () {
             if (_title.isEmpty) {
-              dmodel.setError("Title cannot be empty", true);
+              dmodel.addIndicator(IndicatorItem.error("Title cannot be empty"));
             } else {
               _createTeam(context, dmodel);
             }

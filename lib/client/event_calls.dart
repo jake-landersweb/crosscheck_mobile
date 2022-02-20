@@ -29,12 +29,12 @@ extension EventCalls on DataModel {
   //       jsonEncode(body));
 
   //   if (response == null) {
-  //     setError("There was an issue getting the schedule", true);
+  //     addIndicator(IndicatorItem.error("There was an issue getting the schedule", true);
   //   } else if (response['status'] == 200) {
-  //     setSuccess("Successfully fetched current schedule", false);
+  //     addIndicator(IndicatorItem.success("Successfully fetched current schedule", false);
   //     completion(Schedule.fromjson(response['body']));
   //   } else {
-  //     setError("There was an issue getting the schedule", true);
+  //     addIndicator(IndicatorItem.error("There was an issue getting the schedule", true);
   //     print(response['message']);
   //   }
   // }
@@ -45,13 +45,15 @@ extension EventCalls on DataModel {
         .fetch("/teams/$teamId/seasons/$seasonId/events/$eventId/users/$email");
 
     if (response == null) {
-      setError("There was an issue getting your status", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue getting your status"));
     } else if (response['status'] == 200) {
-      setSuccess("Successfully got user status", false);
+      print("Successfully got user status");
       completion(SeasonUserEventFields.fromJson(response['body']));
     } else {
       print(response['message']);
-      setError("There was an issue getting your status", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue getting your status"));
     }
   }
 
@@ -65,13 +67,15 @@ extension EventCalls on DataModel {
         jsonEncode(body));
 
     if (response == null) {
-      setError("There was an issue updating your status", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue updating your status"));
     } else if (response['status'] == 200) {
-      setSuccess("Succesfully updated your status", true);
+      addIndicator(IndicatorItem.success("Succesfully updated your status"));
       completion();
     } else {
       print(response['message']);
-      setError("There was an issue updating your status", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue updating your status"));
     }
   }
 
@@ -81,16 +85,17 @@ extension EventCalls on DataModel {
         .fetch("/teams/$teamId/seasons/$seasonId/events/$eventId/usersRaw")
         .then((response) {
       if (response == null) {
-        setError("There was an issue getting the users", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue getting the users"));
       } else if (response['status'] == 200) {
-        setSuccess("successfully got event users", false);
         List<SeasonUserEventFields> users = [];
         for (var i in response['body']) {
           users.add(SeasonUserEventFields.fromJson(i));
         }
         completion(users);
       } else {
-        setError("There was an issue getting the users", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue getting the users"));
         print(response['message']);
       }
     });
@@ -120,12 +125,14 @@ extension EventCalls on DataModel {
             headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue replying to this user", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue replying to this user"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully posted reply", true);
+        addIndicator(IndicatorItem.success("Successfully posted reply"));
         completion();
       } else {
-        setError("There was an issue replying to this user", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue replying to this user"));
         print(response['message']);
       }
     });
@@ -137,12 +144,14 @@ extension EventCalls on DataModel {
         .fetch("/teams/$teamId/seasons/$seasonId/users/$email/calendar")
         .then((response) {
       if (response == null) {
-        setError("There was an issue fetching the calendar", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue fetching the calendar"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully fetched calendar", false);
+        addIndicator(IndicatorItem.success("Successfully fetched calendar"));
         completion(CalendarEvent.fromJson(response['body']));
       } else {
-        setError("There was an issue fetching the calendar", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue fetching the calendar"));
         print(response['message']);
       }
     });
@@ -157,12 +166,14 @@ extension EventCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue creating the event", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue creating the event"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully created event", true);
+        addIndicator(IndicatorItem.success("Successfully created event"));
         completion();
       } else {
-        setError("There was an issue creating the eventr", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue creating the eventr"));
         print(response['message']);
       }
     });
@@ -177,13 +188,15 @@ extension EventCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue updating the event", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the event"));
       } else if (response['status'] == 200) {
         print(response);
-        setSuccess("Successfully updated event", true);
+        addIndicator(IndicatorItem.success("Successfully updated event"));
         completion();
       } else {
-        setError("There was an issue updating the event", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the event"));
         print(response['message']);
       }
     });
@@ -208,16 +221,17 @@ extension EventCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue fetching the events", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue fetching the events"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully fetched events", false);
+        print("Successfully fetched events");
         List<Event> list = [];
         for (var i in response['body']) {
           list.add(Event.fromJson(i));
         }
         completion(list);
       } else {
-        setError("Successfully fetched events", false);
+        print("Successfully fetched events");
         print(response['message']);
       }
     });
@@ -239,16 +253,17 @@ extension EventCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue fetching the events", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue fetching the events"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully fetched events", false);
+        print("Successfully fetched events");
         List<Event> list = [];
         for (var i in response['body']) {
           list.add(Event.fromJson(i));
         }
         completion(list);
       } else {
-        setError("Successfully fetched events", false);
+        print("Successfully fetched events");
         print(response['message']);
       }
     });
@@ -276,9 +291,10 @@ extension EventCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue fetching the events", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue fetching the events"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully fetched events", false);
+        print("Successfully fetched events");
         List<Event> list = [];
         for (var i in response['body']['events']) {
           list.add(Event.fromJson(i));
@@ -294,7 +310,7 @@ extension EventCalls on DataModel {
         }
         completion(list);
       } else {
-        setError("Successfully fetched events", false);
+        print("Successfully fetched events");
         print(response['message']);
       }
     });
@@ -311,12 +327,14 @@ extension EventCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue updating the event user", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the event user"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully updated event user", false);
+        print("Successfully updated event user");
         completion();
       } else {
-        setError("There was an issue updating the event user", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the event user"));
         print(response['message']);
       }
     });
@@ -328,12 +346,14 @@ extension EventCalls on DataModel {
         .delete("/teams/$teamId/seasons/$seasonId/events/$eventId/delete")
         .then((response) {
       if (response == null) {
-        setError("There was an issue deleting the event", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue deleting the event"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully deleted event", true);
+        addIndicator(IndicatorItem.success("Successfully deleted event"));
         completion();
       } else {
-        setError("There was an issue deleting the event", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue deleting the event"));
         print(response['message']);
       }
     });

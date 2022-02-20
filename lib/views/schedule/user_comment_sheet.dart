@@ -169,7 +169,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
   void _replyToStatus(BuildContext context, DataModel dmodel) async {
     if (!_isLoading) {
       if (controller.text == "") {
-        dmodel.setError("Reply cannot be empty", true);
+        dmodel.addIndicator(IndicatorItem.error("Reply cannot be empty"));
       } else {
         setState(() {
           _isLoading = true;

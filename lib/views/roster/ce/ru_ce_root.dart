@@ -105,7 +105,7 @@ class _RUCERootState extends State<RUCERoot> {
         });
       }
     } else {
-      dmodel.setError(rmodel.validationText(), true);
+      dmodel.addIndicator(IndicatorItem.error(rmodel.validationText()));
     }
   }
 }

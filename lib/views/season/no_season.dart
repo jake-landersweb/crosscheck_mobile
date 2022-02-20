@@ -44,9 +44,8 @@ class _NoSeasonState extends State<NoSeason> {
                   },
                 );
               } else {
-                dmodel.setError(
-                    "You have no loaded team data. How did that happen? Pull to refresh",
-                    true);
+                dmodel.addIndicator(IndicatorItem.error(
+                    "You have no loaded team data. How did that happen? Pull to refresh"));
               }
             },
           )

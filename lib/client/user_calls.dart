@@ -14,12 +14,12 @@ extension UserCalls on DataModel {
     var response = await client.fetch('/users/$email');
 
     if (response == null) {
-      setError("There was an error fetching the user", true);
+      addIndicator(IndicatorItem.error("There was an error fetching the user"));
     } else if (response['status'] == 200) {
       completion(User.fromJson(response['body']));
     } else {
       print(response['status']);
-      setError("There was an error fetching the user", true);
+      addIndicator(IndicatorItem.error("There was an error fetching the user"));
     }
   }
 
@@ -37,33 +37,36 @@ extension UserCalls on DataModel {
         await client.put("/users/$email/login", headers, jsonEncode(body));
 
     if (response == null) {
-      setError("There was an error logging in", true);
+      addIndicator(IndicatorItem.error("There was an error logging in"));
     } else if (response['status'] == 200) {
-      setSuccess("Successfully logged in", true);
+      addIndicator(IndicatorItem.success("Successfully logged in"));
       try {
         completion(User.fromJson(response['body']));
       } catch (error) {
-        setError("There was an issue with your data. Contact Support", true);
+        addIndicator(IndicatorItem.error(
+            "There was an issue with your data. Contact Support"));
       }
     } else {
       print(response['message']);
       switch (response['status']) {
         case 410:
-          setError("There was an issue with the request client side.", true);
+          addIndicator(IndicatorItem.error(
+              "There was an issue with the request client side."));
           break;
         case 420:
-          setError("Your email or password was incorrect", true);
+          addIndicator(
+              IndicatorItem.error("Your email or password was incorrect"));
           break;
         case 430:
-          setError("Your email or password was incorrect", true);
+          addIndicator(
+              IndicatorItem.error("Your email or password was incorrect"));
           break;
         case 440:
-          setError(
-              "Your account is not set up yet, contact your team admin or check your email inbox",
-              true);
+          addIndicator(IndicatorItem.error(
+              "Your account is not set up yet, contact your team admin or check your email inbox"));
           break;
         default:
-          setError("There was an error logging in", true);
+          addIndicator(IndicatorItem.error("There was an error logging in"));
       }
     }
   }
@@ -76,18 +79,20 @@ extension UserCalls on DataModel {
         .post("/createUser", headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an unknown issue creating the user", true);
+        addIndicator(IndicatorItem.error(
+            "There was an unknown issue creating the user"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully created user", true);
+        addIndicator(IndicatorItem.success("Successfully created user"));
         completion(User.fromJson(response['body']));
       } else {
         print(response['message']);
         switch (response['status']) {
           case 311:
-            setError(response['message'], true);
+            addIndicator(IndicatorItem.error(response['message']));
             break;
           default:
-            setError("There was an unkown issue creating the user", true);
+            addIndicator(IndicatorItem.error(
+                "There was an unkown issue creating the user"));
         }
       }
     });
@@ -101,13 +106,15 @@ extension UserCalls on DataModel {
         await client.put("/users/$email/update", headers, jsonEncode(body));
 
     if (response == null) {
-      setError("There was an issue updaing your user record", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue updaing your user record"));
     } else if (response['status'] == 200) {
-      setSuccess("Successfully updated user record", true);
+      addIndicator(IndicatorItem.success("Successfully updated user record"));
       completion();
     } else {
       print(response['message']);
-      setError("There was an issue updaing your user record", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue updaing your user record"));
     }
   }
 
@@ -119,13 +126,15 @@ extension UserCalls on DataModel {
         "/users/$email/updateNotifications", headers, jsonEncode(body));
 
     if (response == null) {
-      setError("There was an issue updaing your user record", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue updaing your user record"));
     } else if (response['status'] == 200) {
-      setSuccess("Successfully updated preferences", true);
+      addIndicator(IndicatorItem.success("Successfully updated preferences"));
       completion(User.fromJson(response['body']));
     } else {
       print(response['message']);
-      setError("There was an issue updaing your user record", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue updaing your user record"));
     }
   }
 
@@ -150,12 +159,14 @@ extension UserCalls on DataModel {
       response = await client.fetch("/users/$email/tus");
     }
     if (response == null) {
-      setError("There was an issue getting your information", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue getting your information"));
     } else if (response['status'] == 200) {
       completion(UserTUS.fromJson(response['body']));
     } else {
       print(response['message']);
-      setError("There was an issue getting your information", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue getting your information"));
     }
   }
 }

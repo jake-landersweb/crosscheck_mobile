@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pnflutter/data/root.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:math' as math;
@@ -291,15 +292,16 @@ class _LoginState extends State<Login> {
 
   bool _formIsValid(DataModel dmodel) {
     if (!emailIsValid(_email)) {
-      dmodel.setError("Please enter a valid email", true);
+      dmodel.addIndicator(IndicatorItem.error("Please enter a valid email"));
       return false;
     } else if (_password == "") {
-      dmodel.setError("Password cannot be empty", true);
+      dmodel.addIndicator(IndicatorItem.error("Password cannot be empty"));
       return false;
     } else {
       if (widget.isCreate) {
         if (_firstName.isEmpty) {
-          dmodel.setError("First name cannot be empty", true);
+          dmodel
+              .addIndicator(IndicatorItem.error("First name cannot be empty"));
           return false;
         } else {
           return true;

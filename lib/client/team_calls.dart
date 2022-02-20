@@ -9,21 +9,27 @@ import '../data/root.dart';
 
 extension TeamCalls on DataModel {
   Future<void> teamUserSeasonsGet(
-      String teamId, String email, Function(TeamUserSeasons) completion) async {
+      String teamId, String email, Function(TeamUserSeasons) completion,
+      {VoidCallback? onError}) async {
     var response = await client.fetch("/teams/$teamId/users/$email/tusRaw");
 
     if (response == null) {
-      setError("There was an issue fetching your team information", true);
+      addIndicator(IndicatorItem.error(
+          "There was an issue fetching your team information"));
+      if (onError != null) {
+        onError();
+      }
     } else if (response['status'] == 200) {
-      setSuccess("Successfully got tus", false);
+      print("Successfully got tus");
       completion(TeamUserSeasons.fromJson(response['body']));
     } else {
-      setError("There was an issue fetching your team information", true);
+      addIndicator(IndicatorItem.error(
+          "There was an issue fetching your team information"));
       print(response['message']);
       prefs.remove("teamId");
-      // TODO -- fix issue when user team does not work
-      // reget the data if the team info failed
-      // init();
+      if (onError != null) {
+        onError();
+      }
     }
   }
 
@@ -31,16 +37,18 @@ extension TeamCalls on DataModel {
       String teamId, Function(List<SeasonUser>) completion) async {
     await client.fetch("/teams/$teamId/users").then((response) {
       if (response == null) {
-        setError("There was an issue fetching the schedule", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue fetching the schedule"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully fetched schedule", false);
+        print("Successfully fetched schedule");
         List<SeasonUser> users = [];
         for (var i in response['body']) {
           users.add(SeasonUser.fromJson(i));
         }
         completion(users);
       } else {
-        setError("There was an issue fetching the schedule", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue fetching the schedule"));
         print(response['message']);
       }
     });
@@ -55,12 +63,14 @@ extension TeamCalls on DataModel {
         .put("/teams/$teamId/users/$email/update", headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue updating your user record", true);
+        addIndicator(IndicatorItem.error(
+            "There was an issue updating your user record"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully updated user record", true);
+        addIndicator(IndicatorItem.success("Successfully updated user record"));
         completion();
       } else {
-        setError("There was an issue updating your user record", true);
+        addIndicator(IndicatorItem.error(
+            "There was an issue updating your user record"));
         print(response['message']);
       }
     });
@@ -74,12 +84,14 @@ extension TeamCalls on DataModel {
         .post("/createTeam", headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue creating the team", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue creating the team"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully created your team!", true);
+        addIndicator(IndicatorItem.success("Successfully created your team!"));
         completion(Team.fromJson(response['body']));
       } else {
-        setError("There was an issue creating the team", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue creating the team"));
         print(response['message']);
       }
     });
@@ -93,13 +105,15 @@ extension TeamCalls on DataModel {
         .put("/teams/$teamId/update", headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue updating the team", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the team"));
       } else if (response['status'] == 200) {
         print(response);
-        setSuccess("Successfully updated your team", true);
+        addIndicator(IndicatorItem.success("Successfully updated your team"));
         completion();
       } else {
-        setError("There was an issue updating the team", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the team"));
         print(response['message']);
       }
     });
@@ -113,35 +127,37 @@ extension TeamCalls on DataModel {
         .post("/teams/$teamId/createUser", headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue adding the user", true);
+        addIndicator(IndicatorItem.error("There was an issue adding the user"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully added user", true);
+        addIndicator(IndicatorItem.success("Successfully added user"));
         completion(SeasonUser.fromJson(response['body']));
       } else {
-        setError("There was an issue adding the user", true);
+        addIndicator(IndicatorItem.error("There was an issue adding the user"));
         print(response['message']);
       }
     });
   }
 
-  Future<void> validateUser(
-      String email, Map<String, dynamic> body, VoidCallback completion) async {
+  Future<void> validateUser(String email, Map<String, dynamic> body,
+      Future<void> Function(String) completion) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     await client
         .put("/users/$email/validate", headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue joining the team", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue joining the team"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully joined team", true);
-        completion();
+        addIndicator(IndicatorItem.success("Successfully joined team"));
+        completion(response['body']);
       } else {
         print(response.toString());
         if (response['status'] < 400) {
-          setError(response['message'], true);
+          addIndicator(IndicatorItem.error(response['message']));
         } else {
-          setError("There was an issue joining the team", true);
+          addIndicator(
+              IndicatorItem.error("There was an issue joining the team"));
         }
       }
     });

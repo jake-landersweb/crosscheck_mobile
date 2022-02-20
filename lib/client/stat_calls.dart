@@ -11,16 +11,18 @@ extension StatCalls on DataModel {
     var response = await client.fetch("/teams/$teamId/stats");
 
     if (response == null) {
-      setError("There was an issue fetching the stats", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue fetching the stats"));
     } else if (response['status'] == 200) {
-      setSuccess("Successfully got stats", false);
+      print("Successfully got stats");
       List<UserStat> list = [];
       for (var i in response['body']) {
         list.add(UserStat.fromJson(i));
       }
       completion(list);
     } else {
-      setError("There was an issue fetching the stats", true);
+      addIndicator(
+          IndicatorItem.error("There was an issue fetching the stats"));
       print(response['message']);
     }
   }

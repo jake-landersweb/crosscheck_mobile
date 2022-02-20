@@ -5,6 +5,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import '../../extras/root.dart';
 
@@ -43,51 +44,119 @@ class _SettingsState extends State<Settings> {
       title: "Settings",
       backgroundColor: CustomColors.backgroundColor(context),
       leading: const [MenuButton()],
+      childPadding: const EdgeInsets.fromLTRB(
+        0,
+        16,
+        0,
+        48,
+      ),
       children: [
         if (dmodel.user != null) _userInfo(context, dmodel),
-        cv.Section(
-          "Notifications",
-          child: cv.NativeList(
-            itemPadding: const EdgeInsets.all(16),
-            children: [
-              if (dmodel.user != null) _emailNotifications(context, dmodel),
-              if (dmodel.user != null) _phoneNotifications(context, dmodel),
-            ],
+        if (dmodel.user != null) _teams(context, dmodel),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: cv.Section(
+            "Notifications",
+            child: cv.NativeList(
+              itemPadding: const EdgeInsets.all(16),
+              children: [
+                if (dmodel.user != null) _emailNotifications(context, dmodel),
+                if (dmodel.user != null) _phoneNotifications(context, dmodel),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 32),
-        cv.RoundedLabel(
-          "Log Out",
-          color: Colors.red.withOpacity(0.3),
-          textColor: Colors.red[900],
-          onTap: () {
-            _showAlert(context, dmodel);
-          },
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: cv.RoundedLabel(
+            "Log Out",
+            color: Colors.red.withOpacity(0.3),
+            textColor: Colors.red[900],
+            onTap: () {
+              _showAlert(context, dmodel);
+            },
+          ),
         ),
       ],
     );
   }
 
   Widget _userInfo(BuildContext context, DataModel dmodel) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        RosterAvatar(
-          name: dmodel.user!.getName(),
-          seed: dmodel.user!.email,
-          size: 100,
-          fontSize: 50,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          dmodel.user!.getName(),
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RosterAvatar(
+            name: dmodel.user!.getName(),
+            seed: dmodel.user!.email,
+            size: 100,
+            fontSize: 50,
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          Text(
+            dmodel.user!.getName(),
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  Widget _teams(BuildContext context, DataModel dmodel) {
+    return cv.Section(
+      "Teams",
+      headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
+      child: Column(
+        children: [
+          cv.CList(
+            color: dmodel.color,
+            children: dmodel.user!.teams.map((e) => e.title).toList(),
+            childBuilder: (String item) {
+              return Text(item,
+                  style: TextStyle(color: CustomColors.textColor(context)));
+            },
+            allowsSelect: true,
+            selected: [dmodel.tus?.team.title ?? ""],
+            onSelect: (String item) {
+              // change the team to the selected team in prefs
+              _changeTeam(
+                context,
+                dmodel.user!.teams
+                    .firstWhere((element) => element.title == item)
+                    .teamId,
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: cv.RoundedLabel(
+              "Join New Team",
+              color: CustomColors.cellColor(context),
+              onTap: () {
+                cv.showFloatingSheet(
+                  context: context,
+                  builder: (context) {
+                    return JoinTeam(email: dmodel.user!.email);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _changeTeam(BuildContext context, String teamId) async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString("teamId", teamId);
+    RestartWidget.restartApp(context);
   }
 
   Widget _emailNotifications(BuildContext context, DataModel dmodel) {
@@ -243,7 +312,8 @@ class _SettingsState extends State<Settings> {
       });
     } else {
       print('User declined or has not accepted permission');
-      dmodel.setSuccess("Blocked notifications successfully", true);
+      dmodel.addIndicator(
+          IndicatorItem.success("Blocked notifications successfully"));
     }
 
     setState(() {

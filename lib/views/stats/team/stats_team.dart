@@ -121,9 +121,11 @@ class _StatsTeamState extends State<StatsTeam> {
         smodel.setUserStats(userStats);
       });
       Navigator.of(context).pop();
-      dmodel.setSuccess("Successfully updated user stats", true);
+      dmodel.addIndicator(
+          IndicatorItem.success("Successfully updated user stats"));
     } else {
-      dmodel.setError("There was an issue updating the user stats", true);
+      dmodel.addIndicator(
+          IndicatorItem.error("There was an issue updating the user stats"));
     }
   }
 }

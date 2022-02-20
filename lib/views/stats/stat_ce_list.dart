@@ -83,7 +83,8 @@ class _StatCEListState extends State<StatCEList> {
                           _controller.text = "";
                         });
                       } else {
-                        dmodel.setError("Invalid Stat Title", true);
+                        dmodel.addIndicator(
+                            IndicatorItem.error("Invalid Stat Title"));
                       }
                     },
                     child: Container(

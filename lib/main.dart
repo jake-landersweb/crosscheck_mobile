@@ -190,62 +190,64 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
         children: [
           widget.child,
           // for showing custom messages
-          if (dmodel.successText != "")
+          if (dmodel.currentIndicator != null)
+            // if (dmodel.successText != "")
             StatusBar(
-              backgroundColor: CustomColors.textColor(context),
-              opacity: 0.1,
+              key: ValueKey(dmodel.currentIndicator!.title),
+              backgroundColor: dmodel.currentIndicator!.getColor(context),
+              opacity: dmodel.currentIndicator!.getOpacity(),
+              duration: dmodel.currentIndicator!.duration,
+              animationTime: dmodel.animationTime * 1000,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(dmodel.successText,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: CustomColors.textColor(context),
-                          )),
+                      child: Text(
+                        dmodel.currentIndicator!.title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: dmodel.currentIndicator!.getTextColor(context),
+                        ),
+                      ),
                     ),
                     Icon(
-                      Icons.done,
-                      color: CustomColors.textColor(context).withOpacity(0.7),
+                      dmodel.currentIndicator!.getIcon(),
+                      color: dmodel.currentIndicator!.getTextColor(context),
                     )
                   ],
                 ),
               ),
-              completion: () {
-                setState(() {
-                  dmodel.successText = "";
-                });
-              },
+              completion: () {},
             ),
-          if (dmodel.errorText != "")
-            StatusBar(
-              backgroundColor: Colors.red,
-              opacity: 0.7,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(dmodel.errorText,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                          )),
-                    ),
-                    const Icon(
-                      Icons.priority_high,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              ),
-              completion: () {
-                setState(() {
-                  dmodel.errorText = "";
-                });
-              },
-            ),
+          // if (dmodel.errorText != "")
+          //   StatusBar(
+          //     backgroundColor: Colors.red,
+          //     opacity: 0.7,
+          //     child: Padding(
+          //       padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          //       child: Row(
+          //         children: [
+          //           Expanded(
+          //             child: Text(dmodel.errorText,
+          //                 textAlign: TextAlign.center,
+          //                 style: const TextStyle(
+          //                   color: Colors.white,
+          //                 )),
+          //           ),
+          //           const Icon(
+          //             Icons.priority_high,
+          //             color: Colors.white,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //     completion: () {
+          //       setState(() {
+          //         dmodel.errorText = "";
+          //       });
+          //     },
+          //   ),
         ],
       ),
     );
@@ -259,12 +261,16 @@ class StatusBar extends StatefulWidget {
     required this.opacity,
     required this.child,
     required this.completion,
+    required this.duration,
+    required this.animationTime,
   }) : super(key: key);
 
   final Color backgroundColor;
   final double opacity;
   final Widget child;
   final VoidCallback completion;
+  final double duration;
+  final double animationTime;
 
   @override
   _StatusBarState createState() => _StatusBarState();

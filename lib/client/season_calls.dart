@@ -12,14 +12,16 @@ extension SeasonCalls on DataModel {
 
     if (response == null) {
       if (showMessages ?? false) {
-        setError("There was an issue getting the user record", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue getting the user record"));
       }
     } else if (response['status'] == 200) {
-      setSuccess("Successfully found season user", false);
+      print("Successfully found season user");
       completion(SeasonUser.fromJson(response['body']));
     } else {
       if (showMessages ?? false) {
-        setError("There was an issue getting the user record", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue getting the user record"));
       }
       print(response['message']);
     }
@@ -31,16 +33,18 @@ extension SeasonCalls on DataModel {
         .fetch("/teams/$teamId/seasons/$seasonId/users")
         .then((response) {
       if (response == null) {
-        setError("There was an issue getting the season roster", true);
+        addIndicator(IndicatorItem.error(
+            "There was an issue getting the season roster"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully got season roster", false);
+        print("Successfully got season roster");
         List<SeasonUser> users = [];
         for (var i in response['body']) {
           users.add(SeasonUser.fromJson(i));
         }
         completion(users);
       } else {
-        setError("There was an issue getting the season roster", true);
+        addIndicator(IndicatorItem.error(
+            "There was an issue getting the season roster"));
         print(response['message']);
       }
     });
@@ -55,12 +59,14 @@ extension SeasonCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue updating the user record", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the user record"));
       } else if (response['status'] == 200) {
-        setSuccess("Successfully updated user record", true);
+        addIndicator(IndicatorItem.success("Successfully updated user record"));
         completion(SeasonUser.fromJson(response['body']));
       } else {
-        setError("There was an issue updating the user record", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the user record"));
         print(response['message']);
       }
     });
@@ -75,13 +81,13 @@ extension SeasonCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue adding the user", true);
+        addIndicator(IndicatorItem.error("There was an issue adding the user"));
       } else if (response['status'] == 200) {
         print(response);
-        setSuccess("Successfully added user", true);
+        addIndicator(IndicatorItem.success("Successfully added user"));
         completion(SeasonUser.fromJson(response['body']));
       } else {
-        setError("There was an issue adding the user", true);
+        addIndicator(IndicatorItem.error("There was an issue adding the user"));
         print(response['message']);
       }
     });
@@ -96,17 +102,20 @@ extension SeasonCalls on DataModel {
         .post("/teams/$teamId/createSeason", headers, jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue creating the season", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue creating the season"));
       } else if (response['status'] == 200) {
         completion();
         print(response);
-        setSuccess("Successfully created season", true);
+        addIndicator(IndicatorItem.success("Successfully created season"));
       } else if (response['status'] < 400) {
         completion();
-        setError("Your season was created, but " + response['message'], true);
+        addIndicator(IndicatorItem.error(
+            "Your season was created, but " + response['message']));
       } else {
         print(response['message']);
-        setError("There was an issue creating your season", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue creating your season"));
       }
     });
   }
@@ -121,20 +130,21 @@ extension SeasonCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue updating the season", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating the season"));
       } else if (response['status'] == 200) {
         completion();
         print(response);
-        setSuccess("Successfully updated season", true);
+        addIndicator(IndicatorItem.success("Successfully updated season"));
       } else if (response['status'] < 400) {
         completion();
-        setError(
-            "Your season was updated, but there was an issue with your custom fields or stats",
-            true);
+        addIndicator(IndicatorItem.error(
+            "Your season was updated, but there was an issue with your custom fields or stats"));
         print(response['message']);
       } else {
         print(response['message']);
-        setError("There was an issue updating your season", true);
+        addIndicator(
+            IndicatorItem.error("There was an issue updating your season"));
       }
     });
   }
@@ -149,14 +159,14 @@ extension SeasonCalls on DataModel {
             jsonEncode(body))
         .then((response) {
       if (response == null) {
-        setError("There was an issue sending the notification", false);
+        print("There was an issue sending the notification");
       } else if (response['status'] == 200) {
         completion();
         print(response);
-        setSuccess("Successfully sent chat notifications", false);
+        print("Successfully sent chat notifications");
       } else {
         print(response);
-        setError("There was an issue sending the notification", false);
+        print("There was an issue sending the notification");
       }
     });
   }

@@ -123,7 +123,8 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                               ),
                             );
                           } else {
-                            dmodel.setError("Fetching user list ...", true);
+                            dmodel.addIndicator(
+                                IndicatorItem.error("Fetching user list ..."));
                           }
                         },
                         child: Align(
@@ -150,7 +151,8 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                         onTap: () {
                           if (dmodel.currentSeasonUser == null &&
                               dmodel.seasonUsers != null) {
-                            dmodel.setError("You are not on this season", true);
+                            dmodel.addIndicator(IndicatorItem.error(
+                                "You are not on this season"));
                           } else {
                             if (stringToDate(widget.event.eDate)
                                     .isAfter(DateTime.now()) ||
@@ -364,7 +366,8 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                   ),
                 );
               } else {
-                dmodel.setError("Fetching user list ...", true);
+                dmodel.addIndicator(
+                    IndicatorItem.error("Fetching user list ..."));
               }
             },
             child: Column(
@@ -442,7 +445,8 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                     // make sure this event has not passed
                     if (dmodel.currentSeasonUser == null &&
                         dmodel.seasonUsers != null) {
-                      dmodel.setError("You are not on this season", true);
+                      dmodel.addIndicator(
+                          IndicatorItem.error("You are not on this season"));
                     } else {
                       if (stringToDate(widget.event.eDate)
                               .isAfter(DateTime.now()) ||
