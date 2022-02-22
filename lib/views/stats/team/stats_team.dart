@@ -38,9 +38,9 @@ class _StatsTeamState extends State<StatsTeam> {
       title: "Team Stats",
       isLarge: true,
       backgroundColor: CustomColors.backgroundColor(context),
-      // refreshable: true,
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
       color: dmodel.color,
-      leading: const [MenuButton()],
+      leading: [cv.BackButton(color: dmodel.color)],
       trailing: [
         if (widget.teamUser.isTeamAdmin() && !smodel.isLoading)
           _editButton(context, dmodel, smodel),

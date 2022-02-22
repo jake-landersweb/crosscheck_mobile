@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 enum IndicatorItemType { status, success, error }
 
 class IndicatorItem {
+  late String id;
   late String title;
   late IndicatorItemType type;
   late double duration;
 
   IndicatorItem({
+    required this.id,
     required this.title,
     required this.type,
     required this.duration,
   });
 
   IndicatorItem clone() =>
-      IndicatorItem(title: title, type: type, duration: duration);
+      IndicatorItem(id: id, title: title, type: type, duration: duration);
 
   IndicatorItem.status(this.title, {double? duration}) {
+    id = const Uuid().v4();
     this.duration = duration ?? 3;
     type = IndicatorItemType.status;
   }
 
   IndicatorItem.success(this.title, {double? duration}) {
+    id = const Uuid().v4();
     this.duration = duration ?? 3;
     type = IndicatorItemType.success;
   }
 
   IndicatorItem.error(this.title, {double? duration}) {
+    id = const Uuid().v4();
     this.duration = duration ?? 3;
     type = IndicatorItemType.error;
   }

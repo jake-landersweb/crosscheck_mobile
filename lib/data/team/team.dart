@@ -98,6 +98,10 @@ class Team extends Equatable {
     }
   }
 
+  void setImage(String image) {
+    this.image = image;
+  }
+
   // converting to json
   Map<String, dynamic> toJson() {
     return {

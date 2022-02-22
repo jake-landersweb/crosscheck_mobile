@@ -101,8 +101,8 @@ class SeasonUser extends Equatable {
   // for team user name
   String name(bool showNicknames) {
     if (showNicknames) {
-      if (false) {
-        return "";
+      if (teamFields?.nickname != "") {
+        return teamFields!.nickname;
       } else {
         if (userFields == null) {
           return email;

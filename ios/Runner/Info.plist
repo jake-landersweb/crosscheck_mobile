@@ -24,6 +24,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Not a need, but if users want to take a photo for the logo then go ahead</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To select images from user photos for team logo</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

@@ -441,7 +441,7 @@ class _EventDetailState extends State<EventDetail> {
             Expanded(
               // child: UserCell(user: user, season: widget.season),
               child: Text(
-                user.name(false),
+                user.name(widget.team.showNicknames),
                 style:
                     const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),

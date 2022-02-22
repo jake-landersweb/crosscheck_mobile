@@ -9,17 +9,29 @@ import '../data/root.dart';
 import '../extras/root.dart';
 
 extension UserCalls on DataModel {
-  Future<void> getUser(String email, Function(User) completion) async {
+  Future<void> getUser(String email, Function(User) completion,
+      {VoidCallback? onError}) async {
     print('fetching user');
     var response = await client.fetch('/users/$email');
 
     if (response == null) {
       addIndicator(IndicatorItem.error("There was an error fetching the user"));
+      onError == null ? null : onError();
+      return;
     } else if (response['status'] == 200) {
-      completion(User.fromJson(response['body']));
+      try {
+        completion(User.fromJson(response['body']));
+      } catch (error) {
+        print(error);
+        addIndicator(
+            IndicatorItem.error("There was an error fetching the user"));
+        onError == null ? null : onError();
+      }
     } else {
       print(response['status']);
       addIndicator(IndicatorItem.error("There was an error fetching the user"));
+      onError == null ? null : onError();
+      return;
     }
   }
 
@@ -167,6 +179,47 @@ extension UserCalls on DataModel {
       print(response['message']);
       addIndicator(
           IndicatorItem.error("There was an issue getting your information"));
+    }
+  }
+
+  Future<void> sendPasswordResetCode(
+      String email, VoidCallback completion, VoidCallback onError) async {
+    print('sending user reset code');
+    var response = await client.fetch('/users/$email/generatePassResetCode');
+
+    if (response == null) {
+      addIndicator(
+          IndicatorItem.error("There was an error sending the reset code"));
+      onError();
+    } else if (response['status'] == 200) {
+      addIndicator(IndicatorItem.success(
+          "If this email adress exists, a reset code will be sent"));
+      completion();
+    } else {
+      print(response);
+      onError();
+    }
+  }
+
+  Future<void> resetPassword(String email, Map<String, dynamic> body,
+      VoidCallback completion, VoidCallback onError) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    final response = await client.put(
+        "/users/$email/updatePassword", headers, jsonEncode(body));
+
+    if (response == null) {
+      addIndicator(
+          IndicatorItem.error("There was an error updating your password"));
+      onError();
+    } else if (response['status'] == 200) {
+      addIndicator(IndicatorItem.success("Successfully updated your password"));
+      completion();
+    } else {
+      print(response);
+      addIndicator(
+          IndicatorItem.error("There was an error updating your password"));
+      onError();
     }
   }
 }

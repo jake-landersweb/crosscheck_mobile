@@ -48,8 +48,10 @@ Future<T> showFloatingSheet<T>({
   Color? backgroundColor,
   bool useRootNavigator = false,
   Curve? curve,
+  bool? isDismissable,
 }) async {
   final result = await showCustomModalBottomSheet(
+    isDismissible: isDismissable ?? true,
     context: context,
     builder: builder,
     animationCurve: curve ?? Sprung(36),

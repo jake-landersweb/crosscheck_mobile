@@ -46,9 +46,10 @@ class Client {
   Future<dynamic> post(
       String path, Map<String, String> headers, dynamic body) async {
     final http.Response response = await http.post(
-        Uri(scheme: 'https', host: host, path: '/api/$path'),
-        body: body,
-        headers: headers);
+      Uri(scheme: 'https', host: host, path: '/api/$path'),
+      body: body,
+      headers: headers,
+    );
 
     return jsonDecode(response.body);
   }

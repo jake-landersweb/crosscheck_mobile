@@ -18,31 +18,26 @@ class LabeledCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      child: Padding(
-        padding: padding,
-        child: Row(
-          children: [
-            Expanded(
-              child: SelectableText(
-                value,
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: textColor),
-              ),
-            ),
-            Text(
-              label,
+    return Padding(
+      padding: padding,
+      child: Row(
+        children: [
+          Expanded(
+            child: SelectableText(
+              value,
               style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: ViewColors.textColor(context).withOpacity(0.5),
-              ),
+                  fontSize: 18, fontWeight: FontWeight.w600, color: textColor),
             ),
-          ],
-        ),
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: ViewColors.textColor(context).withOpacity(0.5),
+            ),
+          ),
+        ],
       ),
     );
   }

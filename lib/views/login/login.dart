@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pnflutter/data/root.dart';
+import 'package:pnflutter/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:math' as math;
@@ -195,8 +196,13 @@ class _LoginState extends State<Login> {
           Center(
             child: cv.BasicButton(
               onTap: () {
-                // TODO -- forgot password
-                print("TODO -- forgot password");
+                cv.showFloatingSheet(
+                  context: context,
+                  isDismissable: false,
+                  builder: (context) {
+                    return const ForgotPassword();
+                  },
+                );
               },
               child: Text(
                 "Forgot your password?",

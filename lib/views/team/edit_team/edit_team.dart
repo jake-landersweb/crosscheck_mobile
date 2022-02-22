@@ -24,7 +24,6 @@ class EditTeam extends StatefulWidget {
 
 class _EditTeamState extends State<EditTeam> {
   late String _color;
-  late String _image;
   late String _teamNote;
   late bool _isLight;
 
@@ -39,12 +38,13 @@ class _EditTeamState extends State<EditTeam> {
 
   bool _showColorError = false;
 
+  late bool _showNicknames;
+
   @override
   void initState() {
     super.initState();
     _color =
         context.read<DataModel>().color.value.toRadixString(16).substring(2);
-    _image = widget.team.image;
     _teamNote = widget.team.teamNote ?? "";
     _isLight = widget.team.isLight;
     _customFields = [for (var i in widget.team.customFields) i.clone()];
@@ -53,6 +53,7 @@ class _EditTeamState extends State<EditTeam> {
     ];
     _positions = TeamPositions.of(widget.team.positions);
     _stats = widget.team.stats.clone();
+    _showNicknames = widget.team.showNicknames;
   }
 
   @override
@@ -80,6 +81,8 @@ class _EditTeamState extends State<EditTeam> {
   Widget _body(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
+        _logo(context, dmodel),
+        const SizedBox(height: 16),
         _basicInfo(dmodel, context),
         const SizedBox(height: 16),
         _pos(context, dmodel),
@@ -95,51 +98,29 @@ class _EditTeamState extends State<EditTeam> {
     );
   }
 
-  Widget pickerItemBuilder(
-      Color color, bool isCurrentColor, void Function() changeColor) {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: color,
-        boxShadow: [
-          BoxShadow(
-              color: color.withOpacity(0.8),
-              offset: const Offset(1, 2),
-              blurRadius: 1)
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: changeColor,
-          borderRadius: BorderRadius.circular(20),
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 250),
-            opacity: isCurrentColor ? 1 : 0,
-            child: Icon(
-              Icons.done,
-              size: 20,
-              color: useWhiteForeground(color) ? Colors.white : Colors.black,
+  Widget _logo(BuildContext context, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        cv.showFloatingSheet(
+          context: context,
+          builder: (context) {
+            return ImageUploader(team: widget.team);
+          },
+        );
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(
+            opacity: 0.7,
+            child: TeamLogo(
+              url: widget.team.image,
+              size: MediaQuery.of(context).size.width / 2,
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget pickerLayoutBuilder(
-      BuildContext context, List<Color> colors, PickerItem child) {
-    Orientation orientation = MediaQuery.of(context).orientation;
-
-    return SizedBox(
-      width: 300,
-      height: orientation == Orientation.portrait ? 360 : 240,
-      child: GridView.count(
-        crossAxisCount: orientation == Orientation.portrait ? 3 : 3,
-        crossAxisSpacing: 5,
-        mainAxisSpacing: 5,
-        children: [for (Color color in colors) child(color)],
+          Icon(Icons.add_a_photo_outlined,
+              color: CustomColors.textColor(context).withOpacity(0.5), size: 50)
+        ],
       ),
     );
   }
@@ -209,17 +190,6 @@ class _EditTeamState extends State<EditTeam> {
               ],
             ),
             cv.TextField(
-              labelText: "Image (url)",
-              value: _image,
-              fieldPadding: const EdgeInsets.all(0),
-              validator: (value) {},
-              onChanged: (value) {
-                setState(() {
-                  _image = value;
-                });
-              },
-            ),
-            cv.TextField(
               labelText: "Team Note",
               value: _teamNote,
               fieldPadding: const EdgeInsets.all(0),
@@ -241,6 +211,21 @@ class _EditTeamState extends State<EditTeam> {
                 onToggle: (value) {
                   setState(() {
                     _isLight = value;
+                  });
+                },
+              ),
+            ),
+            cv.LabeledWidget(
+              "Show Player Nicknames",
+              child: FlutterSwitch(
+                value: _showNicknames,
+                height: 25,
+                width: 50,
+                toggleSize: 18,
+                activeColor: dmodel.color,
+                onToggle: (value) {
+                  setState(() {
+                    _showNicknames = value;
                   });
                 },
               ),
@@ -358,11 +343,11 @@ class _EditTeamState extends State<EditTeam> {
     // first update the custom user fields
     Map<String, dynamic> body = {
       "color": _color,
-      "image": _image,
       "isLight": _isLight,
       "teamNote": _teamNote,
       "customFields": _customFields.map((e) => e.toJson()).toList(),
       "positions": _positions.toJson(),
+      "showNicknames": _showNicknames,
     };
 
     // determine whether to add customUserFields

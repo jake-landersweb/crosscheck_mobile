@@ -113,7 +113,7 @@ class _SettingsState extends State<Settings> {
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
       child: Column(
         children: [
-          cv.CList(
+          cv.ListView(
             color: dmodel.color,
             children: dmodel.user!.teams.map((e) => e.title).toList(),
             childBuilder: (String item) {

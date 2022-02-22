@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -51,22 +53,14 @@ class DataModel extends ChangeNotifier {
     // logout();
 
     if (prefs.containsKey('email')) {
-      // check if there is a teamId and seasonId to use faster call,
-      // or else just use basic pathway to get that information
-
-      // TODO -- fix this call to use the faster new method. for now, using basic pathway
-      // use basic pathway
-      try {
-        await getUser(prefs.getString("email")!, (user) {
-          setUser(user);
-        });
-      } catch (error) {
-        print("There was an error: $error");
-        prefs.remove("teamId");
-        showSplash = true;
-        showMaintenance = true;
+      await getUser(prefs.getString("email")!, (user) {
+        setUser(user);
+      }, onError: () {
+        // user account may be corrupted, go to login
+        prefs.remove("email");
+        showSplash = false;
         notifyListeners();
-      }
+      });
     } else {
       print("user does not have saved email, going to login");
       showSplash = false;

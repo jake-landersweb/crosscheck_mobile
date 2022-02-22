@@ -193,7 +193,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
           if (dmodel.currentIndicator != null)
             // if (dmodel.successText != "")
             StatusBar(
-              key: ValueKey(dmodel.currentIndicator!.title),
+              key: ValueKey(dmodel.currentIndicator!.id),
               backgroundColor: dmodel.currentIndicator!.getColor(context),
               opacity: dmodel.currentIndicator!.getOpacity(),
               duration: dmodel.currentIndicator!.duration,

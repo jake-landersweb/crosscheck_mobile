@@ -1,0 +1,14 @@
+- Remove Image url on create team
+- no seasons button on team page has no padding
+- title gets removed when using a template for a season
+- position create needs to move to the team not the season
+- position edit on team should match stat create
+- user names getting converted to lowercase (only on account create)
+- roster list dividers have overhang (convert to ListView)
+- convert stat views to ListView for consistency
+- add send invite to non validated users
+- add game score toggle for game events
+- add season user from team roster list
+- fix override presigned url on WSU Hockey
+- add nicknames to stat edit
+

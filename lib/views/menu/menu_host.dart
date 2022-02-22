@@ -144,44 +144,19 @@ class _MenuHostState extends State<MenuHost> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (dmodel.tus?.team.image != "" && dmodel.tus != null)
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Image.network(
-                  dmodel.tus!.team.image,
-                  width: (_size.width / _menu.sizeThreashold) - 32,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      "assets/launch/x.png",
-                      width: (_size.width / _menu.sizeThreashold) - 32,
-                    );
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    }
-                    return SizedBox(
-                      width: (_size.width / _menu.sizeThreashold) - 32,
-                      height: (_size.width / _menu.sizeThreashold) - 32,
-                      child: const cv.LoadingIndicator(),
-                    );
-                  },
-                ),
-              )
-            else
-              Image.asset(
-                "assets/launch/x.png",
-                width: (_size.width / _menu.sizeThreashold) - 32,
-              ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: TeamLogo(
+                  url: dmodel.tus?.team.image ?? "",
+                  size: (_size.width / _menu.sizeThreashold) - 32),
+            ),
             const SizedBox(height: 16),
             const Divider(height: 0.5),
             SizedBox(
               width:
                   (MediaQuery.of(context).size.width / _menu.sizeThreashold) -
                       16,
-              child: ListView(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
+              child: Column(
                 children: [
                   const SizedBox(height: 16),
                   _menuRow(context, _menuItems[0], _menu, _size),
@@ -191,12 +166,9 @@ class _MenuHostState extends State<MenuHost> {
                   const SizedBox(height: 16),
                   _menuRow(context, _menuItems[2], _menu, _size),
                   const SizedBox(height: 16),
-                  if (dmodel.tus?.user.isTeamAdmin() ?? false)
-                    _menuRow(context, _menuItems[3], _menu, _size),
-                  const SizedBox(height: 16),
                   if ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) &&
                       !dmodel.noSeason)
-                    _menuRow(context, _menuItems[4], _menu, _size),
+                    _menuRow(context, _menuItems[3], _menu, _size),
                 ],
               ),
             ),
@@ -271,7 +243,15 @@ class _MenuHostState extends State<MenuHost> {
           return Container();
         }
       case Pages.team:
-        return const TeamHome();
+        if (dmodel.tus != null) {
+          return TeamPage(
+            team: dmodel.tus!.team,
+            seasons: dmodel.tus!.seasons,
+            teamUser: dmodel.tus!.user,
+          );
+        } else {
+          return Container();
+        }
       case Pages.seasonSettings:
         if (dmodel.currentSeason == null) {
           return Container();
@@ -285,8 +265,11 @@ class _MenuHostState extends State<MenuHost> {
         return const Settings();
       case Pages.teamAdmin:
         if (dmodel.tus != null) {
-          return TeamAdmin(
-              team: dmodel.tus!.team, seasons: dmodel.tus!.seasons);
+          return TeamPage(
+            team: dmodel.tus!.team,
+            seasons: dmodel.tus!.seasons,
+            teamUser: dmodel.tus!.user,
+          );
         } else {
           return Container();
         }
@@ -331,11 +314,11 @@ class _MenuHostState extends State<MenuHost> {
       icon: Icons.settings,
       page: Pages.settings,
     ),
-    const MenuItem(
-      title: 'Team Admin',
-      icon: Icons.admin_panel_settings,
-      page: Pages.teamAdmin,
-    ),
+    // const MenuItem(
+    //   title: 'Team Admin',
+    //   icon: Icons.admin_panel_settings,
+    //   page: Pages.teamAdmin,
+    // ),
     const MenuItem(
       title: 'Season Admin',
       icon: Icons.admin_panel_settings,

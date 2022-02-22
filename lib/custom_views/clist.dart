@@ -4,8 +4,8 @@ import 'package:pnflutter/extras/root.dart';
 import 'package:sprung/sprung.dart';
 import 'root.dart' as cv;
 
-class CList<T> extends StatefulWidget {
-  const CList({
+class ListView<T> extends StatefulWidget {
+  const ListView({
     Key? key,
     required this.children,
     this.childBuilder,
@@ -44,10 +44,10 @@ class CList<T> extends StatefulWidget {
   final Color color;
 
   @override
-  _CListState<T> createState() => _CListState<T>();
+  _ListViewState<T> createState() => _ListViewState<T>();
 }
 
-class _CListState<T> extends State<CList<T>> {
+class _ListViewState<T> extends State<ListView<T>> {
   @override
   void initState() {
     // assert all data passed is valid
@@ -55,7 +55,7 @@ class _CListState<T> extends State<CList<T>> {
       assert(widget.onDelete != null,
           "When [allowsDelete] is true, [onDelete] cannot be null.");
     }
-    if (T is! Widget) {
+    if (T != Widget) {
       assert(widget.childBuilder != null,
           "When [T] is not a widget, [childBuilder] cannot be null");
     }
@@ -126,9 +126,11 @@ class _CListState<T> extends State<CList<T>> {
   }
 
   Widget _cell(BuildContext context, T child) {
-    return _CListCell(
+    return _ListViewCell(
       item: child,
-      child: (child is Widget) ? child : widget.childBuilder!(child),
+      child: widget.childBuilder == null
+          ? child as Widget
+          : widget.childBuilder!(child),
       padding: widget.childPadding,
       isAnimated: widget.isAnimated,
       allowsDelete: widget.allowsDelete,
@@ -149,8 +151,8 @@ class _CListState<T> extends State<CList<T>> {
   }
 }
 
-class _CListCell<T> extends StatefulWidget {
-  const _CListCell({
+class _ListViewCell<T> extends StatefulWidget {
+  const _ListViewCell({
     Key? key,
     required this.item,
     required this.child,
@@ -189,10 +191,10 @@ class _CListCell<T> extends StatefulWidget {
   final bool isSelected;
 
   @override
-  __CListCellState<T> createState() => __CListCellState<T>();
+  _ListViewCellState<T> createState() => _ListViewCellState<T>();
 }
 
-class __CListCellState<T> extends State<_CListCell<T>>
+class _ListViewCellState<T> extends State<_ListViewCell<T>>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;

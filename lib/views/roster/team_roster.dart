@@ -45,8 +45,9 @@ class _TeamRosterState extends State<TeamRoster> {
       refreshable: false,
       backgroundColor: CustomColors.backgroundColor(context),
       color: dmodel.color,
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
       trailing: [_createUser(context, dmodel)],
-      leading: const [MenuButton()],
+      leading: [cv.BackButton(color: dmodel.color)],
       children: [
         // season selector
         if (_isLoading)

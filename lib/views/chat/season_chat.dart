@@ -25,8 +25,8 @@ class ChatHome extends StatelessWidget {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return ChangeNotifierProvider<ChatModel>(
-      create: (_) =>
-          ChatModel(team, season, dmodel, user.getName(), user.email),
+      create: (_) => ChatModel(team, season, dmodel,
+          seasonUser.name(team.showNicknames), user.email),
       // we use `builder` to obtain a new `BuildContext` that has access to the provider
       builder: (context, child) {
         return SeasonChat(
