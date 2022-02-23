@@ -18,128 +18,85 @@ class PositionsCreate extends StatefulWidget {
 }
 
 class _PositionsCreateState extends State<PositionsCreate> {
-  String _newPos = "";
-
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        cv.NativeList(
-          children: [
-            cv.LabeledWidget(
-              "Is Active",
-              height: cellHeight,
-              child: FlutterSwitch(
-                value: widget.positions.isActive,
-                height: 25,
-                width: 50,
-                toggleSize: 18,
-                activeColor: dmodel.color,
-                onToggle: (value) {
-                  setState(() {
-                    widget.positions.isActive = value;
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
-        cv.Section(
-          "Available Positions",
-          child: cv.AnimatedList<String>(
-            padding: EdgeInsets.zero,
-            childPadding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-            children: widget.positions.available,
-            allowTap: true,
-            onTap: (item) {
-              setState(() {
-                widget.positions.defaultPosition = item;
-              });
-            },
-            cellBuilder: (context, item) {
-              return SizedBox(
-                height: cellHeight,
-                child: Center(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 16),
-                        ),
-                      ),
-                      if (widget.positions.defaultPosition == item)
-                        Text(
-                          "Default",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: MediaQuery.of(context).platformBrightness ==
-                                    Brightness.light
-                                ? Colors.black.withOpacity(0.5)
-                                : Colors.white.withOpacity(0.5),
-                          ),
-                        ),
-                      const SizedBox(width: 8),
-                      Icon(
-                        widget.positions.defaultPosition == item
-                            ? Icons.radio_button_checked
-                            : Icons.circle,
-                        color: widget.positions.defaultPosition == item
-                            ? dmodel.color
-                            : CustomColors.textColor(context).withOpacity(0.5),
-                      ),
-                    ],
+        cv.ListView(
+          children: widget.positions.available,
+          isAnimated: true,
+          allowsDelete: true,
+          onDelete: (String value) {
+            setState(() {
+              widget.positions.removePosition(value);
+            });
+          },
+          onChildTap: (String item) {
+            setState(() {
+              widget.positions.defaultPosition = item;
+            });
+          },
+          childBuilder: (context, String item) {
+            return Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    item,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                 ),
-              );
-            },
-          ),
+                if (widget.positions.defaultPosition == item)
+                  Text(
+                    "Default",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: MediaQuery.of(context).platformBrightness ==
+                              Brightness.light
+                          ? Colors.black.withOpacity(0.5)
+                          : Colors.white.withOpacity(0.5),
+                    ),
+                  ),
+                const SizedBox(width: 8),
+                Icon(
+                  widget.positions.defaultPosition == item
+                      ? Icons.radio_button_checked
+                      : Icons.circle,
+                  color: widget.positions.defaultPosition == item
+                      ? dmodel.color
+                      : CustomColors.textColor(context).withOpacity(0.5),
+                ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 16),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            children: [
-              cv.TextField(
-                labelText: "Position",
-                onChanged: (value) {
-                  setState(() {
-                    _newPos = value;
-                  });
-                },
-                validator: (value) {},
-              ),
-              const SizedBox(height: 16),
-              cv.RoundedLabel(
-                "Add New",
-                color: CustomColors.cellColor(context),
-                textColor: CustomColors.textColor(context),
-                onTap: () {
-                  if (_newPos.isEmpty) {
-                    dmodel.addIndicator(IndicatorItem.error(
-                        "New position title cannot be empty"));
-                  } else if (widget.positions.available.contains(_newPos)) {
-                    dmodel.addIndicator(
-                        IndicatorItem.error("This position already exists"));
-                  } else if (widget.positions.available.length > 20) {
-                    dmodel.addIndicator(
-                        IndicatorItem.error("Max of 20 positions"));
-                  } else {
-                    setState(() {
-                      widget.positions.available.add(_newPos);
-                    });
-                    if (widget.positions.available.length == 1) {
-                      setState(() {
-                        widget.positions.defaultPosition = _newPos;
-                      });
-                    }
-                  }
-                },
-              )
-            ],
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          child: cv.AddField(
+            labelText: "New Position ...",
+            iconColor: dmodel.color,
+            validator: (value) {
+              if (value == "") {
+                dmodel.addIndicator(
+                    IndicatorItem.error("Position cannot be empty"));
+                return false;
+              } else if (widget.positions.available.any(
+                  (element) => element.toLowerCase() == value.toLowerCase())) {
+                dmodel.addIndicator(
+                    IndicatorItem.error("This position already exists"));
+                return false;
+              } else {
+                return true;
+              }
+            },
+            onCommit: (value) {
+              setState(() {
+                widget.positions.available.add(value);
+              });
+            },
           ),
         )
       ],

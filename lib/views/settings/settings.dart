@@ -116,7 +116,7 @@ class _SettingsState extends State<Settings> {
           cv.ListView(
             color: dmodel.color,
             children: dmodel.user!.teams.map((e) => e.title).toList(),
-            childBuilder: (String item) {
+            childBuilder: (context, String item) {
               return Text(item,
                   style: TextStyle(color: CustomColors.textColor(context)));
             },

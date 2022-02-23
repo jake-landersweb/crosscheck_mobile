@@ -23,9 +23,7 @@ ThemeData lightTheme = ThemeData(
     onSecondary: Colors.grey[300]!,
     onSurface: Colors.black,
     primary: Colors.blue, // accent color for the app
-    primaryVariant: Colors.blue[900]!,
     secondary: Colors.white,
-    secondaryVariant: Colors.orange[900]!,
     surface: Colors.white,
   ),
   dividerColor: Colors.black.withOpacity(0.1),

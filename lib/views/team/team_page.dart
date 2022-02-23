@@ -148,9 +148,6 @@ class _TeamPageState extends State<TeamPage> {
             value: widget.team.showNicknames ? "True" : "False",
           ),
         ],
-        childBuilder: (child) {
-          return child;
-        },
       ),
     );
   }
@@ -199,8 +196,11 @@ class _TeamPageState extends State<TeamPage> {
       child: Column(
         children: [
           if (widget.seasons.isEmpty)
-            cv.RoundedLabel("No Seasons Here",
-                color: CustomColors.cellColor(context))
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: cv.RoundedLabel("No Seasons Here",
+                  color: CustomColors.cellColor(context)),
+            )
           else
             cv.ListView<Season>(
               childPadding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
@@ -214,7 +214,7 @@ class _TeamPageState extends State<TeamPage> {
                   },
                 );
               },
-              childBuilder: (season) {
+              childBuilder: (context, season) {
                 return SizedBox(
                   height: 45,
                   child: Row(
@@ -277,7 +277,7 @@ class _TeamPageState extends State<TeamPage> {
       initOpen: false,
       child: cv.ListView(
         children: widget.team.positions.available,
-        childBuilder: (String pos) {
+        childBuilder: (context, String pos) {
           return cv.LabeledCell(
             padding: EdgeInsets.zero,
             label:
@@ -311,7 +311,7 @@ class _TeamPageState extends State<TeamPage> {
       initOpen: false,
       child: cv.ListView(
         children: widget.team.customFields,
-        childBuilder: (CustomField i) {
+        childBuilder: (context, CustomField i) {
           return cv.LabeledCell(
             padding: EdgeInsets.zero,
             label: i.title,
@@ -330,7 +330,7 @@ class _TeamPageState extends State<TeamPage> {
       initOpen: false,
       child: cv.ListView(
           children: widget.team.customUserFields,
-          childBuilder: (CustomField i) {
+          childBuilder: (context, CustomField i) {
             return cv.LabeledCell(
               padding: EdgeInsets.zero,
               label: i.title,
@@ -348,7 +348,7 @@ class _TeamPageState extends State<TeamPage> {
       initOpen: false,
       child: cv.ListView(
           children: widget.team.stats.stats,
-          childBuilder: (StatItem stat) {
+          childBuilder: (context, StatItem stat) {
             return cv.LabeledCell(
               padding: EdgeInsets.zero,
               height: cellHeight,
@@ -363,7 +363,12 @@ class _TeamPageState extends State<TeamPage> {
     if (widget.teamUser.isTeamAdmin()) {
       return cv.BasicButton(
         onTap: () {
-          cv.Navigate(context, EditTeam(team: widget.team));
+          showMaterialModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return TCERoot(user: dmodel.user!, team: widget.team);
+            },
+          );
         },
         child: Text(
           "Edit",

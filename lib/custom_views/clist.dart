@@ -26,7 +26,7 @@ class ListView<T> extends StatefulWidget {
     this.color = Colors.blue,
   }) : super(key: key);
   final List<T> children;
-  final Widget Function(T)? childBuilder;
+  final Widget Function(BuildContext, T)? childBuilder;
   final Color? backgroundColor;
   final bool hasDividers;
   final Widget Function()? dividerBuilder;
@@ -130,7 +130,7 @@ class _ListViewState<T> extends State<ListView<T>> {
       item: child,
       child: widget.childBuilder == null
           ? child as Widget
-          : widget.childBuilder!(child),
+          : widget.childBuilder!(context, child),
       padding: widget.childPadding,
       isAnimated: widget.isAnimated,
       allowsDelete: widget.allowsDelete,
@@ -206,18 +206,20 @@ class _ListViewCellState<T> extends State<_ListViewCell<T>>
       assert(widget.onDelete != null,
           "When [allowsDelete] is true, [onDelete] cannot be null.");
     }
-
-    super.initState();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 550),
       vsync: this,
+      value: widget.isAnimated ? 0 : 1,
     );
     _animation = CurvedAnimation(
       parent: _controller,
       curve: Sprung.overDamped,
     );
     // open container if is expanded
-    _controller.forward();
+    if (widget.isAnimated) {
+      _controller.forward();
+    }
+    super.initState();
   }
 
   void _remove() async {

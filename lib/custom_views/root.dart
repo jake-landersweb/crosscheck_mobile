@@ -21,3 +21,4 @@ export 'basic_model_selector.dart';
 export 'tab_bar.dart';
 export 'loading_wrapper.dart';
 export 'clist.dart';
+export 'add_field.dart';

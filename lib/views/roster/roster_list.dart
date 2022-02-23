@@ -44,44 +44,37 @@ class _RosterListState extends State<RosterList> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: cv.NativeList(
-        color: Colors.transparent,
-        padding: EdgeInsets.zero,
-        itemPadding: EdgeInsets.zero,
-        children: [
-          for (var i in widget.users) _cellWrapper(context, i),
-        ],
-      ),
+    return cv.ListView(
+      horizontalPadding: 0,
+      childPadding: const EdgeInsets.all(8),
+      color: Colors.transparent,
+      children: widget.users,
+      childBuilder: (context, SeasonUser item) {
+        return _cell(context, item, _internalTracker.contains(item.email));
+      },
+      onChildTap: widget.type == RosterListType.none
+          ? null
+          : (SeasonUser user) => _action(context, user),
     );
   }
 
-  Widget _cellWrapper(BuildContext context, SeasonUser i) {
+  void _action(BuildContext context, SeasonUser user) {
     switch (widget.type) {
       case RosterListType.navigator:
-        return cv.BasicButton(
-          onTap: () {
-            widget.onNavigate!(i);
-          },
-          child: _cell(context, i, false),
-        );
+        widget.onNavigate!(user);
+        break;
       case RosterListType.selector:
-        return cv.BasicButton(
-          onTap: () {
-            widget.onSelect!(i);
-            setState(() {
-              if (_internalTracker.any((element) => element == i.email)) {
-                _internalTracker.removeWhere((element) => element == i.email);
-              } else {
-                _internalTracker.add(i.email);
-              }
-            });
-          },
-          child: _cell(context, i, _internalTracker.contains(i.email)),
-        );
+        widget.onSelect!(user);
+        setState(() {
+          if (_internalTracker.any((element) => element == user.email)) {
+            _internalTracker.removeWhere((element) => element == user.email);
+          } else {
+            _internalTracker.add(user.email);
+          }
+        });
+        break;
       default:
-        return _cell(context, i, false);
+        break;
     }
   }
 
@@ -92,6 +85,7 @@ class _RosterListState extends State<RosterList> {
           ? RosterCell(
               name: i.name(widget.team.showNicknames),
               seed: i.email,
+              padding: EdgeInsets.zero,
               type: widget.type,
               color: widget.color,
               isSelected: isSelected,

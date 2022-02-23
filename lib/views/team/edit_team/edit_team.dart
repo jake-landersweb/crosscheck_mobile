@@ -131,169 +131,158 @@ class _EditTeamState extends State<EditTeam> {
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
       allowsCollapse: true,
       initOpen: true,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: cv.NativeList(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    "#" + _color,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
+      child: cv.ListView<Widget>(
+        childPadding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "#" + _color,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500),
                 ),
-                if (_showColorError)
-                  const Icon(Icons.priority_high, color: Colors.red),
-                cv.BasicButton(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          titlePadding: const EdgeInsets.all(0),
-                          contentPadding: const EdgeInsets.all(0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: MediaQuery.of(context).orientation ==
-                                    Orientation.portrait
-                                ? const BorderRadius.vertical(
-                                    top: Radius.circular(500),
-                                    bottom: Radius.circular(100),
-                                  )
-                                : const BorderRadius.horizontal(
-                                    right: Radius.circular(500)),
+              ),
+              if (_showColorError)
+                const Icon(Icons.priority_high, color: Colors.red),
+              cv.BasicButton(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        titlePadding: const EdgeInsets.all(0),
+                        contentPadding: const EdgeInsets.all(0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: MediaQuery.of(context).orientation ==
+                                  Orientation.portrait
+                              ? const BorderRadius.vertical(
+                                  top: Radius.circular(500),
+                                  bottom: Radius.circular(100),
+                                )
+                              : const BorderRadius.horizontal(
+                                  right: Radius.circular(500)),
+                        ),
+                        content: SingleChildScrollView(
+                          child: HueRingPicker(
+                            pickerColor: dmodel.color,
+                            onColorChanged: (color) {
+                              setState(() {
+                                _color =
+                                    color.value.toRadixString(16).substring(2);
+                                _showColorError =
+                                    ThemeData.estimateBrightnessForColor(
+                                            color) ==
+                                        Brightness.light;
+                              });
+                            },
+                            displayThumbColor: false,
                           ),
-                          content: SingleChildScrollView(
-                            child: HueRingPicker(
-                              pickerColor: dmodel.color,
-                              onColorChanged: (color) {
-                                setState(() {
-                                  _color = color.value
-                                      .toRadixString(16)
-                                      .substring(2);
-                                  _showColorError =
-                                      ThemeData.estimateBrightnessForColor(
-                                              color) ==
-                                          Brightness.light;
-                                });
-                              },
-                              displayThumbColor: false,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: cv.Circle(40, CustomColors.fromHex(_color)),
-                ),
-              ],
-            ),
-            cv.TextField(
-              labelText: "Team Note",
-              value: _teamNote,
-              fieldPadding: const EdgeInsets.all(0),
-              validator: (value) {},
-              onChanged: (value) {
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: cv.Circle(40, CustomColors.fromHex(_color)),
+              ),
+            ],
+          ),
+          cv.TextField(
+            labelText: "Team Note",
+            value: _teamNote,
+            fieldPadding: const EdgeInsets.all(0),
+            validator: (value) => null,
+            onChanged: (value) {
+              setState(() {
+                _teamNote = value;
+              });
+            },
+          ),
+          cv.LabeledWidget(
+            "Light Background",
+            child: FlutterSwitch(
+              value: _isLight,
+              height: 25,
+              width: 50,
+              toggleSize: 18,
+              activeColor: dmodel.color,
+              onToggle: (value) {
                 setState(() {
-                  _teamNote = value;
+                  _isLight = value;
                 });
               },
             ),
-            cv.LabeledWidget(
-              "Light Background",
-              child: FlutterSwitch(
-                value: _isLight,
-                height: 25,
-                width: 50,
-                toggleSize: 18,
-                activeColor: dmodel.color,
-                onToggle: (value) {
-                  setState(() {
-                    _isLight = value;
-                  });
-                },
-              ),
+          ),
+          cv.LabeledWidget(
+            "Show Player Nicknames",
+            child: FlutterSwitch(
+              value: _showNicknames,
+              height: 25,
+              width: 50,
+              toggleSize: 18,
+              activeColor: dmodel.color,
+              onToggle: (value) {
+                setState(() {
+                  _showNicknames = value;
+                });
+              },
             ),
-            cv.LabeledWidget(
-              "Show Player Nicknames",
-              child: FlutterSwitch(
-                value: _showNicknames,
-                height: 25,
-                width: 50,
-                toggleSize: 18,
-                activeColor: dmodel.color,
-                onToggle: (value) {
-                  setState(() {
-                    _showNicknames = value;
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _pos(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Positions",
-        allowsCollapse: true,
-        initOpen: false,
-        child: PositionsCreate(positions: _positions),
-      ),
+    return cv.Section(
+      "Positions",
+      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
+      allowsCollapse: true,
+      initOpen: false,
+      child: PositionsCreate(positions: _positions),
     );
   }
 
   Widget _customF(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Custom Fields",
-        allowsCollapse: true,
-        initOpen: false,
-        child: CustomFieldCreate(
-          customFields: _customFields,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
-        ),
+    return cv.Section(
+      "Custom Fields",
+      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
+      allowsCollapse: true,
+      initOpen: false,
+      child: CustomFieldCreate(
+        customFields: _customFields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
       ),
     );
   }
 
   Widget _customUserF(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Custom User Fields",
-        allowsCollapse: true,
-        initOpen: false,
-        child: CustomFieldCreate(
-          customFields: _customUserFields,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
-        ),
+    return cv.Section(
+      "Custom User Fields",
+      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
+      allowsCollapse: true,
+      initOpen: false,
+      child: CustomFieldCreate(
+        customFields: _customUserFields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
       ),
     );
   }
 
   Widget _statsView(BuildContext context, DataModel dmodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.Section(
-        "Stats",
-        allowsCollapse: true,
-        initOpen: false,
-        child: StatCEList(
-          color: dmodel.color,
-          team: widget.team,
-          stats: _stats,
-        ),
+    return cv.Section(
+      "Stats",
+      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
+      allowsCollapse: true,
+      initOpen: false,
+      child: StatCEList(
+        color: dmodel.color,
+        team: widget.team,
+        stats: _stats,
       ),
     );
   }

@@ -24,22 +24,6 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
     return Column(
       children: [
         if (widget.isCreate)
-          cv.TextField(
-            fieldPadding: const EdgeInsets.all(0),
-            showBackground: false,
-            value: widget.item.getTitle(),
-            isLabeled: true,
-            labelText: "Title",
-            charLimit: 25,
-            showCharacters: true,
-            onChanged: (value) {
-              widget.item.setTitle(value);
-            },
-            validator: (value) {},
-          )
-        else
-          cv.LabeledWidget("Title", child: Text(widget.item.getTitle())),
-        if (widget.isCreate)
           cv.SegmentedPicker(
             initialSelection: widget.item.getType(),
             titles: const ["Word", "Number", "True/False"],
@@ -68,6 +52,20 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
               }
             },
           ),
+        if (widget.isCreate)
+          cv.TextField(
+            fieldPadding: const EdgeInsets.all(0),
+            showBackground: false,
+            value: widget.item.getTitle(),
+            isLabeled: true,
+            labelText: "Title",
+            onChanged: (value) {
+              widget.item.setTitle(value);
+            },
+            validator: (value) => null,
+          )
+        else
+          cv.LabeledWidget("Title", child: Text(widget.item.getTitle())),
         SizedBox(height: 50, child: Center(child: _valField(context))),
       ],
     );
@@ -82,12 +80,10 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
           isLabeled: true,
           value: widget.item.getValue(),
           labelText: "Value",
-          charLimit: 25,
-          showCharacters: true,
           onChanged: (value) {
             widget.item.setValue(value);
           },
-          validator: (value) {},
+          validator: (value) => null,
         );
       case "I":
         return cv.LabeledWidget(

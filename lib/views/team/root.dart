@@ -4,3 +4,4 @@ export 'join_team.dart';
 export 'edit_team/edit_team.dart';
 export 'create_team.dart';
 export 'team_logo.dart';
+export 'tce/root.dart';

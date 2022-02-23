@@ -50,7 +50,7 @@ class IndicatorItem {
 
   Color getTextColor(BuildContext context) {
     switch (type) {
-      case IndicatorItemType.success:
+      case IndicatorItemType.error:
         return Colors.white;
       default:
         return MediaQuery.of(context).platformBrightness == Brightness.light

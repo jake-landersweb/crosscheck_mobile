@@ -325,7 +325,7 @@ class _LoginState extends State<Login> {
     // log the user in and set the variable to show the home screen
     if (widget.isCreate) {
       Map<String, dynamic> body = {
-        "firstName": _firstName.toLowerCase(),
+        "firstName": _firstName,
         "lastName": _lastName,
         "email": _email.toLowerCase(),
         "password": _password,

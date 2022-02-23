@@ -19,7 +19,6 @@ class _CreateTeamState extends State<CreateTeam> {
   String _title = "";
 
   String _color = "";
-  String _image = "";
   String _website = "";
 
   bool _isLoading = false;
@@ -78,17 +77,6 @@ class _CreateTeamState extends State<CreateTeam> {
               },
             ),
             cv.TextField(
-              labelText: "Image (url)",
-              textCapitalization: TextCapitalization.none,
-              fieldPadding: const EdgeInsets.all(0),
-              validator: (value) {},
-              onChanged: (value) {
-                setState(() {
-                  _image = value;
-                });
-              },
-            ),
-            cv.TextField(
               labelText: "Website (url)",
               textCapitalization: TextCapitalization.none,
               fieldPadding: const EdgeInsets.all(0),
@@ -127,7 +115,6 @@ class _CreateTeamState extends State<CreateTeam> {
     Map<String, dynamic> body = {
       "title": _title,
       "color": _color,
-      "image": _image,
       "website": _website.toLowerCase(),
       "email": dmodel.user!.email,
     };

@@ -30,13 +30,19 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        cv.AnimatedList<DynamicField>(
-          enabled: widget.enabled,
-          cellColor: widget.cellColor,
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-          buttonPadding: 20,
+        cv.ListView(
+          allowsDelete: widget.enabled,
+          isAnimated: true,
+          backgroundColor: widget.cellColor,
+          childPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          onDelete: (DynamicField item) {
+            setState(() {
+              widget.customFields.removeWhere(
+                  (element) => element.getTitle() == item.getTitle());
+            });
+          },
           children: widget.customFields,
-          cellBuilder: (BuildContext context, DynamicField item) {
+          childBuilder: (BuildContext context, DynamicField item) {
             return CustomFieldField(
               item: item,
               color: widget.color,
@@ -46,7 +52,7 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
         ),
         if (widget.isCreate)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.fromLTRB(32, 16, 32, 0),
             child: cv.RoundedLabel(
               "Add New",
               color: CustomColors.cellColor(context),

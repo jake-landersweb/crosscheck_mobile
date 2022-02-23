@@ -38,6 +38,7 @@ class _ImageUploaderState extends State<ImageUploader> {
         hasDividers: false,
         childPadding: EdgeInsets.zero,
         children: [
+          const SizedBox(height: 16),
           if (_currentImage == null)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -159,6 +160,7 @@ class _ImageUploaderState extends State<ImageUploader> {
         // update the team image to the new presigned url
         setState(() {
           widget.team.setImage(newImg);
+          dmodel.tus!.team.setImage(newImg);
         });
         Navigator.of(context).pop();
       }, onError: () {

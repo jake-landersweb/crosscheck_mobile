@@ -65,4 +65,5 @@ amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
 **.sample
+hidden_assets/
 #amplify-do-not-edit-end

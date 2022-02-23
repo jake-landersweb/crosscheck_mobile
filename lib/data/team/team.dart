@@ -52,6 +52,21 @@ class Team extends Equatable {
     stats = TeamStat.empty();
   }
 
+  Team clone() => Team(
+        teamId: teamId,
+        title: title,
+        teamCode: teamCode,
+        website: website,
+        color: color,
+        image: image,
+        isLight: isLight,
+        positions: positions.clone(),
+        customFields: [for (var i in customFields) i.clone()],
+        customUserFields: [for (var i in customUserFields) i.clone()],
+        showNicknames: showNicknames,
+        stats: stats.clone(),
+      );
+
   // for making copies
   Team.of(Team team) {
     teamId = team.teamId;

@@ -22,92 +22,54 @@ class StatCEList extends StatefulWidget {
 }
 
 class _StatCEListState extends State<StatCEList> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    _controller = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        cv.AnimatedList<StatItem>(
-          padding: EdgeInsets.zero,
-          cellBuilder: (context, stat) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
-              child: cv.LabeledCell(
-                  value:
-                      "${stat.title[0].toUpperCase()}${stat.title.substring(1)}",
-                  label: "Title"),
-            );
+        cv.ListView(
+          isAnimated: true,
+          allowsDelete: true,
+          onDelete: (StatItem stat) {
+            setState(() {
+              widget.stats.stats
+                  .removeWhere((element) => element.title == stat.title);
+            });
+          },
+          childBuilder: (context, StatItem stat) {
+            return cv.LabeledCell(
+                padding: EdgeInsets.zero,
+                value:
+                    "${stat.title[0].toUpperCase()}${stat.title.substring(1)}",
+                label: "Title");
           },
           children: widget.stats.stats,
         ),
         const SizedBox(height: 16),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(25),
-          child: Container(
-            color: CustomColors.cellColor(context),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: cv.TextField(
-                      labelText: "New Stat Title",
-                      controller: _controller,
-                      showBackground: false,
-                      onChanged: (value) {},
-                      validator: (value) => null,
-                    ),
-                  ),
-                  cv.BasicButton(
-                    onTap: () {
-                      if (_controller.text.isNotEmpty &&
-                          !widget.stats.stats.any((element) =>
-                              element.title ==
-                              _controller.text.toLowerCase())) {
-                        setState(() {
-                          widget.stats.addStat(_controller.text.toLowerCase());
-                          _controller.text = "";
-                        });
-                      } else {
-                        dmodel.addIndicator(
-                            IndicatorItem.error("Invalid Stat Title"));
-                      }
-                    },
-                    child: Container(
-                      color: widget.color,
-                      height: 50,
-                      child: const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          child: Text(
-                            "Add",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          child: cv.AddField(
+            labelText: "New Stat ...",
+            iconColor: dmodel.color,
+            validator: (value) {
+              if (value == "") {
+                dmodel
+                    .addIndicator(IndicatorItem.error("Stat cannot be empty"));
+                return false;
+              } else if (widget.stats.stats.any((element) =>
+                  element.title.toLowerCase() == value.toLowerCase())) {
+                dmodel.addIndicator(
+                    IndicatorItem.error("This stat already exists"));
+                return false;
+              } else {
+                return true;
+              }
+            },
+            onCommit: (value) {
+              setState(() {
+                widget.stats.addStat(value);
+              });
+            },
           ),
         ),
       ],

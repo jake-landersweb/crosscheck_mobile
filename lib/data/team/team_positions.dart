@@ -27,6 +27,11 @@ class TeamPositions {
     available = temp;
   }
 
+  TeamPositions clone() => TeamPositions(
+      isActive: isActive,
+      defaultPosition: defaultPosition,
+      available: [for (var i in available) i]);
+
   TeamPositions.of(TeamPositions positions) {
     defaultPosition = positions.defaultPosition;
     available = List.of(positions.available);
@@ -39,6 +44,10 @@ class TeamPositions {
     data['available'] = available;
     data['isActive'] = isActive;
     return data;
+  }
+
+  void removePosition(String value) {
+    available.removeWhere((element) => element == value);
   }
 
   void setDefault(String value) {
