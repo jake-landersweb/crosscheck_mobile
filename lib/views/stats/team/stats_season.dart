@@ -40,7 +40,7 @@ class _StatsSeasonState extends State<StatsSeason> {
     DataModel dmodel = Provider.of<DataModel>(context);
     StatsSeasonModel smodel = Provider.of<StatsSeasonModel>(context);
     return cv.AppBar(
-      title: "${widget.season.title} Stats",
+      title: "Season Stats",
       isLarge: true,
       backgroundColor: CustomColors.backgroundColor(context),
       // refreshable: true,

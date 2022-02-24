@@ -28,7 +28,7 @@ class _NoTeamState extends State<NoTeam> {
           "Join Team",
           () {
             // join team
-            showMaterialModalBottomSheet(
+            cv.showFloatingSheet(
               context: context,
               builder: (context) {
                 return JoinTeam(email: dmodel.user!.email);
@@ -44,10 +44,13 @@ class _NoTeamState extends State<NoTeam> {
           "Create Team",
           () {
             // create team
-            showMaterialModalBottomSheet(
+            cv.showFloatingSheet(
               context: context,
               builder: (context) {
-                return const CreateTeam();
+                return TCETemplates(
+                  user: dmodel.user!,
+                  color: dmodel.color,
+                );
               },
             );
           },

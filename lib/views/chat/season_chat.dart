@@ -177,7 +177,7 @@ class _SeasonChatState extends State<SeasonChat> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16.0),
-                    child: cv.TextField(
+                    child: cv.TextField2(
                       controller: _controller,
                       labelText: "Type your message ...",
                       showBackground: false,
@@ -382,9 +382,9 @@ class _SeasonChatState extends State<SeasonChat> {
     };
     await dmodel.seasonUserUpdate(
         widget.team.teamId, widget.season.seasonId, widget.user.email, body,
-        (seasonUser) {
+        () {
       widget.seasonUser.seasonFields!.allowChatNotifications =
-          seasonUser.seasonFields!.allowChatNotifications;
+          !widget.seasonUser.seasonFields!.allowChatNotifications;
     });
     setState(() {
       _isUpdatingUser = false;

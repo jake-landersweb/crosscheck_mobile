@@ -8,6 +8,7 @@ class User extends Equatable {
   late String email;
   String? firstName;
   String? lastName;
+  late String phone;
   late List<UserTeam> teams;
   bool? emailNotifications;
   late List<MobileNotifications> mobileNotifications;
@@ -19,6 +20,7 @@ class User extends Equatable {
     required this.teams,
     this.emailNotifications = true,
     this.mobileNotifications = const [],
+    required this.phone,
   });
 
   // empty object
@@ -29,6 +31,7 @@ class User extends Equatable {
     teams = [];
     emailNotifications = true;
     mobileNotifications = [];
+    phone = "";
   }
 
   // for creating a copy
@@ -39,6 +42,7 @@ class User extends Equatable {
     teams = user.teams;
     emailNotifications = user.emailNotifications;
     mobileNotifications = user.mobileNotifications;
+    phone = user.phone;
   }
 
   // converting from json
@@ -51,6 +55,7 @@ class User extends Equatable {
       emailNotifications: json['emailNotifications'] ?? true,
       mobileNotifications:
           MobileNotifications.fromJson(json['mobileNotifications']),
+      phone: json['phone'] ?? "",
     );
     return user;
   }
@@ -63,7 +68,9 @@ class User extends Equatable {
       'lastName': lastName,
       'teams': teams,
       'emailNotifications': emailNotifications,
-      "mobileNotifications": mobileNotifications.map((v) => v.toJson()).toList()
+      "mobileNotifications":
+          mobileNotifications.map((v) => v.toJson()).toList(),
+      "phone": phone,
     };
   }
 

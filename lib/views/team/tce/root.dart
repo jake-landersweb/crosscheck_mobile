@@ -4,3 +4,4 @@ export 'tce_custom.dart';
 export 'tce_positions.dart';
 export 'tce_stats.dart';
 export 'tce_model.dart';
+export 'tce_templates.dart';

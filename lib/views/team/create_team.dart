@@ -50,7 +50,7 @@ class _CreateTeamState extends State<CreateTeam> {
         cv.Section(
           "Required",
           child: cv.NativeList(children: [
-            cv.TextField(
+            cv.TextField2(
               labelText: "Title",
               fieldPadding: const EdgeInsets.all(0),
               validator: (value) {},
@@ -65,7 +65,7 @@ class _CreateTeamState extends State<CreateTeam> {
         cv.Section(
           "Optional",
           child: cv.NativeList(children: [
-            cv.TextField(
+            cv.TextField2(
               labelText: "Color (hex string)",
               textCapitalization: TextCapitalization.none,
               fieldPadding: const EdgeInsets.all(0),
@@ -76,7 +76,7 @@ class _CreateTeamState extends State<CreateTeam> {
                 });
               },
             ),
-            cv.TextField(
+            cv.TextField2(
               labelText: "Website (url)",
               textCapitalization: TextCapitalization.none,
               fieldPadding: const EdgeInsets.all(0),

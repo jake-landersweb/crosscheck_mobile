@@ -41,9 +41,10 @@ class _JoinTeamState extends State<JoinTeam> {
               color: CustomColors.cellColor(context),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: cv.DynamicTextField(
+                child: cv.TextField2(
                   labelText: "Code",
                   fieldPadding: const EdgeInsets.all(0),
+                  validator: (v) => null,
                   showCharacters: true,
                   showBackground: false,
                   value: _code,

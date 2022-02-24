@@ -131,11 +131,11 @@ class _TeamPageState extends State<TeamPage> {
               label: "Color",
               value: "#" + widget.team.color,
             ),
-          if (!widget.team.teamNote.isEmpty())
+          if (widget.team.teamNote.isNotEmpty)
             cv.LabeledCell(
               padding: EdgeInsets.zero,
               label: "Team Note",
-              value: widget.team.teamNote!,
+              value: widget.team.teamNote,
             ),
           cv.LabeledCell(
             padding: EdgeInsets.zero,
@@ -366,7 +366,11 @@ class _TeamPageState extends State<TeamPage> {
           showMaterialModalBottomSheet(
             context: context,
             builder: (context) {
-              return TCERoot(user: dmodel.user!, team: widget.team);
+              return TCERoot(
+                user: dmodel.user!,
+                team: widget.team,
+                isCreate: false,
+              );
             },
           );
         },

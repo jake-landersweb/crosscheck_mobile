@@ -9,15 +9,16 @@ class TCEModel extends ChangeNotifier {
   late User user;
   late Team team;
   late bool isCreate;
+  late bool imgIsUrl;
 
-  TCEModel.create(this.user) {
-    team = Team.empty();
-    isCreate = true;
+  TCEModel.create(this.user, this.team, this.isCreate) {
+    imgIsUrl = false;
   }
-
-  TCEModel.update(this.user, Team team) {
+  TCEModel.update(this.user, Team team, this.isCreate) {
     this.team = team.clone();
-    isCreate = false;
+    imgIsUrl = team.image.contains("https://crosscheck-sports.s3.amazonaws.com")
+        ? false
+        : true;
   }
 
   int index = 0;
@@ -152,11 +153,15 @@ class TCEModel extends ChangeNotifier {
     }
   }
 
-  String buttonTitle() {
-    return "";
-  }
-
-  bool isValidated() {
-    return false;
+  Tuple<bool, String> isValidated() {
+    if (team.title == "") {
+      return Tuple(false, "Title cannot be empty");
+    } else if (team.customFields.any((element) => element.title.isEmpty)) {
+      return Tuple(false, "Custom Fields empty");
+    } else if (team.customUserFields.any((element) => element.title.isEmpty)) {
+      return Tuple(false, "Custom User Fields empty");
+    } else {
+      return Tuple(true, isCreate ? "Create Team" : "Edit Team");
+    }
   }
 }

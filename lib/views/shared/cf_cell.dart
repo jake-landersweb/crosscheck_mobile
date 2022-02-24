@@ -9,10 +9,12 @@ class CustomFieldField extends StatefulWidget {
     required this.item,
     this.color = Colors.blue,
     this.isCreate = true,
+    this.valueLabelText = "Value",
   }) : super(key: key);
   final DynamicField item;
   final Color color;
   final bool isCreate;
+  final String valueLabelText;
 
   @override
   _CustomFieldFieldState createState() => _CustomFieldFieldState();
@@ -53,7 +55,7 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
             },
           ),
         if (widget.isCreate)
-          cv.TextField(
+          cv.TextField2(
             fieldPadding: const EdgeInsets.all(0),
             showBackground: false,
             value: widget.item.getTitle(),
@@ -74,12 +76,12 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
   Widget _valField(BuildContext context) {
     switch (widget.item.getType()) {
       case "S":
-        return cv.TextField(
+        return cv.TextField2(
           fieldPadding: const EdgeInsets.all(0),
           showBackground: false,
           isLabeled: true,
           value: widget.item.getValue(),
-          labelText: "Value",
+          labelText: widget.valueLabelText,
           onChanged: (value) {
             widget.item.setValue(value);
           },
@@ -87,7 +89,7 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
         );
       case "I":
         return cv.LabeledWidget(
-          "Value",
+          widget.valueLabelText,
           child: Row(
             children: [
               SizedBox(
@@ -122,7 +124,7 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
         );
       default:
         return cv.LabeledWidget(
-          "Value",
+          widget.valueLabelText,
           child: FlutterSwitch(
             value: widget.item.getValue() == "true" ? true : false,
             height: 25,

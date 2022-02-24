@@ -83,6 +83,10 @@ extension CustomColors on Colors {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 
+  static Color base() {
+    return CustomColors.fromHex("7bc5d6");
+  }
+
   static Color random2(String seed) {
     double num = 0;
     for (int i = 0; i < seed.length; i++) {

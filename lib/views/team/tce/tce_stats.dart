@@ -22,6 +22,7 @@ class _TCEStatsState extends State<TCEStats> {
       padding: EdgeInsets.zero,
       children: [
         _body(context, tcemodel, dmodel),
+        const SizedBox(height: 100),
       ],
     );
   }

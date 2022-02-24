@@ -108,7 +108,7 @@ class _TextEditCellFieldState extends State<TextEditCellField> {
 
   @override
   Widget build(BuildContext context) {
-    return cv.TextField(
+    return cv.TextField2(
       fieldPadding: EdgeInsets.zero,
       controller: controller,
       isLabeled: true,

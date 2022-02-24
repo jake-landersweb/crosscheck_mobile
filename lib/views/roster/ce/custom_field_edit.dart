@@ -33,7 +33,7 @@ class _CustomFieldEditState extends State<CustomFieldEdit> {
   }
 
   Widget _stringCell(BuildContext context) {
-    return cv.TextField(
+    return cv.TextField2(
       labelText: widget.field.getTitle(),
       value: widget.field.getValue(),
       onChanged: (value) {

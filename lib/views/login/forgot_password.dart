@@ -36,7 +36,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         childPadding: EdgeInsets.zero,
         hasDividers: false,
         children: [
-          cv.TextField(
+          cv.TextField2(
             labelText: "Email",
             obscureText: false,
             showBackground: false,
@@ -78,7 +78,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   List<Widget> _codeInput(BuildContext context, DataModel dmodel) {
     return [
-      cv.TextField(
+      cv.TextField2(
         labelText: "Code",
         obscureText: false,
         showBackground: false,
@@ -91,7 +91,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         },
         validator: (value) => null,
       ),
-      cv.TextField(
+      cv.TextField2(
         labelText: "New Password",
         obscureText: true,
         showBackground: false,
@@ -104,7 +104,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         },
         validator: (value) => null,
       ),
-      cv.TextField(
+      cv.TextField2(
         labelText: "ConfirmPassword",
         obscureText: true,
         showBackground: false,

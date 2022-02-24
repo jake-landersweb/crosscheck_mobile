@@ -31,12 +31,10 @@ class _SCEPositionsState extends State<SCEPositions> {
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: cv.Section(
-            "Positions",
-            child: PositionsCreate(positions: scemodel.positions),
-          ),
+        cv.Section(
+          "Positions",
+          headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
+          child: PositionsCreate(positions: scemodel.positions),
         ),
         const SizedBox(height: 100),
       ],

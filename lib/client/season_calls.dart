@@ -51,7 +51,7 @@ extension SeasonCalls on DataModel {
   }
 
   Future<void> seasonUserUpdate(String teamId, String seasonId, String email,
-      Map<String, dynamic> body, Function(SeasonUser) completion) async {
+      Map<String, dynamic> body, VoidCallback completion) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     await client
@@ -63,7 +63,7 @@ extension SeasonCalls on DataModel {
             IndicatorItem.error("There was an issue updating the user record"));
       } else if (response['status'] == 200) {
         addIndicator(IndicatorItem.success("Successfully updated user record"));
-        completion(SeasonUser.fromJson(response['body']));
+        completion();
       } else {
         addIndicator(
             IndicatorItem.error("There was an issue updating the user record"));

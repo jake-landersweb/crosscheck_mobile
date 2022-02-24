@@ -128,7 +128,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
           cv.Section("Leave a Note",
               child: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: cv.TextField(
+                child: cv.TextField2(
                   fieldPadding: EdgeInsets.zero,
                   controller: controller,
                   showBackground: false,

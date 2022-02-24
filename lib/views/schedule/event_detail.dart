@@ -92,6 +92,8 @@ class _EventDetailState extends State<EventDetail> {
             children: [
               _stats(context, dmodel),
               const SizedBox(height: 16),
+              _score(context, dmodel),
+              const SizedBox(height: 16),
             ],
           ),
         if (widget.event.hasAttendance)
@@ -266,6 +268,7 @@ class _EventDetailState extends State<EventDetail> {
       children: [
         for (var i in widget.event.customFields)
           cv.LabeledCell(
+            padding: const EdgeInsets.symmetric(vertical: 10),
             label: i.getTitle(),
             value: i.getValue(),
             textColor: widget.event.eventColor.isEmpty
@@ -307,6 +310,54 @@ class _EventDetailState extends State<EventDetail> {
               Expanded(
                 child: Text(
                   "Statistics",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: _accentColor(),
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: widget.event.eventColor.isEmpty
+                    ? CustomColors.textColor(context)
+                    : Colors.white,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _score(BuildContext context, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        cv.showFloatingSheet(
+          context: context,
+          builder: (context) {
+            return EventScore(
+                team: widget.team, season: widget.season, event: widget.event);
+          },
+        );
+      },
+      child: cv.NativeList(
+        itemPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        color: CustomColors.cellColor(context)
+            .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.sports_score,
+                color: widget.event.eventColor.isEmpty
+                    ? CustomColors.textColor(context)
+                    : Colors.white,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  "Score",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

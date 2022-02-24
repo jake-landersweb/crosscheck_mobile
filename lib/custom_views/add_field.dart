@@ -76,7 +76,7 @@ class _AddFieldState extends State<AddField> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: cv.TextField(
+                  child: cv.TextField2(
                     labelText: widget.labelText,
                     controller: _controller,
                     showBackground: false,

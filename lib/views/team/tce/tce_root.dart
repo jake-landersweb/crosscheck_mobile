@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -13,10 +14,12 @@ class TCERoot extends StatefulWidget {
   const TCERoot({
     Key? key,
     required this.user,
-    this.team,
+    required this.team,
+    required this.isCreate,
   }) : super(key: key);
   final User user;
-  final Team? team;
+  final Team team;
+  final bool isCreate;
 
   @override
   _TCERootState createState() => _TCERootState();
@@ -43,9 +46,9 @@ class _TCERootState extends State<TCERoot> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return ChangeNotifierProvider<TCEModel>(
-      create: (_) => widget.team == null
-          ? TCEModel.create(widget.user)
-          : TCEModel.update(widget.user, widget.team!),
+      create: (_) => widget.isCreate
+          ? TCEModel.create(widget.user, widget.team, true)
+          : TCEModel.update(widget.user, widget.team, false),
       // we use `builder` to obtain a new `BuildContext` that has access to the provider
       builder: (context, child) {
         // No longer throws
@@ -54,7 +57,7 @@ class _TCERootState extends State<TCERoot> {
           children: [
             cv.AppBar(
               canScroll: false,
-              title: widget.team == null ? "Create Team" : "Edit Team",
+              title: widget.isCreate ? "Create Team" : "Edit Team",
               children: [
                 Expanded(
                   child: _body(context, dmodel),
@@ -151,7 +154,7 @@ class _TCERootState extends State<TCERoot> {
                     duration: const Duration(milliseconds: 700),
                     curve: Sprung.overDamped,
                     decoration: BoxDecoration(
-                      color: tcemodel.isAtEnd() && !tcemodel.isValidated()
+                      color: tcemodel.isAtEnd() && !tcemodel.isValidated().v1()
                           ? Colors.red.withOpacity(0.3)
                           : dmodel.color,
                       borderRadius: BorderRadius.circular(25),
@@ -165,12 +168,12 @@ class _TCERootState extends State<TCERoot> {
                             child: _isLoading
                                 ? const cv.LoadingIndicator(color: Colors.white)
                                 : Text(
-                                    tcemodel.buttonTitle(),
+                                    tcemodel.isValidated().v2(),
                                     softWrap: false,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16,
-                                      color: tcemodel.isValidated()
+                                      color: tcemodel.isValidated().v1()
                                           ? Colors.white
                                           : Colors.red[900],
                                     ),
@@ -185,9 +188,9 @@ class _TCERootState extends State<TCERoot> {
               ),
               onTap: () {
                 if (tcemodel.isAtEnd()) {
-                  if (tcemodel.isValidated()) {
+                  if (tcemodel.isValidated().v1()) {
                     if (tcemodel.isCreate) {
-                      // _create(context, dmodel, scemodel);
+                      _create(context, dmodel, tcemodel);
                     } else {
                       _update(context, dmodel, tcemodel);
                     }
@@ -228,8 +231,8 @@ class _TCERootState extends State<TCERoot> {
     }
 
     if (tcemodel.team.customUserFields.length ==
-        widget.team!.customUserFields.length) {
-      for (var i in widget.team!.customUserFields) {
+        widget.team.customUserFields.length) {
+      for (var i in widget.team.customUserFields) {
         if (!tcemodel.team.customUserFields.any((element) => element == i)) {
           addUserFields();
         }
@@ -244,11 +247,11 @@ class _TCERootState extends State<TCERoot> {
     }
 
     // check length
-    if (tcemodel.team.stats.stats.length != widget.team!.stats.stats.length) {
+    if (tcemodel.team.stats.stats.length != widget.team.stats.stats.length) {
       addStats();
     } else {
       // check for new items
-      for (var i in widget.team!.stats.stats) {
+      for (var i in widget.team.stats.stats) {
         if (!tcemodel.team.stats.stats
             .any((element) => element.title == i.title)) {
           addStats();
@@ -258,14 +261,49 @@ class _TCERootState extends State<TCERoot> {
 
     print(body);
 
-    await dmodel.updateTeam(widget.team!.teamId, body, () {
+    await dmodel.updateTeam(widget.team.teamId, body, () {
       Navigator.of(context).pop();
       // get the new team data
-      dmodel.teamUserSeasonsGet(widget.team!.teamId, dmodel.user!.email, (tus) {
+      dmodel.teamUserSeasonsGet(widget.team.teamId, dmodel.user!.email, (tus) {
         dmodel.setTUS(tus);
         return;
       });
     });
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _create(
+      BuildContext context, DataModel dmodel, TCEModel tcemodel) async {
+    setState(() {
+      _isLoading = true;
+    });
+    // create the body
+    Map<String, dynamic> body = {
+      "title": tcemodel.team.title,
+      "color": tcemodel.team.color,
+      "isLight": tcemodel.team.isLight,
+      "teamNote": tcemodel.team.teamNote,
+      "customFields":
+          tcemodel.team.customFields.map((e) => e.toJson()).toList(),
+      "positions": tcemodel.team.positions.toJson(),
+      "showNicknames": tcemodel.team.showNicknames,
+      "email": widget.user.email,
+      "customUserFields":
+          tcemodel.team.customUserFields.map((e) => e.toJson()).toList(),
+      "stats": tcemodel.team.stats.toJson(),
+    };
+
+    // set the request
+    await dmodel.createTeam(body, (team) {
+      // get the team with the teamid
+      dmodel.teamUserSeasonsGet(team.teamId, dmodel.user!.email, (tus) {
+        dmodel.setTUS(tus);
+        Navigator.of(context).pop();
+      });
+    });
+
     setState(() {
       _isLoading = false;
     });

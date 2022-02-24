@@ -42,7 +42,7 @@ class _RUCEUserState extends State<RUCEUser> {
       return cv.NativeList(
         itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         children: [
-          cv.TextField(
+          cv.TextField2(
             labelText: "Email",
             isLabeled: true,
             showBackground: false,
@@ -65,7 +65,7 @@ class _RUCEUserState extends State<RUCEUser> {
   }
 
   Widget _firstName(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField(
+    return cv.TextField2(
       labelText: "First Name",
       isLabeled: true,
       showBackground: false,
@@ -78,7 +78,7 @@ class _RUCEUserState extends State<RUCEUser> {
   }
 
   Widget _lastName(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField(
+    return cv.TextField2(
       labelText: "Last Name",
       isLabeled: true,
       showBackground: false,
@@ -91,7 +91,7 @@ class _RUCEUserState extends State<RUCEUser> {
   }
 
   Widget _phone(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField(
+    return cv.TextField2(
       labelText: "Phone",
       isLabeled: true,
       showBackground: false,

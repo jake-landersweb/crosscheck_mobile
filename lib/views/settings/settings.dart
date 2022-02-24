@@ -102,6 +102,27 @@ class _SettingsState extends State<Settings> {
               fontWeight: FontWeight.w600,
             ),
           ),
+          const SizedBox(height: 16),
+          // basic info fields
+          cv.ListView(
+            horizontalPadding: 0,
+            children: [
+              if (dmodel.user!.firstName?.isNotEmpty ?? false)
+                Tuple("First Name", dmodel.user!.firstName),
+              if (dmodel.user!.lastName?.isNotEmpty ?? false)
+                Tuple("Last Name", dmodel.user!.lastName),
+              Tuple("Email", dmodel.user!.email),
+              if (dmodel.user!.phone.isNotEmpty)
+                Tuple("Phone", dmodel.user!.phone),
+            ],
+            childBuilder: (context, Tuple item) {
+              return cv.LabeledCell(
+                label: item.v1(),
+                value: item.v2(),
+                padding: EdgeInsets.zero,
+              );
+            },
+          ),
         ],
       ),
     );

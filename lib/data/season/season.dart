@@ -150,15 +150,54 @@ class Season extends Equatable {
       ],
     );
     customFields = [
-      CustomField(title: "Rink Address", type: "S", value: ""),
+      CustomField(
+          title: "Rink Address", type: "S", value: "1000 Sherwood Blvd"),
     ];
     customUserFields = [
       CustomField(title: "USA Hockey Number", type: "S", value: ""),
+      CustomField(title: "Has Paid Season Dues", type: "B", value: "false"),
     ];
-    eventCustomFieldsTemplate = [];
-    eventCustomUserFieldsTemplate = [];
+    eventCustomFieldsTemplate = [
+      CustomField(title: "Notes from last game", type: "S", value: ""),
+    ];
+    eventCustomUserFieldsTemplate = [
+      CustomField(title: "Is Bringing Tape", type: "B", value: "false"),
+      CustomField(title: "Needs Jersey", type: "B", value: "false"),
+    ];
     website = "";
     sportCode = 1;
+  }
+
+  Season.golf() {
+    id = "";
+    title = "";
+    seasonId = "";
+    seasonCode = "";
+    seasonStatus = 2;
+    seasonNote = "";
+    positions = TeamPositions(
+      isActive: true,
+      defaultPosition: "",
+      available: [],
+    );
+    customFields = [
+      CustomField(
+          title: "Club House Address", type: "S", value: "1000 Sherwood Blvd"),
+    ];
+    customUserFields = [
+      CustomField(title: "Handness", type: "S", value: "Right"),
+      CustomField(title: "Has Paid Dues", type: "B", value: "false"),
+      CustomField(title: "Handicap", type: "S", value: "15"),
+    ];
+    eventCustomFieldsTemplate = [
+      CustomField(title: "Dress Code", type: "S", value: "Formal"),
+      CustomField(title: "Golf Carts Supplied", type: "B", value: "true"),
+    ];
+    eventCustomUserFieldsTemplate = [
+      CustomField(title: "Need Rental Clubs", type: "B", value: "false"),
+    ];
+    website = "";
+    sportCode = 6;
   }
 
   Season.football() {

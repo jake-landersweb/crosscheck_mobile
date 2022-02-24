@@ -20,7 +20,7 @@ class StatCECell extends StatefulWidget {
 class _StatCECellState extends State<StatCECell> {
   @override
   Widget build(BuildContext context) {
-    return cv.TextField(
+    return cv.TextField2(
       fieldPadding: EdgeInsets.zero,
       value: widget.item.getTitle(),
       labelText: "Title",

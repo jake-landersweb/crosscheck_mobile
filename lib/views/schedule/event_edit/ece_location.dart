@@ -39,7 +39,7 @@ class _ECELocationState extends State<ECELocation> {
           itemPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             // location
-            cv.TextField(
+            cv.TextField2(
               labelText: "Name",
               onChanged: (value) {
                 setState(() {
@@ -51,7 +51,7 @@ class _ECELocationState extends State<ECELocation> {
               value: ecemodel.event.eventLocation.name ?? "",
               isLabeled: true,
             ),
-            cv.TextField(
+            cv.TextField2(
               labelText: "Address",
               onChanged: (value) {
                 setState(() {

@@ -68,7 +68,7 @@ class _StatsUsersEditState extends State<StatsUsersEdit> {
   Widget _body(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
-        cv.TextField(
+        cv.TextField2(
           // fieldPadding: EdgeInsets.zero,
           value: _filterText,
           showBackground: true,

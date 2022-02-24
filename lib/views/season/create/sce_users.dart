@@ -86,33 +86,27 @@ class _SCEUsersState extends State<SCEUsers> {
           ? Container()
           : cv.Section(
               "Team Users",
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: cv.AnimatedList<SeasonUser>(
-                  childPadding: EdgeInsets.zero,
-                  padding: EdgeInsets.zero,
-                  enabled: false,
-                  children: scemodel.teamUsers,
-                  cellBuilder: (context, item) {
-                    return cv.BasicButton(
-                      onTap: () {
-                        setState(() {
-                          scemodel.teamUsers.removeWhere(
-                              (element) => element.email == item.email);
-                        });
-                      },
-                      child: RosterCell(
-                        // padding: EdgeInsets.zero,
-                        name: item.name(widget.team.showNicknames),
-                        seed: item.email,
-                        color: dmodel.color,
-                        type: RosterListType.selector,
-                        isSelected: scemodel.teamUsers
-                            .any((element) => element.email == item.email),
-                      ),
-                    );
-                  },
-                ),
+              child: cv.ListView<SeasonUser>(
+                children: scemodel.teamUsers,
+                childPadding: const EdgeInsets.all(8),
+                horizontalPadding: 0,
+                onChildTap: (item) {
+                  setState(() {
+                    scemodel.teamUsers
+                        .removeWhere((element) => element.email == item.email);
+                  });
+                },
+                childBuilder: (context, item) {
+                  return RosterCell(
+                    padding: EdgeInsets.zero,
+                    name: item.name(widget.team.showNicknames),
+                    seed: item.email,
+                    color: dmodel.color,
+                    type: RosterListType.selector,
+                    isSelected: scemodel.teamUsers
+                        .any((element) => element.email == item.email),
+                  );
+                },
               ),
             ),
     );

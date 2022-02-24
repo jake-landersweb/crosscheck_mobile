@@ -34,9 +34,9 @@ class _SCEBasicState extends State<SCEBasic> {
       children: [
         _required(context, dmodel, scemodel),
         _basicInfo(context, dmodel, scemodel),
-        if (scemodel.isCreate)
-          _templates(context, dmodel, scemodel)
-        else
+        if (!scemodel.isCreate)
+          //   _templates(context, dmodel, scemodel)
+          // else
           _status(context, dmodel, scemodel),
       ],
     );
@@ -51,7 +51,7 @@ class _SCEBasicState extends State<SCEBasic> {
           children: [
             SizedBox(
               height: cellHeight,
-              child: cv.TextField(
+              child: cv.TextField2(
                 labelText: "Title",
                 value: scemodel.title,
                 showBackground: false,
@@ -80,7 +80,7 @@ class _SCEBasicState extends State<SCEBasic> {
           children: [
             SizedBox(
               height: cellHeight,
-              child: cv.TextField(
+              child: cv.TextField2(
                 value: scemodel.website,
                 labelText: "Website (url)",
                 showBackground: false,
@@ -96,7 +96,7 @@ class _SCEBasicState extends State<SCEBasic> {
             ),
             SizedBox(
               height: cellHeight,
-              child: cv.TextField(
+              child: cv.TextField2(
                 value: scemodel.seasonNote,
                 labelText: "Season Note",
                 showBackground: false,

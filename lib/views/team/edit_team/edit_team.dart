@@ -45,7 +45,7 @@ class _EditTeamState extends State<EditTeam> {
     super.initState();
     _color =
         context.read<DataModel>().color.value.toRadixString(16).substring(2);
-    _teamNote = widget.team.teamNote ?? "";
+    _teamNote = widget.team.teamNote;
     _isLight = widget.team.isLight;
     _customFields = [for (var i in widget.team.customFields) i.clone()];
     _customUserFields = [
@@ -187,7 +187,7 @@ class _EditTeamState extends State<EditTeam> {
               ),
             ],
           ),
-          cv.TextField(
+          cv.TextField2(
             labelText: "Team Note",
             value: _teamNote,
             fieldPadding: const EdgeInsets.all(0),

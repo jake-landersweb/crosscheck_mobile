@@ -4,6 +4,27 @@ import 'package:pnflutter/extras/root.dart';
 import 'package:sprung/sprung.dart';
 import 'root.dart' as cv;
 
+/// ``` dart
+/// Key? key,
+/// required this.children,
+/// this.childBuilder,
+/// this.backgroundColor,
+/// this.hasDividers = true,
+/// this.dividerBuilder,
+/// this.childPadding = const EdgeInsets.all(16),
+/// this.horizontalPadding = 16,
+/// this.borderRadius = 10,
+/// this.onChildTap,
+/// this.isAnimated = false,
+/// this.allowsDelete = false,
+/// this.onDelete,
+/// this.showStyling = true,
+/// this.selected,
+/// this.allowsSelect = false,
+/// this.onSelect,
+/// this.color = Colors.blue,
+/// this.selectedLogic,
+/// ```
 class ListView<T> extends StatefulWidget {
   const ListView({
     Key? key,
@@ -24,6 +45,7 @@ class ListView<T> extends StatefulWidget {
     this.allowsSelect = false,
     this.onSelect,
     this.color = Colors.blue,
+    this.selectedLogic,
   }) : super(key: key);
   final List<T> children;
   final Widget Function(BuildContext, T)? childBuilder;
@@ -42,6 +64,7 @@ class ListView<T> extends StatefulWidget {
   final bool allowsSelect;
   final Function(T)? onSelect;
   final Color color;
+  final bool Function(T)? selectedLogic;
 
   @override
   _ListViewState<T> createState() => _ListViewState<T>();
@@ -146,7 +169,9 @@ class _ListViewState<T> extends State<ListView<T>> {
       allowsSelect: widget.allowsSelect,
       onSelect: widget.onSelect,
       color: widget.color,
-      isSelected: widget.selected?.any((element) => element == child) ?? false,
+      isSelected: widget.selectedLogic != null
+          ? widget.selectedLogic!(child)
+          : widget.selected?.any((element) => element == child) ?? false,
     );
   }
 }

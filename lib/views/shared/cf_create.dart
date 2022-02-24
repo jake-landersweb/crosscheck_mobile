@@ -5,21 +5,23 @@ import 'root.dart';
 import '../../custom_views/root.dart' as cv;
 
 class CustomFieldCreate extends StatefulWidget {
-  const CustomFieldCreate({
-    Key? key,
-    required this.customFields,
-    required this.onAdd,
-    this.color = Colors.blue,
-    this.isCreate = true,
-    this.cellColor,
-    this.enabled = true,
-  }) : super(key: key);
+  const CustomFieldCreate(
+      {Key? key,
+      required this.customFields,
+      required this.onAdd,
+      this.color = Colors.blue,
+      this.isCreate = true,
+      this.cellColor,
+      this.enabled = true,
+      this.valueLabelText = "Value"})
+      : super(key: key);
   final List<DynamicField> customFields;
   final DynamicField Function() onAdd;
   final Color color;
   final bool isCreate;
   final Color? cellColor;
   final bool enabled;
+  final String valueLabelText;
 
   @override
   _CustomFieldCreateState createState() => _CustomFieldCreateState();
@@ -47,6 +49,7 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
               item: item,
               color: widget.color,
               isCreate: widget.isCreate,
+              valueLabelText: widget.valueLabelText,
             );
           },
         ),

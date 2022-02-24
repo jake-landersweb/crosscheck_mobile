@@ -23,6 +23,7 @@ class _TCECUstomState extends State<TCECUstom> {
       children: [
         _customF(context, tcemodel, dmodel),
         _customUserF(context, tcemodel, dmodel),
+        const SizedBox(height: 100),
       ],
     );
   }
@@ -50,6 +51,7 @@ class _TCECUstomState extends State<TCECUstom> {
       allowsCollapse: true,
       initOpen: true,
       child: CustomFieldCreate(
+        valueLabelText: "Default Value",
         customFields: tcemodel.team.customUserFields,
         onAdd: () {
           return CustomField(title: "", type: "S", value: "");

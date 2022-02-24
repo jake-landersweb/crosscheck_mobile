@@ -181,7 +181,7 @@ class _ECEBasicState extends State<ECEBasic> {
       itemPadding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
         (ecemodel.event.eventType == 1)
-            ? cv.TextField(
+            ? cv.TextField2(
                 labelText: "Opponent",
                 showBackground: false,
                 fieldPadding: EdgeInsets.zero,
@@ -194,7 +194,7 @@ class _ECEBasicState extends State<ECEBasic> {
                 },
                 validator: (value) {},
               )
-            : cv.TextField(
+            : cv.TextField2(
                 labelText: "Title",
                 showBackground: false,
                 fieldPadding: EdgeInsets.zero,
@@ -221,7 +221,7 @@ class _ECEBasicState extends State<ECEBasic> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: cv.TextField(
+              child: cv.TextField2(
                 labelText: "Description",
                 onChanged: (value) {
                   setState(() {

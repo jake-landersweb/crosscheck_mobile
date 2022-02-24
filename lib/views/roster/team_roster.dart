@@ -65,26 +65,26 @@ class _TeamRosterState extends State<TeamRoster> {
                   seasonUser: user,
                   teamUser: dmodel.tus!.user,
                   onUserEdit: (body) async {
-                    print(body);
-                    // await dmodel.seasonUserUpdate(
-                    //   dmodel.tus!.team.teamId,
-                    //   dmodel.currentSeason!.seasonId,
-                    //   user.email,
-                    //   body,
-                    //   (seasonUser) async {
-                    //     Navigator.of(context).pop();
-                    //     Navigator.of(context).pop();
-                    //     // get latest season roster data
-                    //     setState(() {
-                    //       dmodel.seasonUsers = null;
-                    //     });
-                    //     await dmodel.getSeasonRoster(
-                    //       dmodel.tus!.team.teamId,
-                    //       dmodel.currentSeason!.seasonId,
-                    //       (p0) => dmodel.setSeasonUsers(p0),
-                    //     );
-                    //   },
-                    // );
+                    // print(body);
+                    await dmodel.seasonUserUpdate(
+                      dmodel.tus!.team.teamId,
+                      dmodel.currentSeason!.seasonId,
+                      user.email,
+                      body,
+                      () async {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        // get latest season roster data
+                        setState(() {
+                          dmodel.seasonUsers = null;
+                        });
+                        await dmodel.getSeasonRoster(
+                          dmodel.tus!.team.teamId,
+                          dmodel.currentSeason!.seasonId,
+                          (p0) => dmodel.setSeasonUsers(p0),
+                        );
+                      },
+                    );
                   },
                 ),
               );

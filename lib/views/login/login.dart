@@ -156,7 +156,7 @@ class _LoginState extends State<Login> {
         color: CustomColors.cellColor(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: cv.TextField(
+          child: cv.TextField2(
             labelText: title,
             obscureText: obscure,
             showBackground: false,

@@ -142,7 +142,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        cv.TextField(
+        cv.TextField2(
           fieldPadding: EdgeInsets.zero,
           controller: controller,
           showBackground: false,

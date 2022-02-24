@@ -48,7 +48,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
                       dmodel.currentSeason!.seasonId,
                       user.email,
                       body,
-                      (seasonUser) async {
+                      () async {
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
                         // get latest season roster data

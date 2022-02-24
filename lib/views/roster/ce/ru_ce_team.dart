@@ -43,7 +43,7 @@ class _RUCETeamState extends State<RUCETeam> {
   }
 
   Widget _note(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField(
+    return cv.TextField2(
       labelText: "Note",
       isLabeled: true,
       showBackground: false,
@@ -89,7 +89,7 @@ class _RUCETeamState extends State<RUCETeam> {
   }
 
   Widget _jerseySize(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField(
+    return cv.TextField2(
       labelText: "Jersey Size",
       isLabeled: true,
       showBackground: false,
@@ -102,7 +102,7 @@ class _RUCETeamState extends State<RUCETeam> {
   }
 
   Widget _jerseyNumber(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField(
+    return cv.TextField2(
       labelText: "Jersey Number",
       keyboardType: TextInputType.number,
       isLabeled: true,
@@ -116,7 +116,7 @@ class _RUCETeamState extends State<RUCETeam> {
   }
 
   Widget _nickname(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField(
+    return cv.TextField2(
       labelText: "Nickname",
       isLabeled: true,
       showBackground: false,

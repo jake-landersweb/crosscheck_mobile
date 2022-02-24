@@ -54,8 +54,8 @@ class IndicatorItem {
         return Colors.white;
       default:
         return MediaQuery.of(context).platformBrightness == Brightness.light
-            ? Colors.white
-            : Colors.black;
+            ? Colors.black
+            : Colors.white;
     }
   }
 
