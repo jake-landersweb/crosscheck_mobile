@@ -5,9 +5,6 @@ import 'package:sprung/sprung.dart';
 import 'client/root.dart';
 import 'theme/root.dart';
 import 'views/root.dart';
-import 'extras/root.dart';
-import 'views/root.dart';
-import 'extras/root.dart';
 import 'custom_views/root.dart' as cv;
 
 void main() {

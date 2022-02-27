@@ -220,18 +220,30 @@ class _ECERootState extends State<ECERoot> {
       _isLoading = true;
     });
 
-    EventTeam homeTeam = EventTeam.empty();
-    EventTeam awayTeam = EventTeam.empty();
+    EventTeam homeTeam = widget.event?.homeTeam ?? EventTeam.empty();
+    EventTeam awayTeam = widget.event?.awayTeam ?? EventTeam.empty();
 
     if (ecemodel.event.eventType == 1) {
       if (ecemodel.isHome) {
         homeTeam = EventTeam(
-            title: widget.team.title, teamId: widget.team.teamId, score: 0);
-        awayTeam = EventTeam(title: ecemodel.opponentName, score: 0);
-      } else {
-        homeTeam = EventTeam(title: ecemodel.opponentName, score: 0);
+          title: widget.team.title,
+          teamId: widget.team.teamId,
+          score: homeTeam.score,
+        );
         awayTeam = EventTeam(
-            title: widget.team.title, teamId: widget.team.teamId, score: 0);
+          title: ecemodel.opponentName,
+          score: awayTeam.score,
+        );
+      } else {
+        homeTeam = EventTeam(
+          title: ecemodel.opponentName,
+          score: homeTeam.score,
+        );
+        awayTeam = EventTeam(
+          title: widget.team.title,
+          teamId: widget.team.teamId,
+          score: awayTeam.score,
+        );
       }
     }
 

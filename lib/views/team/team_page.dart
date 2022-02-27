@@ -204,7 +204,7 @@ class _TeamPageState extends State<TeamPage> {
           else
             cv.ListView<Season>(
               childPadding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
-              onChildTap: (season) {
+              onChildTap: (context, season) {
                 showMaterialModalBottomSheet(
                   enableDrag: false,
                   context: context,

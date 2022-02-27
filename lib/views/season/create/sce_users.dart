@@ -90,7 +90,7 @@ class _SCEUsersState extends State<SCEUsers> {
                 children: scemodel.teamUsers,
                 childPadding: const EdgeInsets.all(8),
                 horizontalPadding: 0,
-                onChildTap: (item) {
+                onChildTap: (context, item) {
                   setState(() {
                     scemodel.teamUsers
                         .removeWhere((element) => element.email == item.email);

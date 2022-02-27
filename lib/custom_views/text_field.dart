@@ -8,6 +8,23 @@ import 'core/root.dart';
 
 enum TextFieldType { string, integer }
 
+/// ```dart
+/// Key? key,
+/// required this.label,
+/// this.onChanged,
+/// this.validator,
+/// this.controller,
+/// this.icon,
+/// this.obscureText = false,
+/// this.formatters = const [],
+/// this.initialValue = "",
+/// this.keyboardType,
+/// this.type = TextFieldType.string,
+/// this.color = Colors.blue,
+/// this.style,
+/// this.textCapitalization = TextCapitalization.sentences,
+/// this.fieldPadding = const EdgeInsets.only(left: 16),
+/// ```
 class TextField extends StatefulWidget {
   const TextField({
     Key? key,
@@ -24,6 +41,7 @@ class TextField extends StatefulWidget {
     this.color = Colors.blue,
     this.style,
     this.textCapitalization = TextCapitalization.sentences,
+    this.fieldPadding = const EdgeInsets.only(left: 16),
   }) : super(key: key);
   final String label;
   final Function(String)? onChanged;
@@ -38,6 +56,7 @@ class TextField extends StatefulWidget {
   final Color color;
   final TextStyle? style;
   final TextCapitalization textCapitalization;
+  final EdgeInsets fieldPadding;
 
   @override
   _TextFieldState createState() => _TextFieldState();
@@ -97,7 +116,8 @@ class _TextFieldState extends State<TextField> {
           enabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.transparent),
           ),
-          icon: Icon(widget.icon),
+          contentPadding: widget.fieldPadding,
+          icon: widget.icon == null ? null : Icon(widget.icon),
           hintStyle: TextStyle(
               color:
                   MediaQuery.of(context).platformBrightness == Brightness.light

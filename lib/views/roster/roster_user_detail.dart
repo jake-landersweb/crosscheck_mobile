@@ -29,6 +29,8 @@ class RosterUserDetail extends StatefulWidget {
 }
 
 class _RosterUserDetailState extends State<RosterUserDetail> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
@@ -49,9 +51,35 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
             cv.LabeledCell(value: widget.seasonUser.email, label: "Email"),
           ],
         ),
+        if (widget.seasonUser.teamFields?.validationStatus != 1)
+          _invite(context, dmodel),
         if (widget.seasonUser.userFields != null) _userFields(context),
         if (widget.seasonUser.teamFields != null) _teamFields(context),
         if (widget.seasonUser.seasonFields != null) _seasonFields(context),
+      ],
+    );
+  }
+
+  Widget _invite(BuildContext context, DataModel dmodel) {
+    return Column(
+      children: [
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: cv.RoundedLabel(
+            widget.seasonUser.teamFields!.validationStatus == 0
+                ? "Send Invite"
+                : "Re-send Invite",
+            color: dmodel.color,
+            textColor: Colors.white,
+            isLoading: _isLoading,
+            onTap: () {
+              if (!_isLoading) {
+                _sendInvite(context, dmodel);
+              }
+            },
+          ),
+        ),
       ],
     );
   }
@@ -263,5 +291,18 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
     } else {
       return Container();
     }
+  }
+
+  Future<void> _sendInvite(BuildContext context, DataModel dmodel) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await dmodel
+        .sendValidationEmail(widget.team.teamId, widget.seasonUser.email, () {
+      widget.seasonUser.teamFields!.validationStatus = 2;
+    }, onError: () {});
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

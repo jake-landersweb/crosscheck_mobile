@@ -46,72 +46,64 @@ class _SCECustomFState extends State<SCECustomF> {
   }
 
   Widget _customF(BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Custom Fields",
-        child: CustomFieldCreate(
-          key: ValueKey("scemodel.customFields"),
-          color: dmodel.color,
-          customFields: scemodel.customFields,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
-        ),
+    return cv.Section(
+      "Custom Fields",
+      headerPadding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
+      child: CustomFieldCreate(
+        key: const ValueKey("scemodel.customFields"),
+        color: dmodel.color,
+        customFields: scemodel.customFields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
       ),
     );
   }
 
   Widget _customUserF(
       BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Custom User Fields",
-        child: CustomFieldCreate(
-          key: ValueKey("scemodel.customUserFields"),
-          color: dmodel.color,
-          customFields: scemodel.customUserFields,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
-        ),
+    return cv.Section(
+      "Custom User Fields",
+      headerPadding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
+      child: CustomFieldCreate(
+        key: const ValueKey("scemodel.customUserFields"),
+        color: dmodel.color,
+        customFields: scemodel.customUserFields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
       ),
     );
   }
 
   Widget _eventCustomF(
       BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Custom Fields for Events Template",
-        child: CustomFieldCreate(
-          key: ValueKey("scemodel.eventCustomFieldsTemplate"),
-          color: dmodel.color,
-          customFields: scemodel.eventCustomFieldsTemplate,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
-        ),
+    return cv.Section(
+      "Custom Fields for Events Template",
+      headerPadding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
+      child: CustomFieldCreate(
+        key: const ValueKey("scemodel.eventCustomFieldsTemplate"),
+        color: dmodel.color,
+        customFields: scemodel.eventCustomFieldsTemplate,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
       ),
     );
   }
 
   Widget _eventCustomUserF(
       BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Custom Fields for Event Users Template",
-        child: CustomFieldCreate(
-          key: ValueKey("scemodel.eventCustomUserFieldsTemplate"),
-          color: dmodel.color,
-          customFields: scemodel.eventCustomUserFieldsTemplate,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
-        ),
+    return cv.Section(
+      "Custom Fields for Event Users Template",
+      headerPadding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
+      child: CustomFieldCreate(
+        key: const ValueKey("scemodel.eventCustomUserFieldsTemplate"),
+        color: dmodel.color,
+        customFields: scemodel.eventCustomUserFieldsTemplate,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
       ),
     );
   }

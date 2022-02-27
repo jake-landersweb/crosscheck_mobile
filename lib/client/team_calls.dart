@@ -296,6 +296,26 @@ extension TeamCalls on DataModel {
       return;
     }
   }
+
+  Future<void> sendValidationEmail(
+      String teamId, String email, VoidCallback completion,
+      {VoidCallback? onError}) async {
+    await client.fetch("/teams/$teamId/validate/$email").then((response) {
+      if (response == null) {
+        addIndicator(
+            IndicatorItem.error("There was an issue sending the email"));
+        onError != null ? onError() : null;
+      } else if (response['status'] == 200) {
+        addIndicator(IndicatorItem.success("Successfully send email"));
+        completion();
+      } else {
+        addIndicator(
+            IndicatorItem.error("There was an issue sending the email"));
+        print(response['message']);
+        onError != null ? onError() : null;
+      }
+    });
+  }
 }
 
 class _DecodeParam {

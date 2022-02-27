@@ -35,34 +35,30 @@ class _ECECustomState extends State<ECECustom> {
 
   Widget _customFields(
       BuildContext context, DataModel dmodel, ECEModel ecemodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Custom Fields",
-        child: CustomFieldCreate(
-          color: dmodel.color,
-          customFields: ecemodel.event.customFields,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
-        ),
+    return cv.Section(
+      "Custom Fields",
+      headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
+      child: CustomFieldCreate(
+        color: dmodel.color,
+        customFields: ecemodel.event.customFields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
       ),
     );
   }
 
   Widget _customUserFields(
       BuildContext context, DataModel dmodel, ECEModel ecemodel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
-        "Custom User Fields",
-        child: CustomFieldCreate(
-          color: dmodel.color,
-          customFields: ecemodel.event.customUserFields,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
-        ),
+    return cv.Section(
+      "Custom User Fields",
+      headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
+      child: CustomFieldCreate(
+        color: dmodel.color,
+        customFields: ecemodel.event.customUserFields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
       ),
     );
   }

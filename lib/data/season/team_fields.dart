@@ -5,7 +5,6 @@ class SeasonUserTeamFields {
   String? orgId;
   LastSeason? lastSeason;
   late int teamUserType;
-  // new fields
   late String pos;
   late List<CustomField> customFields;
   late int validationStatus;

@@ -1,5 +1,3 @@
-- convert stat views to ListView for consistency
 - add send invite to non validated users
-- add game score toggle for game events
 - add season user from team roster list
 

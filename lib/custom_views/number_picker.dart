@@ -2,6 +2,23 @@ import 'package:flutter/material.dart';
 import 'root.dart' as cv;
 import 'dart:math' as math;
 
+/// ```dart
+/// this.initialValue = 0,
+/// required this.onMinusClick,
+/// required this.onPlusClick,
+/// this.minValue = 0,
+/// this.maxValue = 50,
+/// this.plusBackgroundColor = Colors.blue,
+/// this.minusBackgroundColor = Colors.grey,
+/// this.plusIconColor = Colors.white,
+/// this.minusIconColor = Colors.black,
+/// this.cornerRadius = 10,
+/// this.valueBoxSize = 30,
+/// this.textStyle,
+/// this.padding = const EdgeInsets.fromLTRB(15, 5, 15, 5),
+/// this.plusIconSize = 20,
+/// this.minusIconSize = 20,
+/// ```
 class NumberPicker extends StatefulWidget {
   NumberPicker({
     this.initialValue = 0,

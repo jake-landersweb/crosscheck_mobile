@@ -92,8 +92,6 @@ class _EventDetailState extends State<EventDetail> {
             children: [
               _stats(context, dmodel),
               const SizedBox(height: 16),
-              _score(context, dmodel),
-              const SizedBox(height: 16),
             ],
           ),
         if (widget.event.hasAttendance)
@@ -280,101 +278,68 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   Widget _stats(BuildContext context, DataModel dmodel) {
-    return cv.BasicButton(
-      onTap: () {
-        cv.Navigate(
-          context,
-          StatsEvent(
-            team: dmodel.tus!.team,
-            teamUser: dmodel.tus!.user,
-            season: dmodel.currentSeason!,
-            seasonUser: dmodel.currentSeasonUser!,
-            event: widget.event,
-          ),
-        );
+    return cv.ListView<Tuple<IconData, String>>(
+      children: [
+        Tuple(Icons.bar_chart, "Statistics"),
+        Tuple(Icons.sports_score, "Score")
+      ],
+      onChildTap: (context, item) {
+        if (item.v2() == "Statistics") {
+          cv.Navigate(
+            context,
+            StatsEvent(
+              team: dmodel.tus!.team,
+              teamUser: dmodel.tus!.user,
+              season: dmodel.currentSeason!,
+              seasonUser: dmodel.currentSeasonUser!,
+              event: widget.event,
+            ),
+          );
+        } else {
+          cv.showFloatingSheet(
+            context: context,
+            builder: (context) {
+              return EventScore(
+                  team: widget.team,
+                  season: widget.season,
+                  event: widget.event);
+            },
+          );
+        }
       },
-      child: cv.NativeList(
-        itemPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-        color: CustomColors.cellColor(context)
-            .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.bar_chart,
-                color: widget.event.eventColor.isEmpty
-                    ? CustomColors.textColor(context)
-                    : Colors.white,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  "Statistics",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: _accentColor(),
-                  ),
+      backgroundColor: CustomColors.cellColor(context)
+          .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
+      horizontalPadding: 0,
+      borderRadius: 25,
+      childBuilder: (context, item) {
+        return Row(
+          children: [
+            Icon(
+              item.v1(),
+              color: widget.event.eventColor.isEmpty
+                  ? CustomColors.textColor(context)
+                  : Colors.white,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                item.v2(),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: _accentColor(),
                 ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: widget.event.eventColor.isEmpty
-                    ? CustomColors.textColor(context)
-                    : Colors.white,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _score(BuildContext context, DataModel dmodel) {
-    return cv.BasicButton(
-      onTap: () {
-        cv.showFloatingSheet(
-          context: context,
-          builder: (context) {
-            return EventScore(
-                team: widget.team, season: widget.season, event: widget.event);
-          },
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: widget.event.eventColor.isEmpty
+                  ? CustomColors.textColor(context)
+                  : Colors.white,
+            ),
+          ],
         );
       },
-      child: cv.NativeList(
-        itemPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-        color: CustomColors.cellColor(context)
-            .withOpacity(widget.event.eventColor.isEmpty ? 1 : 0.3),
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.sports_score,
-                color: widget.event.eventColor.isEmpty
-                    ? CustomColors.textColor(context)
-                    : Colors.white,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  "Score",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: _accentColor(),
-                  ),
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: widget.event.eventColor.isEmpty
-                    ? CustomColors.textColor(context)
-                    : Colors.white,
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 

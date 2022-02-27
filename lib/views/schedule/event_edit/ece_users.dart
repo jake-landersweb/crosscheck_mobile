@@ -50,39 +50,36 @@ class _ECEUsersState extends State<ECEUsers> {
               selected: ecemodel.addUsers,
               color: dmodel.color,
               cellBuilder: (context, user, isSelected) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      RosterAvatar(
-                          name: user.name(ecemodel.team!.showNicknames),
-                          size: 50,
-                          seed: user.email),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          user.name(ecemodel.team!.showNicknames),
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            color: CustomColors.textColor(context),
-                          ),
+                return Row(
+                  children: [
+                    RosterAvatar(
+                        name: user.name(ecemodel.team!.showNicknames),
+                        size: 50,
+                        seed: user.email),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        user.name(ecemodel.team!.showNicknames),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: CustomColors.textColor(context),
                         ),
                       ),
-                      if (user.seasonFields!.isSub)
-                        const Text(
-                          "sub",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
+                    ),
+                    if (user.seasonFields!.isSub)
+                      const Text(
+                        "sub",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
                         ),
-                      const SizedBox(width: 4),
-                      (isSelected)
-                          ? Icon(Icons.check_circle, color: dmodel.color)
-                          : const Icon(Icons.circle_outlined),
-                    ],
-                  ),
+                      ),
+                    const SizedBox(width: 4),
+                    (isSelected)
+                        ? Icon(Icons.check_circle, color: dmodel.color)
+                        : const Icon(Icons.circle_outlined),
+                  ],
                 );
               },
               onSelect: (user) {

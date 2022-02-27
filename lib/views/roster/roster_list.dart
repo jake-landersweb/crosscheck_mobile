@@ -25,7 +25,8 @@ class RosterList extends StatefulWidget {
   final Function(SeasonUser)? onSelect;
   final Function(SeasonUser)? onNavigate;
   final List<SeasonUser>? selected;
-  final Widget Function(BuildContext, SeasonUser, bool)? cellBuilder;
+  final Widget Function(BuildContext context, SeasonUser user, bool isSelected)?
+      cellBuilder;
 
   @override
   _RosterListState createState() => _RosterListState();
@@ -54,7 +55,7 @@ class _RosterListState extends State<RosterList> {
       },
       onChildTap: widget.type == RosterListType.none
           ? null
-          : (SeasonUser user) => _action(context, user),
+          : (BuildContext context, SeasonUser user) => _action(context, user),
     );
   }
 

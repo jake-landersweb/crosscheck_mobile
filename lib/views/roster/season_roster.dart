@@ -15,6 +15,8 @@ class SeasonRoster extends StatefulWidget {
 }
 
 class _SeasonRosterState extends State<SeasonRoster> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
@@ -29,48 +31,99 @@ class _SeasonRosterState extends State<SeasonRoster> {
       children: [
         // season selector
         if (dmodel.seasonUsers != null)
-          RosterList(
-            users: dmodel.seasonUsers!,
-            team: dmodel.tus!.team,
-            type: RosterListType.navigator,
-            onNavigate: (user) {
-              cv.Navigate(
+          Column(
+            children: [
+              _rosterList(
                 context,
-                RosterUserDetail(
-                  team: dmodel.tus!.team,
-                  season: dmodel.currentSeason!,
-                  seasonUser: user,
-                  teamUser: dmodel.tus!.user,
-                  appSeasonUser: dmodel.currentSeasonUser,
-                  onUserEdit: (body) async {
-                    await dmodel.seasonUserUpdate(
-                      dmodel.tus!.team.teamId,
-                      dmodel.currentSeason!.seasonId,
-                      user.email,
-                      body,
-                      () async {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        // get latest season roster data
-                        setState(() {
-                          dmodel.seasonUsers = null;
-                        });
-                        await dmodel.getSeasonRoster(
-                          dmodel.tus!.team.teamId,
-                          dmodel.currentSeason!.seasonId,
-                          (p0) => dmodel.setSeasonUsers(p0),
-                        );
-                      },
-                    );
-                  },
+                dmodel,
+                _active(context, dmodel),
+              ),
+              if (dmodel.seasonUsers!
+                  .any((element) => element.teamFields!.validationStatus == 0))
+                cv.Section(
+                  "Non Validated",
+                  child: _rosterList(
+                    context,
+                    dmodel,
+                    _notValidated(context, dmodel),
+                  ),
                 ),
-              );
-            },
+              if (dmodel.seasonUsers!
+                  .any((element) => element.teamFields!.validationStatus == 2))
+                cv.Section(
+                  "Invited",
+                  child: _rosterList(
+                    context,
+                    dmodel,
+                    _invited(context, dmodel),
+                  ),
+                )
+            ],
           )
         else
           const RosterLoading(),
       ],
     );
+  }
+
+  Widget _rosterList(
+      BuildContext context, DataModel dmodel, List<SeasonUser> users) {
+    return RosterList(
+      users: users,
+      team: dmodel.tus!.team,
+      type: RosterListType.navigator,
+      onNavigate: (user) {
+        cv.Navigate(
+          context,
+          RosterUserDetail(
+            team: dmodel.tus!.team,
+            season: dmodel.currentSeason!,
+            seasonUser: user,
+            teamUser: dmodel.tus!.user,
+            appSeasonUser: dmodel.currentSeasonUser,
+            onUserEdit: (body) async {
+              await dmodel.seasonUserUpdate(
+                dmodel.tus!.team.teamId,
+                dmodel.currentSeason!.seasonId,
+                user.email,
+                body,
+                () async {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  // get latest season roster data
+                  setState(() {
+                    dmodel.seasonUsers = null;
+                  });
+                  await dmodel.getSeasonRoster(
+                    dmodel.tus!.team.teamId,
+                    dmodel.currentSeason!.seasonId,
+                    (p0) => dmodel.setSeasonUsers(p0),
+                  );
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  List<SeasonUser> _active(BuildContext context, DataModel dmodel) {
+    return dmodel.seasonUsers!
+        .where((element) => element.teamFields!.validationStatus == 1)
+        .toList();
+  }
+
+  List<SeasonUser> _notValidated(BuildContext context, DataModel dmodel) {
+    return dmodel.seasonUsers!
+        .where((element) => element.teamFields!.validationStatus == 0)
+        .toList();
+  }
+
+  List<SeasonUser> _invited(BuildContext context, DataModel dmodel) {
+    return dmodel.seasonUsers!
+        .where((element) => element.teamFields!.validationStatus == 2)
+        .toList();
   }
 
   Widget _createUser(BuildContext context, DataModel dmodel) {
@@ -99,6 +152,13 @@ class _SeasonRosterState extends State<SeasonRoster> {
     } else {
       return Container();
     }
+  }
+
+  Future<void> _inviteUsers(
+      BuildContext context, DataModel dmodel, SeasonUser user) async {
+    _isLoading = true;
+
+    _isLoading = false;
   }
 }
 

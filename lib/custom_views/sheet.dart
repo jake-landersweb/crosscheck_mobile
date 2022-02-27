@@ -77,20 +77,22 @@ class SheetHeader extends StatelessWidget {
 }
 
 class Sheet extends StatefulWidget {
-  const Sheet(
-      {Key? key,
-      required this.title,
-      required this.child,
-      this.headerHeight = 50,
-      this.color = Colors.blue,
-      this.closeText = "Cancel"})
-      : super(key: key);
+  const Sheet({
+    Key? key,
+    required this.title,
+    required this.child,
+    this.headerHeight = 50,
+    this.color = Colors.blue,
+    this.closeText = "Cancel",
+    this.padding = const EdgeInsets.all(8),
+  }) : super(key: key);
 
   final String title;
   final Widget child;
   final double headerHeight;
   final Color color;
   final String closeText;
+  final EdgeInsets padding;
 
   @override
   _SheetState createState() => _SheetState();
@@ -105,7 +107,7 @@ class _SheetState extends State<Sheet> {
         Container(
           color: cv.ViewColors.cellColor(context),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: widget.padding,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

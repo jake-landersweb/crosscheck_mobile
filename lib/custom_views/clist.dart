@@ -55,7 +55,7 @@ class ListView<T> extends StatefulWidget {
   final EdgeInsets childPadding;
   final double horizontalPadding;
   final double borderRadius;
-  final Function(T)? onChildTap;
+  final Function(BuildContext, T)? onChildTap;
   final bool isAnimated;
   final bool allowsDelete;
   final Function(T)? onDelete;
@@ -111,7 +111,7 @@ class _ListViewState<T> extends State<ListView<T>> {
                       if (widget.allowsSelect) {
                         widget.onSelect!(child);
                       } else if (widget.onChildTap != null) {
-                        widget.onChildTap!(child);
+                        widget.onChildTap!(context, child);
                       }
                     },
                     child: _cell(context, child),

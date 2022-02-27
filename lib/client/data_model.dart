@@ -310,8 +310,7 @@ class DataModel extends ChangeNotifier {
         currentIndicator = indicators[0].clone();
         notifyListeners();
         var duration =
-            ((currentIndicator!.duration + (animationTime * 1.5)) * 1000)
-                .toInt();
+            ((currentIndicator!.duration + (animationTime)) * 1000).toInt();
         print(duration);
         await Future.delayed(Duration(milliseconds: duration));
         print(currentIndicator!.title);

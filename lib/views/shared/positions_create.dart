@@ -32,7 +32,7 @@ class _PositionsCreateState extends State<PositionsCreate> {
               widget.positions.removePosition(value);
             });
           },
-          onChildTap: (String item) {
+          onChildTap: (context, String item) {
             setState(() {
               widget.positions.defaultPosition = item;
             });
