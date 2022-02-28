@@ -35,10 +35,9 @@ class _ScheduleState extends State<Schedule> {
       leading: const [MenuButton()],
       onRefresh: () => _refreshAction(dmodel),
       trailing: [
-        if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
-            false ||
-                (dmodel.tus?.user.isTeamAdmin() ?? false) &&
-                    dmodel.seasonUsers != null)
+        if ((dmodel.currentSeasonUser?.isSeasonAdmin() ??
+                false || (dmodel.tus?.user.isTeamAdmin() ?? false)) &&
+            dmodel.seasonUsers != null)
           cv.BasicButton(
             onTap: () {
               showMaterialModalBottomSheet(

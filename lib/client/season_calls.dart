@@ -170,4 +170,53 @@ extension SeasonCalls on DataModel {
       }
     });
   }
+
+  Future<void> addTeamUserEmailList(String teamId, String seasonId,
+      Map<String, dynamic> body, VoidCallback completion,
+      {VoidCallback? onError}) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    // first create the season
+    await client
+        .post("/teams/$teamId/seasons/$seasonId/addTeamUsers", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        print("There was an issue adding the list of season users");
+        addIndicator(IndicatorItem.error("There was an issue adding users"));
+        onError != null ? onError() : null;
+      } else if (response['status'] == 200) {
+        print(response);
+        addIndicator(IndicatorItem.success("Successfully added users"));
+        print("Successfully added list of team users");
+        completion();
+      } else {
+        print(response);
+        print("There was an issue adding the list of season users");
+        addIndicator(IndicatorItem.error("There was an issue adding users"));
+        onError != null ? onError() : null;
+      }
+    });
+  }
+
+  Future<void> deleteSeasonUser(String teamId, String seasonId, String email,
+      VoidCallback completion) async {
+    // first create the season
+    await client
+        .delete("/teams/$teamId/seasons/$seasonId/users/$email/delete")
+        .then((response) {
+      if (response == null) {
+        addIndicator(
+            IndicatorItem.error("There was an issue removing this user"));
+      } else if (response['status'] == 200) {
+        print(response);
+        addIndicator(IndicatorItem.success("Successfully removed user"));
+        completion();
+      } else {
+        print(response);
+        addIndicator(
+            IndicatorItem.error("There was an issue removing this user"));
+      }
+    });
+  }
 }

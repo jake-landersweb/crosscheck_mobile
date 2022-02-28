@@ -18,6 +18,12 @@ class _SeasonRosterState extends State<SeasonRoster> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    _checkSeasonRoster(context, context.read<DataModel>());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
@@ -81,6 +87,13 @@ class _SeasonRosterState extends State<SeasonRoster> {
             seasonUser: user,
             teamUser: dmodel.tus!.user,
             appSeasonUser: dmodel.currentSeasonUser,
+            onDelete: () async {
+              setState(() {
+                dmodel.seasonUsers = null;
+                print("Hey");
+              });
+              _checkSeasonRoster(context, dmodel);
+            },
             onUserEdit: (body) async {
               await dmodel.seasonUserUpdate(
                 dmodel.tus!.team.teamId,
@@ -134,6 +147,8 @@ class _SeasonRosterState extends State<SeasonRoster> {
           onTap: () {
             showMaterialModalBottomSheet(
               context: context,
+              isDismissible: true,
+              enableDrag: false,
               builder: (context) {
                 return SeasonUserAdd(
                   team: dmodel.tus!.team,
@@ -154,11 +169,15 @@ class _SeasonRosterState extends State<SeasonRoster> {
     }
   }
 
-  Future<void> _inviteUsers(
-      BuildContext context, DataModel dmodel, SeasonUser user) async {
-    _isLoading = true;
-
-    _isLoading = false;
+  Future<void> _checkSeasonRoster(
+      BuildContext context, DataModel dmodel) async {
+    if (dmodel.seasonUsers == null) {
+      await dmodel.getSeasonRoster(
+        dmodel.tus!.team.teamId,
+        dmodel.currentSeason!.seasonId,
+        (p0) => dmodel.setSeasonUsers(p0),
+      );
+    }
   }
 }
 
@@ -180,6 +199,10 @@ class SeasonUserAdd extends StatefulWidget {
 }
 
 class _SeasonUserAddState extends State<SeasonUserAdd> {
+  List<SeasonUser> _selectedTeamUsers = [];
+
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
@@ -199,16 +222,6 @@ class _SeasonUserAddState extends State<SeasonUserAdd> {
       ],
       children: [
         cv.Section(
-          "Existing Users",
-          child: cv.RoundedLabel(
-            "Team Roster List (not implemented)",
-            color: CustomColors.cellColor(context),
-            textColor: CustomColors.textColor(context),
-            isNavigator: true,
-          ),
-        ),
-        const SizedBox(height: 16),
-        cv.Section(
           "New User",
           child: cv.RoundedLabel(
             "Create User",
@@ -221,6 +234,64 @@ class _SeasonUserAddState extends State<SeasonUserAdd> {
             ),
           ),
         ),
+        const SizedBox(height: 16),
+        cv.Section(
+          "Existing Users",
+          child: cv.RoundedLabel(
+            "Team Roster List",
+            color: CustomColors.cellColor(context),
+            textColor: CustomColors.textColor(context),
+            isNavigator: true,
+            onTap: () => cv.Navigate(context, _existingList(context, dmodel)),
+          ),
+        ),
+        const SizedBox(height: 16),
+        if (_selectedTeamUsers.isNotEmpty)
+          cv.Section(
+            "Selected Users",
+            child: Column(
+              children: [
+                cv.ListView<SeasonUser>(
+                  children: _selectedTeamUsers,
+                  horizontalPadding: 0,
+                  childPadding: const EdgeInsets.all(8),
+                  isAnimated: true,
+                  allowsDelete: true,
+                  onDelete: (user) {
+                    setState(() {
+                      _selectedTeamUsers.removeWhere(
+                          (element) => element.email == user.email);
+                    });
+                  },
+                  childBuilder: (context, user) {
+                    return RosterCell(
+                      name: user.name(widget.team.showNicknames),
+                      type: RosterListType.none,
+                      color: dmodel.color,
+                      isSelected: false,
+                      padding: EdgeInsets.zero,
+                      seed: user.email,
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: cv.RoundedLabel(
+                    "Add Users",
+                    color: dmodel.color,
+                    textColor: Colors.white,
+                    onTap: () {
+                      if (!_isLoading && _selectedTeamUsers.isNotEmpty) {
+                        _addUserList(context, dmodel);
+                      }
+                    },
+                    isLoading: _isLoading,
+                  ),
+                )
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -244,5 +315,136 @@ class _SeasonUserAddState extends State<SeasonUserAdd> {
         });
       },
     );
+  }
+
+  Widget _existingList(BuildContext context, DataModel dmodel) {
+    return _AddTeamUsers(
+      selected: _selectedTeamUsers,
+      onSelect: (user) {
+        if (_selectedTeamUsers.any((element) => element.email == user.email)) {
+          setState(() {
+            _selectedTeamUsers
+                .removeWhere((element) => element.email == user.email);
+          });
+        } else {
+          setState(() {
+            _selectedTeamUsers.add(user);
+          });
+        }
+      },
+      team: widget.team,
+      season: widget.season,
+    );
+  }
+
+  Future<void> _addUserList(BuildContext context, DataModel dmodel) async {
+    setState(() {
+      _isLoading = true;
+    });
+    Map<String, dynamic> body = {
+      "emailList": _selectedTeamUsers.map((e) => e.email).toList(),
+      "date": dateToString(DateTime.now()),
+    };
+    await dmodel.addTeamUserEmailList(
+        widget.team.teamId, widget.season.seasonId, body, () async {
+      // fetch new season roster
+      setState(() {
+        dmodel.seasonUsers = null;
+      });
+      await dmodel.getSeasonRoster(widget.team.teamId, widget.season.seasonId,
+          (p0) {
+        setState(() {
+          dmodel.setSeasonUsers(p0);
+        });
+        Navigator.of(context).pop();
+      });
+    });
+    setState(() {
+      _isLoading = false;
+    });
+  }
+}
+
+class _AddTeamUsers extends StatefulWidget {
+  const _AddTeamUsers({
+    Key? key,
+    required this.selected,
+    required this.onSelect,
+    required this.team,
+    required this.season,
+  }) : super(key: key);
+  final List<SeasonUser> selected;
+  final Function(SeasonUser) onSelect;
+  final Team team;
+  final Season season;
+
+  @override
+  __AddTeamUsersState createState() => __AddTeamUsersState();
+}
+
+class __AddTeamUsersState extends State<_AddTeamUsers> {
+  bool _isLoading = false;
+  List<SeasonUser>? _users;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUsers(context, context.read<DataModel>());
+  }
+
+  @override
+  void dispose() {
+    _users = null;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    DataModel dmodel = Provider.of<DataModel>(context);
+    return cv.AppBar(
+      title: "Team Roster",
+      isLarge: true,
+      refreshable: false,
+      backgroundColor: CustomColors.backgroundColor(context),
+      color: dmodel.color,
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
+      leading: [cv.BackButton(color: dmodel.color)],
+      children: [
+        if (_isLoading)
+          const RosterLoading()
+        else if (_users != null)
+          RosterList(
+            users: _users!
+                .where((e1) =>
+                    !dmodel.seasonUsers!.any((e2) => e1.email == e2.email))
+                .toList(),
+            team: dmodel.tus!.team,
+            type: RosterListType.selector,
+            color: dmodel.color,
+            selected: widget.selected,
+            onSelect: (user) {
+              setState(() {
+                widget.onSelect(user);
+              });
+            },
+          ),
+      ],
+    );
+  }
+
+  Future<void> _fetchUsers(BuildContext context, DataModel dmodel) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await dmodel.getTeamRoster(widget.team.teamId, (users) {
+      setState(() {
+        _users = users;
+      });
+    });
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

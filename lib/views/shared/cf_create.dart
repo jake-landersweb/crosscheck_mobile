@@ -5,16 +5,18 @@ import 'root.dart';
 import '../../custom_views/root.dart' as cv;
 
 class CustomFieldCreate extends StatefulWidget {
-  const CustomFieldCreate(
-      {Key? key,
-      required this.customFields,
-      required this.onAdd,
-      this.color = Colors.blue,
-      this.isCreate = true,
-      this.cellColor,
-      this.enabled = true,
-      this.valueLabelText = "Value"})
-      : super(key: key);
+  const CustomFieldCreate({
+    Key? key,
+    required this.customFields,
+    required this.onAdd,
+    this.color = Colors.blue,
+    this.isCreate = true,
+    this.cellColor,
+    this.enabled = true,
+    this.valueLabelText = "Value",
+    this.childPadding = const EdgeInsets.fromLTRB(16, 8, 16, 8),
+    this.horizontalPadding = 16,
+  }) : super(key: key);
   final List<DynamicField> customFields;
   final DynamicField Function() onAdd;
   final Color color;
@@ -22,6 +24,8 @@ class CustomFieldCreate extends StatefulWidget {
   final Color? cellColor;
   final bool enabled;
   final String valueLabelText;
+  final EdgeInsets childPadding;
+  final double horizontalPadding;
 
   @override
   _CustomFieldCreateState createState() => _CustomFieldCreateState();
@@ -36,7 +40,8 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
           allowsDelete: widget.enabled,
           isAnimated: true,
           backgroundColor: widget.cellColor,
-          childPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          horizontalPadding: widget.horizontalPadding,
+          childPadding: widget.childPadding,
           onDelete: (DynamicField item) {
             setState(() {
               widget.customFields.removeWhere(

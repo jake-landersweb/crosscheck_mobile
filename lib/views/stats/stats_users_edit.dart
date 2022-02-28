@@ -49,7 +49,6 @@ class _StatsUsersEditState extends State<StatsUsersEdit> {
               showText: true,
             )
           ],
-          trailing: [],
           itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
           children: [
             _body(context, dmodel),
@@ -73,7 +72,7 @@ class _StatsUsersEditState extends State<StatsUsersEdit> {
           value: _filterText,
           showBackground: true,
           labelText: "Search ...",
-          validator: (value) {},
+          validator: (value) => null,
           onChanged: (value) {
             setState(() {
               _filterText = value;
@@ -84,7 +83,8 @@ class _StatsUsersEditState extends State<StatsUsersEdit> {
         for (var i in _filterList())
           Column(
             children: [
-              StatUserEditCell(key: ValueKey(i.email), userStat: i),
+              StatUserEditCell(
+                  key: ValueKey(i.email), userStat: i, color: dmodel.color),
               const SizedBox(height: 16),
             ],
           ),

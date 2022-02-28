@@ -31,6 +31,7 @@ class _JoinTeamState extends State<JoinTeam> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.Sheet(
       title: "Join Team",
+      color: dmodel.color,
       child: Column(
         children: [
           const SizedBox(height: 16),

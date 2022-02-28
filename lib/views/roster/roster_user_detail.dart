@@ -16,6 +16,7 @@ class RosterUserDetail extends StatefulWidget {
     required this.teamUser,
     this.appSeasonUser,
     required this.onUserEdit,
+    required this.onDelete,
   }) : super(key: key);
   final Team team;
   final Season? season;
@@ -23,6 +24,7 @@ class RosterUserDetail extends StatefulWidget {
   final SeasonUserTeamFields teamUser;
   final SeasonUser? appSeasonUser;
   final Future<void> Function(Map<String, dynamic>) onUserEdit;
+  final VoidCallback onDelete;
 
   @override
   _RosterUserDetailState createState() => _RosterUserDetailState();
@@ -51,11 +53,16 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
             cv.LabeledCell(value: widget.seasonUser.email, label: "Email"),
           ],
         ),
-        if (widget.seasonUser.teamFields?.validationStatus != 1)
+        if (widget.seasonUser.teamFields?.validationStatus != 1 &&
+            (widget.teamUser.isTeamAdmin() ||
+                widget.seasonUser.isSeasonAdmin()))
           _invite(context, dmodel),
         if (widget.seasonUser.userFields != null) _userFields(context),
         if (widget.seasonUser.teamFields != null) _teamFields(context),
         if (widget.seasonUser.seasonFields != null) _seasonFields(context),
+        if ((widget.teamUser.isTeamAdmin() ||
+            widget.seasonUser.isSeasonAdmin()))
+          _delete(context, dmodel),
       ],
     );
   }
@@ -291,6 +298,56 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
     } else {
       return Container();
     }
+  }
+
+  Widget _delete(BuildContext context, DataModel dmodel) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: cv.RoundedLabel(
+        "Delete User",
+        color: Colors.red.withOpacity(0.5),
+        textColor: Colors.white,
+        isLoading: _isLoading,
+        onTap: () {
+          cv.showAlert(
+            context: context,
+            title: "Are you Sure?",
+            body: const Text("This action cannot be undone."),
+            cancelText: "Cancel",
+            cancelBolded: true,
+            onCancel: () {},
+            submitText: "Delete",
+            submitColor: Colors.red,
+            onSubmit: () => _deleteFunc(context, dmodel),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _deleteFunc(BuildContext context, DataModel dmodel) async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (widget.season == null) {
+      // remove team user
+      await dmodel.deleteTeamUser(widget.team.teamId, widget.seasonUser.email,
+          () {
+        Navigator.of(context).pop();
+        widget.onDelete();
+      });
+    } else {
+      // remove season user
+      await dmodel.deleteSeasonUser(
+          widget.team.teamId, widget.season!.seasonId, widget.seasonUser.email,
+          () {
+        Navigator.of(context).pop();
+        widget.onDelete();
+      });
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _sendInvite(BuildContext context, DataModel dmodel) async {

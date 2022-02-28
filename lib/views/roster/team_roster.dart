@@ -53,42 +53,30 @@ class _TeamRosterState extends State<TeamRoster> {
         if (_isLoading)
           const RosterLoading()
         else if (_users != null)
-          RosterList(
-            users: _users!,
-            team: dmodel.tus!.team,
-            type: RosterListType.navigator,
-            onNavigate: (user) {
-              cv.Navigate(
-                context,
-                RosterUserDetail(
-                  team: dmodel.tus!.team,
-                  seasonUser: user,
-                  teamUser: dmodel.tus!.user,
-                  onUserEdit: (body) async {
-                    // print(body);
-                    await dmodel.seasonUserUpdate(
-                      dmodel.tus!.team.teamId,
-                      dmodel.currentSeason!.seasonId,
-                      user.email,
-                      body,
-                      () async {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        // get latest season roster data
-                        setState(() {
-                          dmodel.seasonUsers = null;
-                        });
-                        await dmodel.getSeasonRoster(
-                          dmodel.tus!.team.teamId,
-                          dmodel.currentSeason!.seasonId,
-                          (p0) => dmodel.setSeasonUsers(p0),
-                        );
-                      },
-                    );
-                  },
+          Column(
+            children: [
+              _rosterBase(context, dmodel, _active(context, dmodel)),
+              if (_users!
+                  .any((element) => element.teamFields!.validationStatus == 0))
+                cv.Section(
+                  "Non Validated",
+                  child: _rosterBase(
+                    context,
+                    dmodel,
+                    _notValidated(context, dmodel),
+                  ),
                 ),
-              );
-            },
+              if (_users!
+                  .any((element) => element.teamFields!.validationStatus == 2))
+                cv.Section(
+                  "Invited",
+                  child: _rosterBase(
+                    context,
+                    dmodel,
+                    _invited(context, dmodel),
+                  ),
+                ),
+            ],
           )
         else
           Container(
@@ -96,6 +84,92 @@ class _TeamRosterState extends State<TeamRoster> {
           ),
       ],
     );
+  }
+
+  Widget _rosterBase(
+      BuildContext context, DataModel dmodel, List<SeasonUser> users) {
+    return RosterList(
+      users: users,
+      team: dmodel.tus!.team,
+      type: RosterListType.navigator,
+      onNavigate: (user) {
+        cv.Navigate(
+          context,
+          RosterUserDetail(
+            team: dmodel.tus!.team,
+            seasonUser: user,
+            teamUser: dmodel.tus!.user,
+            onDelete: () async {
+              setState(() {
+                _isLoading = true;
+                _users = null;
+              });
+              if (dmodel.seasonUsers != null) {
+                dmodel.seasonUsers = null;
+                dmodel.getSeasonRoster(
+                  widget.team.teamId,
+                  dmodel.currentSeason!.seasonId,
+                  (p0) => dmodel.setSeasonUsers(p0),
+                );
+              }
+              await _fetchUsers(context, dmodel);
+            },
+            onUserEdit: (body) async {
+              // print(body);
+              await dmodel.seasonUserUpdate(
+                dmodel.tus!.team.teamId,
+                dmodel.currentSeason!.seasonId,
+                user.email,
+                body,
+                () async {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  // get latest season roster data
+                  setState(() {
+                    dmodel.seasonUsers = null;
+                  });
+                  await dmodel.getSeasonRoster(
+                    dmodel.tus!.team.teamId,
+                    dmodel.currentSeason!.seasonId,
+                    (p0) => dmodel.setSeasonUsers(p0),
+                  );
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  List<SeasonUser> _active(BuildContext context, DataModel dmodel) {
+    if (_users != null) {
+      return _users!
+          .where((element) => element.teamFields!.validationStatus == 1)
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
+  List<SeasonUser> _notValidated(BuildContext context, DataModel dmodel) {
+    if (_users != null) {
+      return _users!
+          .where((element) => element.teamFields!.validationStatus == 0)
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
+  List<SeasonUser> _invited(BuildContext context, DataModel dmodel) {
+    if (_users != null) {
+      return _users!
+          .where((element) => element.teamFields!.validationStatus == 2)
+          .toList();
+    } else {
+      return [];
+    }
   }
 
   Widget _createUser(BuildContext context, DataModel dmodel) {

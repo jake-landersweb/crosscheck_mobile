@@ -316,6 +316,25 @@ extension TeamCalls on DataModel {
       }
     });
   }
+
+  Future<void> deleteTeamUser(
+      String teamId, String email, VoidCallback completion) async {
+    // first create the season
+    await client.delete("/teams/$teamId/users/$email/delete").then((response) {
+      if (response == null) {
+        addIndicator(
+            IndicatorItem.error("There was an issue removing this user"));
+      } else if (response['status'] == 200) {
+        print(response);
+        addIndicator(IndicatorItem.success("Successfully removed user"));
+        completion();
+      } else {
+        print(response);
+        addIndicator(
+            IndicatorItem.error("There was an issue removing this user"));
+      }
+    });
+  }
 }
 
 class _DecodeParam {

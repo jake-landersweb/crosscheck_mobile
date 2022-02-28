@@ -1,3 +1,1 @@
-- add send invite to non validated users
-- add season user from team roster list
-
+- adding season user page going back and forth between the options breaks

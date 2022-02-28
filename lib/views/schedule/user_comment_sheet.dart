@@ -53,7 +53,8 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
       closeText: "Close",
       title: widget.user.name(widget.team.showNicknames),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 400),
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 2),
         child: _body(context),
       ),
     );

@@ -22,3 +22,4 @@ export 'tab_bar.dart';
 export 'loading_wrapper.dart';
 export 'clist.dart';
 export 'add_field.dart';
+export 'number_text_field.dart';

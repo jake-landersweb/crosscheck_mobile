@@ -324,9 +324,9 @@ class _ECEBasicState extends State<ECEBasic> {
               onSubmit: () => _deleteAction(context, dmodel, ecemodel),
             );
           },
-          child: const cv.RoundedLabel(
+          child: cv.RoundedLabel(
             "Delete",
-            color: Colors.red,
+            color: Colors.red.withOpacity(0.5),
             textColor: Colors.white,
           ),
         ),

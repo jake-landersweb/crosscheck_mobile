@@ -12,8 +12,10 @@ class StatUserEditCell extends StatefulWidget {
   const StatUserEditCell({
     Key? key,
     required this.userStat,
+    required this.color,
   }) : super(key: key);
   final UserStat userStat;
+  final Color color;
 
   @override
   _StatUserEditCellState createState() => _StatUserEditCellState();
@@ -62,7 +64,8 @@ class _StatUserEditCellState extends State<StatUserEditCell> {
             for (var i in widget.userStat.stats)
               TextEditCellField(
                 label: i.title,
-                initialValue: i.value.toString(),
+                color: widget.color,
+                initialValue: i.value,
                 onChanged: (value) {
                   i.value = value;
                 },
@@ -80,45 +83,30 @@ class TextEditCellField extends StatefulWidget {
     required this.label,
     required this.initialValue,
     required this.onChanged,
+    required this.color,
   }) : super(key: key);
   final String label;
-  final String initialValue;
+  final int initialValue;
   final Function(int) onChanged;
+  final Color color;
 
   @override
   _TextEditCellFieldState createState() => _TextEditCellFieldState();
 }
 
 class _TextEditCellFieldState extends State<TextEditCellField> {
-  late TextEditingController controller;
-  late String oldVal;
-
-  @override
-  void initState() {
-    controller = TextEditingController(text: widget.initialValue);
-    oldVal = widget.initialValue;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return cv.TextField2(
-      fieldPadding: EdgeInsets.zero,
-      controller: controller,
-      isLabeled: true,
-      formatters: [FilteringTextInputFormatter.digitsOnly],
-      showBackground: false,
-      labelText: widget.label,
-      validator: (value) {},
-      onChanged: (value) {
-        widget.onChanged(int.parse(value));
-      },
+    return cv.LabeledWidget(
+      widget.label,
+      child: cv.NumberTextField(
+        label: widget.label,
+        color: widget.color,
+        initValue: widget.initialValue,
+        onChange: (value) {
+          widget.onChanged(value);
+        },
+      ),
     );
   }
 }
