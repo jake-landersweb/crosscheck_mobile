@@ -87,17 +87,22 @@ class _CustomFieldEditState extends State<CustomFieldEdit> {
   Widget _boolCell(BuildContext context) {
     return cv.LabeledWidget(
       widget.field.getTitle(),
-      child: FlutterSwitch(
-        value: widget.field.getValue() == "true" ? true : false,
-        height: 25,
-        width: 50,
-        toggleSize: 18,
-        activeColor: widget.color,
-        onToggle: (value) {
-          setState(() {
-            widget.field.setValue(value.toString());
-          });
-        },
+      child: Row(
+        children: [
+          FlutterSwitch(
+            value: widget.field.getValue() == "true" ? true : false,
+            height: 25,
+            width: 50,
+            toggleSize: 18,
+            activeColor: widget.color,
+            onToggle: (value) {
+              setState(() {
+                widget.field.setValue(value.toString());
+              });
+            },
+          ),
+          const Spacer(),
+        ],
       ),
     );
   }

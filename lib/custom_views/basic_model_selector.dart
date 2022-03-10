@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pnflutter/extras/root.dart';
 import 'core/root.dart' as cv;
+import 'sheet.dart' as cv;
 
 class ModelSelector<T> extends StatefulWidget {
   const ModelSelector({
@@ -36,66 +37,31 @@ class _ModelSelectorState<T> extends State<ModelSelector<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: double.infinity,
-          height: 50,
-          color: MediaQuery.of(context).platformBrightness == Brightness.light
-              ? Colors.black.withOpacity(0.1)
-              : Colors.white.withOpacity(0.1),
-          child: Stack(
-            alignment: AlignmentDirectional.center,
-            children: [
-              Text(
-                widget.title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
+    return cv.Sheet(
+      title: widget.title,
+      color: widget.color,
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
+          for (int index = 0; index < widget.selections.length; index++)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  _cell(
+                      context,
+                      widget.selections[index],
+                      widget.titles != null
+                          ? widget.titles![index]
+                          : widget.selections[index].toString()),
+                  if (widget.selections[index] != widget.selections.last)
+                    const SizedBox(height: 16),
+                ],
               ),
-              Row(children: [
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: cv.BasicButton(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "Close",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: widget.color,
-                      ),
-                    ),
-                  ),
-                ),
-              ])
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        for (int index = 0; index < widget.selections.length; index++)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              children: [
-                _cell(
-                    context,
-                    widget.selections[index],
-                    widget.titles != null
-                        ? widget.titles![index]
-                        : widget.selections[index].toString()),
-                if (widget.selections[index] != widget.selections.last)
-                  const SizedBox(height: 16),
-              ],
             ),
-          ),
-        const SizedBox(height: 16),
-      ],
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 

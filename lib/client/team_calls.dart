@@ -306,7 +306,7 @@ extension TeamCalls on DataModel {
             IndicatorItem.error("There was an issue sending the email"));
         onError != null ? onError() : null;
       } else if (response['status'] == 200) {
-        addIndicator(IndicatorItem.success("Successfully send email"));
+        addIndicator(IndicatorItem.success("Successfully sent email"));
         completion();
       } else {
         addIndicator(
@@ -332,6 +332,34 @@ extension TeamCalls on DataModel {
         print(response);
         addIndicator(
             IndicatorItem.error("There was an issue removing this user"));
+      }
+    });
+  }
+
+  Future<void> addImageURL(
+      String teamId, String imageURL, VoidCallback completion,
+      {VoidCallback? onError}) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    Map<String, String> body = {
+      "image": imageURL,
+    };
+
+    await client
+        .post("/teams/$teamId/addImageURL", headers, jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        addIndicator(
+            IndicatorItem.error("There was an issue adding the image url"));
+        onError != null ? onError() : null;
+      } else if (response['status'] == 200) {
+        addIndicator(IndicatorItem.success("Successfully added image url"));
+        completion();
+      } else {
+        print(response.toString());
+        addIndicator(
+            IndicatorItem.error("There was an issue adding the image url"));
+        onError != null ? onError() : null;
       }
     });
   }

@@ -23,15 +23,15 @@ class ECEModel extends ChangeNotifier {
 
   ECEModel.create(this.team, this.season, this.users) {
     isCreate = true;
-    this.event.customFields = [
+    event.customFields = [
       for (var i in season.eventCustomFieldsTemplate) i.clone()
     ];
-    this.event.customUserFields = [
+    event.customUserFields = [
       for (var i in season.eventCustomUserFieldsTemplate) i.clone()
     ];
     // add all users to add list that are not subs
     for (var i in users) {
-      if (!i.seasonFields!.isSub) {
+      if (!i.seasonFields!.isSub && i.seasonFields!.seasonUserStatus == 1) {
         addUsers.add(i);
       }
     }

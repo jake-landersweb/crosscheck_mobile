@@ -25,8 +25,7 @@ class LabeledWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: MediaQuery.of(context).platformBrightness ==
-                            Brightness.light
+                    color: Theme.of(context).brightness == Brightness.light
                         ? Colors.black.withOpacity(0.5)
                         : Colors.white.withOpacity(0.5),
                   ),
@@ -37,15 +36,16 @@ class LabeledWidget extends StatelessWidget {
             )
           : Row(
               children: [
-                Expanded(child: child),
+                Expanded(
+                  child: child,
+                ),
                 const SizedBox(height: 50),
                 Text(
                   label,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: MediaQuery.of(context).platformBrightness ==
-                            Brightness.light
+                    color: Theme.of(context).brightness == Brightness.light
                         ? Colors.black.withOpacity(0.5)
                         : Colors.white.withOpacity(0.5),
                   ),

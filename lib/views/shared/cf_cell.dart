@@ -125,17 +125,22 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
       default:
         return cv.LabeledWidget(
           widget.valueLabelText,
-          child: FlutterSwitch(
-            value: widget.item.getValue() == "true" ? true : false,
-            height: 25,
-            width: 50,
-            toggleSize: 18,
-            activeColor: widget.color,
-            onToggle: (value) {
-              setState(() {
-                widget.item.setValue(value);
-              });
-            },
+          child: Row(
+            children: [
+              FlutterSwitch(
+                value: widget.item.getValue() == "true" ? true : false,
+                height: 25,
+                width: 50,
+                toggleSize: 18,
+                activeColor: widget.color,
+                onToggle: (value) {
+                  setState(() {
+                    widget.item.setValue(value);
+                  });
+                },
+              ),
+              const Spacer(),
+            ],
           ),
         );
     }

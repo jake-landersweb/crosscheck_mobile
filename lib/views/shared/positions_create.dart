@@ -53,8 +53,7 @@ class _PositionsCreateState extends State<PositionsCreate> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: MediaQuery.of(context).platformBrightness ==
-                              Brightness.light
+                      color: Theme.of(context).brightness == Brightness.light
                           ? Colors.black.withOpacity(0.5)
                           : Colors.white.withOpacity(0.5),
                     ),

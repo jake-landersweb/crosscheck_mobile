@@ -13,8 +13,12 @@ class ImageUploader extends StatefulWidget {
   const ImageUploader({
     Key? key,
     required this.team,
+    required this.onImageChange,
+    required this.imgIsUrl,
   }) : super(key: key);
   final Team team;
+  final Function(String) onImageChange;
+  final bool imgIsUrl;
 
   @override
   _ImageUploaderState createState() => _ImageUploaderState();
@@ -26,6 +30,19 @@ class _ImageUploaderState extends State<ImageUploader> {
   XFile? _currentImage;
 
   bool _isLoading = false;
+
+  String _imageURL = "";
+  late bool imgIsUrl;
+
+  @override
+  void initState() {
+    if (!widget.team.image
+        .contains("https://crosscheck-sports.s3.amazonaws.com")) {
+      _imageURL = widget.team.image;
+    }
+    imgIsUrl = widget.imgIsUrl;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,75 +56,133 @@ class _ImageUploaderState extends State<ImageUploader> {
         childPadding: EdgeInsets.zero,
         children: [
           const SizedBox(height: 16),
-          if (_currentImage == null)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TeamLogo(url: widget.team.image, size: 150),
-              ],
-            )
+          cv.SegmentedPicker(
+            initialSelection: imgIsUrl ? "From URL" : "Image Uploader",
+            titles: const ["Image Uploader", "From URL"],
+            onSelection: (val) {
+              setState(() {
+                imgIsUrl = val == "Image Uploader" ? false : true;
+              });
+            },
+          ),
+          if (imgIsUrl)
+            _urlImage(context, dmodel)
           else
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Image.file(
-                      File(_currentImage!.path),
-                      width: 150,
-                      height: 150,
-                      errorBuilder: (context, obj, tmp) {
-                        return Image.asset(
-                          "assets/launch/x.png",
-                          color: dmodel.color,
-                          width: 150,
-                          height: 150,
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    cv.BasicButton(
-                      onTap: () {
-                        setState(() {
-                          _currentImage = null;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
+            _imageUploader(context, dmodel),
+        ],
+      ),
+    );
+  }
+
+  Widget _imageUploader(BuildContext context, DataModel dmodel) {
+    return cv.ListView<Widget>(
+      showStyling: false,
+      hasDividers: false,
+      childPadding: EdgeInsets.zero,
+      children: [
+        const SizedBox(height: 16),
+        if (_currentImage == null)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TeamLogo(url: widget.team.image, size: 150),
+            ],
+          )
+        else
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Image.file(
+                    File(_currentImage!.path),
+                    width: 150,
+                    height: 150,
+                    errorBuilder: (context, obj, tmp) {
+                      return Image.asset(
+                        "assets/launch/x.png",
+                        color: dmodel.color,
+                        width: 150,
+                        height: 150,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  cv.BasicButton(
+                    onTap: () {
+                      setState(() {
+                        _currentImage = null;
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color:
+                              CustomColors.textColor(context).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Remove Image",
+                          style: TextStyle(
                             color: CustomColors.textColor(context)
-                                .withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Remove Image",
-                            style: TextStyle(
-                              color: CustomColors.textColor(context)
-                                  .withOpacity(0.7),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
+                                .withOpacity(0.7),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          const SizedBox(height: 16),
-          cv.RoundedLabel(
-            "Select New Image",
-            color: CustomColors.textColor(context).withOpacity(0.1),
-            textColor: CustomColors.textColor(context),
-            onTap: () {
-              _selectImage(context, dmodel);
+                  ),
+                ],
+              ),
+            ],
+          ),
+        const SizedBox(height: 16),
+        cv.RoundedLabel(
+          "Select New Image",
+          color: CustomColors.textColor(context).withOpacity(0.1),
+          textColor: CustomColors.textColor(context),
+          onTap: () {
+            _selectImage(context, dmodel);
+          },
+        ),
+        if (_currentImage != null)
+          for (var i in _afterUpload(context, dmodel)) i,
+      ],
+    );
+  }
+
+  Widget _urlImage(BuildContext context, DataModel dmodel) {
+    return Column(
+      children: [
+        cv.Section(
+          "Image URL",
+          child: cv.TextField(
+            label: "Image Url",
+            fieldPadding: EdgeInsets.zero,
+            initialValue: _imageURL,
+            onChanged: (val) {
+              setState(() {
+                _imageURL = val;
+              });
             },
           ),
-          if (_currentImage != null)
-            for (var i in _afterUpload(context, dmodel)) i
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: cv.RoundedLabel(
+            "Add Image URL",
+            color: dmodel.color,
+            textColor: Colors.white,
+            isLoading: _isLoading,
+            onTap: () {
+              if (_imageURL.isNotEmpty) {
+                _uploadImageURL(context, dmodel);
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -159,8 +234,8 @@ class _ImageUploaderState extends State<ImageUploader> {
         // successfully uploaded
         // update the team image to the new presigned url
         setState(() {
-          widget.team.setImage(newImg);
           dmodel.tus!.team.setImage(newImg);
+          widget.onImageChange(newImg);
         });
         Navigator.of(context).pop();
       }, onError: () {
@@ -177,5 +252,18 @@ class _ImageUploaderState extends State<ImageUploader> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _uploadImageURL(BuildContext context, DataModel dmodel) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await dmodel.addImageURL(widget.team.teamId, _imageURL, () {
+      widget.onImageChange(_imageURL);
+      Navigator.of(context).pop();
+    });
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

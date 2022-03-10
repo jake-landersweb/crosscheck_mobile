@@ -69,10 +69,9 @@ class _SectionState extends State<Section> with TickerProviderStateMixin {
     if (widget.allowsCollapse ?? false) {
       return Theme(
         data: Theme.of(context).copyWith(
-          dividerColor:
-              MediaQuery.of(context).platformBrightness == Brightness.light
-                  ? Colors.black.withOpacity(0.1)
-                  : Colors.white.withOpacity(0.2),
+          dividerColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.black.withOpacity(0.1)
+              : Colors.white.withOpacity(0.2),
           dividerTheme: const DividerThemeData(
             thickness: 0.5,
             indent: 16,

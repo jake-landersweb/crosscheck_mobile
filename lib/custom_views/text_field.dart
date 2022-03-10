@@ -97,15 +97,14 @@ class _TextFieldState extends State<TextField> {
             ],
         textCapitalization: widget.textCapitalization,
         keyboardType: widget.keyboardType,
-        keyboardAppearance: MediaQuery.of(context).platformBrightness,
+        keyboardAppearance: Theme.of(context).brightness,
         cursorColor: widget.color,
         obscureText: widget.obscureText,
         style: widget.style ??
             TextStyle(
-              color:
-                  MediaQuery.of(context).platformBrightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
             ),
         decoration: InputDecoration(
           counterStyle: const TextStyle(
@@ -119,10 +118,9 @@ class _TextFieldState extends State<TextField> {
           contentPadding: widget.fieldPadding,
           icon: widget.icon == null ? null : Icon(widget.icon),
           hintStyle: TextStyle(
-              color:
-                  MediaQuery.of(context).platformBrightness == Brightness.light
-                      ? Colors.black.withOpacity(0.5)
-                      : Colors.white.withOpacity(0.5)),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black.withOpacity(0.5)
+                  : Colors.white.withOpacity(0.5)),
         ),
         onChanged: (value) {
           if (widget.onChanged != null) {
@@ -280,14 +278,14 @@ class _TextField2State extends State<TextField2> {
       controller: widget.controller,
       textCapitalization: widget.textCapitalization,
       keyboardType: widget.keyboardType,
-      keyboardAppearance: MediaQuery.of(context).platformBrightness,
+      keyboardAppearance: Theme.of(context).brightness,
       initialValue: widget.value,
       cursorColor: widget.highlightColor,
       obscureText: widget.obscureText,
       maxLength: widget.charLimit,
       style: widget.style ??
           TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.light
+            color: Theme.of(context).brightness == Brightness.light
                 ? Colors.black
                 : Colors.white,
           ),
@@ -302,7 +300,7 @@ class _TextField2State extends State<TextField2> {
         ),
         icon: widget.icon,
         hintStyle: TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.light
+            color: Theme.of(context).brightness == Brightness.light
                 ? Colors.black.withOpacity(0.5)
                 : Colors.white.withOpacity(0.5)),
       ),
@@ -325,14 +323,14 @@ class _TextField2State extends State<TextField2> {
       inputFormatters: widget.formatters,
       textCapitalization: widget.textCapitalization,
       keyboardType: widget.keyboardType,
-      keyboardAppearance: MediaQuery.of(context).platformBrightness,
+      keyboardAppearance: Theme.of(context).brightness,
       initialValue: widget.value,
       cursorColor: widget.highlightColor,
       obscureText: widget.obscureText,
       maxLength: widget.charLimit,
       style: widget.style ??
           TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.light
+            color: Theme.of(context).brightness == Brightness.light
                 ? Colors.black
                 : Colors.white,
           ),
@@ -347,7 +345,7 @@ class _TextField2State extends State<TextField2> {
         ),
         icon: widget.icon,
         hintStyle: TextStyle(
-            color: MediaQuery.of(context).platformBrightness == Brightness.light
+            color: Theme.of(context).brightness == Brightness.light
                 ? Colors.black.withOpacity(0.5)
                 : Colors.white.withOpacity(0.5)),
       ),

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 
@@ -78,12 +81,17 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
+    log(dmodel.tus?.team.teamId ?? "");
     return MaterialApp(
       title: 'Puck Norris Flutter',
       theme: lightTheme,
       darkTheme: darkTheme,
       highContrastTheme: lightTheme,
       highContrastDarkTheme: darkTheme,
+      themeMode: dmodel.tus == null
+          ? ThemeMode.system
+          : (dmodel.tus!.team.isLight ? ThemeMode.light : ThemeMode.dark),
+      // themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       home: dmodel.showSplash
           ? dmodel.showUpdate
@@ -97,8 +105,15 @@ class Home extends StatelessWidget {
                 )
               : const Dashboard(),
       builder: (context, child) {
-        return Index(
-          child: child!,
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: dmodel.tus == null
+              ? SystemUiOverlayStyle.dark
+              : (dmodel.tus!.team.isLight
+                  ? SystemUiOverlayStyle.dark
+                  : SystemUiOverlayStyle.light),
+          child: Index(
+            child: child!,
+          ),
         );
       },
     );

@@ -44,7 +44,7 @@ extension CustomColors on Colors {
   // static Color subDarkList = const Color.fromRGBO(38, 38, 40, 1);
 
   static Color textColor(BuildContext context) {
-    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+    if (Theme.of(context).brightness == Brightness.light) {
       return Colors.black;
     } else {
       return Colors.white;
@@ -52,7 +52,7 @@ extension CustomColors on Colors {
   }
 
   static Color plainBackground(BuildContext context) {
-    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+    if (Theme.of(context).brightness == Brightness.light) {
       return Colors.white;
     } else {
       return Colors.black;
@@ -60,7 +60,7 @@ extension CustomColors on Colors {
   }
 
   static Color cellColor(BuildContext context) {
-    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+    if (Theme.of(context).brightness == Brightness.light) {
       return Colors.white;
     } else {
       return CustomColors.darkList;
@@ -68,7 +68,7 @@ extension CustomColors on Colors {
   }
 
   static Color backgroundColor(BuildContext context) {
-    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+    if (Theme.of(context).brightness == Brightness.light) {
       return lightList;
     } else {
       return const Color.fromRGBO(30, 30, 33, 1);

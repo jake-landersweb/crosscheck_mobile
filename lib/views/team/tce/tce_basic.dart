@@ -43,7 +43,16 @@ class _TCEBasicState extends State<TCEBasic> {
             cv.showFloatingSheet(
               context: context,
               builder: (context) {
-                return ImageUploader(team: tcemodel.team);
+                return ImageUploader(
+                  team: tcemodel.team,
+                  imgIsUrl: tcemodel.imgIsUrl,
+                  onImageChange: (img) {
+                    setState(() {
+                      tcemodel.team.image = img;
+                      dmodel.tus!.team.image = img;
+                    });
+                  },
+                );
               },
             );
           },
@@ -163,34 +172,44 @@ class _TCEBasicState extends State<TCEBasic> {
               });
             },
           ),
-          // cv.LabeledWidget(
-          //   "Light Background",
-          //   child: FlutterSwitch(
-          //     value: tcemodel.team.isLight,
-          //     height: 25,
-          //     width: 50,
-          //     toggleSize: 18,
-          //     activeColor: dmodel.color,
-          //     onToggle: (value) {
-          //       setState(() {
-          //         tcemodel.team.isLight = value;
-          //       });
-          //     },
-          //   ),
-          // ),
+          cv.LabeledWidget(
+            "Light Background",
+            child: Row(
+              children: [
+                FlutterSwitch(
+                  value: tcemodel.team.isLight,
+                  height: 25,
+                  width: 50,
+                  toggleSize: 18,
+                  activeColor: dmodel.color,
+                  onToggle: (value) {
+                    setState(() {
+                      tcemodel.team.isLight = value;
+                    });
+                  },
+                ),
+                const Spacer(),
+              ],
+            ),
+          ),
           cv.LabeledWidget(
             "Show Player Nicknames",
-            child: FlutterSwitch(
-              value: tcemodel.team.showNicknames,
-              height: 25,
-              width: 50,
-              toggleSize: 18,
-              activeColor: dmodel.color,
-              onToggle: (value) {
-                setState(() {
-                  tcemodel.team.showNicknames = value;
-                });
-              },
+            child: Row(
+              children: [
+                FlutterSwitch(
+                  value: tcemodel.team.showNicknames,
+                  height: 25,
+                  width: 50,
+                  toggleSize: 18,
+                  activeColor: dmodel.color,
+                  onToggle: (value) {
+                    setState(() {
+                      tcemodel.team.showNicknames = value;
+                    });
+                  },
+                ),
+                const Spacer(),
+              ],
             ),
           ),
         ],

@@ -40,7 +40,7 @@ class IndicatorItem {
   Color getColor(BuildContext context) {
     switch (type) {
       case IndicatorItemType.success:
-        return MediaQuery.of(context).platformBrightness == Brightness.light
+        return Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white;
       default:
@@ -53,7 +53,7 @@ class IndicatorItem {
       case IndicatorItemType.error:
         return Colors.white;
       default:
-        return MediaQuery.of(context).platformBrightness == Brightness.light
+        return Theme.of(context).brightness == Brightness.light
             ? Colors.black
             : Colors.white;
     }

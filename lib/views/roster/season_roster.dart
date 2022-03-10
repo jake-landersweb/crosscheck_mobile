@@ -45,6 +45,16 @@ class _SeasonRosterState extends State<SeasonRoster> {
                 _active(context, dmodel),
               ),
               if (dmodel.seasonUsers!
+                  .any((element) => element.teamFields!.validationStatus == 2))
+                cv.Section(
+                  "Invited",
+                  child: _rosterList(
+                    context,
+                    dmodel,
+                    _invited(context, dmodel),
+                  ),
+                ),
+              if (dmodel.seasonUsers!
                   .any((element) => element.teamFields!.validationStatus == 0))
                 cv.Section(
                   "Non Validated",
@@ -54,16 +64,6 @@ class _SeasonRosterState extends State<SeasonRoster> {
                     _notValidated(context, dmodel),
                   ),
                 ),
-              if (dmodel.seasonUsers!
-                  .any((element) => element.teamFields!.validationStatus == 2))
-                cv.Section(
-                  "Invited",
-                  child: _rosterList(
-                    context,
-                    dmodel,
-                    _invited(context, dmodel),
-                  ),
-                )
             ],
           )
         else

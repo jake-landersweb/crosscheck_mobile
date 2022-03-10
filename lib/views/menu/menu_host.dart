@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -137,7 +139,7 @@ class _MenuHostState extends State<MenuHost> {
   Widget menu(BuildContext context, MenuModel _menu, Size _size) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Container(
-      color: MediaQuery.of(context).platformBrightness == Brightness.light
+      color: Theme.of(context).brightness == Brightness.light
           ? Colors.white
           : CustomColors.darkList,
       child: SafeArea(

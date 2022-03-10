@@ -34,6 +34,7 @@ class _RUCESeasonState extends State<RUCESeason> {
                   _jerseySize(context, rmodel),
                   _jerseyNumber(context, rmodel),
                   _isManager(context, dmodel, rmodel),
+                  _status(context, rmodel, dmodel),
                   if (rmodel.isCreate) _isSub(context, dmodel, rmodel),
                 ],
               ),
@@ -64,17 +65,22 @@ class _RUCESeasonState extends State<RUCESeason> {
       "Is Manager",
       child: SizedBox(
         height: 25,
-        child: FlutterSwitch(
-          value: rmodel.seasonFields!.isManager,
-          height: 25,
-          width: 50,
-          toggleSize: 18,
-          activeColor: dmodel.color,
-          onToggle: (value) {
-            setState(() {
-              rmodel.seasonFields!.isManager = value;
-            });
-          },
+        child: Row(
+          children: [
+            FlutterSwitch(
+              value: rmodel.seasonFields!.isManager,
+              height: 25,
+              width: 50,
+              toggleSize: 18,
+              activeColor: dmodel.color,
+              onToggle: (value) {
+                setState(() {
+                  rmodel.seasonFields!.isManager = value;
+                });
+              },
+            ),
+            const Spacer(),
+          ],
         ),
       ),
     );
@@ -85,17 +91,22 @@ class _RUCESeasonState extends State<RUCESeason> {
       "Is Sub",
       child: SizedBox(
         height: 25,
-        child: FlutterSwitch(
-          value: rmodel.seasonFields!.isSub,
-          height: 25,
-          width: 50,
-          toggleSize: 18,
-          activeColor: dmodel.color,
-          onToggle: (value) {
-            setState(() {
-              rmodel.seasonFields!.isSub = value;
-            });
-          },
+        child: Row(
+          children: [
+            FlutterSwitch(
+              value: rmodel.seasonFields!.isSub,
+              height: 25,
+              width: 50,
+              toggleSize: 18,
+              activeColor: dmodel.color,
+              onToggle: (value) {
+                setState(() {
+                  rmodel.seasonFields!.isSub = value;
+                });
+              },
+            ),
+            const Spacer(),
+          ],
         ),
       ),
     );
@@ -150,6 +161,42 @@ class _RUCESeasonState extends State<RUCESeason> {
         "Position",
         child: Text(
           rmodel.seasonFields!.pos == "" ? "None" : rmodel.seasonFields!.pos,
+          style: TextStyle(
+            color: CustomColors.textColor(context).withOpacity(0.5),
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            decoration: TextDecoration.underline,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _status(BuildContext context, RUCEModel rmodel, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        cv.showFloatingSheet(
+          context: context,
+          builder: (context) {
+            return cv.ModelSelector<int>(
+              title: "Select Status",
+              initialSelection: rmodel.seasonFields!.seasonUserStatus,
+              selections: const [-1, 1],
+              titles: const ["Inactive", "Active"],
+              color: dmodel.color,
+              onSelection: (int val) {
+                setState(() {
+                  rmodel.seasonFields!.seasonUserStatus = val;
+                });
+              },
+            );
+          },
+        );
+      },
+      child: cv.LabeledWidget(
+        "Status",
+        child: Text(
+          rmodel.seasonFields!.getStatus(),
           style: TextStyle(
             color: CustomColors.textColor(context).withOpacity(0.5),
             fontSize: 18,

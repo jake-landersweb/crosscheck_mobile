@@ -3,7 +3,7 @@ import 'package:pnflutter/data/root.dart';
 class SeasonUserSeasonFields {
   String? seasonUserNote;
   int? seasonUserType;
-  int? seasonUserStatus;
+  late int seasonUserStatus;
   // new fields
   late String email;
   late bool isManager;
@@ -18,7 +18,7 @@ class SeasonUserSeasonFields {
   SeasonUserSeasonFields({
     this.seasonUserNote,
     this.seasonUserType,
-    this.seasonUserStatus,
+    required this.seasonUserStatus,
     required this.email,
     required this.isManager,
     required this.isPlaying,
@@ -63,7 +63,7 @@ class SeasonUserSeasonFields {
   SeasonUserSeasonFields.fromJson(Map<String, dynamic> json) {
     seasonUserNote = json['seasonUserNote'];
     seasonUserType = json['seasonUserType']?.round();
-    seasonUserStatus = json['seasonUserStatus']?.round();
+    seasonUserStatus = json['seasonUserStatus']?.round() ?? 1;
     email = json['email'];
     isManager = json['isManager'] ?? false;
     isPlaying = json['isPlaying'] ?? true;
@@ -95,5 +95,16 @@ class SeasonUserSeasonFields {
     data["jerseySize"] = jerseySize;
     data["jerseyNumber"] = jerseyNumber;
     return data;
+  }
+
+  String getStatus() {
+    switch (seasonUserStatus) {
+      case 1:
+        return "Active";
+      case -1:
+        return "Inactive";
+      default:
+        return "Unknown";
+    }
   }
 }

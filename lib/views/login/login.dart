@@ -37,57 +37,63 @@ class _LoginState extends State<Login> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      body: Column(
-        children: [
-          // top content
-          Container(
-            // gradient background for the form
-            decoration: BoxDecoration(
-              color: dmodel.color.withOpacity(0.5),
-            ),
-            width: double.infinity,
-            // actual form
-            child: SafeArea(
-              top: true,
-              left: false,
-              right: false,
-              bottom: false,
-              child: Column(
-                children: [
-                  // title
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32.0),
-                    child: Center(child: _title(context)),
-                  ),
-                  // form
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: _form(context, dmodel),
-                  ),
-                  const SizedBox(height: 32),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: _button(context, dmodel),
-                  ),
-                ],
+      body: Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme:
+              Theme.of(context).colorScheme.copyWith(primary: dmodel.color),
+        ),
+        child: Column(
+          children: [
+            // top content
+            Container(
+              // gradient background for the form
+              decoration: BoxDecoration(
+                color: dmodel.color.withOpacity(0.5),
+              ),
+              width: double.infinity,
+              // actual form
+              child: SafeArea(
+                top: true,
+                left: false,
+                right: false,
+                bottom: false,
+                child: Column(
+                  children: [
+                    // title
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 32.0),
+                      child: Center(child: _title(context)),
+                    ),
+                    // form
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: _form(context, dmodel),
+                    ),
+                    const SizedBox(height: 32),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: _button(context, dmodel),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          // wave
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.1,
-            width: double.infinity,
-            child: SvgPicture.asset(
-              "assets/svg/wave1.svg",
-              semanticsLabel: 'wave',
-              color: dmodel.color.withOpacity(0.5),
+            // wave
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
               width: double.infinity,
-              fit: BoxFit.fill,
+              child: SvgPicture.asset(
+                "assets/svg/wave1.svg",
+                semanticsLabel: 'wave',
+                color: dmodel.color.withOpacity(0.5),
+                width: double.infinity,
+                fit: BoxFit.fill,
+              ),
             ),
-          ),
-          const Spacer(),
-          _footer(context),
-        ],
+            const Spacer(),
+            _footer(context),
+          ],
+        ),
       ),
     );
   }
@@ -163,7 +169,7 @@ class _LoginState extends State<Login> {
             highlightColor: dmodel.color,
             icon: Icon(icon),
             onChanged: (value) => onChanged(value),
-            validator: (value) {},
+            validator: (value) => null,
           ),
         ),
       ),

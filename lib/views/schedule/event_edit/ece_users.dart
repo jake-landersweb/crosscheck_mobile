@@ -75,6 +75,14 @@ class _ECEUsersState extends State<ECEUsers> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                    if (user.seasonFields!.seasonUserStatus == -1)
+                      const Text(
+                        "inactive",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     const SizedBox(width: 4),
                     (isSelected)
                         ? Icon(Icons.check_circle, color: dmodel.color)

@@ -192,7 +192,7 @@ class _ECEBasicState extends State<ECEBasic> {
                     ecemodel.opponentName = value;
                   });
                 },
-                validator: (value) {},
+                validator: (value) => null,
               )
             : cv.TextField2(
                 labelText: "Title",
@@ -205,7 +205,7 @@ class _ECEBasicState extends State<ECEBasic> {
                     ecemodel.event.eTitle = value;
                   });
                 },
-                validator: (value) {},
+                validator: (value) => null,
               ),
       ],
     );
@@ -228,7 +228,7 @@ class _ECEBasicState extends State<ECEBasic> {
                     ecemodel.event.eDescription = value;
                   });
                 },
-                validator: (value) {},
+                validator: (value) => null,
                 showBackground: false,
                 value: ecemodel.event.eDescription,
                 isLabeled: true,
@@ -239,17 +239,22 @@ class _ECEBasicState extends State<ECEBasic> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: cv.LabeledWidget(
                   "Track Attendance",
-                  child: FlutterSwitch(
-                    value: ecemodel.event.hasAttendance,
-                    height: 25,
-                    width: 50,
-                    toggleSize: 18,
-                    activeColor: dmodel.color,
-                    onToggle: (value) {
-                      setState(() {
-                        ecemodel.event.hasAttendance = value;
-                      });
-                    },
+                  child: Row(
+                    children: [
+                      FlutterSwitch(
+                        value: ecemodel.event.hasAttendance,
+                        height: 25,
+                        width: 50,
+                        toggleSize: 18,
+                        activeColor: dmodel.color,
+                        onToggle: (value) {
+                          setState(() {
+                            ecemodel.event.hasAttendance = value;
+                          });
+                        },
+                      ),
+                      const Spacer(),
+                    ],
                   ),
                 ),
               ),
@@ -261,17 +266,22 @@ class _ECEBasicState extends State<ECEBasic> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: cv.LabeledWidget(
                   "Show Attendance",
-                  child: FlutterSwitch(
-                    value: ecemodel.event.showAttendance,
-                    height: 25,
-                    width: 50,
-                    toggleSize: 18,
-                    activeColor: dmodel.color,
-                    onToggle: (value) {
-                      setState(() {
-                        ecemodel.event.showAttendance = value;
-                      });
-                    },
+                  child: Row(
+                    children: [
+                      FlutterSwitch(
+                        value: ecemodel.event.showAttendance,
+                        height: 25,
+                        width: 50,
+                        toggleSize: 18,
+                        activeColor: dmodel.color,
+                        onToggle: (value) {
+                          setState(() {
+                            ecemodel.event.showAttendance = value;
+                          });
+                        },
+                      ),
+                      const Spacer(),
+                    ],
                   ),
                 ),
               ),
@@ -284,17 +294,22 @@ class _ECEBasicState extends State<ECEBasic> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: cv.LabeledWidget(
                   "Home Team",
-                  child: FlutterSwitch(
-                    value: ecemodel.isHome,
-                    height: 25,
-                    width: 50,
-                    toggleSize: 18,
-                    activeColor: dmodel.color,
-                    onToggle: (value) {
-                      setState(() {
-                        ecemodel.isHome = value;
-                      });
-                    },
+                  child: Row(
+                    children: [
+                      FlutterSwitch(
+                        value: ecemodel.isHome,
+                        height: 25,
+                        width: 50,
+                        toggleSize: 18,
+                        activeColor: dmodel.color,
+                        onToggle: (value) {
+                          setState(() {
+                            ecemodel.isHome = value;
+                          });
+                        },
+                      ),
+                      const Spacer(),
+                    ],
                   ),
                 ),
               ),

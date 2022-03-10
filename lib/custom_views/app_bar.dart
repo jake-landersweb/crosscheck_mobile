@@ -290,7 +290,7 @@ class _AppBarState extends State<AppBar> {
           width: double.infinity,
           borderRadius: BorderRadius.circular(0),
           backgroundColor: widget.backgroundColor ??
-              (MediaQuery.of(context).platformBrightness == Brightness.light
+              (Theme.of(context).brightness == Brightness.light
                   ? ViewColors.lightList
                   : Colors.black),
           opacity: _showElevation ? 0.7 : 0,

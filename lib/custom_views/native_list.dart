@@ -33,10 +33,9 @@ class _NativeListState extends State<NativeList> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        dividerColor:
-            MediaQuery.of(context).platformBrightness == Brightness.light
-                ? Colors.black.withOpacity(0.1)
-                : Colors.white.withOpacity(0.1),
+        dividerColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black.withOpacity(0.1)
+            : Colors.white.withOpacity(0.1),
         dividerTheme: const DividerThemeData(
           thickness: 0.5,
           indent: 16,

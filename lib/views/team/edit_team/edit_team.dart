@@ -101,12 +101,12 @@ class _EditTeamState extends State<EditTeam> {
   Widget _logo(BuildContext context, DataModel dmodel) {
     return cv.BasicButton(
       onTap: () {
-        cv.showFloatingSheet(
-          context: context,
-          builder: (context) {
-            return ImageUploader(team: widget.team);
-          },
-        );
+        // cv.showFloatingSheet(
+        //   context: context,
+        //   builder: (context) {
+        //     return ImageUploader(team: widget.team);
+        //   },
+        // );
       },
       child: Stack(
         alignment: Alignment.center,

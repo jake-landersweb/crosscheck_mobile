@@ -57,16 +57,6 @@ class _TeamRosterState extends State<TeamRoster> {
             children: [
               _rosterBase(context, dmodel, _active(context, dmodel)),
               if (_users!
-                  .any((element) => element.teamFields!.validationStatus == 0))
-                cv.Section(
-                  "Non Validated",
-                  child: _rosterBase(
-                    context,
-                    dmodel,
-                    _notValidated(context, dmodel),
-                  ),
-                ),
-              if (_users!
                   .any((element) => element.teamFields!.validationStatus == 2))
                 cv.Section(
                   "Invited",
@@ -74,6 +64,16 @@ class _TeamRosterState extends State<TeamRoster> {
                     context,
                     dmodel,
                     _invited(context, dmodel),
+                  ),
+                ),
+              if (_users!
+                  .any((element) => element.teamFields!.validationStatus == 0))
+                cv.Section(
+                  "Non Validated",
+                  child: _rosterBase(
+                    context,
+                    dmodel,
+                    _notValidated(context, dmodel),
                   ),
                 ),
             ],
@@ -116,25 +116,16 @@ class _TeamRosterState extends State<TeamRoster> {
             },
             onUserEdit: (body) async {
               // print(body);
-              await dmodel.seasonUserUpdate(
-                dmodel.tus!.team.teamId,
-                dmodel.currentSeason!.seasonId,
-                user.email,
-                body,
-                () async {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  // get latest season roster data
-                  setState(() {
-                    dmodel.seasonUsers = null;
-                  });
-                  await dmodel.getSeasonRoster(
-                    dmodel.tus!.team.teamId,
-                    dmodel.currentSeason!.seasonId,
-                    (p0) => dmodel.setSeasonUsers(p0),
-                  );
-                },
-              );
+              await dmodel.teamUserUpdate(
+                  dmodel.tus!.team.teamId, user.email, body, () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                // get latest team roster
+                setState(() {
+                  _users = null;
+                });
+                _fetchUsers(context, dmodel);
+              });
             },
           ),
         );

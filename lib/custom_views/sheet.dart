@@ -47,7 +47,7 @@ class SheetHeader extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: height,
-      color: MediaQuery.of(context).platformBrightness == Brightness.light
+      color: Theme.of(context).brightness == Brightness.light
           ? Colors.black.withOpacity(0.1)
           : Colors.white.withOpacity(0.1),
       child: Stack(

@@ -191,6 +191,12 @@ class _EventDetailState extends State<EventDetail> {
       if (widget.event.eDescription.isNotEmpty)
         _detailCell(Icons.description, widget.event.eDescription, "Description",
             dmodel),
+      if (widget.event.eventType == 1)
+        _detailCell(
+            Icons.description,
+            "${widget.event.homeTeam?.score ?? 0} - ${widget.event.awayTeam?.score ?? 0} (${widget.event.homeTeam?.teamId == widget.team.teamId ? "home" : "away"})",
+            "Score",
+            dmodel),
     ];
   }
 
@@ -591,7 +597,7 @@ class _EventDetailState extends State<EventDetail> {
   Color _accentColor() {
     return widget.event.eventColor.isEmpty
         ? CustomColors.textColor(context).withOpacity(0.5)
-        : MediaQuery.of(context).platformBrightness == Brightness.light
+        : Theme.of(context).brightness == Brightness.light
             ? widget.event.getColor()!.darken(0.3).withOpacity(0.7)
             : widget.event.getColor()!.lighten(0.1);
   }

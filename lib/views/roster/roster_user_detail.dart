@@ -61,7 +61,9 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
         if (widget.seasonUser.teamFields != null) _teamFields(context),
         if (widget.seasonUser.seasonFields != null) _seasonFields(context),
         if ((widget.teamUser.isTeamAdmin() ||
-            widget.seasonUser.isSeasonAdmin()))
+                widget.seasonUser.isSeasonAdmin()) &&
+            !widget.seasonUser.isSeasonAdmin() &&
+            !widget.seasonUser.isTeamAdmin())
           _delete(context, dmodel),
       ],
     );
@@ -238,17 +240,21 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
                         : "False",
                   ),
                   cv.LabeledCell(
-                      label: "Jersey Size",
-                      value: widget.seasonUser.seasonFields!.jerseySize),
+                    label: "Jersey Size",
+                    value: widget.seasonUser.seasonFields!.jerseySize,
+                  ),
                   cv.LabeledCell(
-                      label: "Jersey Number",
-                      value: widget.seasonUser.seasonFields!.jerseyNumber),
+                    label: "Jersey Number",
+                    value: widget.seasonUser.seasonFields!.jerseyNumber,
+                  ),
+                  cv.LabeledCell(
+                    label: "Status",
+                    value: widget.seasonUser.seasonFields!.getStatus(),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
               // custom fields
-              if (widget.seasonUser.seasonFields!.customFields.isNotEmpty)
-                const SizedBox(height: 8),
               if (widget.seasonUser.seasonFields!.customFields.isNotEmpty)
                 cv.NativeList(
                   children: [

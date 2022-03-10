@@ -71,8 +71,8 @@ class _SettingsState extends State<Settings> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: cv.RoundedLabel(
             "Log Out",
-            color: Colors.red.withOpacity(0.3),
-            textColor: Colors.red[900],
+            color: Colors.red.withOpacity(0.5),
+            textColor: Colors.white,
             onTap: () {
               _showAlert(context, dmodel);
             },

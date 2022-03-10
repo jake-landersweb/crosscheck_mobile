@@ -8,21 +8,21 @@ class SwiftMaterial extends StatelessWidget {
   }) : super(key: key);
 
   SwiftMaterial.light(BuildContext context) {
-    color = MediaQuery.of(context).platformBrightness == Brightness.light
+    color = Theme.of(context).brightness == Brightness.light
         ? Colors.black
         : Colors.white;
     opacity = 0.1;
   }
 
   SwiftMaterial.regular(BuildContext context) {
-    color = MediaQuery.of(context).platformBrightness == Brightness.light
+    color = Theme.of(context).brightness == Brightness.light
         ? Colors.black
         : Colors.white;
     opacity = 0.2;
   }
 
   SwiftMaterial.heavy(BuildContext context) {
-    color = MediaQuery.of(context).platformBrightness == Brightness.light
+    color = Theme.of(context).brightness == Brightness.light
         ? Colors.black
         : Colors.white;
     opacity = 0.3;

@@ -134,7 +134,7 @@ class SeasonUser extends Equatable {
     } else {
       if (isTeamAdmin()) {
         return true;
-      } else if ((seasonFields!.seasonUserType ?? 1) > 1) {
+      } else if ((seasonFields?.seasonUserType ?? 1) > 1) {
         return true;
       } else {
         return false;
