@@ -39,7 +39,7 @@ class _RUCESeasonState extends State<RUCESeason> {
                 ],
               ),
               if (rmodel.seasonFields!.customFields.isNotEmpty)
-                _customFields(context, rmodel),
+                _customFields(context, dmodel, rmodel),
             ],
           ),
         ),
@@ -208,7 +208,8 @@ class _RUCESeasonState extends State<RUCESeason> {
     );
   }
 
-  Widget _customFields(BuildContext context, RUCEModel rmodel) {
+  Widget _customFields(
+      BuildContext context, DataModel dmodel, RUCEModel rmodel) {
     return Column(
       children: [
         const SizedBox(height: 8),
@@ -216,7 +217,7 @@ class _RUCESeasonState extends State<RUCESeason> {
           itemPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
           children: [
             for (var i in rmodel.seasonFields!.customFields)
-              CustomFieldEdit(field: i),
+              CustomFieldEdit(field: i, color: dmodel.color),
           ],
         ),
       ],

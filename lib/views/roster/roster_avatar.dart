@@ -24,7 +24,7 @@ class RosterAvatar extends StatelessWidget {
       children: [
         cv.Circle(size, CustomColors.random(seed == null ? name : seed!)),
         Text(
-          name[0].toUpperCase(),
+          name.isNotEmpty ? name[0].toUpperCase() : "-",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,

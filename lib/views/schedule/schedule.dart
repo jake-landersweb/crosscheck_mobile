@@ -89,21 +89,23 @@ class _ScheduleState extends State<Schedule> {
       child: Row(
         children: [
           // season title
-          Text(
-            dmodel.currentSeason?.title ?? "",
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
-              color: CustomColors.textColor(context),
+          Expanded(
+            child: Text(
+              dmodel.currentSeason?.title ?? "",
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w800,
+                color: CustomColors.textColor(context),
+              ),
             ),
           ),
-          const SizedBox(width: 4),
-          // icon to show this is clickable
-          Transform.rotate(
-            angle: math.pi * 1.5,
-            child: Icon(Icons.chevron_left,
-                color: CustomColors.textColor(context).withOpacity(0.7)),
-          ),
+          // const SizedBox(width: 4),
+          // // icon to show this is clickable
+          // Transform.rotate(
+          //   angle: math.pi * 1.5,
+          //   child: Icon(Icons.chevron_left,
+          //       color: CustomColors.textColor(context).withOpacity(0.7)),
+          // ),
         ],
       ),
     );

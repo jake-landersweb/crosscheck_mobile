@@ -443,6 +443,9 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   Widget _userRow(BuildContext context, DataModel dmodel, SeasonUser user) {
+    if (user.email.isEmpty) {
+      print(user);
+    }
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -586,7 +589,9 @@ class _EventDetailState extends State<EventDetail> {
           return SeasonUser.empty();
         });
         seasonUser.updateEventFields(i);
-        users.add(seasonUser);
+        if (seasonUser.email.isNotEmpty) {
+          users.add(seasonUser);
+        }
       }
       setState(() {
         _users = users;
