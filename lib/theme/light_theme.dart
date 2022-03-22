@@ -16,6 +16,8 @@ ThemeData lightTheme = ThemeData(
   ),
   colorScheme: ColorScheme(
     background: CustomColors.lightList,
+    secondaryVariant: Colors.blue,
+    primaryVariant: Colors.blue,
     brightness: Brightness.light,
     error: Colors.red,
     onBackground: Colors.black,

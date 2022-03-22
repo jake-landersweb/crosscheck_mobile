@@ -69,7 +69,10 @@ void showAlert({
           return AlertDialog(
             title: Text(title,
                 style: const TextStyle(fontWeight: FontWeight.w600)),
-            content: body,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [body],
+            ),
             actions: _materialActions(
               context: context,
               cancelBolded: cancelBolded,

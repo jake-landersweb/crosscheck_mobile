@@ -5,7 +5,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 import 'package:graphql/client.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../amplifyconfiguration.dart' as config;
+// import '../amplifyconfiguration.dart' as config;
 import 'dart:convert';
 import 'env.dart' as env;
 
@@ -26,18 +26,18 @@ class ChatModel extends ChangeNotifier {
 
   ChatModel(Team team, Season season, DataModel dmodel, this.name, this.email) {
     // set the name to use as the sender
-    final httpLink = HttpLink(env.GRAPH, defaultHeaders: {
-      "x-api-key": env.GRAPH_API_KEY,
-    });
-    Link link = httpLink;
+    // final httpLink = HttpLink(env.GRAPH, defaultHeaders: {
+    //   "x-api-key": env.GRAPH_API_KEY,
+    // });
+    // Link link = httpLink;
 
-    client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: link,
-    );
+    // client = GraphQLClient(
+    //   cache: GraphQLCache(),
+    //   link: link,
+    // );
 
-    // init room and chat
-    init(team.teamId, season.seasonId, dmodel);
+    // // init room and chat
+    // init(team.teamId, season.seasonId, dmodel);
   }
 
   void init(String teamId, String seasonId, DataModel dmodel) async {
@@ -100,7 +100,7 @@ class ChatModel extends ChangeNotifier {
       Amplify.addPlugin(AmplifyAPI());
 
       try {
-        await Amplify.configure(config.amplifyconfig);
+        // await Amplify.configure(config.amplifyconfig);
       } on AmplifyAlreadyConfiguredException {
         print(
             "Tried to reconfigure Amplify; this can occur when your app restarts on Android.");

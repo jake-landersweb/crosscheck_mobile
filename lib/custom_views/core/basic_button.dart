@@ -20,36 +20,44 @@ class BasicButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
-      return MaterialButton(
-        color: Colors.transparent,
-        disabledColor: Colors.transparent,
-        padding: const EdgeInsets.all(0),
-        minWidth: 0,
-        onPressed: onTap,
-        child: child,
-      );
-    } else {
-      if (Platform.isIOS || Platform.isMacOS) {
-        return CupertinoButton(
-          color: Colors.transparent,
-          disabledColor: Colors.transparent,
-          padding: const EdgeInsets.all(0),
-          minSize: 0,
-          onPressed: onTap,
-          child: child,
-        );
-      } else {
-        return MaterialButton(
-          color: Colors.transparent,
-          disabledColor: Colors.transparent,
-          padding: const EdgeInsets.all(0),
-          minWidth: 0,
-          elevation: 0,
-          onPressed: onTap,
-          child: child,
-        );
-      }
-    }
+    return CupertinoButton(
+      color: Colors.transparent,
+      disabledColor: Colors.transparent,
+      padding: const EdgeInsets.all(0),
+      minSize: 0,
+      onPressed: onTap,
+      child: child,
+    );
+    // if (kIsWeb) {
+    //   return MaterialButton(
+    //     color: Colors.transparent,
+    //     disabledColor: Colors.transparent,
+    //     padding: const EdgeInsets.all(0),
+    //     minWidth: 0,
+    //     onPressed: onTap,
+    //     child: child,
+    //   );
+    // } else {
+    //   if (Platform.isIOS || Platform.isMacOS) {
+    //     return CupertinoButton(
+    //       color: Colors.transparent,
+    //       disabledColor: Colors.transparent,
+    //       padding: const EdgeInsets.all(0),
+    //       minSize: 0,
+    //       onPressed: onTap,
+    //       child: child,
+    //     );
+    //   } else {
+    //     return MaterialButton(
+    //       color: Colors.transparent,
+    //       disabledColor: Colors.transparent,
+    //       padding: const EdgeInsets.all(0),
+    //       minWidth: 0,
+    //       elevation: 0,
+    //       onPressed: onTap,
+    //       child: child,
+    //     );
+    //   }
+    // }
   }
 }

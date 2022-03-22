@@ -53,8 +53,7 @@ class _TabBarState extends State<TabBar> {
 
   Widget _tabBarItem(BuildContext context, int idx, IconData icon) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-          32, 0, 32, MediaQuery.of(context).viewPadding.bottom),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
       child: cv.BasicButton(
         onTap: () {
           widget.onViewChange(idx);
