@@ -31,9 +31,7 @@ class MyApp extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // for dismissing keybaord when tapping on the screen
-        if (WidgetsBinding.instance != null) {
-          WidgetsBinding.instance!.focusManager.primaryFocus?.unfocus();
-        }
+        WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
       },
       child: const Home(),
     );
@@ -165,12 +163,12 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
   @override
   initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

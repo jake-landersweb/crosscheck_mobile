@@ -1,8 +1,9 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pnflutter/extras/global_funcs.dart';
 import 'package:uuid/uuid.dart';
 
-class Message extends Equatable {
+class Message extends Model {
   late String roomId;
   late String messageId;
   late String message;
@@ -37,6 +38,7 @@ class Message extends Equatable {
     created = "";
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       "roomId": roomId,
@@ -56,5 +58,16 @@ class Message extends Equatable {
   }
 
   @override
-  List<Object?> get props => [roomId, messageId];
+  String getId() {
+    return roomId;
+  }
+
+  @override
+  ModelType<Model> getInstanceType() {
+    // TODO: implement getInstanceType
+    throw UnimplementedError();
+  }
+
+  // @override
+  // List<Object?> get props => [roomId, messageId];
 }

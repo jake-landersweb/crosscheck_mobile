@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.2.8+19
+version: 3.0.0+20
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
@@ -33,7 +33,7 @@ dependencies:
   provider: ^5.0.0
   google_fonts: ^2.1.0
   sprung: ^3.0.0
-  modal_bottom_sheet: ^2.0.0
+  modal_bottom_sheet: ^2.0.1
   shared_preferences: ^2.0.6
   firebase_core: ^1.2.0 # firebase
   firebase_messaging: ^10.0.0 # firebase
@@ -49,8 +49,8 @@ dependencies:
   flutter_svg: ^1.0.0 # for svg rendering
   graphql: ^5.0.0 # for graphql chat
   uuid: ^3.0.5 # for message id's
-  amplify_flutter: ^0.2.0 # for graphql subs
-  amplify_api: ^0.2.10 # for graphql subs
+  amplify_flutter: ^0.4.2 # for graphql subs
+  amplify_api: ^0.4.2 # for graphql subs
   flutter_staggered_grid_view: ^0.6.0 # for better grids
   image_picker: ^0.8.4+9 # for picking images for team logo upload
   image: ^3.1.3 # for resizing images

@@ -1,11 +1,13 @@
-import 'package:amplify_flutter/amplify.dart';
+import 'dart:async';
+
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'root.dart';
 import '../data/root.dart';
 import '../extras/root.dart';
 import 'package:graphql/client.dart';
 import 'package:amplify_api/amplify_api.dart';
-// import '../amplifyconfiguration.dart' as config;
+import '../amplifyconfiguration.dart' as config;
 import 'dart:convert';
 import 'env.dart' as env;
 
@@ -22,22 +24,22 @@ class ChatModel extends ChangeNotifier {
 
   late GraphQLClient client;
 
-  GraphQLSubscriptionOperation<String>? operation;
+  StreamSubscription<GraphQLResponse<dynamic>>? operation;
 
   ChatModel(Team team, Season season, DataModel dmodel, this.name, this.email) {
     // set the name to use as the sender
-    // final httpLink = HttpLink(env.GRAPH, defaultHeaders: {
-    //   "x-api-key": env.GRAPH_API_KEY,
-    // });
-    // Link link = httpLink;
+    final httpLink = HttpLink(env.GRAPH, defaultHeaders: {
+      "x-api-key": env.GRAPH_API_KEY,
+    });
+    Link link = httpLink;
 
-    // client = GraphQLClient(
-    //   cache: GraphQLCache(),
-    //   link: link,
-    // );
+    client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: link,
+    );
 
-    // // init room and chat
-    // init(team.teamId, season.seasonId, dmodel);
+    // init room and chat
+    init(team.teamId, season.seasonId, dmodel);
   }
 
   void init(String teamId, String seasonId, DataModel dmodel) async {
@@ -98,16 +100,15 @@ class ChatModel extends ChangeNotifier {
     // set up amplify if it has not been configured
     if (!Amplify.isConfigured) {
       Amplify.addPlugin(AmplifyAPI());
-
       try {
-        // await Amplify.configure(config.amplifyconfig);
+        await Amplify.configure(config.amplifyconfig);
       } on AmplifyAlreadyConfiguredException {
         print(
             "Tried to reconfigure Amplify; this can occur when your app restarts on Android.");
       }
     }
 
-    // set up AWS AMPLIFY subscription connection to fetch new messages
+    // // set up AWS AMPLIFY subscription connection to fetch new messages
     try {
       const String qstring = r'''
         subscription watchMessages($roomId: String!) {
@@ -122,44 +123,75 @@ class ChatModel extends ChangeNotifier {
         }
       ''';
 
-      operation = Amplify.API.subscribe(
-        request: GraphQLRequest<String>(
-          document: qstring,
-          variables: {
+      var test = Amplify.API.subscribe(
+          GraphQLRequest(document: qstring, variables: {
             "roomId": roomId,
-          },
-        ),
-        onData: (event) {
-          print("Subscription event data recieved: ${event.data}");
-          dynamic json = jsonDecode(event.data);
-          try {
-            Message recievedMessage = Message.fromJson(json['onCreateMessage']);
-            if (recievedMessage.sender != name) {
-              // add to message list if not sent from this sender
-              messages.insert(0, recievedMessage);
-              notifyListeners();
-              print("updated view");
-            } else {
-              print("Recieved message successful, but sent from this device");
-            }
-          } catch (error) {
-            print("There was an issue decoding the response: $error");
+          }), onEstablished: () {
+        print("established");
+      });
+
+      operation = test.listen((event) {
+        print("Subscription event data recieved: ${event.data}");
+        dynamic json = jsonDecode(event.data);
+        try {
+          Message recievedMessage = Message.fromJson(json['onCreateMessage']);
+          if (recievedMessage.sender != name) {
+            // add to message list if not sent from this sender
+            messages.insert(0, recievedMessage);
+            notifyListeners();
+            print("updated view");
+          } else {
+            print("Recieved message successful, but sent from this device");
           }
-        },
-        onEstablished: () {
-          print("Subscription established");
-        },
-        onError: (error) {
-          print("Subscription failed with error: $error");
-          // incrament a retry up to three times
-          if (subRetryCounter < 3) {
-            retrySubSCription();
-          }
-        },
-        onDone: () {
-          print("Subscription has been closed successfully");
-        },
-      );
+        } catch (error) {
+          print("There was an issue decoding the response: $error");
+        }
+      }, onError: (Object e) {
+        print("Subscription failed with error: $e");
+        // incrament a retry up to three times
+        if (subRetryCounter < 3) {
+          retrySubSCription();
+        }
+      });
+
+      // operation = Amplify.API.subscribe(
+      //   request: GraphQLRequest<String>(
+      //     document: qstring,
+      //     variables: {
+      //       "roomId": roomId,
+      //     },
+      //   ),
+      //   onData: (event) {
+      // print("Subscription event data recieved: ${event.data}");
+      // dynamic json = jsonDecode(event.data);
+      // try {
+      //   Message recievedMessage = Message.fromJson(json['onCreateMessage']);
+      //   if (recievedMessage.sender != name) {
+      //     // add to message list if not sent from this sender
+      //     messages.insert(0, recievedMessage);
+      //     notifyListeners();
+      //     print("updated view");
+      //   } else {
+      //     print("Recieved message successful, but sent from this device");
+      //   }
+      // } catch (error) {
+      //   print("There was an issue decoding the response: $error");
+      // }
+      //   },
+      //   onEstablished: () {
+      //     print("Subscription established");
+      //   },
+      //   onError: (error) {
+      // print("Subscription failed with error: $error");
+      // // incrament a retry up to three times
+      // if (subRetryCounter < 3) {
+      //   retrySubSCription();
+      // }
+      //   },
+      //   onDone: () {
+      //     print("Subscription has been closed successfully");
+      //   },
+      // );
     } on ApiException catch (error) {
       print("Failed to establish subscription: $error");
       // incrament a retry up to three times

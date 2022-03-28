@@ -39,7 +39,7 @@ class _TabBarState extends State<TabBar> {
           blur: 12,
           height: MediaQuery.of(context).viewPadding.bottom + 40,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               for (var i = 0; i < widget.icons.length; i++)
