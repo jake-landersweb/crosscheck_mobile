@@ -313,7 +313,7 @@ class Event extends Equatable {
     }
   }
 
-  Color? getStatusColor(int userStatus) {
+  Color? getStatusColor(int userStatus, {Color? defaultColor}) {
     switch (userStatus) {
       case -1:
         return Colors.red[300];
@@ -321,6 +321,8 @@ class Event extends Equatable {
         return Colors.green[300];
       case 2:
         return Colors.amber[300];
+      default:
+        return defaultColor;
     }
   }
 

@@ -30,7 +30,6 @@ class _RUCETeamState extends State<RUCETeam> {
                   _note(context, rmodel),
                   _jerseySize(context, rmodel),
                   _jerseyNumber(context, rmodel),
-                  _nickname(context, rmodel),
                 ],
               ),
               if (rmodel.teamFields.customFields.isNotEmpty)
@@ -110,19 +109,6 @@ class _RUCETeamState extends State<RUCETeam> {
       value: rmodel.teamFields.jerseyNumber,
       onChanged: (value) {
         rmodel.teamFields.jerseyNumber = value;
-      },
-      validator: (value) => null,
-    );
-  }
-
-  Widget _nickname(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField2(
-      labelText: "Nickname",
-      isLabeled: true,
-      showBackground: false,
-      value: rmodel.teamFields.nickname,
-      onChanged: (value) {
-        rmodel.teamFields.nickname = value;
       },
       validator: (value) => null,
     );

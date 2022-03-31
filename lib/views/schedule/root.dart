@@ -8,3 +8,4 @@ export 'user_comment_sheet.dart';
 export 'schedule_loading.dart';
 export 'event_edit/root.dart';
 export 'event_score.dart';
+export 'event_notification.dart';

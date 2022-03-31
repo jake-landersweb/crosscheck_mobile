@@ -222,4 +222,28 @@ extension UserCalls on DataModel {
       onError();
     }
   }
+
+  Future<void> sendFeedback(
+      String email, Map<String, dynamic> body, VoidCallback completion,
+      {VoidCallback? onError}) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    final response = await client.put(
+        "/users/$email/sendFeedback", headers, jsonEncode(body));
+
+    if (response == null) {
+      addIndicator(IndicatorItem.error(
+          "There was an error sending the feedback message"));
+      onError == null ? null : onError();
+    } else if (response['status'] == 200) {
+      addIndicator(
+          IndicatorItem.success("Successfully sent your feedback, thank you!"));
+      completion();
+    } else {
+      print(response);
+      addIndicator(IndicatorItem.error(
+          "There was an error sending the feedback message"));
+      onError == null ? null : onError();
+    }
+  }
 }

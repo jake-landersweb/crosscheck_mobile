@@ -10,7 +10,6 @@ class SeasonUserTeamFields {
   late int validationStatus;
   late String jerseySize;
   late String jerseyNumber;
-  late String nickname;
   late String email;
 
   SeasonUserTeamFields({
@@ -23,7 +22,6 @@ class SeasonUserTeamFields {
     required this.validationStatus,
     required this.jerseySize,
     required this.jerseyNumber,
-    required this.nickname,
     required this.email,
   });
 
@@ -37,7 +35,6 @@ class SeasonUserTeamFields {
     validationStatus = 0;
     jerseySize = "";
     jerseyNumber = "";
-    nickname = "";
     email = "";
   }
 
@@ -51,7 +48,6 @@ class SeasonUserTeamFields {
     validationStatus = user.validationStatus;
     jerseySize = user.jerseySize;
     jerseyNumber = user.jerseyNumber;
-    nickname = user.nickname;
     email = user.email;
   }
 
@@ -71,7 +67,6 @@ class SeasonUserTeamFields {
     }
     jerseySize = json['jerseySize'] ?? "";
     jerseyNumber = json['jerseyNumber'] ?? "";
-    nickname = json['nickname'] ?? "";
     email = json['email'] ?? "";
   }
 
@@ -84,7 +79,6 @@ class SeasonUserTeamFields {
       "validationStatus": validationStatus,
       "jerseySize": jerseySize,
       "jerseyNumber": jerseyNumber,
-      "nickname": nickname,
       "email": email,
     };
   }

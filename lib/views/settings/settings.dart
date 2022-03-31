@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pnflutter/data/root.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -44,6 +45,7 @@ class _SettingsState extends State<Settings> {
       title: "Settings",
       backgroundColor: CustomColors.backgroundColor(context),
       leading: const [MenuButton()],
+      trailing: [_edit(context, dmodel)],
       childPadding: const EdgeInsets.fromLTRB(
         0,
         16,
@@ -76,6 +78,16 @@ class _SettingsState extends State<Settings> {
             onTap: () {
               _showAlert(context, dmodel);
             },
+          ),
+        ),
+        const SizedBox(height: 32),
+        _feedback(context, dmodel),
+        const SizedBox(height: 100),
+        Text(
+          "Version $appVersion",
+          style: TextStyle(
+            color: CustomColors.textColor(context).withOpacity(0.3),
+            fontSize: 12,
           ),
         ),
       ],
@@ -114,6 +126,8 @@ class _SettingsState extends State<Settings> {
               Tuple("Email", dmodel.user!.email),
               if (dmodel.user!.phone.isNotEmpty)
                 Tuple("Phone", dmodel.user!.phone),
+              if (dmodel.user!.nickname.isNotEmpty)
+                Tuple("Nickname", dmodel.user!.nickname),
             ],
             childBuilder: (context, Tuple item) {
               return cv.LabeledCell(
@@ -164,6 +178,26 @@ class _SettingsState extends State<Settings> {
                   context: context,
                   builder: (context) {
                     return JoinTeam(email: dmodel.user!.email);
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: cv.RoundedLabel(
+              "Create Team",
+              color: dmodel.color,
+              textColor: Colors.white,
+              onTap: () {
+                cv.showFloatingSheet(
+                  context: context,
+                  builder: (context) {
+                    return TCETemplates(
+                      user: dmodel.user!,
+                      color: dmodel.color,
+                    );
                   },
                 );
               },
@@ -352,5 +386,56 @@ class _SettingsState extends State<Settings> {
       var androidDeviceInfo = await deviceInfo.androidInfo;
       return androidDeviceInfo.androidId; // unique ID on Android
     }
+  }
+
+  Widget _edit(BuildContext context, DataModel dmodel) {
+    if (dmodel.user == null) {
+      return Container();
+    } else {
+      return cv.BasicButton(
+        onTap: () {
+          showMaterialModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return UserEdit(
+                email: dmodel.user!.email,
+                firstName: dmodel.user!.firstName,
+                lastName: dmodel.user!.lastName,
+                phone: dmodel.user!.phone,
+                nickname: dmodel.user!.nickname,
+              );
+            },
+          );
+        },
+        child: Text(
+          "Edit",
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 18,
+            color: dmodel.color,
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _feedback(BuildContext context, DataModel dmodel) {
+    return cv.BasicButton(
+      onTap: () {
+        cv.showFloatingSheet(
+          context: context,
+          builder: (context) {
+            return Suggestions(email: dmodel.user!.email);
+          },
+        );
+      },
+      child: Text(
+        "Have suggestions?",
+        style: TextStyle(
+          color: CustomColors.textColor(context).withOpacity(0.5),
+          fontSize: 14,
+        ),
+      ),
+    );
   }
 }

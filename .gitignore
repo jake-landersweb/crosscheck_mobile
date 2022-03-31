@@ -9,6 +9,7 @@
 .history
 .svn/
 *.apk
+*.jks
 
 # IntelliJ related
 *.iml

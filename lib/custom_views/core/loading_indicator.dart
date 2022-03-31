@@ -7,7 +7,7 @@ class LoadingIndicator extends StatelessWidget {
   final Color? color;
 
   const LoadingIndicator({
-    this.color = null,
+    this.color,
   });
 
   @override
@@ -18,7 +18,7 @@ class LoadingIndicator extends StatelessWidget {
       if (Platform.isIOS) {
         return const Center(child: CupertinoActivityIndicator());
       } else {
-        return const Center(child: CircularProgressIndicator());
+        return Center(child: CircularProgressIndicator(color: color));
       }
     }
   }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pnflutter/client/root.dart';
 import 'package:pnflutter/data/root.dart';
 import 'package:pnflutter/extras/root.dart';
+import 'package:pnflutter/main.dart';
 import 'package:pnflutter/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
@@ -300,7 +301,7 @@ class _TCERootState extends State<TCERoot> {
       // get the team with the teamid
       dmodel.teamUserSeasonsGet(team.teamId, dmodel.user!.email, (tus) {
         dmodel.setTUS(tus);
-        Navigator.of(context).pop();
+        RestartWidget.restartApp(context);
       });
     });
 

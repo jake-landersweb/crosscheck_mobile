@@ -12,7 +12,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 import 'package:graphql/client.dart';
 
-const double appVersion = 2.0;
+const double appVersion = 3.0;
 
 class DataModel extends ChangeNotifier {
   // constructor init

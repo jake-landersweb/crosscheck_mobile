@@ -97,7 +97,7 @@ class _EventDetailState extends State<EventDetail> {
         if (widget.event.hasAttendance)
           Column(
             children: [
-              _statusCounts(context),
+              _statusCounts(context, dmodel),
               const SizedBox(height: 16),
             ],
           ),
@@ -287,7 +287,9 @@ class _EventDetailState extends State<EventDetail> {
     return cv.ListView<Tuple<IconData, String>>(
       children: [
         Tuple(Icons.bar_chart, "Statistics"),
-        Tuple(Icons.sports_score, "Score")
+        if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
+            false || dmodel.tus!.user.isTeamAdmin())
+          Tuple(Icons.sports_score, "Score"),
       ],
       onChildTap: (context, item) {
         if (item.v2() == "Statistics") {
@@ -302,15 +304,18 @@ class _EventDetailState extends State<EventDetail> {
             ),
           );
         } else {
-          cv.showFloatingSheet(
-            context: context,
-            builder: (context) {
-              return EventScore(
-                  team: widget.team,
-                  season: widget.season,
-                  event: widget.event);
-            },
-          );
+          if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
+              false || dmodel.tus!.user.isTeamAdmin()) {
+            cv.showFloatingSheet(
+              context: context,
+              builder: (context) {
+                return EventScore(
+                    team: widget.team,
+                    season: widget.season,
+                    event: widget.event);
+              },
+            );
+          }
         }
       },
       backgroundColor: CustomColors.cellColor(context)
@@ -349,7 +354,7 @@ class _EventDetailState extends State<EventDetail> {
     );
   }
 
-  Widget _statusCounts(BuildContext context) {
+  Widget _statusCounts(BuildContext context, DataModel dmodel) {
     return cv.NativeList(
       itemPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       color: CustomColors.cellColor(context)
@@ -364,6 +369,36 @@ class _EventDetailState extends State<EventDetail> {
             _statusCountCell(context, 1, widget.event.inCount),
           ],
         ),
+        if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
+            false || dmodel.tus!.user.isTeamAdmin())
+          cv.BasicButton(
+            onTap: () {
+              cv.showFloatingSheet(
+                context: context,
+                builder: (context) {
+                  return EventNotification(
+                    teamId: widget.team.teamId,
+                    seasonId: widget.season.seasonId,
+                    event: widget.event,
+                  );
+                },
+              );
+            },
+            child: Row(
+              children: [
+                Icon(Icons.notification_add_outlined, color: _accentColor()),
+                const SizedBox(width: 8),
+                Text(
+                  "Send Notification",
+                  style: TextStyle(
+                    color: _accentColor(),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )
+              ],
+            ),
+          ),
       ],
     );
   }

@@ -141,6 +141,11 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
                     cv.LabeledCell(
                       label: "Phone",
                       value: widget.seasonUser.userFields!.phone!,
+                    ),
+                  if (!widget.seasonUser.userFields!.nickname.isEmpty())
+                    cv.LabeledCell(
+                      label: "Nickname",
+                      value: widget.seasonUser.userFields!.nickname!,
                     )
                 ],
               ),
@@ -180,10 +185,6 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
                   cv.LabeledCell(
                       label: "Jersey Number",
                       value: widget.seasonUser.teamFields!.jerseyNumber),
-                  if (widget.seasonUser.teamFields!.nickname.isNotEmpty)
-                    cv.LabeledCell(
-                        label: "Nickname",
-                        value: widget.seasonUser.teamFields!.nickname),
                 ],
               ),
               // custom fields

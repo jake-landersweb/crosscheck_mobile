@@ -16,6 +16,16 @@ extension NullCheck on String? {
       return false;
     }
   }
+
+  bool isNotEmpty() {
+    if (this == null) {
+      return false;
+    } else if (this == "") {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 extension DateFormater on String {

@@ -30,6 +30,7 @@ class _RUCEUserState extends State<RUCEUser> {
               _firstName(context, rmodel),
               _lastName(context, rmodel),
               _phone(context, rmodel),
+              _nickname(context, rmodel),
             ],
           ),
         ),
@@ -98,6 +99,19 @@ class _RUCEUserState extends State<RUCEUser> {
       value: rmodel.userFields.phone,
       onChanged: (value) {
         rmodel.userFields.phone = value;
+      },
+      validator: (value) => null,
+    );
+  }
+
+  Widget _nickname(BuildContext context, RUCEModel rmodel) {
+    return cv.TextField2(
+      labelText: "Nickname",
+      isLabeled: true,
+      showBackground: false,
+      value: rmodel.userFields.nickname,
+      onChanged: (value) {
+        rmodel.userFields.nickname = value;
       },
       validator: (value) => null,
     );

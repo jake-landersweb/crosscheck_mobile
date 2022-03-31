@@ -25,6 +25,7 @@ class AppBar extends StatefulWidget {
     this.color = Colors.blue,
     this.backgroundColor,
     this.canScroll = true,
+    this.smallTitle,
   }) : super(key: key);
 
   final String title;
@@ -41,6 +42,7 @@ class AppBar extends StatefulWidget {
   final Color color;
   final Color? backgroundColor;
   final bool canScroll;
+  final String? smallTitle;
 
   @override
   _AppBarState createState() => _AppBarState();
@@ -233,7 +235,8 @@ class _AppBarState extends State<AppBar> {
               controller: _scrollController,
               physics: Platform.isIOS
                   ? const AlwaysScrollableScrollPhysics()
-                  : const BouncingScrollPhysics(),
+                  : const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
               children: _children(context),
             )
           : Column(

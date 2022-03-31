@@ -358,4 +358,31 @@ extension EventCalls on DataModel {
       }
     });
   }
+
+  Future<void> sendEventMessage(String teamId, String seasonId, String eventId,
+      Map<String, dynamic> body, VoidCallback completion,
+      {VoidCallback? onError}) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    await client
+        .post(
+            "/teams/$teamId/seasons/$seasonId/events/$eventId/sendNotifications",
+            headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        addIndicator(
+            IndicatorItem.error("There was an issue sending the notification"));
+        onError == null ? null : onError();
+      } else if (response['status'] == 200) {
+        print("Successfully send notification");
+        completion();
+      } else {
+        addIndicator(
+            IndicatorItem.error("There was an issue sending the notification"));
+        print(response['message']);
+        onError == null ? null : onError();
+      }
+    });
+  }
 }

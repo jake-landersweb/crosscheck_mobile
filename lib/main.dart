@@ -24,6 +24,24 @@ void main() {
   );
 }
 
+class ScrollBehaviorModified extends ScrollBehavior {
+  const ScrollBehaviorModified();
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    switch (getPlatform(context)) {
+      case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
+      case TargetPlatform.android:
+        return const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics());
+      case TargetPlatform.fuchsia:
+      case TargetPlatform.linux:
+      case TargetPlatform.windows:
+        return const ClampingScrollPhysics();
+    }
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
@@ -33,7 +51,10 @@ class MyApp extends StatelessWidget {
         // for dismissing keybaord when tapping on the screen
         WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
       },
-      child: const Home(),
+      child: const ScrollConfiguration(
+        behavior: ScrollBehaviorModified(),
+        child: Home(),
+      ),
     );
   }
 }
