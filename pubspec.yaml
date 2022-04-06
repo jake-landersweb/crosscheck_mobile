@@ -1,5 +1,5 @@
-name: pnflutter
-description: A new Flutter project.
+name: crosscheck_sports
+description: Fully managed team experience
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.1+21
+version: 3.0.3+23
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
@@ -28,6 +28,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  crosscheck_engine:
+    # git: https://github.com/jake-landersweb/crosscheck_engine
+    path: ../crosscheck_engine
   equatable: ^2.0.3
   http: ^0.13.3
   provider: ^5.0.0
@@ -54,6 +57,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.6.0 # for better grids
   image_picker: ^0.8.4+9 # for picking images for team logo upload
   image: ^3.1.3 # for resizing images
+  
   
 
   # The following adds the Cupertino Icons font to your application.
