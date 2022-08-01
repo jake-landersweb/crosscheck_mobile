@@ -2,12 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://links.crosschecksports.com</string>
+	</array>
+	<key>FirebaseDeepLinkPasteboardRetrievalEnabled</key>
+	<string>NO</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_dartobservatory._tcp</string>
-	</array>
 	<key>CFBundleDisplayName</key>
 	<string>Crosscheck</string>
 	<key>CFBundleExecutable</key>
@@ -24,10 +26,27 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>https</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.landersweb.pnFlutter</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dartobservatory._tcp</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Not a need, but if users want to take a photo for the logo then go ahead</string>
 	<key>NSPhotoLibraryUsageDescription</key>

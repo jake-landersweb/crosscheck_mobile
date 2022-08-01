@@ -3,7 +3,7 @@ description: Fully managed team experience
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.3+23
+version: 3.5.4+34
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
@@ -38,8 +38,8 @@ dependencies:
   sprung: ^3.0.0
   modal_bottom_sheet: ^2.0.1
   shared_preferences: ^2.0.6
-  firebase_core: ^1.2.0 # firebase
-  firebase_messaging: ^10.0.0 # firebase
+  firebase_core: ^1.18.0 # firebase
+  firebase_messaging: ^11.4.1 # firebase
   overlay_support: ^1.2.1 # firebase
   flutter_switch: ^0.3.2
   intl: ^0.17.0 # for date format
@@ -55,16 +55,16 @@ dependencies:
   amplify_flutter: ^0.4.2 # for graphql subs
   amplify_api: ^0.4.2 # for graphql subs
   flutter_staggered_grid_view: ^0.6.0 # for better grids
-  image_picker: ^0.8.4+9 # for picking images for team logo upload
   image: ^3.1.3 # for resizing images
-  
-  
+  flutter_image_compress: ^1.1.0 # for compressing images
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
   flutter_launcher_icons: "^0.9.2"
+  firebase_dynamic_links: ^4.2.6
+  firebase_analytics: ^9.1.10
 
 flutter_icons:
   android: "launcher_icon"
@@ -142,6 +142,8 @@ flutter:
     - assets/svg/wave1.svg
     - assets/svg/wave2.svg
     - assets/svg/maintenance.svg
+    - assets/svg/goalie_mask.svg
+    - assets/svg/xcheck_white.svg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

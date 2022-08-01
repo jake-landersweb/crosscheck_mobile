@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://links.crosschecksports.com</string>
+	</array>
+	<key>FirebaseDeepLinkPasteboardRetrievalEnabled</key>
+	<string>NO</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>NSBonjourServices</key>
@@ -54,5 +60,18 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>https</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.landersweb.pnFlutter</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

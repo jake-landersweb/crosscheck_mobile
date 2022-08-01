@@ -32,39 +32,73 @@ PODS:
     - AWSCore (~> 2.27.0)
     - AWSMobileClient (~> 2.27.0)
     - AWSPluginsCore (= 1.22.0)
-  - AppSyncRealTimeClient (1.9.1):
+  - AppSyncRealTimeClient (1.10.0):
     - Starscream (~> 4.0.4)
-  - AWSAuthCore (2.27.6):
-    - AWSCore (= 2.27.6)
-  - AWSCognitoIdentityProvider (2.27.6):
-    - AWSCognitoIdentityProviderASF (= 2.27.6)
-    - AWSCore (= 2.27.6)
-  - AWSCognitoIdentityProviderASF (2.27.6):
-    - AWSCore (= 2.27.6)
-  - AWSCore (2.27.6)
-  - AWSMobileClient (2.27.6):
-    - AWSAuthCore (= 2.27.6)
-    - AWSCognitoIdentityProvider (= 2.27.6)
-    - AWSCognitoIdentityProviderASF (= 2.27.6)
-    - AWSCore (= 2.27.6)
+  - AWSAuthCore (2.27.10):
+    - AWSCore (= 2.27.10)
+  - AWSCognitoIdentityProvider (2.27.10):
+    - AWSCognitoIdentityProviderASF (= 2.27.10)
+    - AWSCore (= 2.27.10)
+  - AWSCognitoIdentityProviderASF (2.27.10):
+    - AWSCore (= 2.27.10)
+  - AWSCore (2.27.10)
+  - AWSMobileClient (2.27.10):
+    - AWSAuthCore (= 2.27.10)
+    - AWSCognitoIdentityProvider (= 2.27.10)
+    - AWSCognitoIdentityProviderASF (= 2.27.10)
+    - AWSCore (= 2.27.10)
   - AWSPluginsCore (1.22.0):
     - Amplify (= 1.22.0)
     - AWSCore (~> 2.27.0)
   - device_info_plus (0.0.1):
     - Flutter
-  - Firebase/CoreOnly (8.11.0):
-    - FirebaseCore (= 8.11.0)
-  - Firebase/Messaging (8.11.0):
+  - Firebase/Analytics (8.15.0):
+    - Firebase/Core
+  - Firebase/Core (8.15.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 8.11.0)
-  - firebase_core (1.13.1):
-    - Firebase/CoreOnly (= 8.11.0)
-    - Flutter
-  - firebase_messaging (10.0.9):
-    - Firebase/Messaging (= 8.11.0)
+    - FirebaseAnalytics (~> 8.15.0)
+  - Firebase/CoreOnly (8.15.0):
+    - FirebaseCore (= 8.15.0)
+  - Firebase/DynamicLinks (8.15.0):
+    - Firebase/CoreOnly
+    - FirebaseDynamicLinks (~> 8.15.0)
+  - Firebase/Messaging (8.15.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 8.15.0)
+  - firebase_analytics (9.1.10):
+    - Firebase/Analytics (= 8.15.0)
     - firebase_core
     - Flutter
-  - FirebaseCore (8.11.0):
+  - firebase_core (1.18.0):
+    - Firebase/CoreOnly (= 8.15.0)
+    - Flutter
+  - firebase_dynamic_links (4.2.6):
+    - Firebase/DynamicLinks (= 8.15.0)
+    - firebase_core
+    - Flutter
+  - firebase_messaging (11.4.2):
+    - Firebase/Messaging (= 8.15.0)
+    - firebase_core
+    - Flutter
+  - FirebaseAnalytics (8.15.0):
+    - FirebaseAnalytics/AdIdSupport (= 8.15.0)
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - FirebaseAnalytics/AdIdSupport (8.15.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleAppMeasurement (= 8.15.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - FirebaseCore (8.15.0):
     - FirebaseCoreDiagnostics (~> 8.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
@@ -73,12 +107,14 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
     - nanopb (~> 2.30908.0)
+  - FirebaseDynamicLinks (8.15.0):
+    - FirebaseCore (~> 8.0)
   - FirebaseInstallations (8.15.0):
     - FirebaseCore (~> 8.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
     - PromisesObjC (< 3.0, >= 1.2)
-  - FirebaseMessaging (8.11.0):
+  - FirebaseMessaging (8.15.0):
     - FirebaseCore (~> 8.0)
     - FirebaseInstallations (~> 8.0)
     - GoogleDataTransport (~> 9.1)
@@ -90,9 +126,39 @@ PODS:
   - Flutter (1.0.0)
   - flutter_app_badger (1.3.0):
     - Flutter
-  - GoogleDataTransport (9.1.2):
-    - GoogleUtilities/Environment (~> 7.2)
+  - flutter_image_compress (0.0.1):
+    - Flutter
+    - Mantle
+    - SDWebImage
+    - SDWebImageWebPCoder
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - gallery_saver (0.0.1):
+    - Flutter
+  - GoogleAppMeasurement (8.15.0):
+    - GoogleAppMeasurement/AdIdSupport (= 8.15.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
     - nanopb (~> 2.30908.0)
+  - GoogleAppMeasurement/AdIdSupport (8.15.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 8.15.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (8.15.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - GoogleDataTransport (9.1.4):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/AppDelegateSwizzler (7.7.0):
     - GoogleUtilities/Environment
@@ -102,6 +168,8 @@ PODS:
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/Logger (7.7.0):
     - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (7.7.0):
+    - GoogleUtilities/Logger
   - GoogleUtilities/Network (7.7.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
@@ -115,6 +183,18 @@ PODS:
     - Flutter
   - launch_review (0.0.1):
     - Flutter
+  - libwebp (1.2.1):
+    - libwebp/demux (= 1.2.1)
+    - libwebp/mux (= 1.2.1)
+    - libwebp/webp (= 1.2.1)
+  - libwebp/demux (1.2.1):
+    - libwebp/webp
+  - libwebp/mux (1.2.1):
+    - libwebp/demux
+  - libwebp/webp (1.2.1)
+  - Mantle (2.2.0):
+    - Mantle/extobjc (= 2.2.0)
+  - Mantle/extobjc (2.2.0)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -123,25 +203,39 @@ PODS:
   - path_provider_ios (0.0.1):
     - Flutter
   - PromisesObjC (2.1.0)
+  - SDWebImage (5.13.2):
+    - SDWebImage/Core (= 5.13.2)
+  - SDWebImage/Core (5.13.2)
+  - SDWebImageWebPCoder (0.9.0):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.13)
   - shared_preferences_ios (0.0.1):
     - Flutter
+  - sqflite (0.0.2):
+    - Flutter
+    - FMDB (>= 2.7.5)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.49.7)
-  - SwiftLint (0.47.0)
+  - SwiftFormat/CLI (0.49.10)
+  - SwiftLint (0.47.1)
 
 DEPENDENCIES:
   - amplify_api (from `.symlinks/plugins/amplify_api/ios`)
   - amplify_core (from `.symlinks/plugins/amplify_core/ios`)
   - amplify_flutter (from `.symlinks/plugins/amplify_flutter/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
+  - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
+  - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
+  - gallery_saver (from `.symlinks/plugins/gallery_saver/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - launch_review (from `.symlinks/plugins/launch_review/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
 SPEC REPOS:
   trunk:
@@ -155,14 +249,22 @@ SPEC REPOS:
     - AWSMobileClient
     - AWSPluginsCore
     - Firebase
+    - FirebaseAnalytics
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseDynamicLinks
     - FirebaseInstallations
     - FirebaseMessaging
+    - FMDB
+    - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
+    - libwebp
+    - Mantle
     - nanopb
     - PromisesObjC
+    - SDWebImage
+    - SDWebImageWebPCoder
     - Starscream
     - SwiftFormat
     - SwiftLint
@@ -176,14 +278,22 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/amplify_flutter/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
+  firebase_analytics:
+    :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_dynamic_links:
+    :path: ".symlinks/plugins/firebase_dynamic_links/ios"
   firebase_messaging:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
   flutter_app_badger:
     :path: ".symlinks/plugins/flutter_app_badger/ios"
+  flutter_image_compress:
+    :path: ".symlinks/plugins/flutter_image_compress/ios"
+  gallery_saver:
+    :path: ".symlinks/plugins/gallery_saver/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   launch_review:
@@ -192,6 +302,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   shared_preferences_ios:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
   Amplify: 514cc905828d4e54ed5edc1cf8059d0ae47e3f35
@@ -199,34 +311,47 @@ SPEC CHECKSUMS:
   amplify_core: e67fe0c53845db08aced670bfc7370b1329d2798
   amplify_flutter: 32102f99c14980e2fe78678f47914b7b24474210
   AmplifyPlugins: bb4b7d91476f8b14e8cd9afdc7dd82699148b1ce
-  AppSyncRealTimeClient: cdee78ab78249cb87a71d975e1436e692813a606
-  AWSAuthCore: 09226ae8dfc63d1338f503f53a38af2d3156267e
-  AWSCognitoIdentityProvider: 9eb24a52488d32b75d8550e8a9d1be36229ae47d
-  AWSCognitoIdentityProviderASF: 60d466e143f8bbf9d47d39c1ad58de5044a111b6
-  AWSCore: 0b6fa020f5f343a211862d702ba7a067272a60f7
-  AWSMobileClient: e0ad3787f793d14c593379c2dba006e3bdad8bf1
+  AppSyncRealTimeClient: 656ab4215e05f6ca47fe6d8c73f416d9984a8aac
+  AWSAuthCore: ea9baff143a5ff4a98cea3954b006cedc96cd47e
+  AWSCognitoIdentityProvider: 7ef13d7a86298db707165208f01b92997cc3b5af
+  AWSCognitoIdentityProviderASF: d745c40a37815ef1c547f9677145d4e522f582f3
+  AWSCore: dbad318b7ff0fd86fb8387d3ad1f30049c05bc58
+  AWSMobileClient: 523cdb04d21cfd7523eb8db77b2fa2a00b6a95b4
   AWSPluginsCore: 2f150ba04e92117a8ea809eaf14fa5b9a2b02e09
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
-  Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
-  firebase_core: 08f6a85f62060111de5e98d6a214810d11365de9
-  firebase_messaging: c6608162e71bcfd78198a81eac9c2fa27fed3aae
-  FirebaseCore: 2f4f85b453cc8fea4bb2b37e370007d2bcafe3f0
+  Firebase: 5f8193dff4b5b7c5d5ef72ae54bb76c08e2b841d
+  firebase_analytics: 9029d8bd4cd488a3dd7ff32ec4fccd3160bf7200
+  firebase_core: b14c1cfa29b9eb316345f74d1489328283825d6d
+  firebase_dynamic_links: 007ad1d6eb991a53b4baacf215adb4de62df11e2
+  firebase_messaging: 5374d57b2ca7a5efe1a150500b9a2451ca9ff5af
+  FirebaseAnalytics: 7761cbadb00a717d8d0939363eb46041526474fa
+  FirebaseCore: 5743c5785c074a794d35f2fff7ecc254a91e08b1
   FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
+  FirebaseDynamicLinks: 1dc816ef789c5adac6fede0b46d11478175c70e4
   FirebaseInstallations: 40bd9054049b2eae9a2c38ef1c3dd213df3605cd
-  FirebaseMessaging: 02e248e8997f71fa8cc9d78e9d49ec1a701ba14a
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  FirebaseMessaging: 5e5118a2383b3531e730d974680954c679ca0a13
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_app_badger: b87fc231847b03b92ce1412aa351842e7e97932f
-  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  flutter_image_compress: fd2b476345226e1a10ea352fa306af95704642c1
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  gallery_saver: 9fc173c9f4fcc48af53b2a9ebea1b643255be542
+  GoogleAppMeasurement: 4c19f031220c72464d460c9daa1fb5d1acce958e
+  GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   image_picker: 541dcbb3b9cf32d87eacbd957845d8651d6c62c3
   launch_review: 75d5a956ba8eaa493e9c9d4bf4c05e505e8d5ed0
+  libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
+  Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
+  SDWebImage: 72f86271a6f3139cc7e4a89220946489d4b9a866
+  SDWebImageWebPCoder: 3dc350894112feab5375cfba9ce0986544a66a69
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: b70e3c776a74c67ce8bd140425a8c86d4a843759
-  SwiftLint: d41cc46a2ae58ac6d9f26954bc89f1d72e71fdef
+  SwiftFormat: 7e7b810d61b0518ea30d3753051ebde546ae4c0b
+  SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
 
 PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
 
