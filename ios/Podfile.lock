@@ -50,6 +50,8 @@ PODS:
   - AWSPluginsCore (1.22.0):
     - Amplify (= 1.22.0)
     - AWSCore (~> 2.27.0)
+  - device_calendar (0.0.1):
+    - Flutter
   - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.4):
@@ -165,6 +167,8 @@ PODS:
     - Mantle
     - SDWebImage
     - SDWebImageWebPCoder
+  - flutter_native_timezone (0.0.1):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -280,6 +284,7 @@ DEPENDENCIES:
   - amplify_api (from `.symlinks/plugins/amplify_api/ios`)
   - amplify_core (from `.symlinks/plugins/amplify_core/ios`)
   - amplify_flutter (from `.symlinks/plugins/amplify_flutter/ios`)
+  - device_calendar (from `.symlinks/plugins/device_calendar/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Firebase/Messaging
@@ -290,6 +295,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
   - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
+  - flutter_native_timezone (from `.symlinks/plugins/flutter_native_timezone/ios`)
   - gallery_saver (from `.symlinks/plugins/gallery_saver/ios`)
   - GoogleUtilities
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
@@ -344,6 +350,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/amplify_core/ios"
   amplify_flutter:
     :path: ".symlinks/plugins/amplify_flutter/ios"
+  device_calendar:
+    :path: ".symlinks/plugins/device_calendar/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   file_picker:
@@ -362,6 +370,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_app_badger/ios"
   flutter_image_compress:
     :path: ".symlinks/plugins/flutter_image_compress/ios"
+  flutter_native_timezone:
+    :path: ".symlinks/plugins/flutter_native_timezone/ios"
   gallery_saver:
     :path: ".symlinks/plugins/gallery_saver/ios"
   image_picker:
@@ -396,6 +406,7 @@ SPEC CHECKSUMS:
   AWSCore: dbad318b7ff0fd86fb8387d3ad1f30049c05bc58
   AWSMobileClient: 523cdb04d21cfd7523eb8db77b2fa2a00b6a95b4
   AWSPluginsCore: 2f150ba04e92117a8ea809eaf14fa5b9a2b02e09
+  device_calendar: 9cb33f88a02e19652ec7b8b122ca778f751b1f7b
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
@@ -414,6 +425,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_app_badger: b87fc231847b03b92ce1412aa351842e7e97932f
   flutter_image_compress: fd2b476345226e1a10ea352fa306af95704642c1
+  flutter_native_timezone: 5f05b2de06c9776b4cc70e1839f03de178394d22
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   gallery_saver: 9fc173c9f4fcc48af53b2a9ebea1b643255be542
   GoogleAppMeasurement: 4c19f031220c72464d460c9daa1fb5d1acce958e

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Ability to export Crosscheck schedule data into the user&apos;s default calendar. Not implemented yet, but work is in progress</string>
 	<key>FirebaseDynamicLinksCustomDomains</key>
