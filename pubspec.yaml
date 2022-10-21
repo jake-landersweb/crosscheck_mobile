@@ -124,6 +124,12 @@ flutter:
     - assets/svg/road.svg
     - assets/svg/no_data.svg
 
+    - assets/svg/baseball.svg
+    - assets/svg/basketball.svg
+    - assets/svg/football.svg
+    - assets/svg/hockey.svg
+    - assets/svg/soccer.svg
+
 
 
 
