@@ -57,13 +57,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.2"
-  any_link_preview:
-    dependency: transitive
-    description:
-      name: any_link_preview
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.9"
   archive:
     dependency: transitive
     description:
@@ -151,7 +144,7 @@ packages:
   crosscheck_engine:
     dependency: "direct main"
     description:
-      path: "../crosscheck_engine"
+      path: "../engine"
       relative: true
     source: path
     version: "0.0.1"
@@ -917,13 +910,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
-  string_validator:
-    dependency: transitive
-    description:
-      name: string_validator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0"
   synchronized:
     dependency: transitive
     description:

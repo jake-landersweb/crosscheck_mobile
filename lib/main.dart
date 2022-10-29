@@ -17,7 +17,7 @@ void main() async {
     alert: true, // Required to display a heads up notification
     badge: true,
     sound: true,
-  );
+  );  
 
   runApp(const CrosscheckMobile());
 }
