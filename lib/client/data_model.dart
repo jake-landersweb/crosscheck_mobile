@@ -19,8 +19,8 @@ import 'root.dart';
 import '../data/root.dart';
 import '../extras/root.dart';
 
-const double appVersionMajor = 4.2;
-const int appVersionMinor = 3;
+const double appVersionMajor = 4.3;
+const int appVersionMinor = 0;
 
 class DataModel extends ChangeNotifier {
   // for holding passed teamId in memory for custom team apps
@@ -779,8 +779,8 @@ class DataModel extends ChangeNotifier {
     } else {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       body['deviceType'] = "android";
-      body['deviceName'] = androidInfo.model ?? "";
-      body['deviceVersion'] = androidInfo.version.release ?? "";
+      body['deviceName'] = androidInfo.model;
+      body['deviceVersion'] = androidInfo.version.release;
     }
     body['badge'] = 0;
     return body;
