@@ -243,7 +243,6 @@ class _SCERootState extends State<SCERoot> {
       "eventCustomUserFieldsTemplate": scemodel.eventCustomUserFieldsTemplate,
       "hasStats": scemodel.hasStats,
       "tz": scemodel.timezone,
-      "calendarUrl": scemodel.calendarUrl,
     };
 
     void addUserFields() {
@@ -346,7 +345,6 @@ class _SCERootState extends State<SCERoot> {
       "stats": scemodel.stats.toJson(),
       "hasStats": scemodel.hasStats,
       "tz": scemodel.timezone,
-      "calendarUrl": scemodel.calendarUrl,
     };
 
     print(body);

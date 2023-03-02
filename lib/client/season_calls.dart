@@ -180,7 +180,7 @@ extension SeasonCalls on DataModel {
 
   Future<void> updateSeason(String teamId, String seasonId,
       Map<String, dynamic> body, VoidCallback completion,
-      {showIndicatiors = true}) async {
+      {showIndicatiors = true, VoidCallback? onError}) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     // first create the season
@@ -193,6 +193,7 @@ extension SeasonCalls on DataModel {
           addIndicator(
               IndicatorItem.error("There was an issue updating the season"));
         }
+        onError != null ? onError() : null;
       } else if (response['status'] == 200) {
         completion();
         print(response);
@@ -212,6 +213,7 @@ extension SeasonCalls on DataModel {
           addIndicator(
               IndicatorItem.error("There was an issue updating your season"));
         }
+        onError != null ? onError() : null;
       }
     });
   }
@@ -381,6 +383,55 @@ extension SeasonCalls on DataModel {
         addIndicator(
             IndicatorItem.error("There was an issue uploading the calendar"));
         onError != null ? onError() : null;
+      }
+    });
+  }
+
+  Future<void> verifyCalendar(
+    String teamId,
+    String seasonId,
+    String calendarUrl,
+    VoidCallback completion, {
+    VoidCallback? onError,
+  }) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    Map<String, dynamic> body = {"calendarUrl": calendarUrl};
+
+    // first create the season
+    await client
+        .post("/teams/$teamId/seasons/$seasonId/verifyCalendar", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        print("There was an issue verifying the calendar");
+        onError != null ? onError() : null;
+      } else if (response['status'] == 200) {
+        print("successfully verified calendar");
+        completion();
+      } else {
+        print("There was an issue verifying the calendar");
+        onError != null ? onError() : null;
+      }
+    });
+  }
+
+  Future<void> syncCalendar(
+      String teamId, String seasonId, VoidCallback completion,
+      {VoidCallback? onError}) async {
+    await client
+        .fetch("/teams/$teamId/seasons/$seasonId/syncCalendar")
+        .then((response) {
+      if (response == null) {
+        addIndicator(
+            IndicatorItem.error("There was an issue syncing the calendar"));
+      } else if (response['status'] == 200) {
+        log("Successfully synced calendar");
+        completion();
+      } else {
+        print(response);
+        addIndicator(
+            IndicatorItem.error("There was an issue syncing the calendar"));
       }
     });
   }

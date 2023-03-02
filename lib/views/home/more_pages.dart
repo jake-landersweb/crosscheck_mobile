@@ -126,6 +126,16 @@ class _MorePagesState extends State<MorePages> {
               seasonId: dmodel.currentSeason!.seasonId,
             ),
           ),
+        if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)
+          _MorePageItem(
+            title: "Calendar Sync",
+            icon: Icons.calendar_month_rounded,
+            useSheet: true,
+            view: SyncCalendar(
+              team: dmodel.tus!.team,
+              season: dmodel.currentSeason!,
+            ),
+          ),
         _MorePageItem(
           title: "Season Page",
           icon: Icons.ac_unit_rounded,

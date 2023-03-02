@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sprung/sprung.dart';
@@ -19,14 +20,17 @@ void cupertinoSheet({
             resizeToAvoidBottomInset: resizeToAvoidBottomInset,
             body: Navigator(
               onGenerateRoute: (_) => MaterialPageRoute(
-                builder: (context) => Builder(builder: builder),
+                builder: (context) =>
+                    NotificationWrapper(child: Builder(builder: builder)),
               ),
             ),
           )
-        : Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-            body: builder(context),
+        : NotificationWrapper(
+            child: Scaffold(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+              body: builder(context),
+            ),
           ),
     expand: expand,
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,

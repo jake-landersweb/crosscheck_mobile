@@ -1,3 +1,4 @@
+import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io' show Platform;
@@ -11,9 +12,11 @@ class Navigate extends Navigator {
       context,
       MaterialWithModalsPageRoute(
         builder: (context) {
-          return Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: body,
+          return NotificationWrapper(
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: body,
+            ),
           );
         },
       ),

@@ -95,9 +95,8 @@ class EventScoreCell extends StatelessWidget {
       default:
         return defaultIconColor ??
             (useEventColor
-                    ? event.textColor(context)
-                    : CustomColors.textColor(context))
-                .withOpacity(0.5);
+                ? event.textColor(context)
+                : CustomColors.textColor(context));
     }
   }
 

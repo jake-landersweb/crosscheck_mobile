@@ -123,22 +123,6 @@ class _SCEBasicState extends State<SCEBasic> {
                     },
                   ),
                 ),
-                Container(
-                  constraints: const BoxConstraints(minHeight: 50),
-                  child: cv.TextField2(
-                    value: scemodel.seasonNote,
-                    labelText: "Calendar URL",
-                    showBackground: false,
-                    fieldPadding: EdgeInsets.zero,
-                    isLabeled: true,
-                    maxLines: 2,
-                    onChanged: (value) {
-                      setState(() {
-                        scemodel.calendarUrl = value;
-                      });
-                    },
-                  ),
-                ),
               ],
             ),
           ),

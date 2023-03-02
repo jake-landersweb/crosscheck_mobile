@@ -105,6 +105,16 @@ class _EventDetail2State extends State<EventDetail2> {
               widget.event.eDescription,
             ),
           ),
+        if (widget.event.eventType == 1)
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: EventScoreCell(
+              event: widget.event,
+              height: 50,
+              iconSize: 28,
+              defaultIconColor: _accentColor(dmodel),
+            ),
+          ),
         if (widget.event.eventType == 1 && !widget.event.overrideTitle)
           Padding(
             padding: const EdgeInsets.only(top: 16),

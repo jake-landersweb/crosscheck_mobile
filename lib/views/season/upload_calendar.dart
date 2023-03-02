@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:crosscheck_sports/client/root.dart';
@@ -30,7 +31,14 @@ class _UploadCalendarState extends State<UploadCalendar> {
     var dmodel = Provider.of<DataModel>(context);
     return cv.AppBar.sheet(
       title: "Upload Calendar",
-      leading: [cv.CancelButton(color: dmodel.color)],
+      leading: [
+        cv.BasicButton(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Icon(Icons.close, color: dmodel.color),
+        ),
+      ],
       children: [
         cv.BasicButton(
           onTap: () {

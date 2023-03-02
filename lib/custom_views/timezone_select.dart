@@ -53,33 +53,50 @@ class _TimezoneSelectorState extends State<TimezoneSelector> {
           },
         ),
         const SizedBox(height: 16),
-        cv.ListView<String>(
-          children: _getTz(),
-          horizontalPadding: 0,
-          onChildTap: (context, item) {
-            widget.onSelect(item);
-            Navigator.of(context).pop();
-          },
-          childBuilder: (context, item) {
-            return Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    item,
-                    style: TextStyle(
-                      color: CustomColors.textColor(context),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: _getTz().length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, i) {
+              return cv.BasicButton(
+                onTap: () {
+                  widget.onSelect(_getTz()[i]);
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 50),
+                  color: CustomColors.cellColor(context),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _getTz()[i],
+                              style: TextStyle(
+                                color: CustomColors.textColor(context),
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          if (_tz == _getTz()[i])
+                            Icon(
+                              Icons.check_circle_outline_rounded,
+                              color: dmodel.color,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                if (_tz == item)
-                  Icon(
-                    Icons.check_circle_outline_rounded,
-                    color: dmodel.color,
-                  ),
-              ],
-            );
-          },
-        ),
+              );
+            },
+          ),
+        )
       ],
     );
   }

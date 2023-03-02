@@ -160,26 +160,24 @@ class _LineupRootState extends State<LineupRoot> {
               children: const ["Old Lineups", "Lineup Templates"],
               onChildTap: ((context, item) {
                 if (item == "Old Lineups") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OldLineups(
-                        team: widget.team,
-                        season: widget.season,
-                        event: widget.event,
-                        onSelect: (lineup) => lmodel.updateLineup(lineup),
-                      ),
-                    ),
-                  );
+                  cv.cupertinoSheet(
+                      context: context,
+                      builder: (context) {
+                        return OldLineups(
+                          team: widget.team,
+                          season: widget.season,
+                          event: widget.event,
+                          onSelect: (lineup) => lmodel.updateLineup(lineup),
+                        );
+                      });
                 } else if (item == "Lineup Templates") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LineupTemplates(
-                        onSelect: (lineup) => lmodel.updateLineup(lineup),
-                      ),
-                    ),
-                  );
+                  cv.cupertinoSheet(
+                      context: context,
+                      builder: (context) {
+                        return LineupTemplates(
+                          onSelect: (lineup) => lmodel.updateLineup(lineup),
+                        );
+                      });
                 }
               }),
               childBuilder: ((context, item) {

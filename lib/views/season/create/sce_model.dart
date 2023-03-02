@@ -15,7 +15,6 @@ class SCEModel extends ChangeNotifier {
   String website = "";
   String seasonNote = "";
   String timezone = "US/Pacific";
-  String calendarUrl = "";
 
   TeamPositions positions = TeamPositions.empty();
 
@@ -74,7 +73,6 @@ class SCEModel extends ChangeNotifier {
         isActive: season.stats.isActive, stats: List.of(season.stats.stats));
     hasStats = season.hasStats;
     timezone = season.timezone;
-    calendarUrl = season.calendarUrl;
     notifyListeners();
   }
 
