@@ -20,7 +20,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 
 const double appVersionMajor = 4.3;
-const int appVersionMinor = 1;
+const int appVersionMinor = 2;
 
 class DataModel extends ChangeNotifier {
   // for holding passed teamId in memory for custom team apps

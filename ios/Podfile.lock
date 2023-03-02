@@ -4,28 +4,52 @@ PODS:
   - Amplify/Default (1.28.3)
   - amplify_api_ios (0.0.1):
     - Amplify (= 1.28.3)
-    - amplify_flutter_ios
+    - amplify_core
     - AmplifyPlugins/AWSAPIPlugin (= 1.28.3)
     - Flutter
+    - SwiftFormat/CLI
+    - SwiftLint (= 0.48.0)
+  - amplify_core (0.0.1):
+    - Flutter
+    - SwiftFormat/CLI
+    - SwiftLint (= 0.48.0)
   - amplify_flutter_ios (0.0.1):
     - Amplify (= 1.28.3)
+    - amplify_core
+    - AmplifyPlugins/AWSCognitoAuthPlugin (= 1.28.3)
     - AWSPluginsCore (= 1.28.3)
     - Flutter
-  - amplify_secure_storage (0.0.1):
-    - Flutter
+    - SwiftFormat/CLI
+    - SwiftLint (= 0.48.0)
   - AmplifyPlugins/AWSAPIPlugin (1.28.3):
     - AppSyncRealTimeClient (~> 2.0)
     - AWSCore (~> 2.28.0)
     - AWSPluginsCore (= 1.28.3)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.28.3):
+    - AWSAuthCore (~> 2.28.0)
+    - AWSCognitoIdentityProvider (~> 2.28.0)
+    - AWSCognitoIdentityProviderASF (~> 2.28.0)
+    - AWSCore (~> 2.28.0)
+    - AWSMobileClient (~> 2.28.0)
+    - AWSPluginsCore (= 1.28.3)
   - AppSyncRealTimeClient (2.1.1):
     - Starscream (~> 4.0.4)
+  - AWSAuthCore (2.28.5):
+    - AWSCore (= 2.28.5)
+  - AWSCognitoIdentityProvider (2.28.5):
+    - AWSCognitoIdentityProviderASF (= 2.28.5)
+    - AWSCore (= 2.28.5)
+  - AWSCognitoIdentityProviderASF (2.28.5):
+    - AWSCore (= 2.28.5)
   - AWSCore (2.28.5)
+  - AWSMobileClient (2.28.5):
+    - AWSAuthCore (= 2.28.5)
+    - AWSCognitoIdentityProvider (= 2.28.5)
+    - AWSCognitoIdentityProviderASF (= 2.28.5)
+    - AWSCore (= 2.28.5)
   - AWSPluginsCore (1.28.3):
     - Amplify (= 1.28.3)
     - AWSCore (~> 2.28.0)
-  - connectivity_plus (0.0.1):
-    - Flutter
-    - ReachabilitySwift
   - device_calendar (0.0.1):
     - Flutter
   - device_info_plus (0.0.1):
@@ -229,7 +253,6 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.2.0)
-  - ReachabilitySwift (5.0.0)
   - SDWebImage (5.15.4):
     - SDWebImage/Core (= 5.15.4)
   - SDWebImage/Core (5.15.4)
@@ -243,6 +266,8 @@ PODS:
     - Flutter
     - FMDB (>= 2.7.5)
   - Starscream (4.0.4)
+  - SwiftFormat/CLI (0.51.0)
+  - SwiftLint (0.48.0)
   - SwiftyGif (5.4.4)
   - url_launcher_ios (0.0.1):
     - Flutter
@@ -256,9 +281,8 @@ PODS:
 
 DEPENDENCIES:
   - amplify_api_ios (from `.symlinks/plugins/amplify_api_ios/ios`)
+  - amplify_core (from `.symlinks/plugins/amplify_core/ios`)
   - amplify_flutter_ios (from `.symlinks/plugins/amplify_flutter_ios/ios`)
-  - amplify_secure_storage (from `.symlinks/plugins/amplify_secure_storage/ios`)
-  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_calendar (from `.symlinks/plugins/device_calendar/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
@@ -288,7 +312,11 @@ SPEC REPOS:
     - Amplify
     - AmplifyPlugins
     - AppSyncRealTimeClient
+    - AWSAuthCore
+    - AWSCognitoIdentityProvider
+    - AWSCognitoIdentityProviderASF
     - AWSCore
+    - AWSMobileClient
     - AWSPluginsCore
     - DKImagePickerController
     - DKPhotoGallery
@@ -307,21 +335,20 @@ SPEC REPOS:
     - Mantle
     - nanopb
     - PromisesObjC
-    - ReachabilitySwift
     - SDWebImage
     - SDWebImageWebPCoder
     - Starscream
+    - SwiftFormat
+    - SwiftLint
     - SwiftyGif
 
 EXTERNAL SOURCES:
   amplify_api_ios:
     :path: ".symlinks/plugins/amplify_api_ios/ios"
+  amplify_core:
+    :path: ".symlinks/plugins/amplify_core/ios"
   amplify_flutter_ios:
     :path: ".symlinks/plugins/amplify_flutter_ios/ios"
-  amplify_secure_storage:
-    :path: ".symlinks/plugins/amplify_secure_storage/ios"
-  connectivity_plus:
-    :path: ".symlinks/plugins/connectivity_plus/ios"
   device_calendar:
     :path: ".symlinks/plugins/device_calendar/ios"
   device_info_plus:
@@ -367,14 +394,17 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Amplify: e89b493fc2fe840ac044bd4ddf71ad9828f8c364
-  amplify_api_ios: 50a96b86c3c5a9e0fad2b973fca24a2d30a01fc7
-  amplify_flutter_ios: 91f8932c449fa93e09638035ffc955ee216eaca9
-  amplify_secure_storage: 501cbdac671a050090d48dfcc002d5637d3f4a55
+  amplify_api_ios: bbeacce5a151958bfedbd2e95fe6ab12599fd25d
+  amplify_core: 0876b2fbbcec7619f5b58b20c59ecc0118f65a47
+  amplify_flutter_ios: 8943b5e5fb995a7aa3eb5c5238a6822756703584
   AmplifyPlugins: 98bcd23f2c13179f75c733b887e80dd06243be5e
   AppSyncRealTimeClient: 937360221f2b664c4c33ae142a60643e64f480cd
+  AWSAuthCore: e728d73a2b4eed9e826506a1f0fcc58171537267
+  AWSCognitoIdentityProvider: 261fac98d461e9e398bf3c1e18c3cd90578b33ca
+  AWSCognitoIdentityProviderASF: 8e35d6414d9ee2443e9167414ef5e839a58e1e72
   AWSCore: 4bad3f0eb17393b4926a9491e32b835991c56382
+  AWSMobileClient: c898658a4d15e64e07d39c7dc6354fd3ea3055a9
   AWSPluginsCore: 93f813579479fa4c5bfff58817df89e0e10f9f3b
-  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_calendar: 9cb33f88a02e19652ec7b8b122ca778f751b1f7b
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
@@ -407,12 +437,13 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
-  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: 1c39de67663e5eebb2f41324d5d580eeea12dd4c
   SDWebImageWebPCoder: 4851414d9f8894e328e8b97c93ea4f4f4e4418ae
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+  SwiftFormat: 21adec50c7e12a59ea388a815f534f9f22a68180
+  SwiftLint: 284cea64b6187c5d6bd83e9a548a64104d546447
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   video_compress: fce97e4fb1dfd88175aa07d2ffc8a2f297f87fbe
