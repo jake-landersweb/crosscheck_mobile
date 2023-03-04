@@ -20,17 +20,14 @@ void cupertinoSheet({
             resizeToAvoidBottomInset: resizeToAvoidBottomInset,
             body: Navigator(
               onGenerateRoute: (_) => MaterialPageRoute(
-                builder: (context) =>
-                    NotificationWrapper(child: Builder(builder: builder)),
+                builder: (context) => Builder(builder: builder),
               ),
             ),
           )
-        : NotificationWrapper(
-            child: Scaffold(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-              body: builder(context),
-            ),
+        : Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+            body: builder(context),
           ),
     expand: expand,
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,

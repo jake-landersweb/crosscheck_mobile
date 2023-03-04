@@ -99,7 +99,7 @@ class _FTTeamUsersState extends State<FTTeamUsers> {
               selected: ftmodel.selectedUsers,
               horizontalPadding: 0,
               childPadding: const EdgeInsets.all(8),
-              backgroundColor: CustomColors.sheetCell(context),
+              // backgroundColor: CustomColors.sheetCell(context),
               onSelect: (item) => ftmodel.handleSelect(item),
               selectedLogic: (item) {
                 return ftmodel.selectedUsers

@@ -25,8 +25,7 @@ class LineupItemView extends StatefulWidget {
   State<LineupItemView> createState() => _LineupItemViewState();
 }
 
-class _LineupItemViewState extends State<LineupItemView>
-    with TickerProviderStateMixin {
+class _LineupItemViewState extends State<LineupItemView> {
   late int _lineLength;
 
   @override
@@ -95,7 +94,7 @@ class _LineupItemViewState extends State<LineupItemView>
           backgroundColor: CustomColors.sheetCell(context),
           childPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           onChildTap: ((context, i) {
-            cv.showBottomSheet(
+            cv.cupertinoSheet(
               context: context,
               builder: (context) => cv.AppBar.sheet(
                 title: "Select User",
@@ -144,7 +143,6 @@ class _LineupItemViewState extends State<LineupItemView>
                   ),
                 ],
               ),
-              vsync: this,
             );
           }),
           childBuilder: (context, i) {

@@ -36,8 +36,7 @@ class RosterUserDetail extends StatefulWidget {
   _RosterUserDetailState createState() => _RosterUserDetailState();
 }
 
-class _RosterUserDetailState extends State<RosterUserDetail>
-    with TickerProviderStateMixin {
+class _RosterUserDetailState extends State<RosterUserDetail> {
   bool _isLoading = false;
 
   @override
@@ -294,9 +293,8 @@ class _RosterUserDetailState extends State<RosterUserDetail>
       return cv.BasicButton(
         onTap: () {
           if (widget.isSheet) {
-            cv.showBottomSheet(
+            cv.cupertinoSheet(
               context: context,
-              vsync: this,
               builder: (context) {
                 return RUCERoot(
                   team: widget.team,

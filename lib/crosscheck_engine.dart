@@ -140,6 +140,9 @@ class _RestartWidgetState extends State<RestartWidget> {
   }
 }
 
+final GlobalKey<ScaffoldMessengerState> snackbarKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -148,6 +151,7 @@ class Home extends StatelessWidget {
     DataModel dmodel = Provider.of<DataModel>(context);
     return MaterialApp(
       title: 'Crosscheck Engine',
+      scaffoldMessengerKey: snackbarKey,
       theme: lightTheme,
       darkTheme: darkTheme,
       highContrastTheme: lightTheme,

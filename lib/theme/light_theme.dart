@@ -27,6 +27,10 @@ ThemeData lightTheme = ThemeData(
     secondary: Colors.white,
     surface: Colors.white,
   ),
+  snackBarTheme: SnackBarThemeData(
+    backgroundColor: CustomColors.lightList,
+    contentTextStyle: const TextStyle(color: Colors.black),
+  ),
   dividerColor: Colors.black.withOpacity(0.1),
   dividerTheme: const DividerThemeData(
     thickness: 0.5,

@@ -55,7 +55,7 @@ class _FSUserListState extends State<FSUserList> {
       backgroundColor: CustomColors.backgroundColor(context),
       itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
       leading: [
-        cv.BackButton(color: dmodel.color),
+        cv.CloseButton(color: dmodel.color),
       ],
       children: [_body(context, dmodel, fsmodel)],
     );

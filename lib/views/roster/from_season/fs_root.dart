@@ -139,13 +139,11 @@ class _FSRootState extends State<FSRoot> {
               horizontalPadding: 0,
               children: fsmodel.seasons!,
               onChildTap: ((context, item) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ListenableProvider.value(
-                      value: fsmodel,
-                      child: FSUserList(season: item),
-                    ),
+                cv.cupertinoSheet(
+                  context: context,
+                  builder: (context) => ListenableProvider.value(
+                    value: fsmodel,
+                    child: FSUserList(season: item),
                   ),
                 );
               }),

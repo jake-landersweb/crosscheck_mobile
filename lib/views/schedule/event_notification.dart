@@ -137,12 +137,9 @@ class _EventNotificationState extends State<EventNotification> {
       setState(() {
         _isLoading = true;
       });
-      Map<String, dynamic> body = {
-        "statuses": _statuses,
-      };
 
       await dmodel.sendEventMessage(
-          widget.teamId, widget.seasonId, widget.event.eventId, body, () {
+          widget.teamId, widget.seasonId, widget.event.eventId, _statuses, () {
         Navigator.of(context).pop();
       });
 

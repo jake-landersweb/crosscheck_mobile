@@ -51,7 +51,6 @@ class _EventDetail2State extends State<EventDetail2> {
     print(widget.team.teamId);
     print(widget.season.seasonId);
     print(widget.event.eventId);
-    print(widget.event.eventType);
     super.initState();
   }
 
@@ -102,7 +101,7 @@ class _EventDetail2State extends State<EventDetail2> {
               context,
               dmodel,
               Icons.description_outlined,
-              widget.event.eDescription,
+              widget.event.eDescription.trim(),
             ),
           ),
         if (widget.event.eventType == 1)
@@ -281,7 +280,7 @@ class _EventDetail2State extends State<EventDetail2> {
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: Text(
+          child: SelectableText(
             title,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
           ),
@@ -1135,146 +1134,153 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
     EventUserModel euModel = Provider.of<EventUserModel>(context);
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: CustomColors.textColor(context).withOpacity(0.1),
-        ),
+        color: CustomColors.cellColor(context),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: CustomColors.cellColor(context)),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(4, 4, 16, 4),
-              child: Row(
-                children: [
-                  RosterAvatar(
-                    name: user.name(widget.team.showNicknames),
-                    seed: user.email,
-                    size: 48,
-                    fontSize: 24,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    // child: UserCell(user: user, season: widget.season),
-                    child: Text(
-                      user.name(widget.team.showNicknames),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: CustomColors.textColor(context),
-                      ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 4, 16, 4),
+            child: Row(
+              children: [
+                RosterAvatar(
+                  name: user.name(widget.team.showNicknames),
+                  seed: user.email,
+                  size: 48,
+                  fontSize: 24,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  // child: UserCell(user: user, season: widget.season),
+                  child: Text(
+                    user.name(widget.team.showNicknames),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: CustomColors.textColor(context),
                     ),
                   ),
+                ),
 
-                  // show their status, and only let the model open if it is them
-                  Opacity(
-                    opacity: dmodel.user!.email == user.email ? 1 : 0.5,
-                    child: EventUserStatus(
-                      email: user.email,
-                      status: user.eventFields!.eStatus,
-                      event: widget.event,
-                      showTitle: false,
-                      onTap: () {
-                        if ((user.email == widget.email &&
-                                stringToDate(widget.event.eDate)
-                                    .isAfter(DateTime.now())) ||
-                            dmodel.currentSeasonUser!.isSeasonAdmin()) {
-                          cv.showFloatingSheet(
-                            context: context,
-                            builder: (context) {
-                              return StatusSelectSheet(
-                                email: user.email,
-                                teamId: widget.team.teamId,
-                                event: widget.event,
-                                isUpcoming: widget.isUpcoming,
-                                season: widget.season,
-                                completion: () {
-                                  _getUsers(dmodel, euModel);
-                                },
-                              );
-                            },
-                          );
-                        }
-                      },
-                    ),
+                // show their status, and only let the model open if it is them
+                Opacity(
+                  opacity: dmodel.user!.email == user.email ? 1 : 0.5,
+                  child: EventUserStatus(
+                    email: user.email,
+                    status: user.eventFields!.eStatus,
+                    event: widget.event,
+                    showTitle: false,
+                    onTap: () {
+                      if ((user.email == widget.email &&
+                              stringToDate(widget.event.eDate)
+                                  .isAfter(DateTime.now())) ||
+                          dmodel.currentSeasonUser!.isSeasonAdmin()) {
+                        cv.showFloatingSheet(
+                          context: context,
+                          builder: (context) {
+                            return StatusSelectSheet(
+                              email: user.email,
+                              teamId: widget.team.teamId,
+                              event: widget.event,
+                              isUpcoming: widget.isUpcoming,
+                              season: widget.season,
+                              completion: () {
+                                _getUsers(dmodel, euModel);
+                              },
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           // show a message icon if the user left a message
           if (!user.eventFields!.message.isEmpty())
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
-              child: cv.BasicButton(
-                onTap: () {
-                  cv.cupertinoSheet(
-                      context: context,
-                      builder: (context) {
-                        return UserCommentSheet(
-                          user: user,
-                          event: widget.event,
-                          email: widget.email,
-                          team: widget.team,
-                          season: widget.season,
-                          completion: () {
-                            // refresh user data when added reply
-                            _getUsers(dmodel, euModel);
-                          },
-                        );
-                      });
-                },
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: CustomColors.textColor(context).withOpacity(0.2),
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
+                  child: cv.BasicButton(
+                    onTap: () {
+                      cv.cupertinoSheet(
+                          context: context,
+                          builder: (context) {
+                            return UserCommentSheet(
+                              user: user,
+                              event: widget.event,
+                              email: widget.email,
+                              team: widget.team,
+                              season: widget.season,
+                              completion: () {
+                                // refresh user data when added reply
+                                _getUsers(dmodel, euModel);
+                              },
+                            );
+                          });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: CustomColors.cellColor(context),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 8, 6, 6),
-                              child: Icon(
-                                Icons.chat_outlined,
-                                color: widget.event.getColor() ?? dmodel.color,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Text(
-                              user.eventFields!.message!,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: CustomColors.textColor(context)
-                                    .withOpacity(0.7),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (user.eventFields!.statusReplies.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 32),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              for (var i in user.eventFields!.statusReplies)
-                                _replyRow(context, dmodel, i.name, i.message),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: CustomColors.cellColor(context),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 8, 6, 6),
+                                  child: Icon(
+                                    Icons.chat_outlined,
+                                    color:
+                                        widget.event.getColor() ?? dmodel.color,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  user.eventFields!.message!,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: CustomColors.textColor(context)
+                                        .withOpacity(0.7),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
-                        )
-                    ],
+                          if (user.eventFields!.statusReplies.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 32),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  for (var i in user.eventFields!.statusReplies)
+                                    _replyRow(
+                                        context, dmodel, i.name, i.message),
+                                ],
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),

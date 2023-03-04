@@ -32,6 +32,9 @@ ThemeData darkTheme = ThemeData(
     surface: dbg,
   ),
   dividerColor: Colors.white.withOpacity(0.1),
+  snackBarTheme: SnackBarThemeData(
+      backgroundColor: CustomColors.darkList,
+      contentTextStyle: const TextStyle(color: Colors.white)),
   dividerTheme: const DividerThemeData(
     thickness: 0.5,
     indent: 16,

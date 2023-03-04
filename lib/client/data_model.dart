@@ -20,7 +20,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 
 const double appVersionMajor = 4.3;
-const int appVersionMinor = 2;
+const int appVersionMinor = 5;
 
 class DataModel extends ChangeNotifier {
   // for holding passed teamId in memory for custom team apps
@@ -631,21 +631,42 @@ class DataModel extends ChangeNotifier {
   }
 
   Future<void> addIndicator(IndicatorItem item) async {
-    // await Future.delayed(const Duration(milliseconds: 700));
-    indicators.add(item);
-    if (indicators.length < 2) {
-      do {
-        currentIndicator = indicators[0].clone();
-        notifyListeners();
-        var duration =
-            ((currentIndicator!.duration + (animationTime)) * 1000).toInt();
-        await Future.delayed(Duration(milliseconds: duration));
-        log(currentIndicator!.title);
-        currentIndicator = null;
-        notifyListeners();
-        indicators.removeAt(0);
-      } while (indicators.isNotEmpty);
-    }
+    final SnackBar snackBar = SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            item.getIcon(),
+            color: item.type == IndicatorItemType.error
+                ? Colors.red[300]
+                : Colors.green[300],
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(item.title),
+          )
+        ],
+      ),
+      margin: const EdgeInsets.all(8),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+    snackbarKey.currentState?.showSnackBar(snackBar);
+    // indicators.add(item);
+    // if (indicators.length < 2) {
+    //   do {
+    //     currentIndicator = indicators[0].clone();
+    //     notifyListeners();
+    //     var duration =
+    //         ((currentIndicator!.duration + (animationTime)) * 1000).toInt();
+    //     await Future.delayed(Duration(milliseconds: duration));
+    //     log(currentIndicator!.title);
+    //     currentIndicator = null;
+    //     notifyListeners();
+    //     indicators.removeAt(0);
+    //   } while (indicators.isNotEmpty);
+    // }
   }
 
   Future<void> logout() async {

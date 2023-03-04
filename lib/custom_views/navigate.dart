@@ -12,11 +12,9 @@ class Navigate extends Navigator {
       context,
       MaterialWithModalsPageRoute(
         builder: (context) {
-          return NotificationWrapper(
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: body,
-            ),
+          return Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: body,
           );
         },
       ),

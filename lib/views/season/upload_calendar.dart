@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:crosscheck_sports/client/root.dart';
@@ -67,7 +66,10 @@ class _UploadCalendarState extends State<UploadCalendar> {
                       child: Center(
                         child: _loading
                             ? cv.LoadingIndicator(color: dmodel.color)
-                            : const Text("Upload"),
+                            : Text(
+                                "Upload",
+                                style: TextStyle(color: dmodel.color),
+                              ),
                       ),
                     )
                   ],

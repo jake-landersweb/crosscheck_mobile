@@ -15,7 +15,7 @@ class FTHome extends StatefulWidget {
   State<FTHome> createState() => _FTHomeState();
 }
 
-class _FTHomeState extends State<FTHome> with TickerProviderStateMixin {
+class _FTHomeState extends State<FTHome> {
   @override
   Widget build(BuildContext context) {
     FTModel ftmodel = Provider.of<FTModel>(context);
@@ -62,9 +62,8 @@ class _FTHomeState extends State<FTHome> with TickerProviderStateMixin {
         comp.SubActionButton(
           title: "Select Team Users",
           onTap: () {
-            cv.showBottomSheet(
+            cv.cupertinoSheet(
               context: context,
-              vsync: this,
               builder: (context) {
                 return ListenableProvider.value(
                   value: ftmodel,

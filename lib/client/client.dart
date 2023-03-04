@@ -30,18 +30,9 @@ class Client {
   }
 
   // more generic fetch function
-  Future<dynamic> genericFetch(String scheme, String phost, String path) async {
+  Future<http.Response> genericFetch(String uri) async {
     // start the response
-    final response =
-        await client.get(Uri(scheme: scheme, host: phost, path: path));
-
-    // check for basic network errors
-    if (response.statusCode != 200) {
-      throw Exception('There was an error fetching: ${response.toString()}');
-    }
-
-    // return the decoded information
-    return jsonDecode(response.body);
+    return await client.get(Uri.parse(uri));
   }
 
   Future<dynamic> post(
@@ -55,15 +46,13 @@ class Client {
     return jsonDecode(response.body);
   }
 
-  Future<dynamic> genericPost(String host, String path,
-      Map<String, String> headers, dynamic body) async {
-    final http.Response response = await http.post(
-      Uri(scheme: 'https', host: host, path: path),
+  Future<http.Response> genericPost(
+      String uri, Map<String, String> headers, dynamic body) async {
+    return await http.post(
+      Uri.parse(uri),
       body: body,
       headers: headers,
     );
-
-    return jsonDecode(response.body);
   }
 
   Future<dynamic> put(

@@ -280,36 +280,59 @@ extension EventCalls on DataModel {
   }
 
   Future<void> sendEventMessage(String teamId, String seasonId, String eventId,
-      Map<String, dynamic> body, VoidCallback completion,
+      List<int> statuses, VoidCallback completion,
       {VoidCallback? onError}) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    await client
-        .post(
-            "/teams/$teamId/seasons/$seasonId/events/$eventId/sendNotifications",
-            headers,
-            jsonEncode(body))
-        .then((response) async {
-      print(response);
-      if (response == null) {
-        addIndicator(
-            IndicatorItem.error("There was an issue sending the notification"));
-        onError == null ? null : onError();
-      } else if (response['status'] == 200) {
-        await FirebaseAnalytics.instance.logEvent(
-          name: "event_reminder",
-          parameters: {"platform": "mobile"},
-        );
-        addIndicator(
-            IndicatorItem.success("Your notification will send out shortly."));
-        completion();
-      } else {
-        addIndicator(
-            IndicatorItem.error("There was an issue sending the notification"));
-        print(response['message']);
-        onError == null ? null : onError();
-      }
-    });
+    Map<String, dynamic> body = {
+      "teamId": teamId,
+      "seasonId": seasonId,
+      "eventId": eventId,
+      "statuses": statuses,
+    };
+
+    // send to go lambda for better performance
+    var response = await client.genericPost(
+      "https://ka8ql1m6bf.execute-api.us-west-2.amazonaws.com/default/xc-event-reminder",
+      headers,
+      jsonEncode(body),
+    );
+    if (response.statusCode != 200) {
+      addIndicator(
+          IndicatorItem.error("There was an issue sending the notifications"));
+      onError != null ? onError() : null;
+    } else {
+      addIndicator(
+          IndicatorItem.success("Successfully send out notifications"));
+      completion();
+    }
+
+    // await client
+    //     .post(
+    //         "/teams/$teamId/seasons/$seasonId/events/$eventId/sendNotifications",
+    //         headers,
+    //         jsonEncode(body))
+    //     .then((response) async {
+    //   print(response);
+    //   if (response == null) {
+    //     addIndicator(
+    //         IndicatorItem.error("There was an issue sending the notification"));
+    //     onError == null ? null : onError();
+    //   } else if (response['status'] == 200) {
+    //     await FirebaseAnalytics.instance.logEvent(
+    //       name: "event_reminder",
+    //       parameters: {"platform": "mobile"},
+    //     );
+    //     addIndicator(
+    //         IndicatorItem.success("Your notification will send out shortly."));
+    //     completion();
+    //   } else {
+    //     addIndicator(
+    //         IndicatorItem.error("There was an issue sending the notification"));
+    //     print(response['message']);
+    //     onError == null ? null : onError();
+    //   }
+    // });
   }
 
   Future<void> getFutureEvents(String teamId, String seasonId,

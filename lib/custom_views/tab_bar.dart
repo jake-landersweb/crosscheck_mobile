@@ -1,6 +1,7 @@
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/core/root.dart';
+import 'package:sprung/sprung.dart';
 import 'core/root.dart' as cv;
 
 class TabBar extends StatefulWidget {
@@ -61,26 +62,29 @@ class _TabBarState extends State<TabBar> {
                     Stack(
                       alignment: Alignment.topRight,
                       children: [
-                        if (widget.childBuilder == null)
-                          _tabBarItem(context, i, widget.icons[i])
-                        else
-                          cv.BasicButton(
-                            onTap: () {
-                              widget.onViewChange(i);
-                              if (widget.extraTapArgs != null) {
-                                widget.extraTapArgs!(
-                                  context,
-                                  widget.icons[i],
-                                  widget.index == i,
-                                );
-                              }
-                            },
-                            child: widget.childBuilder!(
-                              context,
-                              widget.icons[i],
-                              widget.index == i,
-                            ),
-                          ),
+                        _TabBarItem(
+                          builder: (context) {
+                            if (widget.childBuilder == null) {
+                              return _tabBarItem(context, i, widget.icons[i]);
+                            } else {
+                              return widget.childBuilder!(
+                                context,
+                                widget.icons[i],
+                                widget.index == i,
+                              );
+                            }
+                          },
+                          onTap: () {
+                            widget.onViewChange(i);
+                            if (widget.extraTapArgs != null) {
+                              widget.extraTapArgs!(
+                                context,
+                                widget.icons[i],
+                                widget.index == i,
+                              );
+                            }
+                          },
+                        ),
                         if (widget.hasBadge != null && widget.hasBadge!(i))
                           Transform.translate(
                             offset: const Offset(3, -3),
@@ -110,24 +114,12 @@ class _TabBarState extends State<TabBar> {
   }
 
   Widget _tabBarItem(BuildContext context, int idx, IconData icon) {
-    return cv.BasicButton(
-      onTap: () {
-        widget.onViewChange(idx);
-        if (widget.extraTapArgs != null) {
-          widget.extraTapArgs!(
-            context,
-            icon,
-            widget.index == idx,
-          );
-        }
-      },
-      child: Icon(
-        icon,
-        size: 28,
-        color: widget.index == idx
-            ? widget.color
-            : ViewColors.textColor(context).withOpacity(0.5),
-      ),
+    return Icon(
+      icon,
+      size: 28,
+      color: widget.index == idx
+          ? widget.color
+          : ViewColors.textColor(context).withOpacity(0.5),
     );
   }
 
@@ -137,5 +129,48 @@ class _TabBarState extends State<TabBar> {
     } else {
       return const EdgeInsets.only(top: 8);
     }
+  }
+}
+
+class _TabBarItem extends StatefulWidget {
+  const _TabBarItem({
+    super.key,
+    required this.builder,
+    required this.onTap,
+  });
+  final Widget Function(BuildContext context) builder;
+  final VoidCallback onTap;
+
+  @override
+  State<_TabBarItem> createState() => __TabBarItemState();
+}
+
+class __TabBarItemState extends State<_TabBarItem> {
+  double _scale = 1.0;
+
+  Future<void> _anim() async {
+    setState(() {
+      _scale = 1.2;
+    });
+    await Future.delayed(const Duration(milliseconds: 150));
+    setState(() {
+      _scale = 1.0;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedScale(
+      duration: const Duration(milliseconds: 200),
+      curve: Sprung(36),
+      scale: _scale,
+      child: cv.BasicButton(
+        onTap: () {
+          _anim();
+          widget.onTap();
+        },
+        child: widget.builder(context),
+      ),
+    );
   }
 }

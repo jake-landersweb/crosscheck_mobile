@@ -230,7 +230,8 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
         _detailCell(
             Icons.location_on_outlined, widget.event.eventLocation.name!),
       if (widget.event.eDescription.isNotEmpty)
-        _detailCell(Icons.description_outlined, widget.event.eDescription),
+        _detailCell(
+            Icons.description_outlined, widget.event.eDescription.trim()),
       if (widget.event.customFields.isNotEmpty)
         for (var i in widget.event.customFields)
           if (i.value.isNotEmpty) _customCell(i.title, i.value),

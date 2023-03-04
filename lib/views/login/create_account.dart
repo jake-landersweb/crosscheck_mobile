@@ -165,11 +165,14 @@ class _CreateAccountState extends State<CreateAccount> {
               ),
             ),
           ),
-        SvgPicture.asset(
-          widget.isCreate
-              ? "assets/svg/soccer-goal.svg"
-              : "assets/svg/login.svg",
-          fit: BoxFit.contain,
+        // SvgPicture.asset(
+        //   widget.isCreate
+        //       ? "assets/svg/soccer-goal.svg"
+        //       : "assets/svg/login.svg",
+        //   // fit: BoxFit.contain,
+        //   height: MediaQuery.of(context).size.height * 0.4,
+        // ),
+        SizedBox(
           height: MediaQuery.of(context).size.height * 0.4,
         ),
         if (widget.isCreate)
