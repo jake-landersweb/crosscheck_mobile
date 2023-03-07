@@ -72,7 +72,7 @@ class _StatsEventState extends State<StatsEvent> {
       children: [
         Expanded(
           child: Text(
-            widget.event.getTitle(dmodel.tus!.team.title),
+            widget.event.getTitle(),
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.w800,

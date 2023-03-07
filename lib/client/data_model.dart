@@ -20,7 +20,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 
 const double appVersionMajor = 4.3;
-const int appVersionMinor = 5;
+const int appVersionMinor = 6;
 
 class DataModel extends ChangeNotifier {
   // for holding passed teamId in memory for custom team apps
@@ -118,7 +118,7 @@ class DataModel extends ChangeNotifier {
     // // observe for deep links
     // observeDeepLinks();
 
-    setLoadText("Checking app version...");
+    setLoadText("");
     // check the version
     await getVersion(appVersionMajor, appVersionMinor.toDouble(),
         (update, maintenance) {
@@ -809,8 +809,6 @@ class DataModel extends ChangeNotifier {
 
   void setLoadText(String val) {
     print("[LOAD TEXT] $val");
-    loadText = val;
-    notifyListeners();
   }
 
   // running in background as observer to detect the app being opened with any deep links

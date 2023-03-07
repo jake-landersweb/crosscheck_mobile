@@ -38,34 +38,40 @@ class _ECELocationState extends State<ECELocation> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: cv.Section(
         "Location",
-        child: cv.ListView<Widget>(
-          childPadding: const EdgeInsets.symmetric(horizontal: 16),
-          horizontalPadding: 0,
-          children: [
-            // location
-            cv.TextField2(
-              labelText: "Name",
-              onChanged: (value) {
-                setState(() {
-                  ecemodel.event.eventLocation.name = value;
-                });
-              },
-              showBackground: false,
-              value: ecemodel.event.eventLocation.name ?? "",
-              isLabeled: true,
+        child: AbsorbPointer(
+          absorbing: ecemodel.event.autoUpdateFromSync,
+          child: Opacity(
+            opacity: ecemodel.event.autoUpdateFromSync ? 0.5 : 1,
+            child: cv.ListView<Widget>(
+              childPadding: const EdgeInsets.symmetric(horizontal: 16),
+              horizontalPadding: 0,
+              children: [
+                // location
+                cv.TextField2(
+                  labelText: "Name",
+                  onChanged: (value) {
+                    setState(() {
+                      ecemodel.event.eventLocation.name = value;
+                    });
+                  },
+                  showBackground: false,
+                  value: ecemodel.event.eventLocation.name ?? "",
+                  isLabeled: true,
+                ),
+                cv.TextField2(
+                  labelText: "Address",
+                  onChanged: (value) {
+                    setState(() {
+                      ecemodel.event.eventLocation.address = value;
+                    });
+                  },
+                  showBackground: false,
+                  value: ecemodel.event.eventLocation.address ?? "",
+                  isLabeled: true,
+                ),
+              ],
             ),
-            cv.TextField2(
-              labelText: "Address",
-              onChanged: (value) {
-                setState(() {
-                  ecemodel.event.eventLocation.address = value;
-                });
-              },
-              showBackground: false,
-              value: ecemodel.event.eventLocation.address ?? "",
-              isLabeled: true,
-            ),
-          ],
+          ),
         ),
       ),
     );

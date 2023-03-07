@@ -387,20 +387,18 @@ extension SeasonCalls on DataModel {
     });
   }
 
-  Future<void> verifyCalendar(
+  Future<void> loadCalendar(
     String teamId,
     String seasonId,
-    String calendarUrl,
-    VoidCallback completion, {
+    Map<String, dynamic> body,
+    Function(List<Event>) completion, {
     VoidCallback? onError,
   }) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    Map<String, dynamic> body = {"calendarUrl": calendarUrl};
-
     // first create the season
     await client
-        .post("/teams/$teamId/seasons/$seasonId/verifyCalendar", headers,
+        .post("/teams/$teamId/seasons/$seasonId/loadCalendar", headers,
             jsonEncode(body))
         .then((response) {
       if (response == null) {
@@ -408,9 +406,21 @@ extension SeasonCalls on DataModel {
         onError != null ? onError() : null;
       } else if (response['status'] == 200) {
         print("successfully verified calendar");
-        completion();
+        List<Event> e = [];
+        for (var i in response['body']) {
+          e.add(Event.fromJson(i));
+        }
+        completion(e);
       } else {
-        print("There was an issue verifying the calendar");
+        if (response['status'] == 410) {
+          print("The calendar is invalid");
+          addIndicator(IndicatorItem.error("The calendar is invalid"));
+        } else {
+          // TODO: Add feedback form here
+          print("There was an unknown error processing this request");
+          addIndicator(IndicatorItem.error(
+              "There was an unknown error processing this request"));
+        }
         onError != null ? onError() : null;
       }
     });

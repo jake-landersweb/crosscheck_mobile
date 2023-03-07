@@ -191,7 +191,7 @@ class _MorePagesState extends State<MorePages> {
                   useSheet: true,
                   view: UploadCalendar(
                     teamId: dmodel.tus!.team.teamId,
-                    seasonId: dmodel.currentSeason!.seasonId,
+                    season: dmodel.currentSeason!,
                   ),
                 ),
               if ((dmodel.tus!.user.isTeamAdmin()) ||

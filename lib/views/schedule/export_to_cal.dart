@@ -209,7 +209,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.getTitle(dmodel.tus!.team.title),
+                      item.getTitle(),
                       style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 22,
@@ -388,7 +388,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
     for (var event in _selectedEvents) {
       var e = cal.Event(
         seasonCalendar.id,
-        title: event.getTitle(dmodel.tus!.team.title),
+        title: event.getTitle(),
         start: TZDateTime.from(event.eventDate(), currentLocation),
         end: TZDateTime.from(event.eventDate(), currentLocation)
             .add(const Duration(hours: 2)),

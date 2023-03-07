@@ -66,7 +66,7 @@ class _EventDetail2State extends State<EventDetail2> {
       create: (context) => EventUserModel(),
       builder: ((context, child) {
         return cv.AppBar(
-          title: widget.event.getTitle(dmodel.tus!.team.title),
+          title: widget.event.getTitle(),
           isLarge: true,
           leading: [
             cv.BackButton(color: _accentColor(dmodel)),
@@ -98,11 +98,12 @@ class _EventDetail2State extends State<EventDetail2> {
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: _detailField(
-              context,
-              dmodel,
-              Icons.description_outlined,
-              widget.event.eDescription.trim(),
-            ),
+                context,
+                dmodel,
+                Icons.description_outlined,
+                widget.event.eDescription.trim().length > 200
+                    ? widget.event.eDescription.trim().substring(0, 200)
+                    : widget.event.eDescription.trim()),
           ),
         if (widget.event.eventType == 1)
           Padding(
@@ -491,26 +492,25 @@ class _EventDetail2State extends State<EventDetail2> {
 
   Widget _editButton(BuildContext context, DataModel dmodel) {
     EventUserModel euModel = Provider.of<EventUserModel>(context);
-    if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) {
+    if ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) &&
+        (euModel.eventUsers != null || !widget.event.hasAttendance)) {
       return cv.BasicButton(
         onTap: () {
-          if (euModel.eventUsers != null || !widget.event.hasAttendance) {
-            cv.cupertinoSheet(
-                context: context,
-                wrapInNavigator: true,
-                builder: ((context) {
-                  return ECERoot(
-                    isCreate: false,
-                    team: widget.team,
-                    season: widget.season,
-                    teamUser: dmodel.tus!.user,
-                    user: dmodel.user!,
-                    seasonUser: dmodel.currentSeasonUser,
-                    event: widget.event,
-                    eventUsers: euModel.eventUsers,
-                  );
-                }));
-          }
+          cv.cupertinoSheet(
+              context: context,
+              wrapInNavigator: true,
+              builder: ((context) {
+                return ECERoot(
+                  isCreate: false,
+                  team: widget.team,
+                  season: widget.season,
+                  teamUser: dmodel.tus!.user,
+                  user: dmodel.user!,
+                  seasonUser: dmodel.currentSeasonUser,
+                  event: widget.event,
+                  eventUsers: euModel.eventUsers,
+                );
+              }));
         },
         child: Text(
           "Edit",
@@ -572,7 +572,7 @@ class _EventDetailState extends State<EventDetail> {
       create: (context) => EventUserModel(),
       builder: ((context, child) {
         return cv.AppBar(
-          title: widget.event.getTitle(dmodel.tus!.team.title),
+          title: widget.event.getTitle(),
           isLarge: true,
           backgroundColor: widget.event.getColor()?.lighten(0.1) ??
               CustomColors.backgroundColor(context),

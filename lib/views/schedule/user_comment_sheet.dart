@@ -185,7 +185,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
           "date": dateToString(DateTime.now()),
           "name": dmodel.currentSeasonUser!.name(widget.team.showNicknames),
           "message": controller.text,
-          "title": widget.event.getTitle(dmodel.tus!.team.title),
+          "title": widget.event.getTitle(),
         };
         await dmodel.replyToStatus(widget.team.teamId, widget.season.seasonId,
             widget.event.eventId, body, () {

@@ -37,6 +37,8 @@ class Event extends Equatable {
   late int score;
   late int opponentScore;
   late bool overrideTitle;
+  late bool isCalendarEvent;
+  late bool autoUpdateFromSync;
 
   Event({
     required this.eDescription,
@@ -69,6 +71,8 @@ class Event extends Equatable {
     required this.score,
     required this.opponentScore,
     required this.overrideTitle,
+    required this.isCalendarEvent,
+    required this.autoUpdateFromSync,
   });
 
   // empty object
@@ -104,6 +108,8 @@ class Event extends Equatable {
     score = 0;
     opponentScore = 0;
     overrideTitle = false;
+    isCalendarEvent = false;
+    autoUpdateFromSync = false;
   }
 
   // for creating a copy
@@ -142,6 +148,8 @@ class Event extends Equatable {
     score = event.score;
     opponentScore = event.opponentScore;
     overrideTitle = event.overrideTitle;
+    isCalendarEvent = event.isCalendarEvent;
+    autoUpdateFromSync = event.autoUpdateFromSync;
   }
 
   Event clone() => Event(
@@ -175,6 +183,8 @@ class Event extends Equatable {
         score: score,
         opponentScore: opponentScore,
         overrideTitle: overrideTitle,
+        isCalendarEvent: isCalendarEvent,
+        autoUpdateFromSync: autoUpdateFromSync,
       );
 
   // Event.fromRaw(EventRaw event) {
@@ -247,6 +257,8 @@ class Event extends Equatable {
     score = json['score']?.round() ?? 0;
     opponentScore = json['opponentScore']?.round() ?? 0;
     overrideTitle = json['overrideTitle'] ?? false;
+    isCalendarEvent = json['isCalendarEvent'] ?? false;
+    autoUpdateFromSync = json['autoUpdateFromSync'] ?? false;
   }
 
   // object to json
@@ -279,6 +291,8 @@ class Event extends Equatable {
     data['score'] = score;
     data['opponentScore'] = opponentScore;
     data['overrideTitle'] = overrideTitle;
+    data['isCalendarEvent'] = isCalendarEvent;
+    data['autoUpdateFromSync'] = autoUpdateFromSync;
     return data;
   }
 
@@ -318,13 +332,15 @@ class Event extends Equatable {
     data['score'] = score;
     data['opponentScore'] = opponentScore;
     data['overrideTitle'] = overrideTitle;
+    data['isCalendarEvent'] = isCalendarEvent;
+    data['autoUpdateFromSync'] = autoUpdateFromSync;
 
     return data;
   }
 
   // for painting correct title
-  String getTitle(String teamName) {
-    if (overrideTitle) {
+  String getTitle({bool? overrideTitle}) {
+    if (overrideTitle ?? this.overrideTitle) {
       return eTitle;
     } else {
       if (eventType == 1) {

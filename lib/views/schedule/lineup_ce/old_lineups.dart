@@ -76,7 +76,7 @@ class _OldLineupsState extends State<OldLineups> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.event!.getTitle(dmodel.tus!.team.title),
+                item.event!.getTitle(),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,

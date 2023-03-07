@@ -19,7 +19,7 @@ class LabeledCell extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: SelectableText(
+          child: Text(
             value,
             style: TextStyle(
                 fontSize: 18, fontWeight: FontWeight.w500, color: textColor),

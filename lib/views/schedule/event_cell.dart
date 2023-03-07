@@ -175,7 +175,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                widget.event.getTitle(dmodel.tus!.team.title),
+                widget.event.getTitle(),
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 22,
@@ -231,7 +231,10 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
             Icons.location_on_outlined, widget.event.eventLocation.name!),
       if (widget.event.eDescription.isNotEmpty)
         _detailCell(
-            Icons.description_outlined, widget.event.eDescription.trim()),
+            Icons.description_outlined,
+            widget.event.eDescription.trim().length > 100
+                ? widget.event.eDescription.trim().substring(0, 100)
+                : widget.event.eDescription.trim()),
       if (widget.event.customFields.isNotEmpty)
         for (var i in widget.event.customFields)
           if (i.value.isNotEmpty) _customCell(i.title, i.value),

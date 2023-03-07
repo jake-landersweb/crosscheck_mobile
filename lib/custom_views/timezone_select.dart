@@ -66,32 +66,55 @@ class _TimezoneSelectorState extends State<TimezoneSelector> {
                   widget.onSelect(_getTz()[i]);
                   Navigator.of(context).pop();
                 },
-                child: Container(
-                  constraints: const BoxConstraints(minHeight: 50),
-                  color: CustomColors.cellColor(context),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _getTz()[i],
-                              style: TextStyle(
-                                color: CustomColors.textColor(context),
-                                fontSize: 18,
+                child: Column(
+                  children: [
+                    Container(
+                      constraints: const BoxConstraints(minHeight: 50),
+                      color: CustomColors.cellColor(context),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _getTz()[i],
+                                  style: TextStyle(
+                                    color: CustomColors.textColor(context),
+                                    fontSize: 18,
+                                  ),
+                                ),
                               ),
-                            ),
+                              if (_tz == _getTz()[i])
+                                Icon(
+                                  Icons.check_circle_outline_rounded,
+                                  color: dmodel.color,
+                                ),
+                            ],
                           ),
-                          if (_tz == _getTz()[i])
-                            Icon(
-                              Icons.check_circle_outline_rounded,
-                              color: dmodel.color,
-                            ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    if (i < _getTz().length - 1)
+                      Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 0.5,
+                            color: CustomColors.cellColor(context),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16),
+                            child: Container(
+                              width: double.infinity,
+                              height: 0.5,
+                              color: CustomColors.textColor(context)
+                                  .withOpacity(0.1),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
               );
             },
