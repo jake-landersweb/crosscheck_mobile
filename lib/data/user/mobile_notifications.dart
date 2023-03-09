@@ -53,4 +53,7 @@ class MobileNotification {
       "updated": updated,
     };
   }
+
+  @override
+  String toString() => toJson().toString();
 }

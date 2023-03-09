@@ -5,8 +5,6 @@ import 'package:crosscheck_sports/data/team/team_stat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-const String defaultIgnoreString = "versus, vs, at, @, .";
-
 class Season extends Equatable {
   late String id;
   late String title;
@@ -73,7 +71,7 @@ class Season extends Equatable {
     timezone = "US/Pacific";
     calendarUrl = "";
     parseOpponents = false;
-    calendarTitleIgnoreString = defaultIgnoreString;
+    calendarTitleIgnoreString = "";
   }
 
   // for creating a copy
@@ -146,9 +144,8 @@ class Season extends Equatable {
     }
     timezone = json['tz'] ?? "US/Pacific";
     calendarUrl = json['calendarUrl'] ?? "";
-    parseOpponents = json['parseOpponents'] ?? false;
-    calendarTitleIgnoreString =
-        json['calendarTitleIgnoreString'] ?? defaultIgnoreString;
+    parseOpponents = json['parseOpponents'] ?? true;
+    calendarTitleIgnoreString = json['calendarTitleIgnoreString'] ?? [];
   }
 
   // converting from json
@@ -230,7 +227,7 @@ class Season extends Equatable {
     timezone = "US/Pacific";
     calendarUrl = "";
     parseOpponents = false;
-    calendarTitleIgnoreString = defaultIgnoreString;
+    calendarTitleIgnoreString = "";
   }
 
   Season.basketball() {
@@ -276,7 +273,7 @@ class Season extends Equatable {
     timezone = "US/Pacific";
     calendarUrl = "";
     parseOpponents = false;
-    calendarTitleIgnoreString = defaultIgnoreString;
+    calendarTitleIgnoreString = "";
   }
 
   Season.football() {
@@ -343,7 +340,7 @@ class Season extends Equatable {
     timezone = "US/Pacific";
     calendarUrl = "";
     parseOpponents = false;
-    calendarTitleIgnoreString = defaultIgnoreString;
+    calendarTitleIgnoreString = "";
   }
 
   Season.golf() {
@@ -386,7 +383,7 @@ class Season extends Equatable {
     timezone = "US/Pacific";
     calendarUrl = "";
     parseOpponents = false;
-    calendarTitleIgnoreString = defaultIgnoreString;
+    calendarTitleIgnoreString = "";
   }
 
   Season.soccer() {
@@ -438,7 +435,7 @@ class Season extends Equatable {
     timezone = "US/Pacific";
     calendarUrl = "";
     parseOpponents = false;
-    calendarTitleIgnoreString = defaultIgnoreString;
+    calendarTitleIgnoreString = "";
   }
 
   Season.baseball() {
@@ -490,7 +487,7 @@ class Season extends Equatable {
     timezone = "US/Pacific";
     calendarUrl = "";
     parseOpponents = false;
-    calendarTitleIgnoreString = defaultIgnoreString;
+    calendarTitleIgnoreString = "";
   }
 
   IconData getSportIcon() {

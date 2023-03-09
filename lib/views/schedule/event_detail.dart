@@ -1202,7 +1202,7 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
           // show a message icon if the user left a message
           if (!user.eventFields!.message.isEmpty())
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(

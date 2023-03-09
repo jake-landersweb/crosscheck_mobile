@@ -110,25 +110,43 @@ class _UserEditState extends State<UserEdit> {
                   });
                 },
                 childBuilder: (context, notif) {
-                  return cv.LabeledWidget(
-                    "${notif.deviceName ?? "Unknown Device"}${notif.deviceVersion != null ? " ${notif.deviceVersion}" : ""}",
-                    child: Row(
-                      children: [
-                        FlutterSwitch(
-                          value: notif.allow,
-                          height: 25,
-                          width: 50,
-                          toggleSize: 18,
-                          activeColor: dmodel.color,
-                          onToggle: (value) async {
-                            setState(() {
-                              notif.allow = value;
-                            });
-                          },
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: cv.LabeledWidget(
+                          "${notif.deviceName ?? "Unknown Device"}${notif.deviceVersion != null ? " ${notif.deviceVersion}" : ""}",
+                          child: Row(
+                            children: [
+                              FlutterSwitch(
+                                value: notif.allow,
+                                height: 25,
+                                width: 50,
+                                toggleSize: 18,
+                                activeColor: dmodel.color,
+                                onToggle: (value) async {
+                                  setState(() {
+                                    notif.allow = value;
+                                  });
+                                },
+                              ),
+                              const Spacer(),
+                              if ((notif.token ?? "") == _token)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: dmodel.color,
+                                    ),
+                                    height: 7,
+                                    width: 7,
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                        const Spacer(),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 },
               ),

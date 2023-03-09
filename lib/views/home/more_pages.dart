@@ -290,7 +290,7 @@ class _MorePagesState extends State<MorePages> {
                     icon: Icons.calendar_month_rounded,
                     useSheet: true,
                     view: UploadCalendar(
-                      teamId: dmodel.tus!.team.teamId,
+                      team: dmodel.tus!.team,
                       season: dmodel.currentSeason!,
                     ),
                   ),

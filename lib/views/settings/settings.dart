@@ -25,11 +25,18 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool _isLoading = false;
+  String? _token;
 
   @override
   void initState() {
     logEvent();
+    _getToken();
     super.initState();
+  }
+
+  Future<void> _getToken() async {
+    _token = await context.read<DataModel>().getNotificationToken();
+    setState(() {});
   }
 
   void logEvent() async {
@@ -218,10 +225,39 @@ class _SettingsState extends State<Settings> {
                         .getMobileNotifications(dmodel.teamArgs?.teamId),
                     horizontalPadding: 0,
                     childBuilder: ((context, notif) {
-                      return cv.LabeledCell(
-                        label: notif.allow ? "True" : "False",
-                        value:
-                            "${notif.deviceName ?? "Unknown Device"}${notif.deviceVersion != null ? " ${notif.deviceVersion}" : ""}",
+                      print(notif);
+                      return Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Image.asset(
+                              notif.deviceType == "ios"
+                                  ? "assets/images/iphone.png"
+                                  : "assets/images/android.png",
+                              height: 28,
+                              width: 28,
+                            ),
+                          ),
+                          if (notif.token == _token)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: dmodel.color,
+                                ),
+                                height: 7,
+                                width: 7,
+                              ),
+                            ),
+                          Expanded(
+                            child: cv.LabeledCell(
+                              label: notif.allow ? "True" : "False",
+                              value:
+                                  "${notif.deviceName ?? "Unknown Device"}${notif.deviceVersion != null ? " ${notif.deviceVersion}" : ""}",
+                            ),
+                          ),
+                        ],
                       );
                     }),
                   ),

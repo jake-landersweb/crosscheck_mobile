@@ -52,7 +52,8 @@ class _SyncCalendarState extends State<SyncCalendar> {
     if (widget.season.calendarTitleIgnoreString.isNotEmpty) {
       _ignoreString = widget.season.calendarTitleIgnoreString;
     } else {
-      _ignoreString = defaultIgnoreString;
+      _ignoreString =
+          "versus, vs, at, @, ., ${widget.team.title.toLowerCase()}";
     }
     _parseOpponents = widget.season.parseOpponents;
     super.initState();
@@ -98,7 +99,7 @@ class _SyncCalendarState extends State<SyncCalendar> {
               Expanded(
                 child: Center(
                   child: Text(
-                    "Paste the url of a *.ics calendar file",
+                    "Paste the url of an online calendar file",
                     style: TextStyle(
                       fontSize: 18,
                     ),

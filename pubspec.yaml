@@ -164,6 +164,9 @@ flutter:
 
     - assets/files/xcheck_roster_input.xlsx
 
+    - assets/images/iphone.png
+    - assets/images/android.png
+
 
 
 

@@ -13,10 +13,10 @@ import 'package:provider/provider.dart';
 class UploadCalendar extends StatefulWidget {
   const UploadCalendar({
     super.key,
-    required this.teamId,
+    required this.team,
     required this.season,
   });
-  final String teamId;
+  final Team team;
   final Season season;
 
   @override
@@ -44,7 +44,8 @@ class _UploadCalendarState extends State<UploadCalendar> {
     if (widget.season.calendarTitleIgnoreString.isNotEmpty) {
       _ignoreString = widget.season.calendarTitleIgnoreString;
     } else {
-      _ignoreString = defaultIgnoreString;
+      _ignoreString =
+          "versus, vs, at, @, ., ${widget.team.title.toLowerCase()}";
     }
     _parseOpponents = widget.season.parseOpponents;
     super.initState();
@@ -201,8 +202,8 @@ class _UploadCalendarState extends State<UploadCalendar> {
       };
 
       // get the calendar preview
-      await dmodel.loadCalendar(widget.teamId, widget.season.seasonId, body,
-          (p0) {
+      await dmodel
+          .loadCalendar(widget.team.teamId, widget.season.seasonId, body, (p0) {
         setState(() {
           _events = p0;
           _isLoaded = true;
@@ -231,7 +232,7 @@ class _UploadCalendarState extends State<UploadCalendar> {
     bool cont = false;
 
     await dmodel.updateSeason(
-        widget.teamId,
+        widget.team.teamId,
         widget.season.seasonId,
         {
           "tz": _timezone,
@@ -247,7 +248,7 @@ class _UploadCalendarState extends State<UploadCalendar> {
 
     if (cont) {
       await dmodel.uploadCalendar(
-        widget.teamId,
+        widget.team.teamId,
         widget.season.seasonId,
         _contents!,
         () {
