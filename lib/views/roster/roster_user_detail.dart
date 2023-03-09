@@ -188,7 +188,7 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
                   label: "Position",
                   value: widget.seasonUser.teamFields!.pos.isEmpty
                       ? "None"
-                      : widget.seasonUser.teamFields!.pos),
+                      : widget.seasonUser.teamFields!.pos.capitalize()),
               if (!widget.seasonUser.teamFields!.teamUserNote.isEmpty())
                 cv.LabeledCell(
                     label: "Note",
@@ -237,7 +237,7 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
                 label: "Position",
                 value: widget.seasonUser.seasonFields!.pos.isEmpty
                     ? "None"
-                    : widget.seasonUser.seasonFields!.pos,
+                    : widget.seasonUser.seasonFields!.pos.capitalize(),
               ),
               if (!widget.seasonUser.seasonFields!.seasonUserNote.isEmpty())
                 cv.LabeledCell(

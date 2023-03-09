@@ -4,7 +4,6 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
-import '../menu/root.dart';
 
 import '../../custom_views/root.dart' as cv;
 

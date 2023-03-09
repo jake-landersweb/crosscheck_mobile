@@ -21,12 +21,10 @@ class SCERoot extends StatefulWidget {
     required this.team,
     required this.isCreate,
     this.season,
-    this.useRoot = false,
   }) : super(key: key);
   final Team team;
   final bool isCreate;
   final Season? season;
-  final bool useRoot;
 
   @override
   _SCERootState createState() => _SCERootState();
@@ -73,8 +71,8 @@ class _SCERootState extends State<SCERoot> {
                     showIcon: false,
                     showText: true,
                     title: "Cancel",
-                    useRoot: widget.useRoot,
-                  )
+                    useRoot: true,
+                  ),
                 ],
                 children: [
                   Expanded(
@@ -290,17 +288,10 @@ class _SCERootState extends State<SCERoot> {
         if (widget.season!.seasonId == dmodel.currentSeason!.seasonId) {
           // reset the app
           RestartWidget.restartApp(context);
-        } else if (widget.useRoot) {
-          // success, get out of widget
-          setState(() {
-            dmodel.isScaled = false;
-          });
-          Navigator.of(context, rootNavigator: true).pop();
-          Navigator.of(context).pop();
         } else {
           // success, get out of widget
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
+          Navigator.of(context, rootNavigator: true).pop();
+          Navigator.of(context, rootNavigator: true).pop();
           // get all seasons
           setState(() {
             dmodel.allSeasons = null;
@@ -351,11 +342,7 @@ class _SCERootState extends State<SCERoot> {
 
     await dmodel.createSeason(widget.team.teamId, body, () async {
       // success, get out of widget
-      if (widget.useRoot) {
-        Navigator.of(context, rootNavigator: true).pop();
-      } else {
-        Navigator.of(context).pop();
-      }
+      Navigator.of(context, rootNavigator: true).pop();
       // get all seasons
       setState(() {
         dmodel.allSeasons = null;

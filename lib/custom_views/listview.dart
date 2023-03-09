@@ -50,6 +50,7 @@ class ListView<T> extends StatefulWidget {
     this.animateOpen = false,
     this.equality,
     this.preDelete,
+    this.minHeight,
   }) : super(key: key);
   final List<T> children;
   final Widget Function(BuildContext context, T item)? childBuilder;
@@ -72,6 +73,7 @@ class ListView<T> extends StatefulWidget {
   final bool animateOpen;
   final bool Function(T item1, T item2)? equality;
   final Future<bool> Function(T item)? preDelete;
+  final double? minHeight;
 
   @override
   _ListViewState<T> createState() => _ListViewState<T>();
@@ -199,6 +201,7 @@ class _ListViewState<T> extends State<ListView<T>> {
           : widget.selected?.any((element) => element == child) ?? false,
       animateOpen: _animateOpen,
       preDelete: widget.preDelete,
+      minHeight: widget.minHeight,
       child: widget.childBuilder == null
           ? child as Widget
           : widget.childBuilder!(context, child),
@@ -228,6 +231,7 @@ class _ListViewCell<T> extends StatefulWidget {
     required this.isSelected,
     required this.animateOpen,
     this.preDelete,
+    this.minHeight,
   }) : super(key: key);
   final T item;
   final Widget child;
@@ -248,6 +252,7 @@ class _ListViewCell<T> extends StatefulWidget {
   final bool isSelected;
   final bool animateOpen;
   final Future<bool> Function(T item)? preDelete;
+  final double? minHeight;
 
   @override
   _ListViewCellState<T> createState() => _ListViewCellState<T>();
@@ -347,6 +352,9 @@ class _ListViewCellState<T> extends State<_ListViewCell<T>>
         child: Padding(
           padding: EdgeInsets.only(left: widget.horizontalPadding),
           child: Container(
+            constraints: widget.minHeight == null
+                ? null
+                : BoxConstraints(minHeight: widget.minHeight!),
             decoration: BoxDecoration(
               color: widget.backgroundColor,
               borderRadius: BorderRadius.vertical(

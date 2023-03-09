@@ -23,9 +23,6 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      context.read<MenuModel>().setPage(widget.initPage);
-    });
     super.initState();
   }
 

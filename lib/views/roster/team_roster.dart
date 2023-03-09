@@ -40,13 +40,13 @@ class _TeamRosterState extends State<TeamRoster> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return cv.AppBar(
       title: "All Time Roster",
       refreshable: true,
       onRefresh: () => _fetchUsers(context, dmodel),
       backgroundColor: CustomColors.backgroundColor(context),
       color: dmodel.color,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
       trailing: [_createUser(context, dmodel)],
       leading: [cv.BackButton(color: dmodel.color)],
       children: [
@@ -111,36 +111,34 @@ class _TeamRosterState extends State<TeamRoster> with TickerProviderStateMixin {
         );
       },
       onNavigate: (user) {
-        Navigator.push(
+        cv.Navigate(
           context,
-          MaterialPageRoute(
-            builder: (context) => RosterUserDetail(
-              team: dmodel.tus!.team,
-              seasonUser: user,
-              teamUser: dmodel.tus!.user,
-              isTeam: true,
-              isSheet: true,
-              onDelete: () async {
+          RosterUserDetail(
+            team: dmodel.tus!.team,
+            seasonUser: user,
+            teamUser: dmodel.tus!.user,
+            isTeam: true,
+            isSheet: false,
+            onDelete: () async {
+              setState(() {
+                _isLoading = true;
+                _users = null;
+              });
+              await _fetchUsers(context, dmodel);
+            },
+            onUserEdit: (body) async {
+              // print(body);
+              await dmodel.teamUserUpdate(
+                  dmodel.tus!.team.teamId, user.email, body, () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                // get latest team roster
                 setState(() {
-                  _isLoading = true;
                   _users = null;
                 });
-                await _fetchUsers(context, dmodel);
-              },
-              onUserEdit: (body) async {
-                // print(body);
-                await dmodel.teamUserUpdate(
-                    dmodel.tus!.team.teamId, user.email, body, () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  // get latest team roster
-                  setState(() {
-                    _users = null;
-                  });
-                  _fetchUsers(context, dmodel);
-                });
-              },
-            ),
+                _fetchUsers(context, dmodel);
+              });
+            },
           ),
         );
       },

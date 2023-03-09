@@ -1,3 +1,4 @@
+import 'package:crosscheck_sports/views/roster/from_excel/su_excel_root.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -98,7 +99,20 @@ class _SeasonRosterState extends State<SeasonRoster> {
                       padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
                       child: Row(
                         children: [
-                          Icon(Icons.group_rounded, color: dmodel.color),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.purple,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Icon(
+                                Icons.group_rounded,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
@@ -129,44 +143,59 @@ class _SeasonRosterState extends State<SeasonRoster> {
             padding: const EdgeInsets.only(bottom: 16.0),
             child: cv.ListView<_RosterCreateObject>(
               horizontalPadding: 0,
-              childPadding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
+              childPadding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
               onChildTap: ((context, item) {
                 cv.cupertinoSheet(
-                    context: context,
-                    builder: (context) {
-                      return item.child;
-                    });
+                  context: context,
+                  builder: (context) {
+                    return item.child;
+                  },
+                );
               }),
               childBuilder: ((context, item) {
-                return Row(
-                  children: [
-                    Icon(
-                      item.icon,
-                      color: item.color ?? dmodel.color,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        item.title,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: CustomColors.textColor(context),
+                return ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 50),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: item.color,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Icon(item.icon, size: 20, color: Colors.white),
                         ),
                       ),
-                    ),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      color: CustomColors.textColor(context).withOpacity(0.5),
-                    ),
-                  ],
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          item.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: CustomColors.textColor(context),
+                          ),
+                        ),
+                      ),
+                      Transform.rotate(
+                        angle: -math.pi / 2,
+                        child: Icon(
+                          Icons.chevron_right_rounded,
+                          color:
+                              CustomColors.textColor(context).withOpacity(0.5),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }),
               children: [
                 _RosterCreateObject(
                   title: "Create New User",
                   icon: Icons.person_add_rounded,
+                  color: Colors.blue,
                   child: RUCERoot(
                     team: dmodel.tus!.team,
                     season: dmodel.currentSeason!,
@@ -191,6 +220,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
                 ),
                 _RosterCreateObject(
                   title: "Add Users From Team",
+                  color: Colors.orange,
                   icon: Icons.group_add_rounded,
                   child: FTRoot(
                     team: dmodel.tus!.team,
@@ -212,11 +242,34 @@ class _SeasonRosterState extends State<SeasonRoster> {
                 ),
                 _RosterCreateObject(
                   title: "Add Users From Seasons",
+                  color: Colors.red,
                   icon: Icons.content_paste_search_rounded,
                   child: FSRoot(
                     team: dmodel.tus!.team,
                     seasonRoster: dmodel.seasonUsers!,
                     season: dmodel.currentSeason!,
+                  ),
+                ),
+                _RosterCreateObject(
+                  title: "Add Users From Excel",
+                  color: Colors.green,
+                  icon: Icons.newspaper_rounded,
+                  child: SUFromExcel(
+                    positions: dmodel.currentSeason!.positions.available,
+                    onCreate: (users) async {
+                      bool v = false;
+                      await dmodel.uploadRosterExcel(dmodel.tus!.team.teamId,
+                          dmodel.currentSeason!.seasonId, users, () {
+                        v = true;
+                      }, onError: () {
+                        v = false;
+                      });
+                      await dmodel.refreshData(dmodel.user!.email);
+                      return v;
+                    },
+                    onDispose: () {
+                      dmodel.blockRefresh = false;
+                    },
                   ),
                 ),
               ],
@@ -400,13 +453,13 @@ class _SeasonRosterState extends State<SeasonRoster> {
 class _RosterCreateObject {
   final String title;
   final IconData icon;
-  final Color? color;
+  final Color color;
   final Widget child;
 
   const _RosterCreateObject({
     required this.title,
     required this.icon,
-    this.color,
+    required this.color,
     required this.child,
   });
 }

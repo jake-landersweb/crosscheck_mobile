@@ -83,6 +83,8 @@ class _SCETemplatesState extends State<SCETemplates> {
             cv.LoadingWrapper(
               child: cv.ListView<int>(
                 horizontalPadding: 0,
+                minHeight: 50,
+                childPadding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [for (var i = 0; i < 6; i++) i],
                 childBuilder: (context, item) {
                   return const Padding(
@@ -95,6 +97,8 @@ class _SCETemplatesState extends State<SCETemplates> {
           else
             cv.ListView<TemplateName>(
               horizontalPadding: 0,
+              minHeight: 50,
+              childPadding: const EdgeInsets.symmetric(horizontal: 16),
               children: smodel.seasonTemplates!,
               onChildTap: ((context, item) {
                 getSeasonTemplate(dmodel, smodel, item.sortKey);
@@ -102,34 +106,16 @@ class _SCETemplatesState extends State<SCETemplates> {
               childBuilder: (context, item) {
                 return Row(
                   children: [
-                    SizedBox(
-                      height: 28,
-                      width: 28,
-                      child: item.icon.isEmpty
-                          ? Icon(
-                              Icons.block_outlined,
-                              size: 28,
-                              color: smodel.selectedName == item.title
-                                  ? dmodel.color
-                                  : CustomColors.textColor(context)
-                                      .withOpacity(0.5),
-                            )
-                          : SvgPicture.asset(
-                              item.getIcon()!,
-                              height: 28,
-                              width: 28,
-                              color: smodel.selectedName == item.title
-                                  ? dmodel.color
-                                  : CustomColors.textColor(context)
-                                      .withOpacity(0.5),
-                            ),
+                    const SizedBox(
+                      height: 24,
+                      width: 24,
                     ),
                     const SizedBox(width: 16),
                     Text(
                       item.title,
                       style: TextStyle(
                         fontSize: 18,
-                        color: smodel.selectedName == item.title
+                        color: smodel.selectedName == item.sortKey
                             ? dmodel.color
                             : CustomColors.textColor(context),
                         fontWeight: FontWeight.w500,
@@ -152,6 +138,8 @@ class _SCETemplatesState extends State<SCETemplates> {
             cv.LoadingWrapper(
               child: cv.ListView<int>(
                 horizontalPadding: 0,
+                minHeight: 50,
+                childPadding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [for (var i = 0; i < 6; i++) i],
                 childBuilder: (context, item) {
                   return const Padding(
@@ -164,6 +152,8 @@ class _SCETemplatesState extends State<SCETemplates> {
           else
             cv.ListView<TemplateName>(
               horizontalPadding: 0,
+              minHeight: 50,
+              childPadding: const EdgeInsets.symmetric(horizontal: 16),
               children: smodel.names!,
               onChildTap: ((context, item) {
                 if (item.title == "None") {
@@ -179,27 +169,23 @@ class _SCETemplatesState extends State<SCETemplates> {
               childBuilder: (context, item) {
                 return Row(
                   children: [
-                    SizedBox(
-                      height: 28,
-                      width: 28,
-                      child: item.icon.isEmpty
-                          ? Icon(
-                              Icons.block_outlined,
-                              size: 28,
-                              color: smodel.selectedName == item.title
-                                  ? dmodel.color
-                                  : CustomColors.textColor(context)
-                                      .withOpacity(0.5),
-                            )
-                          : SvgPicture.asset(
-                              item.getIcon()!,
-                              height: 28,
-                              width: 28,
-                              color: smodel.selectedName == item.title
-                                  ? dmodel.color
-                                  : CustomColors.textColor(context)
-                                      .withOpacity(0.5),
-                            ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: CustomColors.random(item.title),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: item.icon.isEmpty
+                              ? const Icon(Icons.block_outlined,
+                                  size: 20, color: Colors.white)
+                              : SvgPicture.asset(item.getIcon()!,
+                                  height: 20, width: 20, color: Colors.white),
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Text(
@@ -217,70 +203,6 @@ class _SCETemplatesState extends State<SCETemplates> {
               },
             ),
         ],
-      ),
-    );
-  }
-
-  Widget _templateCell(DataModel dmodel, SCEModel smodel, TemplateName name,
-      {bool? showIcon, bool? isSeason}) {
-    return cv.BasicButton(
-      onTap: () {
-        if (isSeason ?? false) {
-          getSeasonTemplate(dmodel, smodel, name.sortKey);
-        } else {
-          if (name.title == "None") {
-            setState(() {
-              smodel.selectedName = name.title;
-            });
-            smodel.setSeasonData(Season.empty());
-          } else {
-            // fetch the template
-            getTemplate(dmodel, smodel, name);
-          }
-        }
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: CustomColors.cellColor(context),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSeason ?? false
-                ? smodel.selectedName == name.sortKey
-                    ? dmodel.color
-                    : Colors.transparent
-                : smodel.selectedName == name.title
-                    ? dmodel.color
-                    : Colors.transparent,
-            width: 1,
-          ),
-        ),
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (showIcon ?? false)
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.block_outlined),
-                      SizedBox(width: 8),
-                    ],
-                  ),
-                Text(
-                  name.title,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: CustomColors.textColor(context),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

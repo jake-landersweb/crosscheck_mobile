@@ -43,6 +43,12 @@ class _SettingsState extends State<Settings> {
       title: "",
       backgroundColor: CustomColors.backgroundColor(context),
       trailing: [_edit(context, dmodel)],
+      leading: [
+        cv.BackButton(
+          color: dmodel.color,
+        )
+      ],
+      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
       childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
       children: [
         _userInfo(context, dmodel),
@@ -480,6 +486,7 @@ class _SettingsState extends State<Settings> {
       _isLoading = true;
     });
     await dmodel.logout();
+    Navigator.of(context).pop();
     setState(() {
       _isLoading = false;
     });

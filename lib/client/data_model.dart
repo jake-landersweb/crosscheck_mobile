@@ -57,8 +57,11 @@ class DataModel extends ChangeNotifier {
   List<Event>? previousEvents;
   bool isFetchingRestEvents = false;
   SeasonUser? currentSeasonUser;
-  int scheduleIndex = 0;
+  int scheduleIndex = 2;
   List<Poll>? polls;
+
+  // when user needs to leave the app without full refresh for a while
+  bool blockRefresh = false;
 
   // code for handling the indicator queue
   List<IndicatorItem> indicators = [];
@@ -710,8 +713,8 @@ class DataModel extends ChangeNotifier {
     hasMoreUpcomingEvents = true;
     currentScheduleTitle = "Upcoming";
     scheduleIndex = 0;
-    noSeason = false;
-    noTeam = false;
+    noSeason = true;
+    noTeam = true;
     notifyListeners();
   }
 

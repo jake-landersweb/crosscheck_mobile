@@ -16,7 +16,6 @@ class TeamArguments {
   String? initPageUsers;
   String? initPageFans;
   List<Widget>? trailingItems;
-  List<MenuObject>? menuObjects;
 
   TeamArguments({
     required this.teamId,
@@ -24,7 +23,6 @@ class TeamArguments {
     this.initPageUsers,
     this.initPageFans,
     this.trailingItems,
-    this.menuObjects,
   });
 }
 
@@ -45,9 +43,6 @@ class _CrosscheckEngineState extends State<CrosscheckEngine> {
     return RestartWidget(
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-            create: (context) => MenuModel(),
-          ),
           ChangeNotifierProvider(
             create: (context) => DataModel(teamArgs: widget.teamArgs),
           ),
@@ -227,39 +222,42 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
 
         DataModel dmodel = Provider.of<DataModel>(context, listen: false);
 
-        // reset the notitication count
-        if (dmodel.user != null) {
-          dmodel.clearNotificationBadges(dmodel.user!.email);
-          // check if data refreshes are needed
-          // check for a deep link
-          if (dmodel.deepLink != null) {
-            print("[BACKGROUND] deep link found");
-            // go to dashboard while data loads in
-            dmodel.setScheduleIndex(0);
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              context.read<MenuModel>().setPage("dashboard");
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            });
-            _resetData(dmodel);
-          } else {
-            print("[BACKGROUND] No deep link found");
-            // handle normal refresh path
-            if (_closedTime?.isBefore(
-                    DateTime.now().subtract(const Duration(minutes: 5))) ??
-                false) {
-              // hard reset
-              print("[BACKGROUND] performing a hard reset");
-              RestartWidget.restartApp(context);
-            } else if (_closedTime?.isBefore(
-                    DateTime.now().subtract(const Duration(seconds: 30))) ??
-                false) {
-              // soft reset
-              print("performing a soft reset");
-              _resetData(dmodel);
-            }
-          }
+        if (dmodel.blockRefresh) {
+          print("[BACKGROUND] Blocking refresh code");
         } else {
-          print("[BACKGROUND] USER IS NULL");
+          // reset the notitication count
+          if (dmodel.user != null) {
+            dmodel.clearNotificationBadges(dmodel.user!.email);
+            // check if data refreshes are needed
+            // check for a deep link
+            if (dmodel.deepLink != null) {
+              print("[BACKGROUND] deep link found");
+              // go to dashboard while data loads in
+              dmodel.setScheduleIndex(0);
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              });
+              _resetData(dmodel);
+            } else {
+              print("[BACKGROUND] No deep link found");
+              // handle normal refresh path
+              if (_closedTime?.isBefore(
+                      DateTime.now().subtract(const Duration(minutes: 5))) ??
+                  false) {
+                // hard reset
+                print("[BACKGROUND] performing a hard reset");
+                RestartWidget.restartApp(context);
+              } else if (_closedTime?.isBefore(
+                      DateTime.now().subtract(const Duration(seconds: 30))) ??
+                  false) {
+                // soft reset
+                print("performing a soft reset");
+                _resetData(dmodel);
+              }
+            }
+          } else {
+            print("[BACKGROUND] USER IS NULL");
+          }
         }
 
         break;

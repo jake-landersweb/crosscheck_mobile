@@ -5,6 +5,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import '../../client/root.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
+import 'package:crosscheck_sports/extras/root.dart';
 
 class PositionsCreate extends StatefulWidget {
   const PositionsCreate({
@@ -50,7 +51,7 @@ class _PositionsCreateState extends State<PositionsCreate> {
               children: [
                 Expanded(
                   child: Text(
-                    item,
+                    item.capitalize(),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,

@@ -462,7 +462,7 @@ class Event extends Equatable {
       case 1:
         return Colors.green[300];
       case 2:
-        return Colors.amber[300];
+        return Colors.orange[300];
       default:
         return defaultColor;
     }

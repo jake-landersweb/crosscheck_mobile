@@ -88,7 +88,9 @@ class _RUCETeamState extends State<RUCETeam> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
             child: Text(
-              rmodel.teamFields.pos == "" ? "None" : rmodel.teamFields.pos,
+              rmodel.teamFields.pos == ""
+                  ? "None"
+                  : rmodel.teamFields.pos.capitalize(),
               style: TextStyle(
                 color: dmodel.color,
                 fontSize: 16,

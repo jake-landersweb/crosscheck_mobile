@@ -37,7 +37,7 @@ class StatusSelectSheet extends StatefulWidget {
 }
 
 class _StatusSelectSheetState extends State<StatusSelectSheet> {
-  int _status = 0;
+  int _status = 2;
 
   bool _isLoaded = false;
 
@@ -160,6 +160,9 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                   controller: controller,
                   showBackground: false,
                   maxLines: 5,
+                  icon: _status == 1
+                      ? null
+                      : const Icon(Icons.warning_rounded, color: Colors.red),
                   isLabeled: true,
                   labelText: "Note",
                   onChanged: (value) {},
@@ -175,10 +178,13 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                 color: dmodel.color,
                 onTap: () {
                   if (!_isLoading) {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    _setStatus(context, dmodel);
+                    if (_status != 1 && controller.text.isEmpty) {
+                    } else {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      _setStatus(context, dmodel);
+                    }
                   }
                 },
               ),
@@ -362,7 +368,9 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
     dmodel.getUserStatus(widget.teamId, widget.season.seasonId,
         widget.event.eventId, widget.email, (user) {
       setState(() {
-        _status = user.eStatus;
+        if (user.eStatus == 0) {
+          _status = 2;
+        }
         _oldStatus = user.eStatus;
         controller.text = user.message ?? "";
         _isLoaded = true;

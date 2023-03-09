@@ -169,7 +169,7 @@ class _RUCESeasonState extends State<RUCESeason> {
             child: Text(
               rmodel.seasonFields!.pos == ""
                   ? "None"
-                  : rmodel.seasonFields!.pos,
+                  : rmodel.seasonFields!.pos.capitalize(),
               style: TextStyle(
                 color: dmodel.color,
                 fontSize: 16,

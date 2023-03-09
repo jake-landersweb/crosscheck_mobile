@@ -90,9 +90,7 @@ class ChatLoading extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                 child: Stack(
                   alignment: Alignment.bottomCenter,
-                  children: const [
-                    Align(alignment: Alignment.bottomLeft, child: MenuButton()),
-                  ],
+                  children: const [],
                 ),
               ),
             ),

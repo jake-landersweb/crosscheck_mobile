@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../extras/root.dart';
-import '../menu/root.dart';
 import '../../custom_views/root.dart' as cv;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -16,13 +15,11 @@ class SeasonHome extends StatefulWidget {
     required this.season,
     required this.teamUser,
     required this.seasonUser,
-    this.useRoot = false,
   }) : super(key: key);
   final Team team;
   final Season season;
   final SeasonUserTeamFields teamUser;
   final SeasonUser? seasonUser;
-  final bool useRoot;
 
   @override
   _SeasonHomeState createState() => _SeasonHomeState();
@@ -40,9 +37,8 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
         cv.BackButton(
           color: dmodel.color,
           title: "Close",
-          showIcon: !widget.useRoot,
-          showText: widget.useRoot,
-          useRoot: widget.useRoot,
+          showIcon: false,
+          showText: true,
         )
       ],
       trailing: [_edit(context, dmodel)],
@@ -165,7 +161,7 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
                 : position == widget.season.positions.mvp
                     ? "Mvp"
                     : "",
-            value: position,
+            value: position.capitalize(),
           );
         },
       ),
@@ -243,7 +239,6 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
             builder: (context) => SCERoot(
               team: widget.team,
               isCreate: false,
-              useRoot: widget.useRoot,
               season: widget.season,
             ),
           );

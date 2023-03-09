@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../extras/root.dart';
-import '../menu/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
 import 'package:flutter_svg/flutter_svg.dart';
@@ -37,7 +36,6 @@ class _NoSeasonState extends State<NoSeason> {
                       return SCERoot(
                         team: dmodel.tus!.team,
                         isCreate: true,
-                        useRoot: true,
                       );
                     });
               } else {

@@ -46,12 +46,12 @@ class _MainHomeState extends State<MainHome> {
                 ),
               cv.TabBar(
                 index: dmodel.scheduleIndex,
-                icons: [
-                  dmodel.noSeason ? Icons.home_rounded : Icons.event_rounded,
-                  if (!dmodel.noSeason) Icons.ballot_rounded,
-                  if (!dmodel.noSeason) Icons.forum_rounded,
-                  if (!dmodel.noSeason) Icons.pending_rounded,
-                  Icons.account_circle_rounded,
+                icons: const [
+                  Icons.home_rounded,
+                  Icons.ballot_rounded,
+                  Icons.calendar_month_rounded,
+                  Icons.forum_rounded,
+                  Icons.pending_rounded,
                 ],
                 color: dmodel.color,
                 onViewChange: (idx) {
@@ -70,7 +70,7 @@ class _MainHomeState extends State<MainHome> {
                   if (dmodel.noSeason) {
                     return false;
                   } else {
-                    if (dmodel.showUnreadBadge && p0 == 2) {
+                    if (dmodel.showUnreadBadge && p0 == 3) {
                       return true;
                     } else if (dmodel.showPollBadge && p0 == 1) {
                       return true;
@@ -91,40 +91,47 @@ class _MainHomeState extends State<MainHome> {
   Widget _currentPage(BuildContext context, DataModel dmodel) {
     switch (dmodel.scheduleIndex) {
       case 0:
-        return const Schedule();
-      case 1:
-        if (dmodel.noSeason) {
-          return Settings(user: dmodel.user!);
+        if (dmodel.tus != null) {
+          return TeamPage(
+            team: dmodel.tus!.team,
+            teamUser: dmodel.tus!.user,
+          );
         } else {
-          if (dmodel.currentSeason != null) {
-            return SeasonPolls(
-              team: dmodel.tus!.team,
-              season: dmodel.currentSeason!,
-              teamUser: dmodel.tus!.user,
-              seasonUser: dmodel.currentSeasonUser,
-            );
-          } else {
-            return Container();
-          }
+          return Container();
+        }
+      case 1:
+        if (dmodel.noSeason || (dmodel.currentSeason == null)) {
+          return Container();
+        } else {
+          return SeasonPolls(
+            team: dmodel.tus!.team,
+            season: dmodel.currentSeason!,
+            teamUser: dmodel.tus!.user,
+            seasonUser: dmodel.currentSeasonUser,
+          );
         }
       case 2:
-        return SizedBox(
-          height: MediaQuery.of(context).size.height -
-              (MediaQuery.of(context).viewPadding.bottom + 40),
-          child: ChatHome(
-            team: dmodel.tus!.team,
-            user: dmodel.user!,
-          ),
-        );
+        return const Schedule();
       case 3:
+        if (dmodel.currentSeason == null) {
+          return Container();
+        } else {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height -
+                (MediaQuery.of(context).viewPadding.bottom + 40),
+            child: ChatHome(
+              team: dmodel.tus!.team,
+              user: dmodel.user!,
+            ),
+          );
+        }
+      case 4:
         return MorePages(
-          team: dmodel.tus!.team,
-          season: dmodel.currentSeason!,
-          tus: dmodel.tus!,
+          team: dmodel.tus?.team,
+          season: dmodel.currentSeason,
+          tus: dmodel.tus,
           seasonUser: dmodel.currentSeasonUser,
         );
-      case 4:
-        return Settings(user: dmodel.user!);
       default:
         return Container();
     }

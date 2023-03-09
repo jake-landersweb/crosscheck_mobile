@@ -2,6 +2,8 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'package:crosscheck_sports/extras/root.dart';
+import 'package:crosscheck_sports/views/roster/from_excel/root.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'root.dart';
@@ -442,6 +444,43 @@ extension SeasonCalls on DataModel {
         print(response);
         addIndicator(
             IndicatorItem.error("There was an issue syncing the calendar"));
+      }
+    });
+  }
+
+  Future<void> uploadRosterExcel(
+    String teamId,
+    String seasonId,
+    List<SUExcel> users,
+    VoidCallback completion, {
+    VoidCallback? onError,
+  }) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {};
+    body['excelUsers'] = users.map((e) => e.toMap()).toList();
+    body['date'] = dateToString(DateTime.now());
+
+    // first create the season
+    await client
+        .post("/teams/$teamId/seasons/$seasonId/addRosterExcel", headers,
+            jsonEncode(body))
+        .then((response) {
+      if (response == null) {
+        print(
+            "There was an unknown issue adding the users from the excel sheet. Feel free to contact support.");
+        addIndicator(IndicatorItem.error(
+            "There was an unknown issue adding the users from the excel sheet. Feel free to contact support."));
+        onError != null ? onError() : null;
+      } else if (response['status'] == 200) {
+        print("Successfully created the users from the excel sheet.");
+        addIndicator(IndicatorItem.status(
+            "Successfully created the users from the excel sheet."));
+        completion();
+      } else {
+        print(response);
+        addIndicator(IndicatorItem.error(
+            "There was an unknown issue adding the users from the excel sheet. Feel free to contact support."));
+        onError != null ? onError() : null;
       }
     });
   }

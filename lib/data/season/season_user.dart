@@ -245,12 +245,18 @@ List<SeasonUser> sortSeasonUsers(List<SeasonUser> users,
   users.sort((a, b) {
     String sort1 = a.email;
     String sort2 = b.email;
+    if (a.userFields == null) {
+      return -1;
+    }
+    if (b.userFields == null) {
+      return 1;
+    }
     if ((a.userFields!.nickname?.isNotEmpty ?? false) && showNicknames) {
       sort1 = a.userFields!.nickname!;
     } else if (a.userFields!.firstName?.isNotEmpty ?? false) {
       sort1 = a.userFields!.firstName!;
     }
-    if ((b.userFields?.nickname?.isNotEmpty ?? false) && showNicknames) {
+    if ((b.userFields!.nickname?.isNotEmpty ?? false) && showNicknames) {
       sort2 = b.userFields!.nickname!;
     } else if (b.userFields?.firstName?.isNotEmpty ?? false) {
       sort2 = b.userFields!.firstName!;

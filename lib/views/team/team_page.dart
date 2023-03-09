@@ -7,20 +7,18 @@ import 'package:provider/provider.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../extras/root.dart';
-import '../menu/root.dart';
 import '../../custom_views/root.dart' as cv;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../components/root.dart' as comp;
+import 'dart:math' as math;
 
 class TeamPage extends StatefulWidget {
   const TeamPage({
     Key? key,
     required this.team,
-    required this.seasons,
     required this.teamUser,
   }) : super(key: key);
   final Team team;
-  final List<Season> seasons;
   final SeasonUserTeamFields teamUser;
 
   @override
@@ -53,32 +51,14 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return Navigator(
-      onGenerateRoute: (_) => MaterialPageRoute(
-        builder: (context2) => Builder(
-          builder: (context) => CupertinoPageScaffold(
-            child: cv.AppBar.sheet(
-              title: "",
-              backgroundColor: CustomColors.backgroundColor(context),
-              childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
-              // refreshable: true,
-              leading: [
-                cv.BackButton(
-                  color: dmodel.color,
-                  showText: true,
-                  useRoot: true,
-                  title: "Close",
-                  showIcon: false,
-                )
-              ],
-              color: dmodel.color,
-              trailing: [_edit(context, dmodel)],
-              // onRefresh: () => _refreshAction(dmodel),
-              children: [_body(context, dmodel)],
-            ),
-          ),
-        ),
-      ),
+    return cv.AppBar(
+      title: "",
+      backgroundColor: CustomColors.backgroundColor(context),
+      childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
+      color: dmodel.color,
+      trailing: [_edit(context, dmodel)],
+      // onRefresh: () => _refreshAction(dmodel),
+      children: [_body(context, dmodel)],
     );
   }
 
@@ -87,9 +67,6 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
       children: [
         _logo(context, dmodel),
         const SizedBox(height: 16),
-        _basicInfo(context, dmodel),
-        const SizedBox(height: 16),
-        _rosterStats(context, dmodel),
         if (widget.teamUser.isTeamAdmin())
           Column(
             children: [
@@ -97,6 +74,9 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
               _seasons(context, dmodel),
             ],
           ),
+        _basicInfo(context, dmodel),
+        const SizedBox(height: 16),
+        _rosterStats(context, dmodel),
         if (widget.team.positions.isActive)
           Column(
             children: [
@@ -202,12 +182,11 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
             //   context,
             //   TeamRoster(team: dmodel.tus!.team, teamUser: dmodel.tus!.user),
             // );
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => TeamRoster(
-                  team: dmodel.tus!.team,
-                  teamUser: dmodel.tus!.user,
-                ),
+            cv.Navigate(
+              context,
+              TeamRoster(
+                team: dmodel.tus!.team,
+                teamUser: dmodel.tus!.user,
               ),
             );
           },
@@ -282,15 +261,13 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
             cv.ListView<Season>(
               childPadding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
               onChildTap: (context, season) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SeasonHome(
-                      team: widget.team,
-                      season: season,
-                      teamUser: widget.teamUser,
-                      seasonUser: dmodel.currentSeasonUser,
-                    ),
+                cv.cupertinoSheet(
+                  context: context,
+                  builder: (context) => SeasonHome(
+                    team: widget.team,
+                    season: season,
+                    teamUser: widget.teamUser,
+                    seasonUser: dmodel.currentSeasonUser,
                   ),
                 );
               },
@@ -319,9 +296,13 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
                               CustomColors.textColor(context).withOpacity(0.5),
                         ),
                       ),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        color: CustomColors.textColor(context).withOpacity(0.5),
+                      Transform.rotate(
+                        angle: -math.pi / 2,
+                        child: Icon(
+                          Icons.chevron_right_rounded,
+                          color:
+                              CustomColors.textColor(context).withOpacity(0.5),
+                        ),
                       ),
                     ],
                   ),
@@ -336,12 +317,10 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
               color: dmodel.color,
               title: "Create New Season",
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SCERoot(isCreate: true, team: widget.team),
-                  ),
+                cv.cupertinoSheet(
+                  context: context,
+                  builder: (context) =>
+                      SCERoot(isCreate: true, team: widget.team),
                 );
               },
             ),
@@ -369,7 +348,7 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
                 : pos == widget.team.positions.mvp
                     ? "Mvp"
                     : "",
-            value: pos,
+            value: pos.capitalize(),
           );
         },
       ),

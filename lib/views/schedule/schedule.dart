@@ -29,29 +29,31 @@ class _ScheduleState extends State<Schedule> {
     _controller = ScrollController();
     // listen for at end of list
     _controller.addListener(() {
-      if (_controller.position.pixels >
-          _controller.position.maxScrollExtent - 100) {
-        // handle upcomming
-        if (dmodel.currentScheduleTitle == "Upcoming" &&
-            dmodel.hasMoreUpcomingEvents &&
-            !dmodel.isFetchingEvents) {
-          print("Load upcoming");
-          dmodel.getMoreEvents(
-            dmodel.tus!.team.teamId,
-            dmodel.currentSeason!.seasonId,
-            dmodel.user!.email,
-            false,
-          );
-        } else if (dmodel.currentScheduleTitle == "Previous" &&
-            dmodel.hasMorePreviousEvents &&
-            !dmodel.isFetchingEvents) {
-          print("Load previous");
-          dmodel.getMoreEvents(
-            dmodel.tus!.team.teamId,
-            dmodel.currentSeason!.seasonId,
-            dmodel.user!.email,
-            true,
-          );
+      if (!dmodel.noSeason) {
+        if (_controller.position.pixels >
+            _controller.position.maxScrollExtent - 100) {
+          // handle upcomming
+          if (dmodel.currentScheduleTitle == "Upcoming" &&
+              dmodel.hasMoreUpcomingEvents &&
+              !dmodel.isFetchingEvents) {
+            print("Load upcoming");
+            dmodel.getMoreEvents(
+              dmodel.tus!.team.teamId,
+              dmodel.currentSeason!.seasonId,
+              dmodel.user!.email,
+              false,
+            );
+          } else if (dmodel.currentScheduleTitle == "Previous" &&
+              dmodel.hasMorePreviousEvents &&
+              !dmodel.isFetchingEvents) {
+            print("Load previous");
+            dmodel.getMoreEvents(
+              dmodel.tus!.team.teamId,
+              dmodel.currentSeason!.seasonId,
+              dmodel.user!.email,
+              true,
+            );
+          }
         }
       }
     });
@@ -141,25 +143,10 @@ class _ScheduleState extends State<Schedule> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (dmodel.tus != null)
-                              cv.BasicButton(
-                                onTap: () {
-                                  if (dmodel.tus != null) {
-                                    cv.cupertinoSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return TeamPage(
-                                            team: dmodel.tus!.team,
-                                            seasons: dmodel.tus!.seasons,
-                                            teamUser: dmodel.tus!.user,
-                                          );
-                                        });
-                                  }
-                                },
-                                child: TeamLogo(
-                                  url: dmodel.tus!.team.image,
-                                  size: 40,
-                                  color: dmodel.color,
-                                ),
+                              TeamLogo(
+                                url: dmodel.tus!.team.image,
+                                size: 40,
+                                color: dmodel.color,
                               ),
                             const SizedBox(width: 8),
                             if (dmodel.currentSeason != null)
@@ -437,7 +424,7 @@ class _ScheduleHomeState extends State<ScheduleHome> {
               SchedulerBinding.instance.addPostFrameCallback((_) {
                 cv.Navigate(
                   context,
-                  EventDetail(
+                  EventDetail2(
                     email: dmodel.user!.email,
                     event: event,
                     team: dmodel.tus!.team,
@@ -458,14 +445,11 @@ class _ScheduleHomeState extends State<ScheduleHome> {
         case DeepLinkType.chat:
           // navigate to the chat page
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            dmodel.setScheduleIndex(2);
+            dmodel.setScheduleIndex(3);
           });
           break;
         case DeepLinkType.settings:
-          // navigate to the settings page
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            dmodel.setScheduleIndex(5);
-          });
+          print("[DEEP LINK] SETTINGS PAGE DEEP LINK NO LONGER IMPLEMENTED");
           break;
         case DeepLinkType.none:
           print(

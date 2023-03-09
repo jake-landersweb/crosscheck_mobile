@@ -47,10 +47,10 @@ class TeamPositions {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['defaultPosition'] = defaultPosition;
-    data['available'] = available;
+    data['defaultPosition'] = defaultPosition.toLowerCase();
+    data['available'] = available.map((e) => e.toLowerCase()).toList();
     data['isActive'] = isActive;
-    data['mvp'] = mvp;
+    data['mvp'] = mvp.toLowerCase();
     return data;
   }
 

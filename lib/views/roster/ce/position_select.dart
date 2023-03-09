@@ -41,14 +41,17 @@ class _PositionSelectState extends State<PositionSelect> {
         selectorStyle: cv.DynamicSelectorStyle.list,
         selections: widget.positions,
         dismissOnTap: true,
+        titleBuilder: (context, item) {
+          return item.capitalize();
+        },
         selectedLogic: (context, item) {
           return item == _internalTracker;
         },
         onSelect: ((context, item) {
           setState(() {
-            widget.onSelect(item);
+            widget.onSelect(item.toLowerCase());
           });
-          _internalTracker = item;
+          _internalTracker = item.toLowerCase();
         }),
         color: dmodel.color,
       ),
