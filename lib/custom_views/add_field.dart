@@ -68,7 +68,7 @@ class _AddFieldState extends State<AddField> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(widget.borderRadius),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         color: widget.cellColor ?? CustomColors.cellColor(context),
         child: IntrinsicHeight(

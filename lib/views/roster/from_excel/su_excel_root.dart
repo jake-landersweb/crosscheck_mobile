@@ -256,8 +256,7 @@ class _SUFromExcelState extends State<SUFromExcel> {
   }
 
   Future<void> _launchUrl(DataModel dmodel) async {
-    var uri = Uri.parse(
-        "https://www.crosschecksports.com/docs/xcheck_roster_input.xlsx");
+    var uri = Uri.parse("https://www.crosschecksports.com/docs/roster-form");
     if (!await launchUrl(uri)) {
       dmodel.addIndicator(
           IndicatorItem.error("There was an issue downloading the file"));

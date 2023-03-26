@@ -145,7 +145,7 @@ class Season extends Equatable {
     timezone = json['tz'] ?? "US/Pacific";
     calendarUrl = json['calendarUrl'] ?? "";
     parseOpponents = json['parseOpponents'] ?? true;
-    calendarTitleIgnoreString = json['calendarTitleIgnoreString'] ?? [];
+    calendarTitleIgnoreString = json['calendarTitleIgnoreString'] ?? "";
   }
 
   // converting from json

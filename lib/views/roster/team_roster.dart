@@ -41,8 +41,9 @@ class _TeamRosterState extends State<TeamRoster> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.AppBar(
-      title: "All Time Roster",
+      title: "Team Roster",
       refreshable: true,
+      isLarge: true,
       onRefresh: () => _fetchUsers(context, dmodel),
       backgroundColor: CustomColors.backgroundColor(context),
       color: dmodel.color,

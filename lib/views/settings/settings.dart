@@ -225,7 +225,6 @@ class _SettingsState extends State<Settings> {
                         .getMobileNotifications(dmodel.teamArgs?.teamId),
                     horizontalPadding: 0,
                     childBuilder: ((context, notif) {
-                      print(notif);
                       return Row(
                         children: [
                           Padding(

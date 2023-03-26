@@ -53,6 +53,13 @@ class _MainHomeState extends State<MainHome> {
                   Icons.forum_rounded,
                   Icons.pending_rounded,
                 ],
+                titles: [
+                  "Team",
+                  "Polls",
+                  "Schedule",
+                  "Chat",
+                  "More",
+                ],
                 color: dmodel.color,
                 onViewChange: (idx) {
                   dmodel.setScheduleIndex(idx);

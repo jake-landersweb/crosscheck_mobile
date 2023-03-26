@@ -122,7 +122,7 @@ class _MorePagesState extends State<MorePages> {
         ),
         if (widget.team != null && widget.season != null)
           cv.Section(
-            "Pages",
+            "Season",
             child: cv.ListView<_MorePageItem>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -198,24 +198,24 @@ class _MorePagesState extends State<MorePages> {
                     seasonUser: widget.seasonUser,
                   ),
                 ),
-                _MorePageItem(
-                  title: "Season Page",
-                  icon: Icons.ac_unit_rounded,
-                  color: Colors.red,
-                  useSheet: true,
-                  view: SeasonHome(
-                    team: widget.team!,
-                    season: widget.season!,
-                    teamUser: widget.tus!.user,
-                    seasonUser: widget.seasonUser,
-                  ),
-                ),
+                // _MorePageItem(
+                //   title: "Season Page",
+                //   icon: Icons.ac_unit_rounded,
+                //   color: Colors.red,
+                //   useSheet: true,
+                //   view: SeasonHome(
+                //     team: widget.team!,
+                //     season: widget.season!,
+                //     teamUser: widget.tus!.user,
+                //     seasonUser: widget.seasonUser,
+                //   ),
+                // ),
               ],
             ),
           ),
         if (widget.team != null && widget.season != null)
           cv.Section(
-            "Calendar Utils",
+            "Calendar",
             child: cv.ListView<_MorePageItem>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/root.dart';
@@ -56,7 +57,6 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
       backgroundColor: CustomColors.backgroundColor(context),
       childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
       color: dmodel.color,
-      trailing: [_edit(context, dmodel)],
       // onRefresh: () => _refreshAction(dmodel),
       children: [_body(context, dmodel)],
     );
@@ -67,36 +67,46 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
       children: [
         _logo(context, dmodel),
         const SizedBox(height: 16),
-        if (widget.teamUser.isTeamAdmin())
-          Column(
-            children: [
-              const SizedBox(height: 16),
-              _seasons(context, dmodel),
-            ],
-          ),
-        _basicInfo(context, dmodel),
-        const SizedBox(height: 16),
-        _rosterStats(context, dmodel),
-        if (widget.team.positions.isActive)
-          Column(
-            children: [
-              const SizedBox(height: 16),
-              _teamPositions(context, dmodel),
-            ],
-          ),
-        if (widget.team.customFields.isNotEmpty)
-          Column(
-            children: [
-              const SizedBox(height: 16),
-              _customFields(context),
-            ],
-          ),
-        if (widget.team.customUserFields.isNotEmpty)
-          Column(
-            children: [
-              const SizedBox(height: 16),
-              _customUserFields(context),
-            ],
+        if (dmodel.currentSeasonUser?.isTeamAdmin() ??
+            dmodel.tus!.user.isTeamAdmin())
+          _edit(context, dmodel),
+        _teamRoster(context, dmodel),
+        if (dmodel.currentSeason != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: [
+                _basic(context, dmodel),
+                if (dmodel.currentSeason!.positions.isActive)
+                  Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      _teamPositions(context, dmodel),
+                    ],
+                  ),
+                if (dmodel.currentSeason!.customFields.isNotEmpty)
+                  Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      _customFields(context, dmodel),
+                    ],
+                  ),
+                if (dmodel.currentSeason!.customUserFields.isNotEmpty)
+                  Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      _customUserFields(context, dmodel),
+                    ],
+                  ),
+                if (dmodel.currentSeason!.stats.isActive)
+                  Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      _stats(context, dmodel),
+                    ],
+                  ),
+              ],
+            ),
           ),
         // Column(
         //   children: [
@@ -124,206 +134,91 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
             fontWeight: FontWeight.w600,
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _basicInfo(BuildContext context, DataModel dmodel) {
-    return cv.Section(
-      "Basic Info",
-      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
-      allowsCollapse: true,
-      initOpen: true,
-      child: cv.ListView<Widget>(
-        childPadding: const EdgeInsets.symmetric(horizontal: 16),
-        children: <Widget>[
-          cv.LabeledCell(
-            label: "Team Code",
-            value: widget.team.teamCode,
-          ),
-          cv.LabeledCell(
-            label: "Team Id",
-            value: widget.team.teamId,
-          ),
-          if (widget.team.color != "")
-            cv.LabeledCell(
-              label: "Color",
-              value: "#" + widget.team.color,
-            ),
-          if (widget.team.teamNote.isNotEmpty)
-            cv.LabeledCell(
-              label: "Team Note",
-              value: widget.team.teamNote,
-            ),
-          cv.LabeledCell(
-            label: "Is Light",
-            value: widget.team.isLight ? "True" : "False",
-          ),
-          cv.LabeledCell(
-            label: "Show Player Nicknames",
-            value: widget.team.showNicknames ? "True" : "False",
-          ),
-          cv.LabeledCell(
-            label: "Timezone",
-            value: widget.team.timezone,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _rosterStats(BuildContext context, DataModel dmodel) {
-    return Column(
-      children: [
-        cv.ListView<Widget>(
-          childPadding: const EdgeInsets.symmetric(horizontal: 16),
-          onChildTap: (context, p1) {
-            // cv.Navigate(
-            //   context,
-            //   TeamRoster(team: dmodel.tus!.team, teamUser: dmodel.tus!.user),
-            // );
-            cv.Navigate(
-              context,
-              TeamRoster(
-                team: dmodel.tus!.team,
-                teamUser: dmodel.tus!.user,
-              ),
-            );
+        const SizedBox(height: 8),
+        // season selector
+        cv.BasicButton(
+          onTap: () {
+            if (dmodel.currentSeason != null) {
+              cv.showFloatingSheet(
+                context: context,
+                builder: (context) {
+                  return SeasonSelectAll(
+                    team: dmodel.tus!.team,
+                    onSelect: ((season, isPrevious) async {
+                      await FirebaseAnalytics.instance.logEvent(
+                        name: "change_season",
+                        parameters: {"platform": "mobile"},
+                      );
+                      dmodel.setCurrentSeason(season, isPrevious: isPrevious);
+                      dmodel.seasonUsers = null;
+                      // Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    }),
+                  );
+                },
+              );
+            }
           },
-          children: [
-            Row(
-              children: [
-                Text(
-                  "All Time Roster",
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // season title
+              Flexible(
+                child: Text(
+                  dmodel.currentSeason?.title ?? "",
                   style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
                     color: CustomColors.textColor(context),
                   ),
                 ),
-                const SizedBox(height: 50),
-                const Spacer(),
-                const Icon(Icons.chevron_right_rounded),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(width: 4),
+              // icon to show this is clickable
+              Transform.rotate(
+                angle: math.pi * 1.5,
+                child: Icon(
+                  Icons.chevron_left,
+                  color: CustomColors.textColor(context).withOpacity(0.5),
+                  size: 20,
+                ),
+              ),
+            ],
+          ),
         ),
-        // const SizedBox(height: 16),
-        // cv.ListView<Widget>(
-        //   childPadding: const EdgeInsets.symmetric(horizontal: 16),
-        //   onChildTap: (context, p1) {
-        //     cv.Navigate(
-        //       context,
-        //       StatsTeam(team: dmodel.tus!.team, teamUser: dmodel.tus!.user),
-        //     );
-        //   },
-        //   children: [
-        //     Row(
-        //       children: [
-        //         Text(
-        //           "Team Stats",
-        //           style: TextStyle(
-        //             fontWeight: FontWeight.w500,
-        //             fontSize: 18,
-        //             color: CustomColors.textColor(context),
-        //           ),
-        //         ),
-        //         const SizedBox(height: 50),
-        //         const Spacer(),
-        //         const Icon(Icons.chevron_right_rounded),
-        //       ],
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
 
-  Widget _seasons(BuildContext context, DataModel dmodel) {
+  Widget _basic(BuildContext context, DataModel dmodel) {
     return cv.Section(
-      "Seasons",
-      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
-      allowsCollapse: true,
-      initOpen: true,
-      animateOpen: true,
+      "Season Info",
       child: Column(
         children: [
-          if (dmodel.allSeasons == null)
-            if (_isLoading)
-              cv.LoadingIndicator(color: dmodel.color)
-            else
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: cv.RoundedLabel("No Seasons Here",
-                    color: CustomColors.cellColor(context)),
-              )
-          else
-            cv.ListView<Season>(
-              childPadding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
-              onChildTap: (context, season) {
-                cv.cupertinoSheet(
-                  context: context,
-                  builder: (context) => SeasonHome(
-                    team: widget.team,
-                    season: season,
-                    teamUser: widget.teamUser,
-                    seasonUser: dmodel.currentSeasonUser,
-                  ),
-                );
-              },
-              childBuilder: (context, season) {
-                return SizedBox(
-                  height: 45,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          season.title,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: CustomColors.textColor(context),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        season.status(),
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              CustomColors.textColor(context).withOpacity(0.5),
-                        ),
-                      ),
-                      Transform.rotate(
-                        angle: -math.pi / 2,
-                        child: Icon(
-                          Icons.chevron_right_rounded,
-                          color:
-                              CustomColors.textColor(context).withOpacity(0.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              children: dmodel.allSeasons!,
-            ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
-            child: comp.ActionButton(
-              color: dmodel.color,
-              title: "Create New Season",
-              onTap: () {
-                cv.cupertinoSheet(
-                  context: context,
-                  builder: (context) =>
-                      SCERoot(isCreate: true, team: widget.team),
-                );
-              },
-            ),
+          cv.ListView<Widget>(
+            horizontalPadding: 0,
+            minHeight: 50,
+            childPadding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              cv.LabeledCell(
+                label: "Status",
+                value: dmodel.currentSeason!.status(),
+              ),
+              cv.LabeledCell(
+                label: "Timezone",
+                value: dmodel.currentSeason!.timezone,
+              ),
+              if (dmodel.currentSeason!.website != "")
+                cv.LabeledCell(
+                  label: "Website",
+                  value: dmodel.currentSeason!.website,
+                ),
+              if (dmodel.currentSeason!.calendarUrl != "")
+                cv.LabeledCell(
+                  label: "Calendar",
+                  value: dmodel.currentSeason!.calendarUrl,
+                ),
+            ],
           )
         ],
       ),
@@ -333,54 +228,39 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
   Widget _teamPositions(BuildContext context, DataModel dmodel) {
     return cv.Section(
       "Positions",
-      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
-      allowsCollapse: true,
-      initOpen: false,
-      child: cv.ListView(
+      child: cv.ListView<String>(
+        minHeight: 50,
+        children: dmodel.currentSeason!.positions.available,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
-        children: widget.team.positions.available,
-        childBuilder: (context, String pos) {
+        horizontalPadding: 0,
+        childBuilder: (context, position) {
           return cv.LabeledCell(
-            label: pos == widget.team.positions.defaultPosition
-                ? pos == widget.team.positions.mvp
+            label: position == dmodel.currentSeason!.positions.defaultPosition
+                ? position == dmodel.currentSeason!.positions.mvp
                     ? "Mvp Default"
                     : "Default"
-                : pos == widget.team.positions.mvp
+                : position == dmodel.currentSeason!.positions.mvp
                     ? "Mvp"
                     : "",
-            value: pos.capitalize(),
+            value: position.capitalize(),
           );
         },
       ),
-      // child: cv.NativeList(
-      //   children: [
-      //     for (var position in widget.team.positions.available)
-      //       SizedBox(
-      //         height: cellHeight,
-      //         child: cv.LabeledCell(
-      //           label: position == widget.team.positions.defaultPosition
-      //               ? "Default"
-      //               : "",
-      //           value: position,
-      //         ),
-      //       ),
-      //   ],
-      // ),
     );
   }
 
-  Widget _customFields(BuildContext context) {
+  Widget _customFields(BuildContext context, DataModel dmodel) {
     return cv.Section(
       "Custom Fields",
-      allowsCollapse: true,
-      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
-      initOpen: false,
-      child: cv.ListView(
+      child: cv.ListView<CustomField>(
+        minHeight: 50,
+        children: dmodel.currentSeason!.customFields,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
-        children: widget.team.customFields,
-        childBuilder: (context, CustomField i) {
+        horizontalPadding: 0,
+        childBuilder: (context, i) {
           return cv.LabeledCell(
-            label: i.title,
+            height: cellHeight,
+            label: i.getTitle(),
             value: i.getValue(),
           );
         },
@@ -388,78 +268,175 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _customUserFields(BuildContext context) {
+  Widget _customUserFields(BuildContext context, DataModel dmodel) {
     return cv.Section(
       "Custom User Fields",
-      allowsCollapse: true,
-      headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
-      initOpen: false,
-      child: cv.ListView(
-          childPadding: const EdgeInsets.symmetric(horizontal: 16),
-          children: widget.team.customUserFields,
-          childBuilder: (context, CustomField i) {
-            return cv.LabeledCell(
-              label: i.title,
-              value: "Default: ${i.value}",
-            );
-          }),
+      child: cv.ListView<CustomField>(
+        minHeight: 50,
+        children: dmodel.currentSeason!.customUserFields,
+        childPadding: const EdgeInsets.symmetric(horizontal: 16),
+        horizontalPadding: 0,
+        childBuilder: (context, i) {
+          return cv.LabeledCell(
+            height: cellHeight,
+            label: i.getTitle(),
+            value: "Default: ${i.getValue()}",
+          );
+        },
+      ),
     );
   }
 
-  // Widget _stats(BuildContext context) {
-  //   return cv.Section(
-  //     "Stats",
-  //     headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
-  //     allowsCollapse: true,
-  //     initOpen: false,
-  //     child: cv.ListView(
-  //         children: widget.team.stats.stats,
-  //         childBuilder: (context, StatItem stat) {
-  //           return cv.LabeledCell(
-  //             padding: EdgeInsets.zero,
-  //             height: cellHeight,
-  //             label: "Title",
-  //             value: stat.title,
-  //           );
-  //         }),
-  //   );
-  // }
+  Widget _stats(BuildContext context, DataModel dmodel) {
+    return cv.Section(
+      "Stats",
+      child: cv.ListView<StatItem>(
+        minHeight: 50,
+        children: dmodel.currentSeason!.stats.stats,
+        childPadding: const EdgeInsets.symmetric(horizontal: 16),
+        horizontalPadding: 0,
+        childBuilder: (context, i) {
+          return cv.LabeledCell(
+            height: cellHeight,
+            label: "",
+            value: i.getTitle(),
+          );
+        },
+      ),
+    );
+  }
 
   Widget _edit(BuildContext context, DataModel dmodel) {
-    if (widget.teamUser.isTeamAdmin()) {
-      return cv.BasicButton(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: cv.Section(
+        "Edit",
+        child: Row(
+          children: [
+            Expanded(
+              child: cv.BasicButton(
+                onTap: () {
+                  cv.cupertinoSheet(
+                    context: context,
+                    wrapInNavigator: true,
+                    builder: (context) => SCERoot(
+                      team: widget.team,
+                      isCreate: false,
+                      season: dmodel.currentSeason!,
+                    ),
+                  );
+                },
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 50),
+                  decoration: BoxDecoration(
+                    color: CustomColors.cellColor(context),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  width: double.infinity,
+                  child: Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.edit_rounded, color: dmodel.color),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Curr. Season",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: CustomColors.textColor(context),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: cv.BasicButton(
+                onTap: () {
+                  cv.cupertinoSheet(
+                    context: context,
+                    builder: (context) {
+                      return TCERoot(
+                        user: dmodel.user!,
+                        team: widget.team,
+                        isCreate: false,
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 50),
+                  decoration: BoxDecoration(
+                    color: CustomColors.cellColor(context),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  width: double.infinity,
+                  child: Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.edit_rounded, color: dmodel.color),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Team",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: CustomColors.textColor(context),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _teamRoster(BuildContext context, DataModel dmodel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: cv.BasicButton(
         onTap: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => TCERoot(
-          //       user: dmodel.user!,
-          //       team: widget.team,
-          //       isCreate: false,
-          //     ),
-          //   ),
-          // );
-          cv.cupertinoSheet(
-              context: context,
-              builder: (context) {
-                return TCERoot(
-                  user: dmodel.user!,
-                  team: widget.team,
-                  isCreate: false,
-                );
-              });
+          cv.Navigate(
+            context,
+            TeamRoster(team: dmodel.tus!.team),
+          );
         },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
-            color: dmodel.color,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 50),
+          decoration: BoxDecoration(
+            color: CustomColors.cellColor(context),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Icon(Icons.people, color: dmodel.color),
+                const SizedBox(width: 10),
+                Expanded(
+                    child: Text(
+                  "Team Roster",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
+                )),
+                const Icon(Icons.chevron_right_rounded),
+              ],
+            ),
           ),
         ),
-      );
-    } else {
-      return Container();
-    }
+      ),
+    );
   }
 }

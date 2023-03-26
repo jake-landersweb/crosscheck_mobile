@@ -123,7 +123,7 @@ class _SeasonChatState extends State<SeasonChat> {
   }
 
   Widget _chatHolder(BuildContext context, DataModel dmodel, ChatModel cmodel) {
-    var offsetHeight = MediaQuery.of(context).viewPadding.bottom == 0 ? 12 : 0;
+    var offsetHeight = MediaQuery.of(context).viewPadding.bottom == 0 ? 12 : 12;
     var keyboardPadding = MediaQuery.of(context).viewInsets.bottom -
         (MediaQuery.of(context).viewPadding.bottom + 40 + offsetHeight);
 

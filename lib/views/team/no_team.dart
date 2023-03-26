@@ -1,4 +1,5 @@
 import 'package:crosscheck_sports/data/root.dart';
+import 'package:crosscheck_sports/views/tsce/tsce_root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:crosscheck_sports/client/root.dart';
@@ -44,18 +45,14 @@ class _NoTeamState extends State<NoTeam> {
         ),
         const SizedBox(height: 16),
         comp.SubActionButton(
-          title: "Create Team",
+          title: "Create My Team",
           onTap: () {
             cv.cupertinoSheet(
-                context: context,
-                builder: (context) {
-                  return TCERoot(
-                    useRoot: true,
-                    user: dmodel.user!,
-                    team: Team.empty(),
-                    isCreate: true,
-                  );
-                });
+              context: context,
+              builder: (context) {
+                return TSCERoot(user: dmodel.user!);
+              },
+            );
           },
         ),
       ],

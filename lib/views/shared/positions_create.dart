@@ -6,13 +6,16 @@ import '../../client/root.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
+import '../../views/components/root.dart' as comp;
 
 class PositionsCreate extends StatefulWidget {
   const PositionsCreate({
     Key? key,
     required this.positions,
+    this.horizontalPadding = 16,
   }) : super(key: key);
   final TeamPositions positions;
+  final double horizontalPadding;
 
   @override
   _PositionsCreateState createState() => _PositionsCreateState();
@@ -27,6 +30,7 @@ class _PositionsCreateState extends State<PositionsCreate> {
         cv.ListView(
           children: widget.positions.available,
           isAnimated: true,
+          horizontalPadding: widget.horizontalPadding,
           allowsDelete: true,
           animateOpen: false,
           onDelete: (String value) async {
@@ -152,22 +156,15 @@ class _PositionsCreateState extends State<PositionsCreate> {
                       );
                     });
               },
-              child: cv.ListView<Widget>(
-                horizontalPadding: 16,
-                children: [
-                  Center(
-                    child: Text(
-                      widget.positions.mvp.isEmpty
-                          ? "None"
-                          : widget.positions.mvp,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                        color: CustomColors.textColor(context).withOpacity(0.5),
-                      ),
-                    ),
+              child: comp.ListWrapper(
+                child: Text(
+                  widget.positions.mvp.isEmpty ? "None" : widget.positions.mvp,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                    color: CustomColors.textColor(context).withOpacity(0.5),
                   ),
-                ],
+                ),
               ),
             ),
           ),

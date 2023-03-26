@@ -9,6 +9,7 @@ class TabBar extends StatefulWidget {
     Key? key,
     required this.index,
     required this.icons,
+    this.titles,
     required this.color,
     required this.onViewChange,
     this.childBuilder,
@@ -17,6 +18,7 @@ class TabBar extends StatefulWidget {
   }) : super(key: key);
   final int index;
   final List<IconData> icons;
+  final List<String>? titles;
   final Color color;
   final Function(int) onViewChange;
   final Function(int)? hasBadge;
@@ -65,7 +67,8 @@ class _TabBarState extends State<TabBar> {
                         _TabBarItem(
                           builder: (context) {
                             if (widget.childBuilder == null) {
-                              return _tabBarItem(context, i, widget.icons[i]);
+                              return _tabBarItem(context, i, widget.icons[i],
+                                  widget.titles?[i]);
                             } else {
                               return widget.childBuilder!(
                                 context,
@@ -113,14 +116,37 @@ class _TabBarState extends State<TabBar> {
     );
   }
 
-  Widget _tabBarItem(BuildContext context, int idx, IconData icon) {
-    return Icon(
+  Widget _tabBarItem(
+      BuildContext context, int idx, IconData icon, String? title) {
+    var i = Icon(
       icon,
       size: 28,
       color: widget.index == idx
           ? widget.color
           : ViewColors.textColor(context).withOpacity(0.5),
     );
+    if (title == null) {
+      return i;
+    } else {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          i,
+          const SizedBox(height: 2),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w300,
+              color: widget.index == idx
+                  ? widget.color
+                  : CustomColors.textColor(context).withOpacity(0.5),
+            ),
+          ),
+        ],
+      );
+    }
   }
 
   EdgeInsets _barPadding(BuildContext context) {

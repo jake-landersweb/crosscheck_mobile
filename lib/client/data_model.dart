@@ -20,7 +20,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 
 const double appVersionMajor = 4.3;
-const int appVersionMinor = 6;
+const int appVersionMinor = 8;
 
 class DataModel extends ChangeNotifier {
   // for holding passed teamId in memory for custom team apps
@@ -712,7 +712,7 @@ class DataModel extends ChangeNotifier {
     hasMorePreviousEvents = true;
     hasMoreUpcomingEvents = true;
     currentScheduleTitle = "Upcoming";
-    scheduleIndex = 0;
+    scheduleIndex = 2;
     noSeason = true;
     noTeam = true;
     notifyListeners();
