@@ -10,6 +10,21 @@ import '../root.dart';
 import '../../custom_views/root.dart' as cv;
 import 'dart:math' as math;
 
+class _MorePageItem {
+  _MorePageItem({
+    required this.title,
+    required this.icon,
+    required this.view,
+    required this.color,
+    required this.useSheet,
+  });
+  final String title;
+  final IconData icon;
+  final Widget view;
+  final bool useSheet;
+  final Color color;
+}
+
 class MorePages extends StatefulWidget {
   const MorePages({
     super.key,
@@ -25,21 +40,6 @@ class MorePages extends StatefulWidget {
 
   @override
   State<MorePages> createState() => _MorePagesState();
-}
-
-class _MorePageItem {
-  _MorePageItem({
-    required this.title,
-    required this.icon,
-    required this.view,
-    required this.color,
-    required this.useSheet,
-  });
-  final String title;
-  final IconData icon;
-  final Widget view;
-  final bool useSheet;
-  final Color color;
 }
 
 class _MorePagesState extends State<MorePages> {
@@ -276,7 +276,7 @@ class _MorePagesState extends State<MorePages> {
                   title: "Calendar Export",
                   icon: Icons.exit_to_app_rounded,
                   color: Colors.purple,
-                  useSheet: false,
+                  useSheet: true,
                   view: ExportToCalendar(
                     team: widget.team!,
                     season: widget.season!,

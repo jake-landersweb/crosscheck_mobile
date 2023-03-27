@@ -20,6 +20,8 @@ class ECEBasic extends StatefulWidget {
 }
 
 class _ECEBasicState extends State<ECEBasic> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
@@ -499,6 +501,7 @@ class _ECEBasicState extends State<ECEBasic> {
       padding: const EdgeInsets.all(32),
       child: comp.DestructionButton(
         title: "Delete",
+        isLoading: _isLoading,
         onTap: () {
           cv.showAlert(
             context: context,
@@ -573,10 +576,16 @@ class _ECEBasicState extends State<ECEBasic> {
 
   Future<void> _deleteAction(
       BuildContext context, DataModel dmodel, ECEModel ecemodel) async {
+    setState(() {
+      _isLoading = true;
+    });
     await dmodel.deleteEvent(
         ecemodel.team!.teamId, ecemodel.season.seasonId, ecemodel.event.eventId,
         () {
       _reloadAfterDelete(context, dmodel, ecemodel);
+    });
+    setState(() {
+      _isLoading = false;
     });
   }
 

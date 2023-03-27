@@ -11,6 +11,8 @@ void cupertinoSheet({
   bool expand = false,
   bool resizeToAvoidBottomInset = true,
   bool wrapInNavigator = false,
+  bool isDismissible = true,
+  bool enableDrag = true,
 }) {
   showCupertinoModalBottomSheet(
     context: context,
@@ -32,6 +34,8 @@ void cupertinoSheet({
     expand: expand,
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     animationCurve: Sprung(36),
+    isDismissible: isDismissible,
+    enableDrag: enableDrag,
     previousRouteAnimationCurve: Sprung(36),
     duration: const Duration(milliseconds: 500),
   );

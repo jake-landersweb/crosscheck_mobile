@@ -20,7 +20,7 @@ import '../data/root.dart';
 import '../extras/root.dart';
 
 const double appVersionMajor = 4.3;
-const int appVersionMinor = 8;
+const int appVersionMinor = 9;
 
 class DataModel extends ChangeNotifier {
   // for holding passed teamId in memory for custom team apps
@@ -191,6 +191,7 @@ class DataModel extends ChangeNotifier {
           user: batchTUS.teamUser,
           seasons: batchTUS.seasons,
         );
+        print(tus!.team.teamId);
         if (tus!.team.color != "") {
           color = CustomColors.fromHex(tus!.team.color);
         }
@@ -373,7 +374,7 @@ class DataModel extends ChangeNotifier {
     // try {
     this.tus = tus;
     prefs.setString("teamId", tus.team.teamId);
-    print("set tus");
+    print("set tus: ${tus.team.teamId}");
     noTeam = false;
     // set the color
     if (tus.team.color != "") {

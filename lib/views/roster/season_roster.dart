@@ -147,6 +147,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
               onChildTap: ((context, item) {
                 cv.cupertinoSheet(
                   context: context,
+                  wrapInNavigator: item.wrapInNavigator,
                   builder: (context) {
                     return item.child;
                   },
@@ -222,6 +223,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
                   title: "Add Users From Team",
                   color: Colors.orange,
                   icon: Icons.group_add_rounded,
+                  wrapInNavigator: true,
                   child: FTRoot(
                     team: dmodel.tus!.team,
                     season: dmodel.currentSeason!,
@@ -244,6 +246,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
                   title: "Add Users From Seasons",
                   color: Colors.red,
                   icon: Icons.content_paste_search_rounded,
+                  wrapInNavigator: true,
                   child: FSRoot(
                     team: dmodel.tus!.team,
                     seasonRoster: dmodel.seasonUsers!,
@@ -455,12 +458,14 @@ class _RosterCreateObject {
   final IconData icon;
   final Color color;
   final Widget child;
+  final bool wrapInNavigator;
 
   const _RosterCreateObject({
     required this.title,
     required this.icon,
     required this.color,
     required this.child,
+    this.wrapInNavigator = false,
   });
 }
 

@@ -469,7 +469,120 @@ class _ScheduleHomeState extends State<ScheduleHome> {
       children: [
         if (dmodel.currentScheduleTitle == "Upcoming")
           if (dmodel.upcomingEvents?.isEmpty ?? true)
-            cv.NoneFound("There are no upcoming events", color: dmodel.color)
+            if (dmodel.currentSeason!.seasonStatus > 0 &&
+                (dmodel.tus!.user.isTeamAdmin() ||
+                    (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)))
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Text(
+                      "It looks like you have no events on this season yet. Either upload / paste the link of a webcal, or create an event with Crosscheck.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: CustomColors.textColor(context),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  cv.ListView<_MorePageItem>(
+                    horizontalPadding: 0,
+                    childPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    onChildTap: ((context, item) {
+                      if (item.useSheet) {
+                        cv.cupertinoSheet(
+                          context: context,
+                          builder: (context) {
+                            return item.view;
+                          },
+                        );
+                      } else {
+                        cv.Navigate(context, item.view);
+                      }
+                    }),
+                    childBuilder: ((context, item) {
+                      return ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 50),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: item.color,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Icon(item.icon,
+                                    size: 20, color: Colors.white),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                item.title,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: CustomColors.textColor(context),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Transform.rotate(
+                              angle: item.useSheet ? -math.pi / 2 : 0,
+                              child: Icon(
+                                Icons.chevron_right_rounded,
+                                color: CustomColors.textColor(context)
+                                    .withOpacity(0.5),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                    children: [
+                      _MorePageItem(
+                        title: "Calendar Upload",
+                        color: Colors.blue,
+                        icon: Icons.calendar_month_rounded,
+                        useSheet: true,
+                        view: UploadCalendar(
+                          team: dmodel.tus!.team,
+                          season: dmodel.currentSeason!,
+                        ),
+                      ),
+                      _MorePageItem(
+                        title: "Calendar Sync",
+                        color: Colors.blue,
+                        icon: Icons.event_repeat_rounded,
+                        useSheet: true,
+                        view: SyncCalendar(
+                          team: dmodel.tus!.team,
+                          season: dmodel.currentSeason!,
+                        ),
+                      ),
+                      _MorePageItem(
+                        title: "Create Event In App",
+                        icon: Icons.design_services_rounded,
+                        color: Colors.green,
+                        useSheet: true,
+                        view: ECERoot(
+                          isCreate: true,
+                          team: dmodel.tus!.team,
+                          season: dmodel.currentSeason!,
+                          user: dmodel.user!,
+                          teamUser: dmodel.tus!.user,
+                          seasonUser: dmodel.currentSeasonUser,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            else
+              cv.NoneFound("There are no upcoming events", color: dmodel.color)
           else
             Column(
               children: [
@@ -786,4 +899,19 @@ class _EventListState extends State<EventList> {
       ],
     );
   }
+}
+
+class _MorePageItem {
+  _MorePageItem({
+    required this.title,
+    required this.icon,
+    required this.view,
+    required this.color,
+    required this.useSheet,
+  });
+  final String title;
+  final IconData icon;
+  final Widget view;
+  final bool useSheet;
+  final Color color;
 }

@@ -24,11 +24,7 @@ class _TCEBasicState extends State<TCEBasic> {
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       children: [
-        const SizedBox(height: 16),
-        if (!tcemodel.isCreate)
-          _logo(context, tcemodel, dmodel)
-        else
-          _title(context, tcemodel, dmodel),
+        if (tcemodel.isCreate) _title(context, tcemodel, dmodel),
         _body(context, tcemodel, dmodel),
         const SizedBox(height: 100),
       ],

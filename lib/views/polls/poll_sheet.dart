@@ -46,12 +46,12 @@ class _PollSheetState extends State<PollSheet> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     return cv.Sheet(
-      title: "Select Response",
+      title: "Answer Poll",
       color: dmodel.color,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _singleSelection(context, dmodel),
+          _pollBody(context, dmodel),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -70,6 +70,15 @@ class _PollSheetState extends State<PollSheet> {
         ],
       ),
     );
+  }
+
+  Widget _pollBody(BuildContext context, DataModel dmodel) {
+    switch (widget.poll.pollType) {
+      case 3:
+        return _response(context, dmodel);
+      default:
+        return _singleSelection(context, dmodel);
+    }
   }
 
   Widget _singleSelection(BuildContext context, DataModel dmodel) {
@@ -91,6 +100,34 @@ class _PollSheetState extends State<PollSheet> {
       },
       selectedLogic: (context, item) {
         return _selections.contains(item);
+      },
+    );
+  }
+
+  Widget _response(BuildContext context, DataModel dmodel) {
+    return cv.TextField2(
+      labelText: "Response",
+      isLabeled: true,
+      backgroundColor: CustomColors.sheetCell(context),
+      highlightColor: dmodel.color,
+      value: _selections.isEmpty ? "" : _selections[0],
+      fieldPadding: const EdgeInsets.symmetric(horizontal: 16),
+      onChanged: (v) {
+        if (v.isEmpty) {
+          setState(() {
+            _selections = [];
+          });
+          return;
+        }
+        if (_selections.isEmpty) {
+          setState(() {
+            _selections = [v];
+          });
+        } else {
+          setState(() {
+            _selections[0] = v;
+          });
+        }
       },
     );
   }

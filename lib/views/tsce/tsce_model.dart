@@ -18,6 +18,9 @@ class TSCEModel extends ChangeNotifier {
   TextEditingController seasonName = TextEditingController();
   String website = "";
   String seasonNote = "";
+  String color = "7bc5d6";
+  bool isLight = true;
+  bool showNicknames = true;
   String timezone = "US/Pacific";
   TeamPositions positions = TeamPositions.empty();
   List<CustomField> teamCustomFields = [];
@@ -37,7 +40,7 @@ class TSCEModel extends ChangeNotifier {
   TSCEModel({required this.email});
 
   void setTemplate(Template template) {
-    teamName.text = template.title;
+    seasonName.text = template.title;
     positions = TeamPositions.of(template.meta.positions);
     teamCustomFields = [for (var i in template.meta.customFields) i.clone()];
     teamCustomUserFields = [
@@ -162,16 +165,54 @@ class TSCEModel extends ChangeNotifier {
     return index == 3;
   }
 
+  // DO NOT DO THIS (unless you are me)
+  void updateState() {
+    notifyListeners();
+  }
+
   Tuple<bool, String> isValidated() {
-    // if (team.title == "") {
-    //   return Tuple(false, "Title cannot be empty");
-    // } else if (team.customFields.any((element) => element.title.isEmpty)) {
-    //   return Tuple(false, "Custom Fields empty");
-    // } else if (team.customUserFields.any((element) => element.title.isEmpty)) {
-    //   return Tuple(false, "Custom User Fields empty");
-    // } else {
-    //   return Tuple(true, "Create My Team");
-    // }
-    return Tuple(true, "");
+    if (teamName.text.isEmpty) {
+      return Tuple(false, "No Team Name");
+    } else if (seasonName.text.isEmpty) {
+      return Tuple(false, "No Season Name");
+    } else if (seasonCustomFields.any((element) => element.title.isEmpty)) {
+      return Tuple(false, "Custom Field Empty");
+    } else if (seasonCustomUserFields.any((element) => element.title.isEmpty)) {
+      return Tuple(false, "Custom Field Empty");
+    } else if (eventCustomFieldsTemplate
+        .any((element) => element.title.isEmpty)) {
+      return Tuple(false, "Custom Field Empty");
+    } else if (eventCustomUserFieldsTemplate
+        .any((element) => element.title.isEmpty)) {
+      return Tuple(false, "Custom Field Empty");
+    } else {
+      return Tuple(true, "Create My Team");
+    }
+  }
+
+  Map<String, dynamic> getBody() {
+    return {
+      "email": email,
+      "teamName": teamName.text,
+      "seasonName": seasonName.text,
+      "color": color,
+      "isLight": isLight,
+      "showNicknames": showNicknames,
+      "website": website,
+      "seasonNote": seasonNote,
+      "tz": timezone,
+      "positions": positions.toJson(),
+      "seasonCustomFields": seasonCustomFields.map((e) => e.toJson()).toList(),
+      "seasonCustomUserFields":
+          seasonCustomUserFields.map((e) => e.toJson()).toList(),
+      "eventCustomFieldsTemplate":
+          eventCustomFieldsTemplate.map((e) => e.toJson()).toList(),
+      "eventCustomUserFieldsTemplate":
+          eventCustomUserFieldsTemplate.map((e) => e.toJson()).toList(),
+      "stats": stats.toJson(),
+      "hasStats": hasStats,
+      "users": users.map((e) => e.toMap()).toList(),
+      "autoPositions": autoPositions,
+    };
   }
 }

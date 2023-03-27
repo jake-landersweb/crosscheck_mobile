@@ -91,9 +91,10 @@ class _PollDetailState extends State<PollDetail> {
           ),
 
         // choices
-        if (widget.poll.showResults ||
-            (widget.seasonUser?.isSeasonAdmin() ?? false) ||
-            widget.teamUser.isTeamAdmin())
+        if ((widget.poll.showResults ||
+                (widget.seasonUser?.isSeasonAdmin() ?? false) ||
+                widget.teamUser.isTeamAdmin()) &&
+            widget.poll.pollType != 3)
           cv.Section(
             "Responses${_totalResponses == null ? "" : " - ${_totalResponses!}"}",
             child: Column(
@@ -124,6 +125,7 @@ class _PollDetailState extends State<PollDetail> {
                 season: widget.season,
                 teamUser: widget.teamUser,
                 seasonUser: widget.seasonUser,
+                height: 50,
                 didChange: () => _getUsers(context, dmodel),
               ),
             ],
@@ -131,7 +133,7 @@ class _PollDetailState extends State<PollDetail> {
         if ((widget.seasonUser?.isSeasonAdmin() ?? false) ||
             widget.teamUser.isTeamAdmin())
           Padding(
-              padding: const EdgeInsets.only(top: 16),
+              padding: const EdgeInsets.only(top: 8),
               child: cv.BasicButton(
                 onTap: () {
                   cv.showAlert(

@@ -94,12 +94,25 @@ class _SyncCalendarState extends State<SyncCalendar> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Center(
+            child: Text(
+              "Note: Crosscheck calendar sync only supports games at this time.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: CustomColors.textColor(context).withOpacity(0.5),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: Row(
             children: const [
               Expanded(
                 child: Center(
                   child: Text(
-                    "Paste the url of an online calendar file",
+                    "Paste the url of an online webcal",
                     style: TextStyle(
                       fontSize: 18,
                     ),

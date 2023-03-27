@@ -1,3 +1,4 @@
+import 'package:crosscheck_sports/views/team/tce/image_uploader.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -121,11 +122,51 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
   Widget _logo(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
-        TeamLogo(
-          url: widget.team.image,
-          size: MediaQuery.of(context).size.width / 2,
-          color: dmodel.color,
-        ),
+        if (dmodel.tus!.user.isTeamAdmin())
+          cv.BasicButton(
+            onTap: () {
+              cv.showFloatingSheet(
+                context: context,
+                builder: (context) {
+                  return ImageUploader(
+                    team: widget.team,
+                    imgIsUrl: widget.team.image
+                        .contains("https://crosscheck-sports.s3.amazonaws.com"),
+                    onImageChange: (img) {
+                      setState(() {
+                        widget.team.image = img;
+                        dmodel.tus!.team.image = img;
+                      });
+                    },
+                  );
+                },
+              );
+            },
+            child: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                TeamLogo(
+                  url: widget.team.image,
+                  size: MediaQuery.of(context).size.width / 2,
+                  color: dmodel.color,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Icon(
+                    Icons.add_a_photo_outlined,
+                    color: CustomColors.textColor(context).withOpacity(0.5),
+                    size: 24,
+                  ),
+                )
+              ],
+            ),
+          )
+        else
+          TeamLogo(
+            url: widget.team.image,
+            size: MediaQuery.of(context).size.width / 2,
+            color: dmodel.color,
+          ),
         const SizedBox(height: 8),
         Text(
           widget.team.title,
@@ -311,89 +352,88 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: cv.Section(
         "Edit",
-        child: Row(
+        child: cv.ListView<_ActionItem>(
+          horizontalPadding: 0,
+          childPadding: const EdgeInsets.symmetric(horizontal: 16),
+          onChildTap: ((context, item) {
+            cv.cupertinoSheet(
+              context: context,
+              builder: (context) {
+                return item.view;
+              },
+            );
+          }),
+          childBuilder: (context, item) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 50),
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: item.color,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Icon(item.icon, size: 20, color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      item.title,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: CustomColors.textColor(context),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Transform.rotate(
+                    angle: -math.pi / 2,
+                    child: Icon(
+                      Icons.chevron_right_rounded,
+                      color: CustomColors.textColor(context).withOpacity(0.5),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
           children: [
-            Expanded(
-              child: cv.BasicButton(
-                onTap: () {
-                  cv.cupertinoSheet(
-                    context: context,
-                    wrapInNavigator: true,
-                    builder: (context) => SCERoot(
-                      team: widget.team,
-                      isCreate: false,
-                      season: dmodel.currentSeason!,
-                    ),
-                  );
-                },
-                child: Container(
-                  constraints: const BoxConstraints(minHeight: 50),
-                  decoration: BoxDecoration(
-                    color: CustomColors.cellColor(context),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  width: double.infinity,
-                  child: Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.edit_rounded, color: dmodel.color),
-                        const SizedBox(width: 10),
-                        Text(
-                          "Curr. Season",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: CustomColors.textColor(context),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+            _ActionItem(
+              title: "Edit Team",
+              icon: Icons.edit_rounded,
+              color: dmodel.color,
+              view: TCERoot(
+                user: dmodel.user!,
+                team: widget.team,
+                isCreate: false,
               ),
+              wrapInNavigator: true,
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: cv.BasicButton(
-                onTap: () {
-                  cv.cupertinoSheet(
-                    context: context,
-                    builder: (context) {
-                      return TCERoot(
-                        user: dmodel.user!,
-                        team: widget.team,
-                        isCreate: false,
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  constraints: const BoxConstraints(minHeight: 50),
-                  decoration: BoxDecoration(
-                    color: CustomColors.cellColor(context),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  width: double.infinity,
-                  child: Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.edit_rounded, color: dmodel.color),
-                        const SizedBox(width: 10),
-                        Text(
-                          "Team",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: CustomColors.textColor(context),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+            _ActionItem(
+              title: "Edit Current Season",
+              icon: Icons.edit_rounded,
+              color: Colors.blue,
+              view: SCERoot(
+                team: widget.team,
+                isCreate: false,
+                season: dmodel.currentSeason!,
               ),
+              wrapInNavigator: true,
+            ),
+            _ActionItem(
+              title: "Create New Season",
+              icon: Icons.add_rounded,
+              color: Colors.deepPurple[400]!,
+              view: SCERoot(
+                team: widget.team,
+                isCreate: true,
+              ),
+              wrapInNavigator: true,
             ),
           ],
         ),
@@ -439,4 +479,20 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
       ),
     );
   }
+}
+
+class _ActionItem {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final Widget view;
+  final bool wrapInNavigator;
+
+  _ActionItem({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.view,
+    required this.wrapInNavigator,
+  });
 }

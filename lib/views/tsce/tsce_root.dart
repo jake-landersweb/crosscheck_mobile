@@ -1,12 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:ui';
 
 import 'package:crosscheck_sports/client/root.dart';
+import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/tsce/root.dart';
 import 'package:crosscheck_sports/views/tsce/tsce_model.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../components/root.dart' as comp;
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 
@@ -185,11 +190,7 @@ class _TSCERootState extends State<TSCERoot> {
               onTap: () {
                 if (model.isAtEnd()) {
                   if (model.isValidated().v1()) {
-                    // if (model.isCreate) {
-                    //   _create(context, dmodel, tcemodel);
-                    // } else {
-                    //   _update(context, dmodel, tcemodel);
-                    // }
+                    _create(context, model, dmodel);
                   }
                 } else {
                   _controller.nextPage(
@@ -202,5 +203,263 @@ class _TSCERootState extends State<TSCERoot> {
         ),
       ),
     );
+  }
+
+  Future<void> _create(
+    BuildContext context,
+    TSCEModel model,
+    DataModel dmodel,
+  ) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    var response = await dmodel.createTeamSeason(model.getBody());
+
+    // everything worked
+    if (response.v1() == 200) {
+      // save the teamId and let the user know the app needs to restart
+      var prefs = await SharedPreferences.getInstance();
+      prefs.setString("teamId", response.v2()!.teamId);
+      cv.cupertinoSheet(
+        context: context,
+        isDismissible: false,
+        enableDrag: false,
+        builder: (context) {
+          return cv.AppBar.sheet(
+            title: "Success!",
+            children: [
+              Center(
+                child: Text(
+                  "Horray, your team has been created! Now we need to restart the app for you, and you will be automatically loaded into your first season.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              comp.ActionButton(
+                color: CustomColors.fromHex(model.color),
+                title: "Restart App",
+                onTap: () {
+                  RestartWidget.restartApp(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // nothing was created
+    if (response.v1() == 404) {
+      cv.cupertinoSheet(
+        context: context,
+        isDismissible: false,
+        enableDrag: false,
+        builder: (context) {
+          return cv.AppBar.sheet(
+            title: "Uh Oh...",
+            children: [
+              Center(
+                child: Text(
+                  "There seemed to be an issue checking if your user account exists. A team member is on it, but restarting the app and trying again might work as well.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              comp.SubActionButton(
+                title: "Restart App",
+                onTap: () {
+                  RestartWidget.restartApp(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // there was an issue creating anything
+    if (response.v1() == 501) {
+      cv.cupertinoSheet(
+        context: context,
+        isDismissible: false,
+        enableDrag: false,
+        builder: (context) {
+          return cv.AppBar.sheet(
+            title: "Uh Oh...",
+            children: [
+              Center(
+                child: Text(
+                  "Bad news, There was an issue creating your team and season. Good news, a team member is on it and will reach out to you immediately. Feel free to restart the app and try again.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              comp.SubActionButton(
+                title: "Restart App",
+                onTap: () {
+                  RestartWidget.restartApp(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+    // team, season, and admin stuff was created, but user objects were not
+    if (response.v1() == 502 || response.v1() == 503) {
+      cv.cupertinoSheet(
+        context: context,
+        isDismissible: false,
+        enableDrag: false,
+        builder: (context) {
+          return cv.AppBar.sheet(
+            title: "Team Created! But...",
+            children: [
+              Center(
+                child: Text(
+                  "Good news, your team and season was created! Bad news, there was an issue adding your players. A team member is on it and will reach out to you within 24 hours. Though, feel free to restart your app and try to add your players again in the 'more' tab on the homepage.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              comp.ActionButton(
+                title: "Restart App",
+                color: CustomColors.fromHex(model.color),
+                onTap: () {
+                  RestartWidget.restartApp(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // stats failed
+    if (response.v1() == 504) {
+      cv.cupertinoSheet(
+        context: context,
+        isDismissible: false,
+        enableDrag: false,
+        builder: (context) {
+          return cv.AppBar.sheet(
+            title: "Success! But...",
+            children: [
+              Center(
+                child: Text(
+                  "Good news, your team, season, and roster was created! Bad news, it appears there was an issue creating your stats. Everything will work normally except your stats will be broken. A team member is on it and will reach out to you within 24 hours.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              comp.ActionButton(
+                title: "Restart App",
+                color: CustomColors.fromHex(model.color),
+                onTap: () {
+                  RestartWidget.restartApp(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // could not fetch team?
+    if (response.v1() == 505) {
+      cv.cupertinoSheet(
+        context: context,
+        isDismissible: false,
+        enableDrag: false,
+        builder: (context) {
+          return cv.AppBar.sheet(
+            title: "Success! But...",
+            children: [
+              Center(
+                child: Text(
+                  "Good news, you team, season, roster, and stats were created! But, there seemed to be a weird issue on our end fetching your new team. Restarting the app usually resolves this issue.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              comp.ActionButton(
+                title: "Restart App",
+                color: CustomColors.fromHex(model.color),
+                onTap: () {
+                  RestartWidget.restartApp(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // show generic error
+    cv.cupertinoSheet(
+      context: context,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (context) {
+        return cv.AppBar.sheet(
+          title: "Weird...",
+          children: [
+            Center(
+              child: Text(
+                "You have gotten an error we have not accounted for. A team member is on it and will reach out to you within a couple hours.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: CustomColors.textColor(context),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            comp.ActionButton(
+              title: "Restart App",
+              color: dmodel.color,
+              onTap: () {
+                RestartWidget.restartApp(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

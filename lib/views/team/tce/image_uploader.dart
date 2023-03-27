@@ -6,8 +6,10 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
+import 'package:sprung/sprung.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:image_picker/image_picker.dart';
+import '../../components/root.dart' as comp;
 
 class ImageUploader extends StatefulWidget {
   const ImageUploader({
@@ -32,6 +34,7 @@ class _ImageUploaderState extends State<ImageUploader> {
   bool _isLoading = false;
 
   String _imageURL = "";
+  String? _tempImageUrl;
   late bool imgIsUrl;
 
   @override
@@ -54,6 +57,7 @@ class _ImageUploaderState extends State<ImageUploader> {
         showStyling: false,
         hasDividers: false,
         childPadding: EdgeInsets.zero,
+        horizontalPadding: 0,
         children: [
           const SizedBox(height: 16),
           cv.SegmentedPicker(
@@ -65,10 +69,13 @@ class _ImageUploaderState extends State<ImageUploader> {
               });
             },
           ),
-          if (imgIsUrl)
-            _urlImage(context, dmodel)
-          else
-            _imageUploader(context, dmodel),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 700),
+            curve: Sprung.overDamped,
+            child: imgIsUrl
+                ? _urlImage(context, dmodel)
+                : _imageUploader(context, dmodel),
+          ),
         ],
       ),
     );
@@ -79,6 +86,7 @@ class _ImageUploaderState extends State<ImageUploader> {
       showStyling: false,
       hasDividers: false,
       childPadding: EdgeInsets.zero,
+      horizontalPadding: 0,
       children: [
         const SizedBox(height: 16),
         if (_currentImage == null)
@@ -137,10 +145,9 @@ class _ImageUploaderState extends State<ImageUploader> {
             ],
           ),
         const SizedBox(height: 16),
-        cv.RoundedLabel(
-          "Select New Image",
-          color: CustomColors.sheetCell(context),
-          textColor: CustomColors.textColor(context),
+        comp.SubActionButton(
+          title: "Select New Image",
+          backgroundColor: CustomColors.sheetCell(context),
           onTap: () {
             _selectImage(context, dmodel);
           },
@@ -154,31 +161,75 @@ class _ImageUploaderState extends State<ImageUploader> {
   Widget _urlImage(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
-        cv.Section(
-          "Image URL",
-          child: cv.TextField2(
-            labelText: "Image Url",
-            fieldPadding: EdgeInsets.zero,
-            value: _imageURL,
-            onChanged: (val) {
+        const SizedBox(height: 16),
+        cv.TextField2(
+          labelText: "Image Url",
+          value: _imageURL,
+          backgroundColor: CustomColors.sheetCell(context),
+          onChanged: (val) {
+            setState(() {
+              _imageURL = val;
+            });
+          },
+        ),
+        const SizedBox(height: 8),
+        cv.BasicButton(
+          onTap: () {
+            if (_linkIsValid) {
               setState(() {
-                _imageURL = val;
+                _tempImageUrl = _imageURL;
               });
-            },
+            }
+          },
+          child: Text(
+            "Load Image Preview",
+            style: TextStyle(
+              color: _linkIsValid
+                  ? dmodel.color
+                  : CustomColors.textColor(context).withOpacity(0.5),
+              fontSize: 18,
+            ),
           ),
         ),
+        if (_tempImageUrl != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Image.network(
+              _tempImageUrl!,
+              width: 150,
+              height: 150,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return SizedBox(
+                  height: 150,
+                  width: 150,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: dmodel.color,
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : null,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: cv.RoundedLabel(
-            "Add Image URL",
-            color: dmodel.color,
-            textColor: Colors.white,
-            isLoading: _isLoading,
-            onTap: () {
-              if (_imageURL.isNotEmpty) {
-                _uploadImageURL(context, dmodel);
-              }
-            },
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Opacity(
+            opacity: _linkIsValid ? 1 : 0.5,
+            child: comp.ActionButton(
+              title: "Save Image URL",
+              color: dmodel.color,
+              isLoading: _isLoading,
+              onTap: () {
+                if (_linkIsValid) {
+                  _uploadImageURL(context, dmodel);
+                }
+              },
+            ),
           ),
         ),
       ],
@@ -265,4 +316,6 @@ class _ImageUploaderState extends State<ImageUploader> {
       _isLoading = false;
     });
   }
+
+  bool get _linkIsValid => Uri.parse(_imageURL).isAbsolute;
 }

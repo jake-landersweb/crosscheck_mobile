@@ -12,10 +12,12 @@ class StatCEList extends StatefulWidget {
     // required this.team,
     required this.stats,
     this.color = Colors.blue,
+    this.horizontalPadding = 16,
   }) : super(key: key);
   // final Team team;
   final TeamStat stats;
   final Color color;
+  final double horizontalPadding;
 
   @override
   _StatCEListState createState() => _StatCEListState();
@@ -31,6 +33,7 @@ class _StatCEListState extends State<StatCEList> {
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           isAnimated: true,
           allowsDelete: true,
+          horizontalPadding: widget.horizontalPadding,
           onDelete: (StatItem stat) async {
             setState(() {
               widget.stats.stats

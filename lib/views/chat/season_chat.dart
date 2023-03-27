@@ -26,8 +26,25 @@ class ChatHome extends StatelessWidget {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     if (dmodel.currentSeasonUser == null) {
-      // show a dummy mockup of the view
-      return const ChatLoading();
+      if (dmodel.noSeason || dmodel.noTeam) {
+        // show a dummy mockup of the view
+        return Container();
+      } else {
+        // show a dummy mockup of the view
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Text(
+              "Only users on this season can view this chat room.",
+              style: TextStyle(
+                fontSize: 18,
+                color: CustomColors.textColor(context),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
     } else {
       return ChangeNotifierProvider<ChatModel>(
         create: (_) => ChatModel(

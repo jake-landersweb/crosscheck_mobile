@@ -45,8 +45,8 @@ class _PollsChoicesState extends State<PollsChoices> {
             const SizedBox(height: 16),
             if (pmodel.isCreate)
               cv.SegmentedPicker(
-                titles: const ["True / False", "Selection"],
-                selections: const [1, 2],
+                titles: const ["True / False", "Selection", "Response"],
+                selections: const [1, 2, 3],
                 selection: pmodel.poll.pollType,
                 style: comp.segmentedPickerStyle(context, dmodel),
                 onSelection: (val) {
@@ -60,7 +60,7 @@ class _PollsChoicesState extends State<PollsChoices> {
                   });
                 },
               ),
-            if (pmodel.isCreate)
+            if (pmodel.isCreate && pmodel.poll.pollType != 3)
               cv.Section(
                 "Choices",
                 child: _selection(context, pmodel),

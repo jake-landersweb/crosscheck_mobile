@@ -1,15 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/views/root.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'dart:math' as math;
-import 'package:timezone/timezone.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -21,6 +19,7 @@ import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../components/root.dart' as comp;
 import 'package:device_calendar/device_calendar.dart' as cal;
+import 'package:ical/serializer.dart';
 
 class ExportToCalendar extends StatefulWidget {
   const ExportToCalendar({
@@ -62,122 +61,102 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return cv.AppBar.sheet(
       title: "Calendar Export",
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-      leading: [cv.BackButton(color: dmodel.color)],
       color: dmodel.color,
-      backgroundColor: CustomColors.backgroundColor(context),
-      isLarge: true,
-      children: [_body(context, dmodel)],
-    );
-  }
-
-  Widget _body(BuildContext context, DataModel dmodel) {
-    if (_isLoading) {
-      return Center(
-        child: cv.LoadingIndicator(color: dmodel.color),
-      );
-    } else if (_events == null) {
-      return const Center(
-        child: Text(
-          "There was an issue getting the future events",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
+      leading: [
+        cv.CancelButton(
+          color: CustomColors.textColor(context).withOpacity(0.5),
         ),
-      );
-    } else {
-      return Column(
-        children: [
-          cv.Section(
-            "Information",
-            child: cv.ListView<Widget>(
-              horizontalPadding: 0,
-              childPadding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                cv.TextField2(
-                  showBackground: false,
-                  value: _title,
-                  labelText: "Title",
-                  onChanged: (p0) {
-                    setState(() {
-                      _title = p0;
-                    });
-                  },
-                ),
-                cv.BasicButton(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          titlePadding: const EdgeInsets.all(0),
-                          contentPadding: const EdgeInsets.all(0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: MediaQuery.of(context).orientation ==
-                                    Orientation.portrait
-                                ? const BorderRadius.vertical(
-                                    top: Radius.circular(500),
-                                    bottom: Radius.circular(100),
-                                  )
-                                : const BorderRadius.horizontal(
-                                    right: Radius.circular(500)),
-                          ),
-                          content: SingleChildScrollView(
-                            child: HueRingPicker(
-                              pickerColor: _color,
-                              onColorChanged: (color) {
-                                setState(() {
-                                  _color = color;
-                                });
-                              },
-                              displayThumbColor: false,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: cv.LabeledWidget(
-                    "Color",
-                    child: Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: _color,
-                            shape: BoxShape.circle,
-                          ),
-                          height: 30,
-                          width: 30,
+      ],
+      children: [
+        cv.Section(
+          "Information",
+          child: cv.ListView<Widget>(
+            horizontalPadding: 0,
+            childPadding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              cv.TextField2(
+                showBackground: false,
+                value: _title,
+                labelText: "Title",
+                onChanged: (p0) {
+                  setState(() {
+                    _title = p0;
+                  });
+                },
+              ),
+              cv.BasicButton(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        titlePadding: const EdgeInsets.all(0),
+                        contentPadding: const EdgeInsets.all(0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: MediaQuery.of(context).orientation ==
+                                  Orientation.portrait
+                              ? const BorderRadius.vertical(
+                                  top: Radius.circular(500),
+                                  bottom: Radius.circular(100),
+                                )
+                              : const BorderRadius.horizontal(
+                                  right: Radius.circular(500)),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "#${_color.value.toRadixString(16).substring(2)}",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: CustomColors.textColor(context),
+                        content: SingleChildScrollView(
+                          child: HueRingPicker(
+                            pickerColor: _color,
+                            onColorChanged: (color) {
+                              setState(() {
+                                _color = color;
+                              });
+                            },
+                            displayThumbColor: false,
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    },
+                  );
+                },
+                child: cv.LabeledWidget(
+                  "Color",
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: _color,
+                          shape: BoxShape.circle,
+                        ),
+                        height: 30,
+                        width: 30,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "#${_color.value.toRadixString(16).substring(2)}",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: CustomColors.textColor(context),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: comp.ActionButton(
-              onTap: () async => _exportToCalendar(context, dmodel),
-              title: "Export",
-              color: dmodel.color,
-              isLoading: _isLoadingExport,
-            ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: comp.ActionButton(
+            onTap: () async => _exportToCalendar(context, dmodel),
+            title: "Export",
+            color: dmodel.color,
+            isLoading: _isLoadingExport,
           ),
+        ),
+        if (_events != null)
           cv.Section(
             "Select Events",
             child: cv.ListView<Event>(
@@ -223,10 +202,11 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
                 );
               },
             ),
-          ),
-        ],
-      );
-    }
+          )
+        else
+          cv.LoadingIndicator(color: dmodel.color),
+      ],
+    );
   }
 
   List<Widget> _detailChildren(
@@ -236,7 +216,11 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
       if (!event.eventLocation.name.isEmpty())
         _detailCell(Icons.location_on_outlined, event.eventLocation.name!),
       if (event.eDescription.isNotEmpty)
-        _detailCell(Icons.description_outlined, event.eDescription),
+        _detailCell(
+            Icons.description_outlined,
+            event.eDescription.length > 150
+                ? "${event.eDescription.substring(0, 150)}..."
+                : event.eDescription),
       if (event.customFields.isNotEmpty)
         for (var i in event.customFields)
           if (i.value.isNotEmpty) _customCell(i.title, i.value),
@@ -288,6 +272,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
     setState(() {
       _isLoading = true;
     });
+
     // first get access to calendar
     // get permission to calendars
     var permissionsGranted = await _deviceCalendar.hasPermissions();
@@ -389,10 +374,12 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
       var e = cal.Event(
         seasonCalendar.id,
         title: event.getTitle(),
-        start: TZDateTime.from(event.eventDate(), currentLocation),
-        end: TZDateTime.from(event.eventDate(), currentLocation)
+        start: tz.TZDateTime.from(event.eventDate(), currentLocation),
+        end: tz.TZDateTime.from(event.eventDate(), currentLocation)
             .add(const Duration(hours: 2)),
-        description: event.eDescription,
+        description: event.eDescription.length > 250
+            ? event.eDescription.substring(0, 250)
+            : event.eDescription,
       );
       if (event.eventLocation.address.isNotEmpty()) {
         e.location = event.eventLocation.address;

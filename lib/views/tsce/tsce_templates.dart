@@ -54,7 +54,7 @@ class _TSCETemplatesState extends State<TSCETemplates> {
       child: Column(
         children: [
           const Text(
-            'This wizard will help you through the process of creating your team and a season.',
+            'Templates give you a great place to start building your team. They provide pre-set positions, stats, and custom fields, and can be edited and expanded upon.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,

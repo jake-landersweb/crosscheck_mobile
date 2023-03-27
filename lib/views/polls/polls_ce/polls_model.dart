@@ -157,6 +157,8 @@ class PollsModel extends ChangeNotifier {
   bool isValidated() {
     if (poll.title.isEmpty) {
       return false;
+    } else if (poll.pollType == 3) {
+      return true;
     } else if (poll.choices.isEmpty) {
       return false;
     } else {
@@ -167,6 +169,8 @@ class PollsModel extends ChangeNotifier {
   String buttonTitle() {
     if (poll.title.isEmpty) {
       return "Title empty";
+    } else if (poll.pollType == 3) {
+      return isCreate ? "Create Poll" : "Update Poll";
     } else if (poll.choices.isEmpty) {
       return "No Choices";
     } else {

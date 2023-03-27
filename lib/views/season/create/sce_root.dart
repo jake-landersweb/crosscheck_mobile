@@ -341,13 +341,7 @@ class _SCERootState extends State<SCERoot> {
     print(body);
 
     await dmodel.createSeason(widget.team.teamId, body, () async {
-      // success, get out of widget
-      Navigator.of(context, rootNavigator: true).pop();
-      // get all seasons
-      setState(() {
-        dmodel.allSeasons = null;
-        dmodel.setUser(dmodel.user!);
-      });
+      RestartWidget.restartApp(context);
     });
 
     setState(() {

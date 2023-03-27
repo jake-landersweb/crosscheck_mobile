@@ -43,13 +43,15 @@ class _PollsBasicState extends State<PollsBasic> {
               ),
             ),
             cv.Section(
-              "Title",
+              "Title - Required",
               headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
               child: cv.ListView<Widget>(
                 childPadding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   cv.TextField2(
                     labelText: "Title",
+                    hintText: "Where for dinner tonight?",
+                    highlightColor: dmodel.color,
                     onChanged: (value) {
                       setState(() {
                         pmodel.poll.title = value;
@@ -57,7 +59,7 @@ class _PollsBasicState extends State<PollsBasic> {
                     },
                     showBackground: false,
                     value: pmodel.poll.title,
-                    isLabeled: true,
+                    isLabeled: false,
                   ),
                 ],
               ),
@@ -69,8 +71,10 @@ class _PollsBasicState extends State<PollsBasic> {
                 childPadding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   cv.TextField2(
-                    labelText: "Description",
+                    labelText: "Please select your favorite place!",
+                    isLabeled: false,
                     maxLines: 5,
+                    highlightColor: dmodel.color,
                     onChanged: (value) {
                       setState(() {
                         pmodel.poll.description = value;

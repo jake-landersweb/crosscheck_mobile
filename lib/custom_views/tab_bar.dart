@@ -176,7 +176,7 @@ class __TabBarItemState extends State<_TabBarItem> {
 
   Future<void> _anim() async {
     setState(() {
-      _scale = 1.2;
+      _scale = 1.1;
     });
     await Future.delayed(const Duration(milliseconds: 150));
     setState(() {

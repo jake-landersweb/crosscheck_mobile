@@ -21,11 +21,13 @@ class SUFromExcel extends StatefulWidget {
     required this.onCreate,
     required this.onDispose,
     this.actionText = "Upload",
+    this.showPositionError = true,
   });
   final List<String> positions;
   final Future<bool> Function(List<SUExcel> users) onCreate;
   final VoidCallback onDispose;
   final String actionText;
+  final bool showPositionError;
 
   @override
   State<SUFromExcel> createState() => _SUFromExcelState();
@@ -195,7 +197,8 @@ class _SUFromExcelState extends State<SUFromExcel> {
         _userCellItem(context, "Phone", user.phone),
         _userCellItem(context, "Nickname", user.nickname),
         _userCellItem(context, "Position", user.position),
-        if (widget.positions.isNotEmpty &&
+        if (widget.showPositionError &&
+            widget.positions.isNotEmpty &&
             !widget.positions.contains(user.position))
           Row(
             children: [

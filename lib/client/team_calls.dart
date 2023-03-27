@@ -447,6 +447,30 @@ extension TeamCalls on DataModel {
       }
     });
   }
+
+  Future<Tuple<int, Team?>> createTeamSeason(Map<String, dynamic> body) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+    var response =
+        await client.post("/createTeamSeason", headers, jsonEncode(body));
+
+    if (response == null) {
+      return Tuple(400, null);
+    }
+    if (response['status'] == 200) {
+      var team = Team.fromJson(response['body']);
+      return Tuple(200, team);
+    }
+    log("[ERROR]: ${response['message']}", level: 2);
+    if (response['status'] == 404) {
+      addIndicator(
+        IndicatorItem.error(
+            "For some reason, your user account was not found. Restart the app and try again, or contact support."),
+      );
+      return Tuple(404, null);
+    }
+    // should be 500 codes to show error sheet
+    return Tuple(response['status'], null);
+  }
 }
 
 class _DecodeParam {

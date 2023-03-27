@@ -3,6 +3,8 @@ import 'package:crosscheck_sports/custom_views/timezone_select.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/tsce/tsce_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
@@ -63,12 +65,141 @@ class _TSCEBasicState extends State<TSCEBasic> {
             ),
           ),
           cv.Section(
-            "Info",
+            "Optional Info",
             child: cv.ListView<Widget>(
               childPadding: const EdgeInsets.only(right: 16),
               horizontalPadding: 0,
               minHeight: 50,
               children: [
+                cv.BasicButton(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          titlePadding: const EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: MediaQuery.of(context).orientation ==
+                                    Orientation.portrait
+                                ? const BorderRadius.vertical(
+                                    top: Radius.circular(500),
+                                    bottom: Radius.circular(100),
+                                  )
+                                : const BorderRadius.horizontal(
+                                    right: Radius.circular(500)),
+                          ),
+                          content: SingleChildScrollView(
+                            child: HueRingPicker(
+                              pickerColor: model.color.isEmpty
+                                  ? dmodel.color
+                                  : CustomColors.fromHex(model.color),
+                              onColorChanged: (color) {
+                                setState(() {
+                                  model.color = color.value
+                                      .toRadixString(16)
+                                      .substring(2);
+                                });
+                              },
+                              displayThumbColor: false,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              "Accent Color: #${model.color}",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: CustomColors.textColor(context)
+                                    .withOpacity(0.5),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: model.color.isEmpty
+                                ? dmodel.color
+                                : CustomColors.fromHex(model.color),
+                            shape: BoxShape.circle,
+                          ),
+                          height: 30,
+                          width: 30,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            "Light App",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: CustomColors.textColor(context)
+                                  .withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                      ),
+                      FlutterSwitch(
+                        value: model.isLight,
+                        height: 25,
+                        width: 50,
+                        toggleSize: 18,
+                        activeColor: CustomColors.fromHex(model.color),
+                        onToggle: (value) {
+                          setState(() {
+                            model.isLight = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Center(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            "Show Nicknames",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: CustomColors.textColor(context)
+                                  .withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                      ),
+                      FlutterSwitch(
+                        value: model.showNicknames,
+                        height: 25,
+                        width: 50,
+                        toggleSize: 18,
+                        activeColor: CustomColors.fromHex(model.color),
+                        onToggle: (value) {
+                          setState(() {
+                            model.showNicknames = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 Center(
                   child: cv.TextField2(
                     labelText: "Website",

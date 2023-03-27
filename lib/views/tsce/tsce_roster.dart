@@ -40,6 +40,14 @@ class _TSCERosterState extends State<TSCERoster> {
       child: Column(
         children: [
           const SizedBox(height: 16),
+          const Text(
+            "You can use an excel sheet template to create your roster. Feel free to click below to download and upload the template. Don't worry, this can be done later.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          const SizedBox(height: 16),
           cv.BasicButton(
             onTap: () {
               cv.cupertinoSheet(
@@ -47,6 +55,7 @@ class _TSCERosterState extends State<TSCERoster> {
                 builder: (context) {
                   return SUFromExcel(
                     actionText: "Save",
+                    showPositionError: false,
                     positions: model.positions.available,
                     onCreate: (users) async {
                       setState(() {
