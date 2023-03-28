@@ -103,90 +103,111 @@ class _AssetViewState extends State<AssetView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return GestureDetector(
-      onPanUpdate: ((details) {
-        // update values when dragging
-        setState(() {
-          _dx += details.delta.dx;
-          _dy += details.delta.dy;
-          var temp = 1 - ((_dx + _dy) / 1000);
-          _factor = temp > 1 ? 1 : temp;
-        });
-      }),
-      onPanEnd: ((details) {
-        // check to close
-        if (_factor < 0.9) {
-          Navigator.of(context).pop();
-          return;
-        }
-        // trick to animate back to default position
-        setState(() {
-          _duration = Duration(milliseconds: _animationLength);
-        });
-        setState(() {
-          _dx = 0;
-          _dy = 0;
-          _factor = 1;
-        });
-        Future.delayed(Duration(milliseconds: _animationLength), () {
+    return Material(
+      color: Colors.transparent,
+      child: GestureDetector(
+        onPanUpdate: ((details) {
+          // update values when dragging
           setState(() {
-            _duration = const Duration(milliseconds: 0);
+            _dx += details.delta.dx;
+            _dy += details.delta.dy;
+            var temp = 1 - ((_dx + _dy) / 1000);
+            _factor = temp > 1 ? 1 : temp;
           });
-        });
-      }),
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Container(
-            color: Colors.black.withOpacity(_factor),
-            height: double.infinity,
-            width: double.infinity,
-          ),
-          SafeArea(
-            top: true,
-            right: false,
-            left: false,
-            bottom: false,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      // sender and date
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.message.sender,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
+        }),
+        onPanEnd: ((details) {
+          // check to close
+          if (_factor < 0.9) {
+            Navigator.of(context).pop();
+            return;
+          }
+          // trick to animate back to default position
+          setState(() {
+            _duration = Duration(milliseconds: _animationLength);
+          });
+          setState(() {
+            _dx = 0;
+            _dy = 0;
+            _factor = 1;
+          });
+          Future.delayed(Duration(milliseconds: _animationLength), () {
+            setState(() {
+              _duration = const Duration(milliseconds: 0);
+            });
+          });
+        }),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              color: Colors.black.withOpacity(_factor),
+              height: double.infinity,
+              width: double.infinity,
+            ),
+            SafeArea(
+              top: true,
+              right: false,
+              left: false,
+              bottom: false,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        // sender and date
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.message.sender,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              widget.message.getDynamicDate(),
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.5),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        // actions
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: cv.BasicButton(
+                            onTap: () {
+                              cv.showFloatingSheet(
+                                context: context,
+                                builder: (context) => _sheet(context),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(0.2),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(3.0),
+                                child: Icon(
+                                  Icons.more_vert_outlined,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            widget.message.getDynamicDate(),
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      // actions
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: cv.BasicButton(
+                        ),
+                        cv.BasicButton(
                           onTap: () {
-                            cv.showFloatingSheet(
-                              context: context,
-                              builder: (context) => _sheet(context),
-                            );
+                            Navigator.of(context).pop();
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -196,69 +217,52 @@ class _AssetViewState extends State<AssetView> with TickerProviderStateMixin {
                             child: const Padding(
                               padding: EdgeInsets.all(3.0),
                               child: Icon(
-                                Icons.more_vert_outlined,
+                                Icons.close,
                                 color: Colors.black,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      cv.BasicButton(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.2),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(3.0),
-                            child: Icon(
-                              Icons.close,
-                              color: Colors.black,
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        AnimatedPositioned(
+                          duration: _duration,
+                          curve: Sprung.overDamped,
+                          top: _dy,
+                          left: _dx,
+                          child: AnimatedScale(
+                            duration: Duration(milliseconds: _animationLength),
+                            curve: Sprung.overDamped,
+                            scale: _factor,
+                            child: Column(
+                              children: [
+                                if (widget.message.img != null)
+                                  _imageView(context),
+                                if (_videoController != null)
+                                  _videoView(context),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      AnimatedPositioned(
-                        duration: _duration,
-                        curve: Sprung.overDamped,
-                        top: _dy,
-                        left: _dx,
-                        child: AnimatedScale(
-                          duration: Duration(milliseconds: _animationLength),
-                          curve: Sprung.overDamped,
-                          scale: _factor,
-                          child: Column(
-                            children: [
-                              if (widget.message.img != null)
-                                _imageView(context),
-                              if (_videoController != null) _videoView(context),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (widget.message.img == null && _videoController == null)
-                  Expanded(
-                    child: Center(
-                      child: cv.LoadingIndicator(color: dmodel.color),
+                      ],
                     ),
                   ),
-              ],
+                  if (widget.message.img == null && _videoController == null)
+                    Expanded(
+                      child: Center(
+                        child: cv.LoadingIndicator(color: dmodel.color),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

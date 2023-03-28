@@ -1,4 +1,5 @@
 import 'package:crosscheck_sports/crosscheck_engine.dart';
+import 'package:crosscheck_sports/views/tsce/root.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -333,39 +334,21 @@ class _SettingsState extends State<Settings> {
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: comp.SubActionButton(
-                    onTap: () {
-                      cv.showFloatingSheet(
-                        context: context,
-                        builder: (context) {
-                          return JoinTeam(email: widget.user.email);
-                        },
-                      );
-                    },
-                    title: "Join New Team",
-                  ),
+            child: cv.ActionList(
+              items: [
+                cv.ActionListItem(
+                  title: "Join New Team",
+                  icon: Icons.search_rounded,
+                  view: JoinTeam(email: widget.user.email),
+                  color: Colors.deepOrange[300]!,
+                  type: cv.ALType.floating,
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: comp.ActionButton(
-                    onTap: () {
-                      cv.cupertinoSheet(
-                          context: context,
-                          builder: (context) {
-                            return TCERoot(
-                              useRoot: true,
-                              user: widget.user,
-                              team: Team.empty(),
-                              isCreate: true,
-                            );
-                          });
-                    },
-                    title: "Create Team",
-                    color: dmodel.color,
-                  ),
+                cv.ActionListItem(
+                  title: "Create My Team",
+                  icon: Icons.add_rounded,
+                  view: TSCERoot(user: dmodel.user!),
+                  color: Colors.blue,
+                  type: cv.ALType.sheet,
                 ),
               ],
             ),
@@ -525,5 +508,6 @@ class _SettingsState extends State<Settings> {
     setState(() {
       _isLoading = false;
     });
+    RestartWidget.restartApp(context);
   }
 }

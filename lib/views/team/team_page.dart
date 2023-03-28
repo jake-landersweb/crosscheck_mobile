@@ -200,31 +200,35 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
               );
             }
           },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // season title
-              Flexible(
-                child: Text(
-                  dmodel.currentSeason?.title ?? "",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: CustomColors.textColor(context),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // season title
+                Flexible(
+                  child: Text(
+                    dmodel.currentSeason?.title ?? "",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: CustomColors.textColor(context),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 4),
-              // icon to show this is clickable
-              Transform.rotate(
-                angle: math.pi * 1.5,
-                child: Icon(
-                  Icons.chevron_left,
-                  color: CustomColors.textColor(context).withOpacity(0.5),
-                  size: 20,
+                const SizedBox(width: 4),
+                // icon to show this is clickable
+                Transform.rotate(
+                  angle: math.pi * 1.5,
+                  child: Icon(
+                    Icons.chevron_left,
+                    color: CustomColors.textColor(context).withOpacity(0.5),
+                    size: 20,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

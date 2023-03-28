@@ -51,6 +51,7 @@ class _EventDetail2State extends State<EventDetail2> {
     print(widget.team.teamId);
     print(widget.season.seasonId);
     print(widget.event.eventId);
+    print(widget.event.eTitle);
     super.initState();
   }
 

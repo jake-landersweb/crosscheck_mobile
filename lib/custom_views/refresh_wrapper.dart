@@ -92,7 +92,8 @@ class _RefreshWrapperState extends State<RefreshWrapper> {
           },
           child: ListView(
             controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics()),
             padding: EdgeInsets.zero,
             children: [
               AnimatedPadding(

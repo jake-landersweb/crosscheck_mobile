@@ -30,7 +30,7 @@ class ChatModel extends ChangeNotifier {
 
   bool isFetchingMessages = false;
 
-  late GraphQLClient client;
+  GraphQLClient? client;
 
   StreamSubscription<GraphQLResponse<dynamic>>? operation;
 
@@ -40,39 +40,55 @@ class ChatModel extends ChangeNotifier {
   XFile? selectedVideo;
 
   ChatModel(Team team, Season season, DataModel dmodel, this.name, this.email) {
-    // set the name to use as the sender
-    final httpLink = HttpLink(env.GRAPH, defaultHeaders: {
-      "x-api-key": env.GRAPH_API_KEY,
-    });
-    Link link = httpLink;
-
-    client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: link,
-    );
-    seasonId = season.seasonId;
+    seasonId = "";
 
     // init room and chat
     init(team.teamId, season.seasonId, dmodel);
   }
 
   void init(String teamId, String seasonId, DataModel dmodel) async {
+    // invalidate data
+    client = null;
+    room = null;
+    messages = [];
+    nextToken = null;
+    moreMessages = true;
+    subRetryCounter = 0;
+    selectedImage = null;
+    selectedVideo = null;
+    isFetchingMessages = false;
+    if (operation != null) {
+      await operation!.cancel();
+      operation = null;
+    }
+    // set the name to use as the sender
+    final httpLink = HttpLink(env.GRAPH, defaultHeaders: {
+      "x-api-key": env.GRAPH_API_KEY,
+    });
+
+    client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+    this.seasonId = seasonId;
     // fetch the room
-    await roomSetUp(teamId, seasonId);
+    room = await roomSetUp(teamId, seasonId);
     if (room == null) {
       print("There was an error setting up the room");
       dmodel.addIndicator(
-          IndicatorItem.error("There was an error setting up chat"));
+        IndicatorItem.error("There was an error setting up chat"),
+      );
       return;
     }
-    print("Successfully set up chat room with roomId: ${room!.roomId}");
+    print(
+        "Successfully set up chat room with roomId: ${room!.roomId} seasonId: $seasonId");
     // get the most recent messages
     await getMessages(room!.roomId, isInit: true);
     // set up the link to fetch new messages
     amplifySetUp(room!.roomId);
   }
 
-  Future<void> roomSetUp(String teamId, String seasonId) async {
+  Future<Room?> roomSetUp(String tid, String sid) async {
     print("Setting up room ...");
     // compose query
     const String qstring = r'''
@@ -90,23 +106,25 @@ class ChatModel extends ChangeNotifier {
     final QueryOptions options = QueryOptions(
       document: gql(qstring),
       variables: <String, dynamic>{
-        "id": teamId,
-        "sortKey": seasonId,
+        "id": tid,
+        "sortKey": sid,
       },
     );
+
     // send the request
-    final QueryResult result = await client.query(options);
+    final QueryResult result = await client!.query(options);
 
     // check for exception
     if (result.hasException) {
       print("Failed to set up room: ${result.exception.toString()}");
-      return;
+      return null;
     }
     try {
       // bind to data
-      room = Room.fromJson(result.data?['getRoom']);
+      return Room.fromJson(result.data?['getRoom']);
     } catch (error) {
       print("There was an error: $error");
+      return null;
     }
   }
 
@@ -210,7 +228,7 @@ class ChatModel extends ChangeNotifier {
           "nextToken": nextToken ?? "",
         },
       );
-      final QueryResult result = await client.query(options);
+      final QueryResult result = await client!.query(options);
       // print(result.data?['listMessages']['items'].toString());
 
       if (result.hasException) {
@@ -439,7 +457,7 @@ class ChatModel extends ChangeNotifier {
       "input": input,
     });
 
-    final QueryResult result = await client.mutate(options);
+    final QueryResult result = await client!.mutate(options);
 
     if (result.hasException) {
       print(

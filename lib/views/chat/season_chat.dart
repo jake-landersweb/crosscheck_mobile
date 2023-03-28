@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:crosscheck_sports/views/chat/chat_loading.dart';
 import 'package:crosscheck_sports/views/chat/message_input.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
@@ -140,7 +141,12 @@ class _SeasonChatState extends State<SeasonChat> {
   }
 
   Widget _chatHolder(BuildContext context, DataModel dmodel, ChatModel cmodel) {
-    var offsetHeight = MediaQuery.of(context).viewPadding.bottom == 0 ? 12 : 12;
+    double offsetHeight;
+    if (Platform.isAndroid) {
+      offsetHeight = MediaQuery.of(context).viewInsets.bottom == 0 ? 18 : 0;
+    } else {
+      offsetHeight = 14;
+    }
     var keyboardPadding = MediaQuery.of(context).viewInsets.bottom -
         (MediaQuery.of(context).viewPadding.bottom + 40 + offsetHeight);
 
@@ -293,51 +299,92 @@ class _SeasonChatState extends State<SeasonChat> {
           backgroundColor: CustomColors.backgroundColor(context),
           opacity: 0.7,
           blur: 10,
-          height: MediaQuery.of(context).padding.top + 40,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Text(
-                    "${widget.season.title} Chat",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+          alignment: Alignment.bottomLeft,
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).padding.top + 8),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: cv.BasicButton(
+                          onTap: () {
+                            cv.showFloatingSheet(
+                              context: context,
+                              builder: (context) {
+                                return SeasonSelectAll(
+                                  team: dmodel.tus!.team,
+                                  onSelect: ((season, isPrevious) async {
+                                    await FirebaseAnalytics.instance.logEvent(
+                                      name: "change_season",
+                                      parameters: {"platform": "mobile"},
+                                    );
+                                    dmodel.setCurrentSeason(season,
+                                        isPrevious: isPrevious);
+                                    dmodel.seasonUsers = null;
+
+                                    Navigator.of(context).pop();
+                                    cmodel.init(widget.team.teamId,
+                                        season.seasonId, dmodel);
+                                  }),
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: CustomColors.cellColor(context),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                              child: Text(
+                                "${widget.season.title} ↓",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: CustomColors.textColor(context),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: cv.BasicButton(
-                    onTap: () {
-                      // update the user to the clicked value
-                      _updateUserNotifs(dmodel);
-                    },
-                    child: _isUpdatingUser
-                        ? const SizedBox(
-                            height: 25,
-                            width: 25,
-                            child: cv.LoadingIndicator(),
-                          )
-                        : _showNotifBell
-                            ? Icon(
-                                widget.seasonUser.seasonFields!
-                                        .allowChatNotifications
-                                    ? Icons.notifications_active
-                                    : Icons.notifications_off,
-                                color: widget.seasonUser.seasonFields!
-                                        .allowChatNotifications
-                                    ? dmodel.color
-                                    : null,
+                    const SizedBox(width: 8),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: cv.BasicButton(
+                        onTap: () {
+                          // update the user to the clicked value
+                          _updateUserNotifs(dmodel);
+                        },
+                        child: _isUpdatingUser
+                            ? const SizedBox(
+                                height: 25,
+                                width: 25,
+                                child: cv.LoadingIndicator(),
                               )
-                            : Container(),
-                  ),
+                            : _showNotifBell
+                                ? Icon(
+                                    widget.seasonUser.seasonFields!
+                                            .allowChatNotifications
+                                        ? Icons.notifications_active
+                                        : Icons.notifications_off,
+                                    color: widget.seasonUser.seasonFields!
+                                            .allowChatNotifications
+                                        ? dmodel.color
+                                        : null,
+                                  )
+                                : Container(),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const Divider(indent: 0, endIndent: 0, height: 0.5)

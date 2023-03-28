@@ -8,6 +8,7 @@ import 'package:crosscheck_sports/views/roster/from_excel/su_excel_edit.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:url_launcher/url_launcher.dart';
@@ -77,6 +78,24 @@ class _SUFromExcelState extends State<SUFromExcel> {
         )
       ],
       children: [
+        cv.BasicButton(
+          onTap: () {
+            Clipboard.setData(const ClipboardData(
+                text: "https://crosschecksports.com/docs/roster-form"));
+            dmodel.addIndicator(
+                IndicatorItem.success("Link successfully copied!"));
+          },
+          child: Center(
+            child: Text(
+              "Copy Download Link",
+              style: TextStyle(
+                color: dmodel.color,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
         cv.ListView<Tuple3<String, IconData, Color>>(
           children: [
             Tuple3("Download Template", Icons.newspaper_rounded, Colors.green),
@@ -131,7 +150,10 @@ class _SUFromExcelState extends State<SUFromExcel> {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: SizedBox(
               height: 30,
-              child: cv.LoadingIndicator(color: dmodel.color),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: cv.LoadingIndicator(color: dmodel.color),
+              ),
             ),
           ),
         if (_users.isNotEmpty)
@@ -259,8 +281,13 @@ class _SUFromExcelState extends State<SUFromExcel> {
   }
 
   Future<void> _launchUrl(DataModel dmodel) async {
-    var uri = Uri.parse("https://www.crosschecksports.com/docs/roster-form");
-    if (!await launchUrl(uri)) {
+    var uri = Uri.parse("https://crosschecksports.com/docs/roster-form");
+    if (!await launchUrl(
+      uri,
+      webViewConfiguration: const WebViewConfiguration(
+        headers: {"Access-Control-Allow-Origin": "*"},
+      ),
+    )) {
       dmodel.addIndicator(
           IndicatorItem.error("There was an issue downloading the file"));
     }
@@ -273,7 +300,7 @@ class _SUFromExcelState extends State<SUFromExcel> {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['.xlsx'],
+        allowedExtensions: ['xlsx'],
       );
       if (result != null && result.files.single.path != null) {
         _users = [];
@@ -283,6 +310,9 @@ class _SUFromExcelState extends State<SUFromExcel> {
         if (!excel.tables.containsKey("Sheet1")) {
           dmodel.addIndicator(IndicatorItem.error(
               "Error: 'Sheet1' must exist in the excel file"));
+          setState(() {
+            _isLoadingExcel = false;
+          });
           return;
         }
         var table = excel.tables['Sheet1']!;
@@ -290,6 +320,9 @@ class _SUFromExcelState extends State<SUFromExcel> {
         if (table.rows.length < 3) {
           dmodel.addIndicator(IndicatorItem.error(
               "Error: The excel sheet must have at least one user"));
+          setState(() {
+            _isLoadingExcel = false;
+          });
           return;
         }
         for (var row in table.rows.sublist(2)) {
@@ -298,6 +331,9 @@ class _SUFromExcelState extends State<SUFromExcel> {
           } catch (e) {
             dmodel.addIndicator(IndicatorItem.error(e.toString()));
             _users = [];
+            setState(() {
+              _isLoadingExcel = false;
+            });
             return;
           }
         }
@@ -308,6 +344,9 @@ class _SUFromExcelState extends State<SUFromExcel> {
       dmodel.addIndicator(
         IndicatorItem.error("There was an issue picking the file"),
       );
+      setState(() {
+        _isLoadingExcel = false;
+      });
     }
     setState(() {
       _isLoadingExcel = false;

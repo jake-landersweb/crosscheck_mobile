@@ -171,8 +171,8 @@ class _MessageInputState extends State<MessageInput> {
                       }
                     },
                     child: SizedBox(
-                        height: 44,
-                        width: 44,
+                        height: 40,
+                        width: 40,
                         child: Center(
                           child: _sending
                               ? cv.LoadingIndicator(color: dmodel.color)

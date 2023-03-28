@@ -13,6 +13,7 @@ import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
 import 'dart:math' as math;
+import 'package:auto_size_text/auto_size_text.dart';
 
 class Schedule extends StatefulWidget {
   const Schedule({Key? key}) : super(key: key);
@@ -136,6 +137,7 @@ class _ScheduleState extends State<Schedule> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // title with logo
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
@@ -283,9 +285,12 @@ class _ScheduleState extends State<Schedule> {
           children: [
             // season title
             Flexible(
-              child: Text(
+              child: AutoSizeText(
                 dmodel.currentSeason?.title ?? "",
                 overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                minFontSize: 16,
+                maxFontSize: 24,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,

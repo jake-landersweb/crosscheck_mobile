@@ -108,25 +108,20 @@ class _TextField2State extends State<TextField2> {
         child: Stack(
           alignment: AlignmentDirectional.topEnd,
           children: [
-            if (kIsWeb)
-              _getLabeledMaterial(context)
-            else if (Platform.isIOS || Platform.isMacOS)
-              if (widget.showBackground)
-                Container(
-                  decoration: BoxDecoration(
-                    color:
-                        widget.backgroundColor ?? ViewColors.cellColor(context),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: widget.fieldPadding,
-                    child: _getLabeledCupertino(context),
-                  ),
-                )
-              else
-                _getLabeledCupertino(context)
+            if (widget.showBackground)
+              Container(
+                decoration: BoxDecoration(
+                  color:
+                      widget.backgroundColor ?? ViewColors.cellColor(context),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: widget.fieldPadding,
+                  child: _getLabeledCupertino(context),
+                ),
+              )
             else
-              _getLabeledMaterial(context),
+              _getLabeledCupertino(context),
             if (widget.showCharacters)
               Text(
                 '${widget.controller == null ? _controller!.text.length : widget.controller!.text.length} / ${widget.charLimit}',
