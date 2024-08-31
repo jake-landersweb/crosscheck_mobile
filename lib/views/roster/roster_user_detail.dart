@@ -74,7 +74,11 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            cv.LabeledCell(value: widget.seasonUser.email, label: "Email"),
+            cv.LabeledCell(
+              value: widget.seasonUser.email,
+              label: "Email",
+              clickable: true,
+            ),
           ],
         ),
         if (widget.seasonUser.teamFields?.validationStatus != 1 &&
@@ -162,6 +166,7 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
                 cv.LabeledCell(
                   label: "Phone",
                   value: widget.seasonUser.userFields!.phone!,
+                  clickable: true,
                 ),
               if (!widget.seasonUser.userFields!.nickname.isEmpty())
                 cv.LabeledCell(

@@ -9,21 +9,24 @@ class BasicButton extends StatelessWidget {
     Key? key,
     required this.onTap,
     required this.child,
+    this.active = true,
   });
 
   final VoidCallback? onTap;
-
   final Widget child;
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
-      color: Colors.transparent,
-      disabledColor: Colors.transparent,
-      padding: const EdgeInsets.all(0),
-      minSize: 0,
-      onPressed: onTap,
-      child: child,
-    );
+    return active
+        ? CupertinoButton(
+            color: Colors.transparent,
+            disabledColor: Colors.transparent,
+            padding: const EdgeInsets.all(0),
+            minSize: 0,
+            onPressed: onTap,
+            child: child,
+          )
+        : child;
   }
 }

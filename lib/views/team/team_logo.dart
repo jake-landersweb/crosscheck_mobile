@@ -8,10 +8,12 @@ class TeamLogo extends StatefulWidget {
     required this.url,
     this.size,
     this.color,
+    this.borderRadius = 10,
   }) : super(key: key);
   final String url;
   final double? size;
   final Color? color;
+  final double borderRadius;
 
   @override
   _TeamLogoState createState() => _TeamLogoState();
@@ -21,15 +23,19 @@ class _TeamLogoState extends State<TeamLogo> {
   @override
   Widget build(BuildContext context) {
     if (widget.url != "") {
-      return CachedNetworkImage(
-        imageUrl: widget.url,
-        cacheKey: widget.url,
-        width: widget.size,
-        fadeInDuration: const Duration(milliseconds: 100),
-        fadeOutDuration: const Duration(milliseconds: 100),
-        height: widget.size,
-        errorWidget: (context, error, stackTrace) => _baseImage(context, false),
-        placeholder: (context, _) => _baseImage(context, true),
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(widget.borderRadius),
+        child: CachedNetworkImage(
+          imageUrl: widget.url,
+          cacheKey: widget.url,
+          width: widget.size,
+          fadeInDuration: const Duration(milliseconds: 100),
+          fadeOutDuration: const Duration(milliseconds: 100),
+          // height: widget.size,
+          errorWidget: (context, error, stackTrace) =>
+              _baseImage(context, false),
+          placeholder: (context, _) => _baseImage(context, true),
+        ),
       );
     } else {
       return _baseImage(context, false);

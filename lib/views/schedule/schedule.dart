@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:crosscheck_sports/views/schedule/notifications_view.dart';
+import 'package:crosscheck_sports/views/team/team_model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/root.dart';
@@ -145,10 +146,20 @@ class _ScheduleState extends State<Schedule> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (dmodel.tus != null)
-                              TeamLogo(
-                                url: dmodel.tus!.team.image,
-                                size: 40,
-                                color: dmodel.color,
+                              cv.BasicButton(
+                                onTap: () {
+                                  cv.showFloatingSheet(
+                                    context: context,
+                                    builder: (context) =>
+                                        TeamModel(team: dmodel.tus!.team),
+                                  );
+                                },
+                                child: TeamLogo(
+                                  url: dmodel.tus!.team.image,
+                                  size: 40,
+                                  color: dmodel.color,
+                                  borderRadius: 5,
+                                ),
                               ),
                             const SizedBox(width: 8),
                             if (dmodel.currentSeason != null)
@@ -262,6 +273,7 @@ class _ScheduleState extends State<Schedule> {
           if (dmodel.currentSeason != null) {
             cv.showFloatingSheet(
               context: context,
+              enableDrag: false,
               builder: (context) {
                 return SeasonSelectAll(
                   team: dmodel.tus!.team,

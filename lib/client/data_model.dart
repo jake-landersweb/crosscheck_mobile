@@ -10,6 +10,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:http/http.dart' as http;
@@ -19,8 +20,8 @@ import 'root.dart';
 import '../data/root.dart';
 import '../extras/root.dart';
 
-const double appVersionMajor = 4.3;
-const int appVersionMinor = 10;
+const double appVersionMajor = 4.4;
+const int appVersionMinor = 0;
 
 class DataModel extends ChangeNotifier {
   // for holding passed teamId in memory for custom team apps
@@ -59,6 +60,7 @@ class DataModel extends ChangeNotifier {
   SeasonUser? currentSeasonUser;
   int scheduleIndex = 2;
   List<Poll>? polls;
+  List<EventDuty> eventDuties = [];
 
   // when user needs to leave the app without full refresh for a while
   bool blockRefresh = false;
@@ -167,6 +169,11 @@ class DataModel extends ChangeNotifier {
     // prefs.remove("email");
 
     var cont = false;
+
+    // TODO REMOVE
+    // if (kDebugMode) {
+    //   prefs.setString("email", "cbentley@hardwoodind.com");
+    // }
 
     setLoadText("Fetching user information ...");
     if (prefs.containsKey("email") &&
@@ -449,6 +456,8 @@ class DataModel extends ChangeNotifier {
           upcomingEventsStartIndex, false, (events) {
         setUpcomingEvents(events);
       }, hasLoads: false);
+      getEventDuties(tus!.team.teamId, season.seasonId);
+      notifyListeners();
     } catch (error) {
       print("There was an error: $error");
       prefs.remove("teamId");
@@ -914,6 +923,10 @@ class DataModel extends ChangeNotifier {
       }
     }
     return false;
+  }
+
+  void refreshState() {
+    notifyListeners();
   }
 }
 

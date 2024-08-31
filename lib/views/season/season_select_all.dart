@@ -50,83 +50,87 @@ class _SeasonSelectAllState extends State<SeasonSelectAll> {
     return cv.Sheet(
       title: "All Seasons",
       color: dmodel.color,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (_isLoading)
-              Center(child: cv.LoadingIndicator(color: dmodel.color))
-            else if (_seasons == null)
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (_isLoading)
+                Center(child: cv.LoadingIndicator(color: dmodel.color))
+              else if (_seasons == null)
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "Issue finding Seasons",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: comp.SubActionButton(
+                          title: "Retry",
+                          onTap: () => _fetchSeasons(dmodel),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              else
+                cv.ListView<Widget>(
+                  childPadding: EdgeInsets.zero,
+                  horizontalPadding: 0,
+                  showStyling: false,
+                  isAnimated: true,
+                  animateOpen: true,
                   children: [
-                    const Text(
-                      "Issue finding Seasons",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 18,
+                    if (_seasons!.any((element) => element.seasonStatus == 2) &&
+                        ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) ||
+                            dmodel.tus!.user.isTeamAdmin()))
+                      cv.Section(
+                        "Future",
+                        child: _selectorWrapper(
+                          context,
+                          dmodel,
+                          _seasons!
+                              .where((element) => element.seasonStatus == 2)
+                              .toList(),
+                          false,
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: comp.SubActionButton(
-                        title: "Retry",
-                        onTap: () => _fetchSeasons(dmodel),
+                    if (_seasons!.any((element) => element.seasonStatus == 1))
+                      cv.Section(
+                        "Active",
+                        child: _selectorWrapper(
+                          context,
+                          dmodel,
+                          _seasons!
+                              .where((element) => element.seasonStatus == 1)
+                              .toList(),
+                          false,
+                        ),
                       ),
-                    )
+                    if (_seasons!.any((element) => element.seasonStatus == -1))
+                      cv.Section(
+                        "Past",
+                        child: _selectorWrapper(
+                          context,
+                          dmodel,
+                          _seasons!
+                              .where((element) => element.seasonStatus == -1)
+                              .toList(),
+                          true,
+                        ),
+                      ),
                   ],
                 ),
-              )
-            else
-              cv.ListView<Widget>(
-                childPadding: EdgeInsets.zero,
-                horizontalPadding: 0,
-                showStyling: false,
-                isAnimated: true,
-                animateOpen: true,
-                children: [
-                  if (_seasons!.any((element) => element.seasonStatus == 2) &&
-                      ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) ||
-                          dmodel.tus!.user.isTeamAdmin()))
-                    cv.Section(
-                      "Future",
-                      child: _selectorWrapper(
-                        context,
-                        dmodel,
-                        _seasons!
-                            .where((element) => element.seasonStatus == 2)
-                            .toList(),
-                        false,
-                      ),
-                    ),
-                  if (_seasons!.any((element) => element.seasonStatus == 1))
-                    cv.Section(
-                      "Active",
-                      child: _selectorWrapper(
-                        context,
-                        dmodel,
-                        _seasons!
-                            .where((element) => element.seasonStatus == 1)
-                            .toList(),
-                        false,
-                      ),
-                    ),
-                  if (_seasons!.any((element) => element.seasonStatus == -1))
-                    cv.Section(
-                      "Past",
-                      child: _selectorWrapper(
-                        context,
-                        dmodel,
-                        _seasons!
-                            .where((element) => element.seasonStatus == -1)
-                            .toList(),
-                        true,
-                      ),
-                    ),
-                ],
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

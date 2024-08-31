@@ -17,8 +17,7 @@ class Client {
   // generic fetch function
   Future<dynamic> fetch(String path) async {
     // start the response
-    final response =
-        await client.get(Uri(scheme: 'https', host: host, path: '/api/$path'));
+    final response = await client.get(Uri.parse("$host$path"));
     // check for basic network errors
     if (response.statusCode != 200) {
       print(response);
@@ -38,7 +37,7 @@ class Client {
   Future<dynamic> post(
       String path, Map<String, String> headers, dynamic body) async {
     final http.Response response = await http.post(
-      Uri(scheme: 'https', host: host, path: '/api/$path'),
+      Uri.parse("$host$path"),
       body: body,
       headers: headers,
     );
@@ -56,9 +55,12 @@ class Client {
   }
 
   Future<dynamic> put(
-      String path, Map<String, String> headers, dynamic body) async {
+    String path,
+    Map<String, String> headers,
+    dynamic body,
+  ) async {
     final http.Response response = await http.put(
-      Uri(scheme: 'https', host: host, path: '/api/$path'),
+      Uri.parse("$host$path"),
       body: body,
       headers: headers,
     );
@@ -69,8 +71,7 @@ class Client {
   // generic fetch function
   Future<dynamic> delete(String path) async {
     // start the response
-    final response = await client
-        .delete(Uri(scheme: 'https', host: host, path: '/api/$path'));
+    final response = await client.delete(Uri.parse("$host$path"));
     // check for basic network errors
     if (response.statusCode != 200) {
       throw Exception('There was an error fetching: ${response.body}');

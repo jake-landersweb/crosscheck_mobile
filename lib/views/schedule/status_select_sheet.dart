@@ -160,9 +160,8 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                   controller: controller,
                   showBackground: false,
                   maxLines: 5,
-                  icon: _status == 1
-                      ? null
-                      : const Icon(Icons.warning_rounded, color: Colors.red),
+                  icon: Icon(Icons.description_rounded,
+                      color: CustomColors.textColor(context).withOpacity(0.2)),
                   isLabeled: true,
                   labelText: "Note",
                   onChanged: (value) {},
@@ -178,13 +177,10 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                 color: dmodel.color,
                 onTap: () {
                   if (!_isLoading) {
-                    if (_status != 1 && controller.text.isEmpty) {
-                    } else {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      _setStatus(context, dmodel);
-                    }
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    _setStatus(context, dmodel);
                   }
                 },
               ),
@@ -355,6 +351,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
           }
         }
       }
+      dmodel.refreshState();
       if (widget.completion != null) {
         widget.completion!();
       }

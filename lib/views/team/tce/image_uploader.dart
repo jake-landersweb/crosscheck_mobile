@@ -284,18 +284,21 @@ class _ImageUploaderState extends State<ImageUploader> {
         // successfully uploaded
         // update the team image to the new presigned url
         setState(() {
-          dmodel.tus!.team.setImage(newImg);
+          if (dmodel.tus != null) {
+            dmodel.tus!.team.setImage(newImg);
+          }
           widget.onImageChange(newImg);
         });
         Navigator.of(context).pop();
       }, onError: () {
-        //
+        print("There was an unknown error");
       });
       setState(() {
         _isLoading = false;
       });
-    } catch (error) {
+    } catch (error, trace) {
       print("error = $error");
+      print(trace);
       dmodel.addIndicator(
           IndicatorItem.error("There was an issue with your chosen file"));
       setState(() {

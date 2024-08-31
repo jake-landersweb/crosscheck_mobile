@@ -26,9 +26,9 @@ ThemeData darkTheme = ThemeData(
     onSecondary: Colors.grey[300]!,
     onSurface: Colors.white,
     primary: Colors.blue, // accent color for the app
-    primaryVariant: Colors.blue[900]!,
+    // primaryVariant: Colors.blue[900]!,
     secondary: Colors.black,
-    secondaryVariant: Colors.orange[900]!,
+    // secondaryVariant: Colors.orange[900]!,
     surface: dbg,
   ),
   dividerColor: Colors.white.withOpacity(0.1),

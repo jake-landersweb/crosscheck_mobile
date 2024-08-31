@@ -1,4 +1,6 @@
+import 'package:crosscheck_sports/views/season/event_duties/event_duty_create.dart';
 import 'package:crosscheck_sports/views/team/tce/image_uploader.dart';
+import 'package:crosscheck_sports/views/team/team_model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +60,30 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
       backgroundColor: CustomColors.backgroundColor(context),
       childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
       color: dmodel.color,
+      trailing: [
+        if (dmodel.currentSeasonUser?.isTeamAdmin() ??
+            dmodel.tus!.user.isTeamAdmin())
+          cv.BasicButton(
+            onTap: () {
+              cv.cupertinoSheet(
+                context: context,
+                builder: (context) => SCERoot(
+                  team: widget.team,
+                  isCreate: false,
+                  season: dmodel.currentSeason!,
+                ),
+              );
+            },
+            child: Text(
+              "Edit",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 18,
+                color: dmodel.color,
+              ),
+            ),
+          )
+      ],
       // onRefresh: () => _refreshAction(dmodel),
       children: [_body(context, dmodel)],
     );
@@ -71,7 +97,7 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
         if (dmodel.currentSeasonUser?.isTeamAdmin() ??
             dmodel.tus!.user.isTeamAdmin())
           _edit(context, dmodel),
-        _teamRoster(context, dmodel),
+        _rosters(context, dmodel),
         if (dmodel.currentSeason != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -128,38 +154,44 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
               cv.showFloatingSheet(
                 context: context,
                 builder: (context) {
-                  return ImageUploader(
-                    team: widget.team,
-                    imgIsUrl: widget.team.image
-                        .contains("https://crosscheck-sports.s3.amazonaws.com"),
-                    onImageChange: (img) {
-                      setState(() {
-                        widget.team.image = img;
-                        dmodel.tus!.team.image = img;
-                      });
-                    },
-                  );
+                  return TeamModel(team: widget.team);
+                  // return ImageUploader(
+                  //   team: widget.team,
+                  //   imgIsUrl: widget.team.image
+                  //       .contains("https://crosscheck-sports.s3.amazonaws.com"),
+                  //   onImageChange: (img) {
+                  //     setState(() {
+                  //       widget.team.image = img;
+                  //       dmodel.tus!.team.image = img;
+                  //     });
+                  //   },
+                  // );
                 },
               );
             },
-            child: Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                TeamLogo(
-                  url: widget.team.image,
-                  size: MediaQuery.of(context).size.width / 2,
-                  color: dmodel.color,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Icon(
-                    Icons.add_a_photo_outlined,
-                    color: CustomColors.textColor(context).withOpacity(0.5),
-                    size: 24,
-                  ),
-                )
-              ],
+            child: TeamLogo(
+              url: widget.team.image,
+              size: MediaQuery.of(context).size.width / 2,
+              color: dmodel.color,
             ),
+            // child: Stack(
+            //   alignment: Alignment.bottomRight,
+            //   children: [
+            //     TeamLogo(
+            //       url: widget.team.image,
+            //       size: MediaQuery.of(context).size.width / 2,
+            //       color: dmodel.color,
+            //     ),
+            // Padding(
+            //   padding: const EdgeInsets.all(16.0),
+            //   child: Icon(
+            //     Icons.add_a_photo_outlined,
+            //     color: CustomColors.textColor(context).withOpacity(0.5),
+            //     size: 24,
+            //   ),
+            // )
+            //   ],
+            // ),
           )
         else
           TeamLogo(
@@ -257,11 +289,13 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
                 cv.LabeledCell(
                   label: "Website",
                   value: dmodel.currentSeason!.website,
+                  clickable: true,
                 ),
               if (dmodel.currentSeason!.calendarUrl != "")
                 cv.LabeledCell(
                   label: "Calendar",
                   value: dmodel.currentSeason!.calendarUrl,
+                  clickable: true,
                 ),
             ],
           )
@@ -355,7 +389,7 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: cv.Section(
-        "Edit",
+        "",
         child: cv.ListView<_ActionItem>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -408,44 +442,97 @@ class _TeamPageState extends State<TeamPage> with TickerProviderStateMixin {
           },
           children: [
             _ActionItem(
-              title: "Edit Team",
-              icon: Icons.edit_rounded,
-              color: dmodel.color,
-              view: TCERoot(
-                user: dmodel.user!,
-                team: widget.team,
-                isCreate: false,
-              ),
-              wrapInNavigator: true,
-            ),
-            _ActionItem(
-              title: "Edit Current Season",
-              icon: Icons.edit_rounded,
-              color: Colors.blue,
-              view: SCERoot(
-                team: widget.team,
-                isCreate: false,
-                season: dmodel.currentSeason!,
-              ),
-              wrapInNavigator: true,
-            ),
-            _ActionItem(
               title: "Create New Season",
               icon: Icons.add_rounded,
-              color: Colors.deepPurple[400]!,
+              color: Colors.blue[400]!,
               view: SCERoot(
                 team: widget.team,
                 isCreate: true,
               ),
               wrapInNavigator: true,
             ),
+            if (dmodel.currentSeason != null && dmodel.seasonUsers != null)
+              _ActionItem(
+                title: "Event Duties",
+                icon: Icons.task_alt_rounded,
+                color: Colors.amber[400]!,
+                view: EventDutyCreate(
+                  team: widget.team,
+                  season: dmodel.currentSeason!,
+                  seasonUsers: dmodel.seasonUsers!,
+                  eventDuties: dmodel.eventDuties,
+                ),
+                wrapInNavigator: true,
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _teamRoster(BuildContext context, DataModel dmodel) {
+  Widget _rosters(BuildContext context, DataModel dmodel) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: cv.ListView<_ActionItem>(
+        horizontalPadding: 0,
+        childPadding: const EdgeInsets.symmetric(horizontal: 16),
+        onChildTap: ((context, item) {
+          cv.Navigate(context, item.view);
+        }),
+        childBuilder: (context, item) {
+          return ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 50),
+            child: Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: item.color,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(item.icon, size: 20, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    item.title,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: CustomColors.textColor(context),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: CustomColors.textColor(context).withOpacity(0.5),
+                ),
+              ],
+            ),
+          );
+        },
+        children: [
+          _ActionItem(
+            title: "Team Roster",
+            icon: Icons.people,
+            color: Colors.green[400]!,
+            view: TeamRoster(team: dmodel.tus!.team),
+            wrapInNavigator: true,
+          ),
+          _ActionItem(
+            title: "Season Roster",
+            icon: Icons.people,
+            color: Colors.red[300]!,
+            view: const SeasonRoster(),
+            wrapInNavigator: true,
+          ),
+        ],
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: cv.BasicButton(

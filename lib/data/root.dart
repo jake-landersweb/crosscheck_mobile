@@ -11,3 +11,4 @@ export 'tuple.dart';
 export 'batch_tus.dart';
 export 'deep_link/root.dart';
 export 'roster/root.dart';
+export 'event_duties/root.dart';

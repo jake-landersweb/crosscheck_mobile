@@ -25,6 +25,8 @@ class SCEModel extends ChangeNotifier {
   List<CustomField> eventCustomFieldsTemplate = [];
   List<CustomField> eventCustomUserFieldsTemplate = [];
 
+  List<EventDuty> eventDuties = [];
+
   TeamStat stats = TeamStat.empty();
   bool hasStats = true;
 

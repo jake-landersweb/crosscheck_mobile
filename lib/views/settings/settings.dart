@@ -6,6 +6,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../extras/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
@@ -88,6 +89,31 @@ class _SettingsState extends State<Settings> {
             fontSize: 12,
           ),
         ),
+        const SizedBox(height: 16),
+        cv.BasicButton(
+          onTap: () async {
+            var uri = Uri.parse("https://crosschecksports.com/privacy-policy");
+            if (!await launchUrl(
+              uri,
+              webViewConfiguration: const WebViewConfiguration(
+                headers: {"Access-Control-Allow-Origin": "*"},
+              ),
+            )) {
+              dmodel.addIndicator(
+                IndicatorItem.error(
+                  "There was an issue viewing the privacy policy",
+                ),
+              );
+            }
+          },
+          child: Text(
+            "Privacy Policy",
+            style: TextStyle(
+              color: CustomColors.textColor(context).withOpacity(0.5),
+              fontSize: 12,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -131,24 +157,25 @@ class _SettingsState extends State<Settings> {
           cv.Section(
             "Basic Info",
             // headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
-            child: cv.ListView(
+            child: cv.ListView<Tuple3<String, String, bool>>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 if (widget.user.firstName?.isNotEmpty ?? false)
-                  Tuple("First Name", widget.user.firstName),
+                  Tuple3("First Name", widget.user.firstName!, false),
                 if (widget.user.lastName?.isNotEmpty ?? false)
-                  Tuple("Last Name", widget.user.lastName),
-                Tuple("Email", widget.user.email),
+                  Tuple3("Last Name", widget.user.lastName!, false),
+                Tuple3("Email", widget.user.email, true),
                 if (widget.user.phone.isNotEmpty)
-                  Tuple("Phone", widget.user.phone),
+                  Tuple3("Phone", widget.user.phone, true),
                 if (widget.user.nickname.isNotEmpty)
-                  Tuple("Nickname", widget.user.nickname),
+                  Tuple3("Nickname", widget.user.nickname, false),
               ],
-              childBuilder: (context, Tuple item) {
+              childBuilder: (context, item) {
                 return cv.LabeledCell(
-                  label: item.v1(),
-                  value: item.v2(),
+                  label: item.v1,
+                  value: item.v2,
+                  clickable: item.v3,
                 );
               },
             ),

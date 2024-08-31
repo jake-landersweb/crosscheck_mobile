@@ -42,25 +42,34 @@ class SUExcel {
       throw "'Name' is a required field";
     }
     phone = data[2]?.value.toString() ?? "";
-    nickname = (data[3]?.value.toString() ?? "").capitalize();
-    position = (data[4]?.value.toString() ?? "").toLowerCase();
-    jerseySize = (data[5]?.value.toString() ?? "").toUpperCase();
+    nickname = (data[3]?.value.toString() ?? "");
+    if (nickname.isNotEmpty) {
+      nickname = nickname.capitalize();
+    }
+    position = (data[4]?.value.toString() ?? "");
+    if (position.isNotEmpty) {
+      position = position.toLowerCase();
+    }
+    jerseySize = (data[5]?.value.toString() ?? "");
+    if (jerseySize.isNotEmpty) {
+      jerseySize = jerseySize.toUpperCase();
+    }
     jerseyNumber = (data[6]?.value.toString() ?? "");
 
     if (data[7]?.value.toString().toUpperCase() == "TRUE") {
       isManager = true;
-    } else if (data[7]?.value.toString().toUpperCase() == "FALSE") {
-      isManager = false;
-    } else if (data[7]?.value == "") {
+    } else if (data[7]?.value.toString().toUpperCase() == "FALSE" ||
+        data[7]?.value == "" ||
+        data[7]?.value == null) {
       isManager = false;
     } else {
       throw "Invalid parameter for 'Is a Manager': ${data[7]?.value}";
     }
     if (data[8]?.value.toString().toUpperCase() == "TRUE") {
       isSub = true;
-    } else if (data[8]?.value.toString().toUpperCase() == "FALSE") {
-      isSub = false;
-    } else if (data[8]?.value == "") {
+    } else if (data[8]?.value.toString().toUpperCase() == "FALSE" ||
+        data[8]?.value == "" ||
+        data[8]?.value == null) {
       isSub = false;
     } else {
       throw "Invalid parameter for 'Is a Sub': ${data[8]?.value}";

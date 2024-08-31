@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'package:crosscheck_sports/data/event_duties/event_duty_event_user.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/roster/from_excel/root.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -483,5 +484,91 @@ extension SeasonCalls on DataModel {
         onError != null ? onError() : null;
       }
     });
+  }
+
+  Future<bool> getEventDuties(String teamId, String seasonId) async {
+    try {
+      var response =
+          await client.fetch("/teams/$teamId/seasons/$seasonId/duties");
+      if (response == null || response['status'] != 200) {
+        throw "The response was invalid: $response";
+      }
+
+      eventDuties = [];
+
+      // parse the event duties
+      for (var i in response['body']) {
+        eventDuties.add(EventDuty.fromJson(i));
+      }
+      return true;
+    } catch (e, s) {
+      print(e);
+      print(s);
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getEventDutyEventUser(
+      String teamId, String seasonId, String eventId, int eventDutyId) async {
+    try {
+      var response = await client.fetch(
+          "/teams/$teamId/seasons/$seasonId/events/$eventId/duties/$eventDutyId");
+      if (response == null ||
+          (response['status'] != 200 && response['status'] != 404)) {
+        throw "The response was invalid: $response";
+      }
+
+      return response;
+    } catch (e, s) {
+      print(e);
+      print(s);
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getEventDutyCounts(
+      String teamId, String seasonId, String eventId, int eventDutyId) async {
+    try {
+      var response = await client
+          .fetch("/teams/$teamId/seasons/$seasonId/duties/$eventDutyId/counts");
+      if (response == null || response['status'] != 200) {
+        throw "The response was invalid: $response";
+      }
+
+      return response;
+    } catch (e, s) {
+      print(e);
+      print(s);
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> selectEventDutyUser(
+    String teamId,
+    String seasonId,
+    String eventId,
+    int eventDutyId,
+    String? email,
+  ) async {
+    try {
+      var body = {};
+      if (email != null) {
+        body['email'] = email;
+      }
+      var response = await client.post(
+        "/teams/$teamId/seasons/$seasonId/events/$eventId/duties/$eventDutyId/select",
+        {"Content-type": "application/json"},
+        jsonEncode(body),
+      );
+      if (response == null || response['status'] != 200) {
+        throw "The response was invalid: $response";
+      }
+
+      return response;
+    } catch (e, s) {
+      print(e);
+      print(s);
+      return null;
+    }
   }
 }

@@ -20,6 +20,7 @@ class RosterCell extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.subtext,
+    this.overrideColor,
   }) : super(key: key);
   final String name;
   final String? seed;
@@ -34,6 +35,7 @@ class RosterCell extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final String? subtext;
+  final Color? overrideColor;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class RosterCell extends StatelessWidget {
         padding: padding,
         child: Row(
           children: [
-            RosterAvatar(name: name, seed: seed),
+            RosterAvatar(name: name, seed: seed, overrideColor: overrideColor),
             const SizedBox(width: 8),
             Expanded(child: _name(context)),
             _endContent(context),

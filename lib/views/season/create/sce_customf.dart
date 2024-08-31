@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/season/create/sce_model.dart';
-import 'package:crosscheck_sports/views/season/create/sce_positions.dart';
-import 'package:crosscheck_sports/views/shared/positions_create.dart';
 import 'package:provider/provider.dart';
 import '../../../client/root.dart';
 import '../../../data/root.dart';
-import '../../../extras/root.dart';
 import '../../../custom_views/root.dart' as cv;
-import 'package:flutter_switch/flutter_switch.dart';
 import '../../shared/root.dart';
 import 'root.dart';
 
@@ -31,14 +27,37 @@ class _SCECustomFState extends State<SCECustomF> {
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       children: [
-        _customF(context, dmodel, scemodel),
-        const SizedBox(height: 16),
-        _customUserF(context, dmodel, scemodel),
-        const SizedBox(height: 16),
-        _eventCustomF(context, dmodel, scemodel),
-        const SizedBox(height: 16),
-        _eventCustomUserF(context, dmodel, scemodel),
-        const SizedBox(height: 100),
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        //   child: cv.SegmentedPicker(
+        //     titles: ["Fields", "Duties"],
+        //     selection: _currentView,
+        //     style: cv.SegmentedPickerStyle(
+        //       height: 45,
+        //       sliderColor: dmodel.color,
+        //       selectedTextColor: Colors.white,
+        //       backgroundColor: CustomColors.cellColor(context),
+        //     ),
+        //     onSelection: (v) {
+        //       setState(() {
+        //         _currentView = v;
+        //       });
+        //     },
+        //   ),
+        // ),
+        // if (_currentView == "Fields")
+        Column(
+          children: [
+            _customF(context, dmodel, scemodel),
+            const SizedBox(height: 16),
+            _customUserF(context, dmodel, scemodel),
+            const SizedBox(height: 16),
+            _eventCustomF(context, dmodel, scemodel),
+            const SizedBox(height: 16),
+            _eventCustomUserF(context, dmodel, scemodel),
+            const SizedBox(height: 100),
+          ],
+        )
       ],
     );
   }

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:crosscheck_sports/data/event_duties/event_duty_event_user.dart';
+import 'package:crosscheck_sports/views/schedule/event_duty_select.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/stats/team/root.dart';
@@ -46,12 +48,16 @@ class EventDetail2 extends StatefulWidget {
 }
 
 class _EventDetail2State extends State<EventDetail2> {
+  var _loadingEventDuty = false;
+  List<EventDutyEventUser?> _eventDutyUsers = [];
+
   @override
   void initState() {
     print(widget.team.teamId);
     print(widget.season.seasonId);
     print(widget.event.eventId);
     print(widget.event.eTitle);
+    _init();
     super.initState();
   }
 
@@ -122,9 +128,100 @@ class _EventDetail2State extends State<EventDetail2> {
             child: _detailField(context, dmodel, Icons.person_outline,
                 widget.event.getOpponentTitle(widget.team.teamId)),
           ),
+        // event duties
+        if (dmodel.eventDuties.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Column(
+              children: [
+                for (var i = 0; i < _eventDutyUsers.length; i++)
+                  cv.Section(
+                    dmodel.eventDuties[i].title,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: CustomColors.cellColor(context),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      width: double.infinity,
+                      child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: cv.BasicButton(
+                            onTap: () {
+                              cv.cupertinoSheet(
+                                context: context,
+                                builder: (context) => EventDutySelect(
+                                  team: widget.team,
+                                  season: widget.season,
+                                  event: widget.event,
+                                  eventDuty: dmodel.eventDuties[i],
+                                  initialUser: _eventDutyUsers[i],
+                                  onSelect: (user) {
+                                    setState(() {
+                                      _eventDutyUsers[i] = user;
+                                    });
+                                  },
+                                ),
+                              );
+                            },
+                            active: dmodel.currentSeasonUser?.isTeamAdmin() ??
+                                dmodel.tus!.user.isTeamAdmin(),
+                            child: _eventDutyUsers[i] != null
+                                ? Row(
+                                    children: [
+                                      Expanded(
+                                        child: RosterCell(
+                                          name: dmodel.seasonUsers!
+                                              .firstWhere((element) =>
+                                                  element.email ==
+                                                  _eventDutyUsers[i]!.email)
+                                              .name(dmodel
+                                                  .tus!.team.showNicknames),
+                                          seed: _eventDutyUsers[i]!.email,
+                                          padding: EdgeInsets.zero,
+                                          type: RosterListType.none,
+                                          color: dmodel.color,
+                                        ),
+                                      ),
+                                      if (euModel.eventUsers != null)
+                                        EventUserStatus(
+                                          email: _eventDutyUsers[i]!.email,
+                                          status: euModel.eventUsers!
+                                              .firstWhere((element) =>
+                                                  element.email ==
+                                                  _eventDutyUsers[i]!.email)
+                                              .eventFields!
+                                              .eStatus,
+                                          event: widget.event,
+                                          showTitle: false,
+                                          onTap: () {},
+                                        ),
+                                    ],
+                                  )
+                                : RosterCell(
+                                    name: "No User!",
+                                    seed: "hello world",
+                                    overrideColor:
+                                        CustomColors.textColor(context)
+                                            .withOpacity(0.2),
+                                    padding: EdgeInsets.zero,
+                                    type: RosterListType.none,
+                                    color: dmodel.color,
+                                    // trailingWidget: _trailingWidget(context, i, smodel),
+                                  ),
+                          )),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         if (widget.event.hasAttendance && widget.event.eventType == 1)
           Column(
             children: [
+              if (dmodel.eventDuties.isNotEmpty)
+                const Padding(
+                  padding: EdgeInsets.only(top: 16.0),
+                  child: Divider(indent: 0),
+                ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: cv.BasicButton(
@@ -529,6 +626,39 @@ class _EventDetail2State extends State<EventDetail2> {
 
   Color _accentColor(DataModel dmodel) {
     return widget.event.getColor() ?? dmodel.color;
+  }
+
+  Future<void> _init() async {
+    setState(() {
+      _loadingEventDuty = true;
+    });
+    try {
+      var dmodel = context.read<DataModel>();
+
+      // get all event duty user statuses
+      for (var i in dmodel.eventDuties) {
+        var response = await dmodel.getEventDutyEventUser(
+          widget.team.teamId,
+          widget.season.seasonId,
+          widget.event.eventId,
+          dmodel.eventDuties.first.eventDutyId,
+        );
+        if (response == null) {
+          throw "There was an issue getting the event duty user";
+        }
+        if (response['status'] == 200) {
+          _eventDutyUsers.add(EventDutyEventUser.fromJson(response['body']));
+        } else {
+          _eventDutyUsers.add(null);
+        }
+      }
+    } catch (e, s) {
+      print(e);
+      print(s);
+    }
+    setState(() {
+      _loadingEventDuty = false;
+    });
   }
 }
 
@@ -1137,6 +1267,11 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
       decoration: BoxDecoration(
         color: CustomColors.cellColor(context),
         borderRadius: BorderRadius.circular(10),
+        border: dmodel.currentSeasonUser == null
+            ? null
+            : dmodel.currentSeasonUser!.email == user.email
+                ? Border.all(color: dmodel.color, width: 2)
+                : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
