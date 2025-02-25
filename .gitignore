@@ -10,6 +10,7 @@
 .svn/
 *.apk
 *.jks
+.vscode/*
 
 # IntelliJ related
 *.iml

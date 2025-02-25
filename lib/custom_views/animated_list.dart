@@ -89,7 +89,7 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
               height: 0.5,
               width: double.infinity,
               color: widget.cellColor ?? CustomColors.cellColor(context)),
-          const Divider(indent: 15),
+          Divider(color: Colors.white.withValues(alpha: 0.1), indent: 15),
         ],
       ),
     );

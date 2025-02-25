@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.5.0+64
+version: 4.5.1+65
 environment:
   sdk: ">=2.17.0 <3.7.3"
 
@@ -35,45 +35,50 @@ dependencies:
   sprung: ^3.0.0
   modal_bottom_sheet: ^3.0.0-pre
   shared_preferences: ^2.0.6
-  firebase_core: ^2.7.0 # firebase
-  firebase_messaging: ^14.2.5 # firebase
+  firebase_core: ^3.4.0 # firebase
+  firebase_messaging: ^15.1.0 # firebase
   overlay_support: ^2.1.0 # firebase
   flutter_switch: ^0.3.2
-  intl: ^0.17.0 # for date format
+  intl: ^0.19.0 # for date format
   table_calendar: ^3.0.2 # for calendar functionality
   launch_review: ^3.0.1 # for openning the app store page in app
   flutter_datetime_picker_plus: ^2.0.1
-  device_info_plus: ^8.1.0 # for getting device id
-  flutter_slidable: ^2.0.0 # for slide actions in a list
+  device_info_plus: ^11.1.1 # for getting device id
+  # flutter_slidable: ^3.1.1 # for slide actions in a list
+  flutter_slidable:
+    git:
+      url: https://github.com/letsar/flutter_slidable.git
+      ref: master
   flutter_colorpicker: ^1.0.2 # picking color for a team
   flutter_svg: ^2.0.2 # for svg rendering
   graphql: ^5.0.0 # for graphql chat
   uuid: ^3.0.5 # for message id's
-  amplify_flutter: ^0.6.12 # for graphql subs
-  amplify_api: ^0.6.12 # for graphql subs
-  flutter_staggered_grid_view: ^0.6.0 # for better grids
-  image_picker: ^0.8.6+4 # for picking images for team logo upload
+  amplify_flutter: ^2.5.0 # for graphql subs
+  amplify_api: ^2.5.0 # for graphql subs
+  flutter_staggered_grid_view: ^0.7.0 # for better grids
+  image_picker: ^1.1.2 # for picking images for team logo upload
   image: ^4.0.15 # for resizing images
   flutter_app_badger: ^1.4.0 # for reading and removing notification badges
-  firebase_dynamic_links: ^5.0.15 # for in app linking
-  firebase_analytics: ^10.1.4
-  flutter_image_compress: ^1.1.0 # for compressing images
+  firebase_dynamic_links: ^6.0.5 # for in app linking
+  firebase_analytics: ^11.3.0
+  flutter_image_compress: ^2.3.0 # for compressing images
   cached_network_image: ^3.2.1 # holding network images in cache directory
   flutter_cache_manager: ^3.3.0 # for interacting with network images
-  gallery_saver: ^2.3.2 # for saving images to the gallery
-  file_picker: ^5.2.5 # better file picker
+  image_gallery_saver: '^2.0.3' # save images to gallery
+  file_picker: ^8.1.4 # better file picker
   video_compress: ^3.1.0 # for compressing videos
   video_thumbnail: ^0.5.2 # for creating video thumbnails
   video_player: ^2.4.6 # for playing video files
   url_launcher: ^6.1.5 # for opening link urls
   device_calendar: ^4.2.0 # for adding events to the user's calendar
-  syncfusion_flutter_datepicker: ^20.4.42
+  syncfusion_flutter_datepicker: ^27.1.58
   timezone: ^0.9.1
-  excel: 2.0.1 # reading excel files for user create
-  ical: ^0.2.2
-  share_plus: ^6.3.1
+  excel: ^4.0.6 # reading excel files for user create
+  share_plus: ^10.0.0
   path_provider: ^2.0.14
   auto_size_text: ^3.0.0
+  web_socket_channel: 2.2.0
+  connectivity_plus: ^6.0.3
 
 flutter_icons:
   android: "launcher_icon"
@@ -89,7 +94,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -158,11 +158,10 @@ class _ListViewState<T> extends State<ListView<T>> {
                                     CustomColors.cellColor(context),
                               ),
                               Divider(
+                                color: Colors.white.withValues(alpha: 0.1),
                                 indent:
                                     widget.allowsSelect ? (16 + 20 + 16) : 16,
                                 height: 0.5,
-                                color: CustomColors.textColor(context)
-                                    .withOpacity(0.1),
                               ),
                             ],
                           ),

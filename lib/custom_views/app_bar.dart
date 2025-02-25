@@ -426,7 +426,8 @@ class _AppBarState extends State<AppBar> {
         AnimatedOpacity(
           opacity: _showElevation ? 1 : 0,
           duration: const Duration(milliseconds: 300),
-          child: const Divider(
+          child: Divider(
+            color: Colors.white.withValues(alpha: 0.1),
             height: 0.5,
             indent: 0,
             endIndent: 0,

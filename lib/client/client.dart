@@ -2,6 +2,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'env.dart';
 
+const _headers = {"x-api-key": API_KEY};
+
 class Client {
   // base url that entire app will run off
   static const host = HOST;
@@ -17,7 +19,10 @@ class Client {
   // generic fetch function
   Future<dynamic> fetch(String path) async {
     // start the response
-    final response = await client.get(Uri.parse("$host$path"));
+    final response = await client.get(
+      Uri.parse("$host$path"),
+      headers: _headers,
+    );
     // check for basic network errors
     if (response.statusCode != 200) {
       print(response);
@@ -31,7 +36,7 @@ class Client {
   // more generic fetch function
   Future<http.Response> genericFetch(String uri) async {
     // start the response
-    return await client.get(Uri.parse(uri));
+    return await client.get(Uri.parse(uri), headers: _headers);
   }
 
   Future<dynamic> post(
@@ -39,7 +44,9 @@ class Client {
     final http.Response response = await http.post(
       Uri.parse("$host$path"),
       body: body,
-      headers: headers,
+      headers: {}
+        ..addAll(_headers)
+        ..addAll(headers),
     );
 
     return jsonDecode(response.body);
@@ -47,11 +54,11 @@ class Client {
 
   Future<http.Response> genericPost(
       String uri, Map<String, String> headers, dynamic body) async {
-    return await http.post(
-      Uri.parse(uri),
-      body: body,
-      headers: headers,
-    );
+    return await http.post(Uri.parse(uri),
+        body: body,
+        headers: {}
+          ..addAll(_headers)
+          ..addAll(headers));
   }
 
   Future<dynamic> put(
@@ -59,11 +66,11 @@ class Client {
     Map<String, String> headers,
     dynamic body,
   ) async {
-    final http.Response response = await http.put(
-      Uri.parse("$host$path"),
-      body: body,
-      headers: headers,
-    );
+    final http.Response response = await http.put(Uri.parse("$host$path"),
+        body: body,
+        headers: {}
+          ..addAll(_headers)
+          ..addAll(headers));
 
     return jsonDecode(response.body);
   }
@@ -71,7 +78,8 @@ class Client {
   // generic fetch function
   Future<dynamic> delete(String path) async {
     // start the response
-    final response = await client.delete(Uri.parse("$host$path"));
+    final response =
+        await client.delete(Uri.parse("$host$path"), headers: _headers);
     // check for basic network errors
     if (response.statusCode != 200) {
       throw Exception('There was an error fetching: ${response.body}');

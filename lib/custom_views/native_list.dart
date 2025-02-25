@@ -83,7 +83,10 @@ class _NativeListState extends State<NativeList> {
                       child: i,
                     ),
                   ),
-                  if (i != widget.children.last) const Divider(height: 0.5),
+                  if (i != widget.children.last)
+                    Divider(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        height: 0.5),
                 ],
               ),
           ],
@@ -114,7 +117,8 @@ class _NativeListState extends State<NativeList> {
                     ),
                   ),
                   if (i != widget.children.last)
-                    const Divider(
+                    Divider(
+                      color: Colors.white.withValues(alpha: 0.1),
                       height: 0.5,
                       indent: 0,
                     ),

@@ -1,14 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:uuid/uuid.dart';
@@ -19,7 +13,6 @@ import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../components/root.dart' as comp;
 import 'package:device_calendar/device_calendar.dart' as cal;
-import 'package:ical/serializer.dart';
 
 class ExportToCalendar extends StatefulWidget {
   const ExportToCalendar({
@@ -364,7 +357,8 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
 
     // get the timezone
     tz.initializeTimeZones();
-    final String locationName = await FlutterNativeTimezone.getLocalTimezone();
+    final String locationName = DateTime.now().timeZoneName;
+    // final String locationName = await FlutterNativeTimezone.getLocalTimezone();
     var currentLocation = tz.getLocation(locationName);
 
     int totalSaved = 0;

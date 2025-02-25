@@ -387,7 +387,11 @@ class _SeasonChatState extends State<SeasonChat> {
             ],
           ),
         ),
-        const Divider(indent: 0, endIndent: 0, height: 0.5)
+        Divider(
+            color: Colors.white.withValues(alpha: 0.1),
+            indent: 0,
+            endIndent: 0,
+            height: 0.5)
       ],
     );
   }

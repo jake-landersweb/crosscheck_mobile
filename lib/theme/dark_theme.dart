@@ -7,7 +7,7 @@ import '../extras/root.dart';
 const Color dbg = Color.fromRGBO(30, 30, 33, 1);
 
 ThemeData darkTheme = ThemeData(
-  backgroundColor: dbg,
+  // backgroundColor: dbg,
   // fontFamily: fontFamily(),
   brightness: Brightness.dark,
   canvasColor: dbg,
@@ -31,14 +31,15 @@ ThemeData darkTheme = ThemeData(
     // secondaryVariant: Colors.orange[900]!,
     surface: dbg,
   ),
-  dividerColor: Colors.white.withOpacity(0.1),
+  dividerColor: Colors.white.withValues(alpha: 0.1),
   snackBarTheme: SnackBarThemeData(
       backgroundColor: CustomColors.darkList,
       contentTextStyle: const TextStyle(color: Colors.white)),
-  dividerTheme: const DividerThemeData(
+  dividerTheme: DividerThemeData(
     thickness: 0.5,
     indent: 16,
     endIndent: 0,
+    color: Colors.white.withValues(alpha: 0.1),
   ),
   scaffoldBackgroundColor: dbg, // scaffold base color
 );

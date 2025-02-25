@@ -218,9 +218,10 @@ class _EventDetail2State extends State<EventDetail2> {
           Column(
             children: [
               if (dmodel.eventDuties.isNotEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 16.0),
-                  child: Divider(indent: 0),
+                  child: Divider(
+                      color: Colors.white.withValues(alpha: 0.1), indent: 0),
                 ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
@@ -285,9 +286,10 @@ class _EventDetail2State extends State<EventDetail2> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(top: 16.0),
-                child: Divider(indent: 0),
+                child: Divider(
+                    color: Colors.white.withValues(alpha: 0.1), indent: 0),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),

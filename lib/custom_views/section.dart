@@ -137,8 +137,9 @@ class _SectionState extends State<Section> with TickerProviderStateMixin {
               padding: widget.headerPadding,
               child: _title(context),
             ),
-            const Expanded(
-              child: Divider(height: 0.5),
+            Expanded(
+              child: Divider(
+                  color: Colors.white.withValues(alpha: 0.1), height: 0.5),
             ),
             Padding(
               padding: widget.headerPadding,

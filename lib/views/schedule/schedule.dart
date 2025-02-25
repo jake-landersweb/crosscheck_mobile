@@ -256,7 +256,8 @@ class _ScheduleState extends State<Schedule> {
             ),
           ),
         ),
-        const Divider(
+        Divider(
+          color: Colors.white.withValues(alpha: 0.1),
           indent: 0,
           height: 0.5,
         ),
@@ -751,7 +752,9 @@ class _EventListState extends State<EventList> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const Divider(),
+                        Divider(
+                          color: Colors.white.withValues(alpha: 0.1),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -827,7 +830,9 @@ class _EventListState extends State<EventList> {
                                   fontSize: 25,
                                   fontWeight: FontWeight.w700),
                             ),
-                            const Divider(),
+                            Divider(
+                              color: Colors.white.withValues(alpha: 0.1),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 16),

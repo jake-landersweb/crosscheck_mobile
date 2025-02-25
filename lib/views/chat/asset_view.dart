@@ -3,16 +3,15 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:flutter/semantics.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+// import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
 
 class AssetView extends StatefulWidget {
@@ -370,7 +369,7 @@ class _AssetViewState extends State<AssetView> with TickerProviderStateMixin {
                 File f = File('${appDir.path}/${widget.message.img!}');
                 f.writeAsBytes(image);
                 print(f);
-                await GallerySaver.saveImage(f.path);
+                await ImageGallerySaver.saveFile(f.path);
                 dmodel.addIndicator(
                   IndicatorItem.success("Successfully saved image"),
                 );
@@ -395,7 +394,7 @@ class _AssetViewState extends State<AssetView> with TickerProviderStateMixin {
                 File f = File('${appDir.path}/${widget.message.video!}');
                 f.writeAsBytes(video);
                 print(f);
-                await GallerySaver.saveVideo(f.path);
+                await ImageGallerySaver.saveFile(f.path);
                 dmodel.addIndicator(
                   IndicatorItem.success("Successfully saved video"),
                 );

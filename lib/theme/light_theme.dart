@@ -5,7 +5,7 @@ import 'root.dart';
 import '../extras/root.dart';
 
 ThemeData lightTheme = ThemeData(
-  backgroundColor: CustomColors.lightList,
+  // backgroundColor: CustomColors.lightList,
   // fontFamily: fontFamily(),
   brightness: Brightness.light,
   canvasColor: CustomColors.lightList,

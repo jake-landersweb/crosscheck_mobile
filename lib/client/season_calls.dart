@@ -415,7 +415,7 @@ extension SeasonCalls on DataModel {
         }
         completion(e);
       } else {
-        if (response['status'] == 410) {
+        if (response['status'] == 410 || response['status'] == 444) {
           print("The calendar is invalid");
           addIndicator(IndicatorItem.error("The calendar is invalid"));
         } else {

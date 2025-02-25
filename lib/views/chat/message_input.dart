@@ -49,7 +49,11 @@ class _MessageInputState extends State<MessageInput> {
     ChatModel cmodel = Provider.of<ChatModel>(context);
     return Column(
       children: [
-        const Divider(height: 0.5, indent: 0, endIndent: 0),
+        Divider(
+            color: Colors.white.withValues(alpha: 0.1),
+            height: 0.5,
+            indent: 0,
+            endIndent: 0),
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [

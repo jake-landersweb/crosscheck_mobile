@@ -38,10 +38,10 @@ class _TabBarState extends State<TabBar> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Divider(
+          color: Colors.white.withValues(alpha: 0.1),
           height: 0.5,
           indent: 0,
           endIndent: 0,
-          color: ViewColors.textColor(context).withOpacity(0.3),
         ),
         cv.GlassContainer(
           width: double.infinity,
