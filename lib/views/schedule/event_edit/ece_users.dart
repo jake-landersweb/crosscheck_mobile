@@ -1,15 +1,13 @@
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/data/roster/roster_group.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
-import 'root.dart';
 import '../../../client/root.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 
 class ECEUsers extends StatefulWidget {
-  const ECEUsers({Key? key}) : super(key: key);
+  const ECEUsers({super.key});
 
   @override
   _ECEUsersState createState() => _ECEUsersState();

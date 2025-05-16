@@ -1,13 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'dart:math' as math;
+
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/views/root.dart';
-import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/extras/root.dart';
+import 'package:crosscheck_sports/views/root.dart';
+import 'package:flutter/material.dart';
+
 import '../../custom_views/root.dart' as cv;
-import 'dart:math' as math;
 import '../components/root.dart' as comp;
 
 class RosterSorting extends ChangeNotifier {
@@ -396,37 +395,6 @@ class RosterSorting extends ChangeNotifier {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _filterCell(BuildContext context, DataModel dmodel, String val,
-      bool selected, VoidCallback onTap) {
-    return cv.BasicButton(
-      onTap: () => onTap(),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          color: dmodel.color.withOpacity(0.3),
-          border: Border.all(
-            color: selected ? dmodel.color : Colors.transparent,
-            width: 1,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Center(
-            child: Text(
-              val,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: dmodel.color,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

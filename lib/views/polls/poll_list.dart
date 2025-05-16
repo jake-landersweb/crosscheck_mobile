@@ -6,14 +6,14 @@ import '../../data/root.dart';
 
 class PollList extends StatefulWidget {
   const PollList({
-    Key? key,
+    super.key,
     required this.polls,
     required this.team,
     required this.season,
     required this.teamUser,
     this.seasonUser,
     this.showFutureLine = false,
-  }) : super(key: key);
+  });
   final List<Poll> polls;
   final Team team;
   final Season season;

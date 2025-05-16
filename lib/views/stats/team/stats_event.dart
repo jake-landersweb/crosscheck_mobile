@@ -9,13 +9,13 @@ import '../../../custom_views/root.dart' as cv;
 
 class StatsEvent extends StatefulWidget {
   const StatsEvent({
-    Key? key,
+    super.key,
     required this.team,
     required this.teamUser,
     required this.season,
     required this.seasonUser,
     required this.event,
-  }) : super(key: key);
+  });
   final Team team;
   final SeasonUserTeamFields teamUser;
   final Season season;

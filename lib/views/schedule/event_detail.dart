@@ -5,7 +5,6 @@ import 'package:crosscheck_sports/views/schedule/event_duty_select.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/stats/team/root.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom_views/root.dart' as cv;
@@ -29,13 +28,13 @@ class EventUserModel extends ChangeNotifier {
 
 class EventDetail2 extends StatefulWidget {
   const EventDetail2({
-    Key? key,
+    super.key,
     required this.event,
     required this.email,
     required this.team,
     required this.season,
     required this.isUpcoming,
-  }) : super(key: key);
+  });
 
   final Event event;
   final String email;
@@ -48,8 +47,9 @@ class EventDetail2 extends StatefulWidget {
 }
 
 class _EventDetail2State extends State<EventDetail2> {
+  // ignore: unused_field
   var _loadingEventDuty = false;
-  List<EventDutyEventUser?> _eventDutyUsers = [];
+  final List<EventDutyEventUser?> _eventDutyUsers = [];
 
   @override
   void initState() {
@@ -643,7 +643,7 @@ class _EventDetail2State extends State<EventDetail2> {
           widget.team.teamId,
           widget.season.seasonId,
           widget.event.eventId,
-          dmodel.eventDuties.first.eventDutyId,
+          i.eventDutyId,
         );
         if (response == null) {
           throw "There was an issue getting the event duty user";
@@ -666,13 +666,13 @@ class _EventDetail2State extends State<EventDetail2> {
 
 class EventDetail extends StatefulWidget {
   const EventDetail({
-    Key? key,
+    super.key,
     required this.event,
     required this.email,
     required this.team,
     required this.season,
     required this.isUpcoming,
-  }) : super(key: key);
+  });
 
   final Event event;
   final String email;
@@ -1434,7 +1434,7 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
 
   Widget _replyRow(
       BuildContext context, DataModel dmodel, String name, String message) {
-    return Text("- ${name}: ${message}",
+    return Text("- $name: $message",
         style: TextStyle(
           color: CustomColors.textColor(context).withOpacity(0.5),
           fontSize: 16,

@@ -8,13 +8,13 @@ class BackButton extends StatelessWidget {
   final bool showIcon;
   final bool useRoot;
   const BackButton({
-    Key? key,
+    super.key,
     this.title = 'Back',
     this.color,
     this.showText = false,
     this.showIcon = true,
     this.useRoot = false,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return cv.BasicButton(

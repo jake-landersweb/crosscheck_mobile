@@ -1,25 +1,22 @@
 import 'dart:io';
 
-import 'package:crosscheck_sports/views/chat/chat_loading.dart';
 import 'package:crosscheck_sports/views/chat/message_input.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
-import 'package:graphql/client.dart';
 
 class ChatHome extends StatelessWidget {
   const ChatHome({
-    Key? key,
+    super.key,
     required this.team,
     required this.user,
-  }) : super(key: key);
+  });
   final Team team;
   final User user;
 
@@ -71,12 +68,12 @@ class ChatHome extends StatelessWidget {
 
 class SeasonChat extends StatefulWidget {
   const SeasonChat({
-    Key? key,
+    super.key,
     required this.team,
     required this.season,
     required this.user,
     required this.seasonUser,
-  }) : super(key: key);
+  });
   final Team team;
   final Season season;
   final User user;

@@ -9,9 +9,9 @@ import 'root.dart';
 
 class SCECustomF extends StatefulWidget {
   const SCECustomF({
-    Key? key,
+    super.key,
     required this.team,
-  }) : super(key: key);
+  });
   final Team team;
 
   @override

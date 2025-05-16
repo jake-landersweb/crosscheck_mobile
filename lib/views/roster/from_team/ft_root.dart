@@ -4,7 +4,6 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
-import '../../components/root.dart' as comp;
 import 'root.dart';
 
 class FTRoot extends StatefulWidget {

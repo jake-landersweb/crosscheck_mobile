@@ -25,14 +25,13 @@ class SegmentedPickerStyle {
 
 class SegmentedPicker<T> extends StatefulWidget {
   const SegmentedPicker({
-    Key? key,
+    super.key,
     required this.titles,
     this.selections,
     required this.onSelection,
     required this.selection,
     this.style = const SegmentedPickerStyle(),
-  })  : assert(titles.length < 4),
-        super(key: key);
+  })  : assert(titles.length < 4);
   final List<String> titles;
   final List<T>? selections;
   final Function(dynamic) onSelection;

@@ -6,11 +6,11 @@ class SizingPageView extends StatelessWidget {
   final List<Widget> children;
 
   const SizingPageView({
-    Key? key,
+    super.key,
     this.physics,
     required this.controller,
     required this.children,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

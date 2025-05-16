@@ -9,7 +9,7 @@ import '../../../custom_views/root.dart' as cv;
 import 'root.dart';
 
 class RUCESeason extends StatefulWidget {
-  const RUCESeason({Key? key}) : super(key: key);
+  const RUCESeason({super.key});
 
   @override
   _RUCESeasonState createState() => _RUCESeasonState();

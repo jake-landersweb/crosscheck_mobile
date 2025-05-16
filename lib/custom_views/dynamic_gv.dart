@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 /// pulled from https://pub.dev/packages/dynamic_height_grid_view
 class DynamicGridView extends StatelessWidget {
   const DynamicGridView({
-    Key? key,
+    super.key,
     required this.builder,
     required this.itemCount,
     required this.crossAxisCount,
@@ -16,7 +16,7 @@ class DynamicGridView extends StatelessWidget {
     this.controller,
     this.shrinkWrap = false,
     this.physics,
-  }) : super(key: key);
+  });
   final IndexedWidgetBuilder builder;
   final int itemCount;
   final int crossAxisCount;
@@ -62,7 +62,7 @@ class DynamicGridView extends StatelessWidget {
 /// Use this for [CustomScrollView]
 class SliverDynamicHeightGridView extends StatelessWidget {
   const SliverDynamicHeightGridView({
-    Key? key,
+    super.key,
     required this.builder,
     required this.itemCount,
     required this.crossAxisCount,
@@ -70,7 +70,7 @@ class SliverDynamicHeightGridView extends StatelessWidget {
     this.mainAxisSpacing = 8,
     this.rowCrossAxisAlignment = CrossAxisAlignment.start,
     this.controller,
-  }) : super(key: key);
+  });
   final IndexedWidgetBuilder builder;
   final int itemCount;
   final int crossAxisCount;
@@ -110,7 +110,6 @@ class SliverDynamicHeightGridView extends StatelessWidget {
 
 class _GridRow extends StatelessWidget {
   const _GridRow({
-    Key? key,
     required this.columnIndex,
     required this.builder,
     required this.itemCount,
@@ -118,7 +117,7 @@ class _GridRow extends StatelessWidget {
     required this.crossAxisSpacing,
     required this.mainAxisSpacing,
     required this.crossAxisAlignment,
-  }) : super(key: key);
+  });
   final IndexedWidgetBuilder builder;
   final int itemCount;
   final int crossAxisCount;

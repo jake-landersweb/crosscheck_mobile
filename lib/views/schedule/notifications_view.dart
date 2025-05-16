@@ -1,5 +1,4 @@
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/data/user/notif_alert.dart';
 import 'package:crosscheck_sports/extras/root.dart';

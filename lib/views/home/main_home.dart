@@ -1,14 +1,11 @@
-import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/polls/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/views/stats/team/root.dart';
 import 'package:provider/provider.dart';
 import '../root.dart';
 import '../../custom_views/root.dart' as cv;
 
 class MainHome extends StatefulWidget {
-  const MainHome({Key? key}) : super(key: key);
+  const MainHome({super.key});
 
   @override
   _MainHomeState createState() => _MainHomeState();
@@ -48,17 +45,15 @@ class _MainHomeState extends State<MainHome> {
                 index: dmodel.scheduleIndex,
                 icons: const [
                   Icons.home_rounded,
-                  Icons.ballot_rounded,
                   Icons.calendar_month_rounded,
                   Icons.forum_rounded,
-                  Icons.pending_rounded,
+                  Icons.account_circle_rounded,
                 ],
                 titles: const [
                   "Season",
-                  "Polls",
                   "Schedule",
                   "Chat",
-                  "More",
+                  "Account",
                 ],
                 color: dmodel.color,
                 onViewChange: (idx) {
@@ -77,9 +72,9 @@ class _MainHomeState extends State<MainHome> {
                   if (dmodel.noSeason) {
                     return false;
                   } else {
-                    if (dmodel.showUnreadBadge && p0 == 3) {
+                    if (dmodel.showUnreadBadge && p0 == 2) {
                       return true;
-                    } else if (dmodel.showPollBadge && p0 == 1) {
+                    } else if (dmodel.showPollBadge && p0 == 0) {
                       return true;
                     } else {
                       return false;
@@ -99,7 +94,7 @@ class _MainHomeState extends State<MainHome> {
     switch (dmodel.scheduleIndex) {
       case 0:
         if (dmodel.tus != null) {
-          return TeamPage(
+          return SeasonPage(
             team: dmodel.tus!.team,
             teamUser: dmodel.tus!.user,
           );
@@ -107,19 +102,8 @@ class _MainHomeState extends State<MainHome> {
           return Container();
         }
       case 1:
-        if (dmodel.noSeason || (dmodel.currentSeason == null)) {
-          return Container();
-        } else {
-          return SeasonPolls(
-            team: dmodel.tus!.team,
-            season: dmodel.currentSeason!,
-            teamUser: dmodel.tus!.user,
-            seasonUser: dmodel.currentSeasonUser,
-          );
-        }
-      case 2:
         return const Schedule();
-      case 3:
+      case 2:
         if (dmodel.currentSeason == null) {
           return Container();
         } else {
@@ -132,13 +116,8 @@ class _MainHomeState extends State<MainHome> {
             ),
           );
         }
-      case 4:
-        return MorePages(
-          team: dmodel.tus?.team,
-          season: dmodel.currentSeason,
-          tus: dmodel.tus,
-          seasonUser: dmodel.currentSeasonUser,
-        );
+      case 3:
+        return Settings(user: dmodel.user!);
       default:
         return Container();
     }

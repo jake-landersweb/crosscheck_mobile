@@ -1,11 +1,8 @@
 import 'dart:convert';
 
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/custom_views/none_found.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/data/team/team.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/season/event_duties/event_duty_user_select.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
@@ -29,9 +26,9 @@ class EventDutyCreate extends StatefulWidget {
 }
 
 class _EventDutyCreateState extends State<EventDutyCreate> {
-  bool _isLoading = false;
+  final bool _isLoading = false;
   bool _isSaving = false;
-  bool _hasError = false;
+  final bool _hasError = false;
   List<EventDuty> _eventDuties = [];
 
   @override

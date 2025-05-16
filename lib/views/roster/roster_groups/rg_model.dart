@@ -1,6 +1,5 @@
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/data/roster/roster_group.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 

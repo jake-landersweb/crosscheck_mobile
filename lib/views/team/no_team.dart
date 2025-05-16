@@ -1,18 +1,14 @@
-import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/views/tsce/tsce_root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/team/create_team.dart';
 import 'package:provider/provider.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../components/root.dart' as comp;
 import '../../custom_views/root.dart' as cv;
 import 'root.dart';
 
 class NoTeam extends StatefulWidget {
-  const NoTeam({Key? key}) : super(key: key);
+  const NoTeam({super.key});
 
   @override
   _NoTeamState createState() => _NoTeamState();

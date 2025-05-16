@@ -1,4 +1,3 @@
-import 'package:crosscheck_sports/client/data_model.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/event_duties/event_duty_event_user.dart';
 import 'package:crosscheck_sports/data/root.dart';
@@ -31,7 +30,7 @@ class EventDutySelect extends StatefulWidget {
 
 class _EventDutySelectState extends State<EventDutySelect> {
   bool _isLoading = false;
-  Map<String, int> _counts = {};
+  final Map<String, int> _counts = {};
   String? _selected;
 
   @override

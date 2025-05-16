@@ -1,17 +1,15 @@
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:crosscheck_sports/views/polls/root.dart';
-import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sprung/sprung.dart';
 import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
 
 class PollButton extends StatefulWidget {
   const PollButton({
-    Key? key,
+    super.key,
     required this.poll,
     required this.team,
     required this.season,
@@ -20,7 +18,7 @@ class PollButton extends StatefulWidget {
     required this.didChange,
     this.hasBorder,
     this.height,
-  }) : super(key: key);
+  });
   final Poll poll;
   final Team team;
   final Season season;

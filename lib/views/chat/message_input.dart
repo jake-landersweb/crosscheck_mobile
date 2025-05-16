@@ -3,14 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
-import 'package:graphql/client.dart';
 
 class MessageInput extends StatefulWidget {
   const MessageInput({

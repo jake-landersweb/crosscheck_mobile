@@ -8,7 +8,7 @@ enum RosterListType { navigator, selector, none }
 
 class RosterList extends StatefulWidget {
   const RosterList({
-    Key? key,
+    super.key,
     required this.users,
     required this.team,
     required this.type,
@@ -18,7 +18,7 @@ class RosterList extends StatefulWidget {
     this.selected,
     this.cellBuilder,
     this.isMVP,
-  }) : super(key: key);
+  });
   final List<SeasonUser> users;
   final Team team;
   final RosterListType type;

@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:crosscheck_sports/views/root.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sprung/sprung.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
@@ -14,14 +10,14 @@ import '../components/root.dart' as comp;
 
 class UserCommentSheet extends StatefulWidget {
   const UserCommentSheet({
-    Key? key,
+    super.key,
     required this.user,
     required this.event,
     required this.email,
     required this.team,
     required this.season,
     required this.completion,
-  }) : super(key: key);
+  });
   final SeasonUser user;
   final Event event;
   final String email;

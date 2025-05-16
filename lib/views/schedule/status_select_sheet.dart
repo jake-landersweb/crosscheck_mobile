@@ -2,7 +2,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../../extras/root.dart';
@@ -12,7 +11,7 @@ import '../components/root.dart' as comp;
 
 class StatusSelectSheet extends StatefulWidget {
   const StatusSelectSheet({
-    Key? key,
+    super.key,
     required this.email,
     required this.teamId,
     required this.event,
@@ -21,7 +20,7 @@ class StatusSelectSheet extends StatefulWidget {
     this.completion,
     required this.isUpcoming,
     required this.season,
-  }) : super(key: key);
+  });
 
   final String email;
   final String teamId;

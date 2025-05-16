@@ -10,7 +10,7 @@ import 'core/root.dart';
 
 class AppBar extends StatefulWidget {
   AppBar({
-    Key? key,
+    super.key,
     this.title = "",
     this.children = const [],
     this.leading = const [],
@@ -34,7 +34,7 @@ class AppBar extends StatefulWidget {
     this.leadingAlignment,
     this.titleAlignment,
     this.trailingAlignment,
-  }) : super(key: key);
+  });
 
   AppBar.sheet({
     super.key,

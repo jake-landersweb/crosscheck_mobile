@@ -1,10 +1,10 @@
+import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/global_funcs.dart';
 import 'package:equatable/equatable.dart';
-import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/data/team/team_stat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+// ignore: must_be_immutable
 class Season extends Equatable {
   late String id;
   late String title;

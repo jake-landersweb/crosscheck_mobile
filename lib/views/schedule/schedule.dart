@@ -1,11 +1,11 @@
 import 'dart:developer';
 import 'package:crosscheck_sports/views/schedule/notifications_view.dart';
+import 'package:crosscheck_sports/views/season/future_warning.dart';
 import 'package:crosscheck_sports/views/team/team_model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../client/root.dart';
@@ -17,7 +17,7 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 
 class Schedule extends StatefulWidget {
-  const Schedule({Key? key}) : super(key: key);
+  const Schedule({super.key});
 
   @override
   _ScheduleState createState() => _ScheduleState();
@@ -463,7 +463,7 @@ class _ScheduleHomeState extends State<ScheduleHome> {
         case DeepLinkType.chat:
           // navigate to the chat page
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            dmodel.setScheduleIndex(3);
+            dmodel.setScheduleIndex(2);
           });
           break;
         case DeepLinkType.settings:
@@ -493,6 +493,8 @@ class _ScheduleHomeState extends State<ScheduleHome> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if ((dmodel.currentSeason?.seasonStatus ?? -1) == 2)
+                    const FutureSeasonWarning(),
                   Center(
                     child: Text(
                       "It looks like you have no events on this season yet. Either upload / paste the link of a webcal, or create an event with Crosscheck.",
@@ -641,11 +643,11 @@ class _ScheduleHomeState extends State<ScheduleHome> {
 
 class PreviousEvents extends StatefulWidget {
   const PreviousEvents({
-    Key? key,
+    super.key,
     required this.teamId,
     required this.seasonId,
     required this.email,
-  }) : super(key: key);
+  });
   final String teamId;
   final String seasonId;
   final String email;
@@ -711,10 +713,10 @@ class _PreviousEventsState extends State<PreviousEvents> {
 
 class EventList extends StatefulWidget {
   const EventList({
-    Key? key,
+    super.key,
     required this.list,
     required this.isPrevious,
-  }) : super(key: key);
+  });
   final List<Event> list;
   final bool isPrevious;
 

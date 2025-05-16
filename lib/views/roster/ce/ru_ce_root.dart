@@ -6,11 +6,10 @@ import '../root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'root.dart';
-import '../../components/root.dart' as comp;
 
 class RUCERoot extends StatefulWidget {
   const RUCERoot({
-    Key? key,
+    super.key,
     required this.team,
     this.season,
     this.user,
@@ -20,7 +19,7 @@ class RUCERoot extends StatefulWidget {
     this.teamToSeason = false,
     this.isSheet = false,
     this.useRoot = false,
-  }) : super(key: key);
+  });
   final Team team;
   final Season? season;
   final SeasonUser? user;

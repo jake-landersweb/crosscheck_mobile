@@ -7,7 +7,7 @@ import 'root.dart' as cv;
 class Section extends StatefulWidget {
   const Section(
     this.title, {
-    Key? key,
+    super.key,
     required this.child,
     this.allowsCollapse = false,
     this.initOpen = false,
@@ -17,7 +17,7 @@ class Section extends StatefulWidget {
     this.color = Colors.blue,
     this.animateOpen = true,
     this.textColor,
-  }) : super(key: key);
+  });
 
   final String title;
   final Widget child;

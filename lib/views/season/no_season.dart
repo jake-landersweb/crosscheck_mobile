@@ -3,14 +3,11 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
-import '../../extras/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class NoSeason extends StatefulWidget {
-  const NoSeason({Key? key}) : super(key: key);
+  const NoSeason({super.key});
 
   @override
   _NoSeasonState createState() => _NoSeasonState();

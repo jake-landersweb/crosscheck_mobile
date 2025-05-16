@@ -7,14 +7,14 @@ import 'package:provider/provider.dart';
 
 class LabeledCell extends StatelessWidget {
   const LabeledCell({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     this.height = 50,
     this.textColor,
     this.clickable = false,
     this.onValueClick,
-  }) : super(key: key);
+  });
   final String label;
   final String value;
   final double height;

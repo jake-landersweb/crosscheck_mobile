@@ -1,7 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:crosscheck_sports/data/root.dart';
+import 'package:equatable/equatable.dart';
+
 import '../../extras/root.dart';
 
+// ignore: must_be_immutable
 class UserStat extends Equatable {
   late String id;
   late String sortKey;

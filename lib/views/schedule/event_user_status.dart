@@ -6,14 +6,14 @@ import '../../custom_views/root.dart' as cv;
 
 class EventUserStatus extends StatefulWidget {
   const EventUserStatus({
-    Key? key,
+    super.key,
     required this.status,
     required this.email,
     required this.event,
     required this.onTap,
     this.showTitle = true,
     this.clickable = true,
-  }) : super(key: key);
+  });
 
   final int status;
   final String email;

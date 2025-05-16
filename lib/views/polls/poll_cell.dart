@@ -9,13 +9,13 @@ import '../../../custom_views/root.dart' as cv;
 
 class PollCell extends StatefulWidget {
   const PollCell({
-    Key? key,
+    super.key,
     required this.poll,
     required this.team,
     required this.season,
     required this.teamUser,
     this.seasonUser,
-  }) : super(key: key);
+  });
   final Poll poll;
   final Team team;
   final Season season;

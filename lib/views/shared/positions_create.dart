@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
-import 'package:flutter_switch/flutter_switch.dart';
 import '../../client/root.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import '../../views/components/root.dart' as comp;
 
 class PositionsCreate extends StatefulWidget {
   const PositionsCreate({
-    Key? key,
+    super.key,
     required this.positions,
     this.horizontalPadding = 16,
-  }) : super(key: key);
+  });
   final TeamPositions positions;
   final double horizontalPadding;
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'root.dart';
 import '../extras/root.dart';
 
 ThemeData lightTheme = ThemeData(
@@ -10,15 +8,13 @@ ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   canvasColor: CustomColors.lightList,
   cardColor: Colors.white,
-  cardTheme: CardTheme(
+  cardTheme: CardThemeData(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     color: Colors.white,
   ),
   colorScheme: ColorScheme(
-    background: CustomColors.lightList,
     brightness: Brightness.light,
     error: Colors.red,
-    onBackground: Colors.black,
     onError: Colors.white,
     onPrimary: Colors.grey[400]!, // used for accent buttons and objects
     onSecondary: Colors.grey[300]!,

@@ -1,10 +1,7 @@
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:sprung/sprung.dart';
 
-import 'core/root.dart';
 
 class RefreshWrapper extends StatefulWidget {
   const RefreshWrapper({

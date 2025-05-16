@@ -5,8 +5,7 @@ import 'core/root.dart' as cv;
 
 class CancelButton extends StatelessWidget {
   const CancelButton(
-      {Key? key, this.color = Colors.blue, this.closeText = "Cancel"})
-      : super(key: key);
+      {super.key, this.color = Colors.blue, this.closeText = "Cancel"});
   final Color color;
   final String closeText;
 
@@ -30,12 +29,12 @@ class CancelButton extends StatelessWidget {
 
 class SheetHeader extends StatelessWidget {
   const SheetHeader({
-    Key? key,
+    super.key,
     required this.title,
     this.height = 50,
     this.color = Colors.blue,
     this.closeText = "Cancel",
-  }) : super(key: key);
+  });
 
   final String title;
   final double height;
@@ -78,7 +77,7 @@ class SheetHeader extends StatelessWidget {
 
 class Sheet extends StatefulWidget {
   const Sheet({
-    Key? key,
+    super.key,
     required this.title,
     required this.child,
     this.headerHeight = 50,
@@ -86,7 +85,7 @@ class Sheet extends StatefulWidget {
     this.padding = const EdgeInsets.all(8),
     this.icon,
     this.useRoot = false,
-  }) : super(key: key);
+  });
 
   final String title;
   final Widget child;

@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
+import 'package:flutter/material.dart';
+
 import '../../custom_views/root.dart' as cv;
 
 class RosterLoading extends StatefulWidget {
-  const RosterLoading({Key? key}) : super(key: key);
+  const RosterLoading({super.key});
 
   @override
   _RosterLoadingState createState() => _RosterLoadingState();
@@ -12,6 +13,7 @@ class RosterLoading extends StatefulWidget {
 class _RosterLoadingState extends State<RosterLoading>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+  // ignore: unused_field
   late Animation _animation;
 
   @override
@@ -58,9 +60,9 @@ class _RosterLoadingState extends State<RosterLoading>
 
 class RosterLoadingCell extends StatelessWidget {
   const RosterLoadingCell({
-    Key? key,
+    super.key,
     required this.size,
-  }) : super(key: key);
+  });
   final double size;
 
   @override

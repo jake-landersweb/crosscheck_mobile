@@ -1,6 +1,8 @@
-import '../dynamic_fields/root.dart';
 import 'package:equatable/equatable.dart';
 
+import '../dynamic_fields/root.dart';
+
+// ignore: must_be_immutable
 class TeamStat extends Equatable {
   late bool isActive;
   late List<StatItem> stats;

@@ -1,6 +1,5 @@
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
-import 'segmented_picker.dart' as cv;
 import 'core/basic_button.dart' as cv;
 import 'floating_sheet.dart' as cv;
 import 'listview.dart' as cv;
@@ -24,7 +23,7 @@ enum DynamicSelectorStyle { segmented, list, dynamic }
 /// ```
 class DynamicSelector<T> extends StatefulWidget {
   const DynamicSelector({
-    Key? key,
+    super.key,
     this.title,
     required this.selections,
     required this.selectedLogic,
@@ -36,7 +35,7 @@ class DynamicSelector<T> extends StatefulWidget {
     this.selectorInline = true,
     this.isLabeled = false,
     this.dismissOnTap = false,
-  }) : super(key: key);
+  });
   final String? title;
   final List<T> selections;
   final String Function(BuildContext context, T item)? titleBuilder;

@@ -13,11 +13,11 @@ import '../../components/root.dart' as comp;
 
 class ImageUploader extends StatefulWidget {
   const ImageUploader({
-    Key? key,
+    super.key,
     required this.team,
     required this.onImageChange,
     required this.imgIsUrl,
-  }) : super(key: key);
+  });
   final Team team;
   final Function(String) onImageChange;
   final bool imgIsUrl;

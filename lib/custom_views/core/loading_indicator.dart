@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 class LoadingIndicator extends StatelessWidget {
   final Color? color;
 
-  const LoadingIndicator({
+  const LoadingIndicator({super.key, 
     this.color,
   });
 

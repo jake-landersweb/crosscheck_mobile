@@ -4,7 +4,6 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/extensions.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/team/tce/image_uploader.dart';
-import 'package:crosscheck_sports/views/team/tce/tce_root.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;

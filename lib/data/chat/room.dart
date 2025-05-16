@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+// ignore: must_be_immutable
 class Room extends Equatable {
   late String id;
   late String sortKey;

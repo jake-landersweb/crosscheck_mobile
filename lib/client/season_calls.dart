@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'package:crosscheck_sports/data/event_duties/event_duty_event_user.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/roster/from_excel/root.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class LoadingWrapper extends StatefulWidget {
   const LoadingWrapper({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
   final Widget child;
 
   @override

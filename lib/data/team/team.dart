@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import 'root.dart';
 import '../root.dart';
 
+// ignore: must_be_immutable
 class Team extends Equatable {
   late String teamId;
   late String title;

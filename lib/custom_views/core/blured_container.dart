@@ -65,7 +65,7 @@ class GlassContainer extends StatelessWidget {
   final AlignmentGeometry? alignment;
 
   const GlassContainer({
-    Key? key,
+    super.key,
     this.opacity = 0.05,
     this.child,
     this.blur = 5,
@@ -75,7 +75,7 @@ class GlassContainer extends StatelessWidget {
     this.borderRadius,
     this.backgroundColor,
     this.alignment,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,16 +1,11 @@
-import 'package:crosscheck_sports/data/root.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/root.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
 import '../../custom_views/root.dart' as cv;
 
 class StatsUsersLoading extends StatefulWidget {
-  const StatsUsersLoading({Key? key}) : super(key: key);
+  const StatsUsersLoading({super.key});
 
   @override
   _StatsUsersLoadingState createState() => _StatsUsersLoadingState();

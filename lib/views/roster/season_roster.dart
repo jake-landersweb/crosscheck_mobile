@@ -1,8 +1,5 @@
 import 'package:crosscheck_sports/views/roster/from_excel/su_excel_root.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
@@ -12,7 +9,7 @@ import '../../custom_views/root.dart' as cv;
 import 'dart:math' as math;
 
 class SeasonRoster extends StatefulWidget {
-  const SeasonRoster({Key? key}) : super(key: key);
+  const SeasonRoster({super.key});
 
   @override
   _SeasonRosterState createState() => _SeasonRosterState();
@@ -46,7 +43,9 @@ class _SeasonRosterState extends State<SeasonRoster> {
         );
       },
       children: [
-        if (dmodel.seasonUsers != null)
+        if (dmodel.currentSeason == null)
+          Center(child: Text("There is no season."))
+        else if (dmodel.seasonUsers != null)
           ChangeNotifierProvider<RosterSorting>(
             create: (_) => RosterSorting(
               team: dmodel.tus!.team,
@@ -444,11 +443,13 @@ class _SeasonRosterState extends State<SeasonRoster> {
   Future<void> _checkSeasonRoster(
       BuildContext context, DataModel dmodel) async {
     if (dmodel.seasonUsers == null) {
-      await dmodel.getBatchSeasonRoster(
-        dmodel.tus!.team.teamId,
-        dmodel.currentSeason!.seasonId,
-        (p0) => dmodel.setSeasonUsers(p0),
-      );
+      if (dmodel.currentSeason != null) {
+        await dmodel.getBatchSeasonRoster(
+          dmodel.tus!.team.teamId,
+          dmodel.currentSeason!.seasonId,
+          (p0) => dmodel.setSeasonUsers(p0),
+        );
+      }
     }
   }
 }

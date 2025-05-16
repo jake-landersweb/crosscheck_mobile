@@ -1,11 +1,9 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
-import 'dart:math' as math;
 
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
@@ -15,9 +13,9 @@ class Login extends StatefulWidget {
   static const String route = '/login';
 
   const Login({
-    Key? key,
+    super.key,
     required this.isCreate,
-  }) : super(key: key);
+  });
   final bool isCreate;
 
   @override

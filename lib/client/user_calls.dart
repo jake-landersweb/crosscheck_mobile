@@ -1,16 +1,12 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
 
-import 'package:crosscheck_sports/data/batch_tus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 
-import 'root.dart';
 import '../data/root.dart';
 import '../extras/root.dart';
+import 'root.dart';
 
 extension UserCalls on DataModel {
   Future<void> getUser(String email, Function(User) completion,

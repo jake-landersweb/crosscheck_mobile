@@ -1,17 +1,14 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/svg.dart';
-import 'dart:math' as math;
 
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 import '../../extras/root.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key}) : super(key: key);
+  const ForgotPassword({super.key});
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();

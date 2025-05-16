@@ -118,8 +118,6 @@ PODS:
     - Mantle
     - SDWebImage
     - SDWebImageWebPCoder
-  - gallery_saver (0.0.1):
-    - Flutter
   - GoogleAppMeasurement (11.4.0):
     - GoogleAppMeasurement/AdIdSupport (= 11.4.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
@@ -183,6 +181,8 @@ PODS:
   - GoogleUtilities/UserDefaults (8.0.2):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
+  - image_gallery_saver (2.0.2):
+    - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
   - launch_review (0.0.1):
@@ -207,6 +207,8 @@ PODS:
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
+  - package_info_plus (0.4.5):
+    - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -251,10 +253,11 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
-  - gallery_saver (from `.symlinks/plugins/gallery_saver/ios`)
   - GoogleUtilities
+  - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - launch_review (from `.symlinks/plugins/launch_review/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -311,12 +314,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_app_badger/ios"
   flutter_image_compress_common:
     :path: ".symlinks/plugins/flutter_image_compress_common/ios"
-  gallery_saver:
-    :path: ".symlinks/plugins/gallery_saver/ios"
+  image_gallery_saver:
+    :path: ".symlinks/plugins/image_gallery_saver/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   launch_review:
     :path: ".symlinks/plugins/launch_review/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   share_plus:
@@ -335,18 +340,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_thumbnail/ios"
 
 SPEC CHECKSUMS:
-  amplify_secure_storage: ede2a5027299bab196b8baa030ed3f4cf50ce9a9
-  connectivity_plus: 4c41c08fc6d7c91f63bc7aec70ffe3730b04f563
-  device_calendar: 9cb33f88a02e19652ec7b8b122ca778f751b1f7b
-  device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
+  amplify_secure_storage: 3edc30177ffefbcee786c408a21c02f8ab9f168e
+  connectivity_plus: b21496ab28d1324eb59885d888a4d83b98531f01
+  device_calendar: b55b2c5406cfba45c95a59f9059156daee1f74ed
+  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
-  file_picker: 09aa5ec1ab24135ccd7a1621c46c84134bfd6655
+  file_picker: 9b3292d7c8bc68c8a7bf8eb78f730e49c8efc517
   Firebase: cf1b19f21410b029b6786a54e9764a0cacad3c99
-  firebase_analytics: 69a0f3e2ca2722c0758544eafcdcfa906b0f5227
-  firebase_core: f8c5b220a8f9c436fdbd075ae321cef3d96ef181
-  firebase_dynamic_links: 35d8389e22ca5c853c7bcad0e829161e8c00989c
-  firebase_messaging: a7f18d98006bbd8fd0918f4db64b9a70df29aaa8
+  firebase_analytics: dc8228ac09a0f410729eb2ec6524a3bb46d05576
+  firebase_core: 059a3a579c00e241fcdcd66d17190878f4f6ed53
+  firebase_dynamic_links: 65a91887301826207e51693c5eecea204e8ae1bf
+  firebase_messaging: 2cf2397ef8ae51d39da705250e89c5cfeff57527
   FirebaseAnalytics: 3feef9ae8733c567866342a1000691baaa7cad49
   FirebaseCore: e0510f1523bc0eb21653cac00792e1e2bd6f1771
   FirebaseCoreInternal: f47dd28ae7782e6a4738aad3106071a8fe0af604
@@ -354,30 +359,31 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 6ef4a1c7eb2a61ee1f74727d7f6ce2e72acf1414
   FirebaseMessaging: f8a160d99c2c2e5babbbcc90c4a3e15db036aee2
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_app_badger: b87fc231847b03b92ce1412aa351842e7e97932f
-  flutter_image_compress_common: ec1d45c362c9d30a3f6a0426c297f47c52007e3e
-  gallery_saver: 9fc173c9f4fcc48af53b2a9ebea1b643255be542
+  flutter_app_badger: 16b371e989d04cd265df85be2c3851b49cb68d18
+  flutter_image_compress_common: 1697a328fd72bfb335507c6bca1a65fa5ad87df1
   GoogleAppMeasurement: 987769c4ca6b968f2479fbcc9fe3ce34af454b8e
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
-  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
-  launch_review: 75d5a956ba8eaa493e9c9d4bf4c05e505e8d5ed0
+  image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
+  image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
+  launch_review: ffa7f5f539f248166db58a441664b5db6df4e09c
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
-  share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
+  share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
-  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
-  video_compress: fce97e4fb1dfd88175aa07d2ffc8a2f297f87fbe
-  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
-  video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  video_compress: f2133a07762889d67f0711ac831faa26f956980e
+  video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
+  video_thumbnail: b637e0ad5f588ca9945f6e2c927f73a69a661140
 
 PODFILE CHECKSUM: 144307647658d0d42b2ddedf47085cc1ebcee55c
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

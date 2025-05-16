@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-import 'root.dart';
 import '../../extras/root.dart';
+import 'root.dart';
 
+// ignore: must_be_immutable
 class SeasonUser extends Equatable {
   late String email;
   SeasonUserUserFields? userFields;

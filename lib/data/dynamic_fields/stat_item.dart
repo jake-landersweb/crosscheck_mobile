@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+// ignore: must_be_immutable
 class StatItem extends Equatable {
   late String title;
   late bool isActive;

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../custom_views/root.dart' as cv;
-
 class Maintenance extends StatelessWidget {
-  const Maintenance({Key? key}) : super(key: key);
+  const Maintenance({super.key});
 
   @override
   Widget build(BuildContext context) {

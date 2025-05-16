@@ -1,4 +1,3 @@
-import 'package:crosscheck_sports/views/team/tce/image_uploader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -9,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 
 class TCEBasic extends StatefulWidget {
-  const TCEBasic({Key? key}) : super(key: key);
+  const TCEBasic({super.key});
 
   @override
   _TCEBasicState createState() => _TCEBasicState();
@@ -27,48 +26,6 @@ class _TCEBasicState extends State<TCEBasic> {
         if (tcemodel.isCreate) _title(context, tcemodel, dmodel),
         _body(context, tcemodel, dmodel),
         const SizedBox(height: 100),
-      ],
-    );
-  }
-
-  Widget _logo(BuildContext context, TCEModel tcemodel, DataModel dmodel) {
-    return Column(
-      children: [
-        cv.BasicButton(
-          onTap: () {
-            cv.showFloatingSheet(
-              context: context,
-              builder: (context) {
-                return ImageUploader(
-                  team: tcemodel.team,
-                  imgIsUrl: tcemodel.imgIsUrl,
-                  onImageChange: (img) {
-                    setState(() {
-                      tcemodel.team.image = img;
-                      dmodel.tus!.team.image = img;
-                    });
-                  },
-                );
-              },
-            );
-          },
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Opacity(
-                opacity: 0.7,
-                child: TeamLogo(
-                  url: tcemodel.team.image,
-                  size: MediaQuery.of(context).size.width / 2,
-                  color: dmodel.color,
-                ),
-              ),
-              Icon(Icons.add_a_photo_outlined,
-                  color: CustomColors.textColor(context).withOpacity(0.5),
-                  size: 50)
-            ],
-          ),
-        ),
       ],
     );
   }

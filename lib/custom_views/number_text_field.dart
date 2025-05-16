@@ -5,12 +5,12 @@ import 'number_picker.dart' as cv;
 
 class NumberTextField extends StatefulWidget {
   const NumberTextField({
-    Key? key,
+    super.key,
     required this.label,
     this.initValue = 0,
     required this.onChange,
     this.color = Colors.blue,
-  }) : super(key: key);
+  });
 
   final String label;
   final int initValue;

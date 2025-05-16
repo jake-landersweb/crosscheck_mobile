@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:crosscheck_sports/crosscheck_engine.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/main.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
@@ -14,12 +12,12 @@ import '../../../custom_views/root.dart' as cv;
 
 class TCERoot extends StatefulWidget {
   const TCERoot({
-    Key? key,
+    super.key,
     required this.user,
     required this.team,
     required this.isCreate,
     this.useRoot = false,
-  }) : super(key: key);
+  });
   final User user;
   final Team team;
   final bool isCreate;

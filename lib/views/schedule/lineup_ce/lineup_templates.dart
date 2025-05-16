@@ -1,10 +1,4 @@
-import 'dart:developer';
-
-import 'package:crosscheck_sports/views/schedule/lineup_ce/lineup_item.dart';
-import 'package:crosscheck_sports/views/schedule/lineup_ce/old_lineups.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/views/stats/team/root.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -12,9 +6,6 @@ import '../../../custom_views/root.dart' as cv;
 import '../../../data/root.dart';
 import '../../../client/root.dart';
 import '../../../extras/root.dart';
-import '../root.dart';
-import 'package:flutter/services.dart';
-import 'package:crosscheck_sports/views/components/root.dart' as comp;
 
 class _LineupHolder {
   late String title;

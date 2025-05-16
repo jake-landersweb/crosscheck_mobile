@@ -29,6 +29,7 @@ class ExportToCalendar extends StatefulWidget {
 
 class _ExportToCalendarState extends State<ExportToCalendar> {
   List<Event>? _events;
+  // ignore: unused_field
   bool _isLoading = true;
   bool _isLoadingExport = false;
 
@@ -37,7 +38,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
 
   List<Event> _selectedEvents = [];
 
-  var _deviceCalendar = cal.DeviceCalendarPlugin();
+  final _deviceCalendar = cal.DeviceCalendarPlugin();
 
   @override
   void initState() {

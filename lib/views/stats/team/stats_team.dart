@@ -8,10 +8,10 @@ import '../../../custom_views/root.dart' as cv;
 
 class StatsTeam extends StatefulWidget {
   const StatsTeam({
-    Key? key,
+    super.key,
     required this.team,
     required this.teamUser,
-  }) : super(key: key);
+  });
   final Team team;
   final SeasonUserTeamFields teamUser;
 
@@ -69,65 +69,65 @@ class _StatsTeamState extends State<StatsTeam> {
     }
   }
 
-  Widget _editButton(
-      BuildContext context, DataModel dmodel, StatsTeamModel smodel) {
-    return cv.BasicButton(
-      onTap: () {
-        cv.showAlert(
-            context: context,
-            title: "WARNING: Editing Team Stats",
-            body: const Text(
-                "Are you sure you want to edit your base team stats? This can cause issues when calculating a user's stats for all seasons."),
-            cancelText: "Cancel",
-            cancelBolded: true,
-            onCancel: () {},
-            submitText: "I'm Sure",
-            submitColor: Colors.red,
-            onSubmit: () {
-              cv.Navigate(
-                context,
-                StatsUsersEdit(
-                  team: widget.team,
-                  userStats: smodel.userStats!,
-                  completion: (newList) async {
-                    await _updateUsers(context, dmodel, smodel, newList);
-                  },
-                ),
-              );
-            });
-      },
-      child: Text(
-        "Edit",
-        style: TextStyle(
-          color: dmodel.color,
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
+  // Widget _editButton(
+  //     BuildContext context, DataModel dmodel, StatsTeamModel smodel) {
+  //   return cv.BasicButton(
+  //     onTap: () {
+  //       cv.showAlert(
+  //           context: context,
+  //           title: "WARNING: Editing Team Stats",
+  //           body: const Text(
+  //               "Are you sure you want to edit your base team stats? This can cause issues when calculating a user's stats for all seasons."),
+  //           cancelText: "Cancel",
+  //           cancelBolded: true,
+  //           onCancel: () {},
+  //           submitText: "I'm Sure",
+  //           submitColor: Colors.red,
+  //           onSubmit: () {
+  //             cv.Navigate(
+  //               context,
+  //               StatsUsersEdit(
+  //                 team: widget.team,
+  //                 userStats: smodel.userStats!,
+  //                 completion: (newList) async {
+  //                   await _updateUsers(context, dmodel, smodel, newList);
+  //                 },
+  //               ),
+  //             );
+  //           });
+  //     },
+  //     child: Text(
+  //       "Edit",
+  //       style: TextStyle(
+  //         color: dmodel.color,
+  //         fontSize: 18,
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Future<void> _updateUsers(BuildContext context, DataModel dmodel,
-      StatsTeamModel smodel, List<UserStat> newList) async {
-    int status = 400;
-    await smodel.updateUserList(
-      widget.team.teamId,
-      smodel.userStats!,
-      newList,
-      () async {
-        status = 200;
-      },
-    );
-    if (status == 200) {
-      await smodel.userStatsGet(smodel.team.teamId, (userStats) {
-        smodel.setUserStats(userStats);
-      });
-      Navigator.of(context).pop();
-      dmodel.addIndicator(
-          IndicatorItem.success("Successfully updated user stats"));
-    } else {
-      dmodel.addIndicator(
-          IndicatorItem.error("There was an issue updating the user stats"));
-    }
-  }
+  // Future<void> _updateUsers(BuildContext context, DataModel dmodel,
+  //     StatsTeamModel smodel, List<UserStat> newList) async {
+  //   int status = 400;
+  //   await smodel.updateUserList(
+  //     widget.team.teamId,
+  //     smodel.userStats!,
+  //     newList,
+  //     () async {
+  //       status = 200;
+  //     },
+  //   );
+  //   if (status == 200) {
+  //     await smodel.userStatsGet(smodel.team.teamId, (userStats) {
+  //       smodel.setUserStats(userStats);
+  //     });
+  //     Navigator.of(context).pop();
+  //     dmodel.addIndicator(
+  //         IndicatorItem.success("Successfully updated user stats"));
+  //   } else {
+  //     dmodel.addIndicator(
+  //         IndicatorItem.error("There was an issue updating the user stats"));
+  //   }
+  // }
 }

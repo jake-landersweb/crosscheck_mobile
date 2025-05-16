@@ -1,13 +1,9 @@
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/custom_views/timezone_select.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
-import 'package:crosscheck_sports/views/tsce/tsce_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
-import '../components/root.dart' as comp;
 
 class TSCECustomFields extends StatefulWidget {
   const TSCECustomFields({

@@ -4,21 +4,19 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:crosscheck_sports/crosscheck_engine.dart';
-import 'package:crosscheck_sports/data/batch_tus.dart';
 import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'root.dart';
 import '../data/root.dart';
 import '../extras/root.dart';
+import 'root.dart';
 
 const double appVersionMajor = 4.4;
 const int appVersionMinor = 0;
@@ -58,7 +56,7 @@ class DataModel extends ChangeNotifier {
   List<Event>? previousEvents;
   bool isFetchingRestEvents = false;
   SeasonUser? currentSeasonUser;
-  int scheduleIndex = 2;
+  int scheduleIndex = 1;
   List<Poll>? polls;
   List<EventDuty> eventDuties = [];
 
@@ -722,7 +720,7 @@ class DataModel extends ChangeNotifier {
     hasMorePreviousEvents = true;
     hasMoreUpcomingEvents = true;
     currentScheduleTitle = "Upcoming";
-    scheduleIndex = 2;
+    scheduleIndex = 1;
     noSeason = true;
     noTeam = true;
     notifyListeners();
@@ -808,8 +806,8 @@ class DataModel extends ChangeNotifier {
     if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       body['deviceType'] = "ios";
-      body['deviceName'] = iosInfo.name ?? "";
-      body['deviceVersion'] = iosInfo.systemVersion ?? "";
+      body['deviceName'] = iosInfo.name;
+      body['deviceVersion'] = iosInfo.systemVersion;
     } else {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       body['deviceType'] = "android";

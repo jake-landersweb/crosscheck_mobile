@@ -1,20 +1,18 @@
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 import 'package:flutter_switch/flutter_switch.dart';
-import '../components/root.dart' as comp;
 
 class CustomFieldField extends StatefulWidget {
   const CustomFieldField({
-    Key? key,
+    super.key,
     required this.item,
     this.color = Colors.blue,
     this.isCreate = true,
     this.valueLabelText = "Value",
-  }) : super(key: key);
+  });
   final CustomField item;
   final Color color;
   final bool isCreate;

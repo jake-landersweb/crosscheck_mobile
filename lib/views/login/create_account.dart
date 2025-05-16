@@ -5,7 +5,6 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;

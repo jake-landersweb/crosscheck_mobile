@@ -1,17 +1,14 @@
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/indicator_item.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import 'package:sprung/sprung.dart';
 import 'root.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import '../../components/root.dart' as comp;
 
 class PollsChoices extends StatefulWidget {
-  const PollsChoices({Key? key}) : super(key: key);
+  const PollsChoices({super.key});
 
   @override
   State<PollsChoices> createState() => _PollsChoicesState();

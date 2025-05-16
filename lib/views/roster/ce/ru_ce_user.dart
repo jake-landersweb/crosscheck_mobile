@@ -1,5 +1,4 @@
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/data/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +9,7 @@ import 'root.dart';
 import 'package:async/async.dart';
 
 class RUCEUser extends StatefulWidget {
-  const RUCEUser({Key? key}) : super(key: key);
+  const RUCEUser({super.key});
 
   @override
   _RUCEUserState createState() => _RUCEUserState();

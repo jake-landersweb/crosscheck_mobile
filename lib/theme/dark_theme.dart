@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'root.dart';
 import '../extras/root.dart';
 
 const Color dbg = Color.fromRGBO(30, 30, 33, 1);
@@ -12,15 +10,13 @@ ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   canvasColor: dbg,
   cardColor: CustomColors.darkList,
-  cardTheme: CardTheme(
+  cardTheme: CardThemeData(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     color: CustomColors.darkList,
   ),
   colorScheme: ColorScheme(
-    background: dbg,
     brightness: Brightness.dark,
     error: Colors.red,
-    onBackground: Colors.white,
     onError: Colors.white,
     onPrimary: Colors.grey[400]!, // used for accent buttons and objects
     onSecondary: Colors.grey[300]!,

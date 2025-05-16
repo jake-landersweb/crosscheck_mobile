@@ -3,11 +3,10 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:provider/provider.dart';
-import '../custom_views/root.dart' as cv;
 import 'components/root.dart' as comp;
 
 class Update extends StatelessWidget {
-  const Update({Key? key}) : super(key: key);
+  const Update({super.key});
 
   @override
   Widget build(BuildContext context) {

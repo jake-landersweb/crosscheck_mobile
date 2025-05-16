@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import '../../data/root.dart';
 import 'root.dart';
 import '../../custom_views/root.dart' as cv;
@@ -7,7 +6,7 @@ import '../components/root.dart' as comp;
 
 class CustomFieldCreate extends StatefulWidget {
   const CustomFieldCreate({
-    Key? key,
+    super.key,
     required this.customFields,
     required this.onAdd,
     this.color = Colors.blue,
@@ -18,7 +17,7 @@ class CustomFieldCreate extends StatefulWidget {
     this.childPadding = const EdgeInsets.fromLTRB(16, 8, 16, 8),
     this.horizontalPadding = 16,
     this.animateOpen = true,
-  }) : super(key: key);
+  });
   final List<CustomField> customFields;
   final CustomField Function() onAdd;
   final Color color;

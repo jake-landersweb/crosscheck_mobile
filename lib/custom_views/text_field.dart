@@ -1,7 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 import 'core/root.dart';
@@ -43,7 +40,7 @@ class TextField2 extends StatefulWidget {
   final double labelEdgePadding;
 
   const TextField2({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.onChanged,
     this.icon,
@@ -69,7 +66,7 @@ class TextField2 extends StatefulWidget {
     this.textAlign = TextAlign.start,
     this.enabled = true,
     this.labelEdgePadding = 0,
-  }) : super(key: key);
+  });
   @override
   _TextField2State createState() => _TextField2State();
 }
@@ -131,14 +128,6 @@ class _TextField2State extends State<TextField2> {
         ),
       ),
     );
-  }
-
-  Widget _getLabeledMaterial(BuildContext context) {
-    if (widget.isLabeled) {
-      return _labelWrapper(context, _cupertinoTextField(context));
-    } else {
-      return _cupertinoTextField(context);
-    }
   }
 
   Widget _getLabeledCupertino(BuildContext context) {

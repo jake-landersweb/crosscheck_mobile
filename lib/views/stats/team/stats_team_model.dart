@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import '../../../client/root.dart';
 import 'package:http/http.dart' as http;

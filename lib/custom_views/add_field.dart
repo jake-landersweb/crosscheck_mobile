@@ -19,7 +19,7 @@ import 'core/basic_button.dart' as cv;
 /// ```
 class AddField extends StatefulWidget {
   const AddField({
-    Key? key,
+    super.key,
     required this.labelText,
     this.buttonText = "Add",
     this.onChange,
@@ -32,7 +32,7 @@ class AddField extends StatefulWidget {
     this.borderRadius = 25,
     this.validator,
     this.limit,
-  }) : super(key: key);
+  });
   final String labelText;
   final String buttonText;
   final Function(String)? onChange;

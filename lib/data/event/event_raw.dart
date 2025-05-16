@@ -1,8 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:crosscheck_sports/data/event/event_location.dart';
+import 'package:equatable/equatable.dart';
 
 import 'root.dart';
 
+// ignore: must_be_immutable
 class EventRaw extends Equatable {
   String? eDescription;
   late String eventId;

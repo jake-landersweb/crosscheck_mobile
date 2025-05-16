@@ -5,11 +5,11 @@ import '../../../custom_views/root.dart' as cv;
 
 class PollTime extends StatefulWidget {
   const PollTime({
-    Key? key,
+    super.key,
     required this.poll,
     this.fontSize,
     this.fontWeight,
-  }) : super(key: key);
+  });
   final Poll poll;
   final double? fontSize;
   final FontWeight? fontWeight;

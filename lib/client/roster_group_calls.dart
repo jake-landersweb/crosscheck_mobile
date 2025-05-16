@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/data/indicator_item.dart';
 import 'package:crosscheck_sports/data/roster/roster_group.dart';
 import 'package:flutter/material.dart';
 

@@ -7,7 +7,6 @@ import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/tsce/root.dart';
-import 'package:crosscheck_sports/views/tsce/tsce_model.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:shared_preferences/shared_preferences.dart';

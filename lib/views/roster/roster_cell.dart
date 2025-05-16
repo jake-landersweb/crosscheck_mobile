@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import '../../custom_views/root.dart' as cv;
 import 'root.dart';
 
 class RosterCell extends StatelessWidget {
   const RosterCell({
-    Key? key,
+    super.key,
     required this.name,
     required this.type,
     this.seed,
@@ -21,7 +19,7 @@ class RosterCell extends StatelessWidget {
     this.textColor,
     this.subtext,
     this.overrideColor,
-  }) : super(key: key);
+  });
   final String name;
   final String? seed;
   final RosterListType type;

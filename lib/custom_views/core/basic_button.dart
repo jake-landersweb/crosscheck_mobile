@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 /// button type based on the platform
 class BasicButton extends StatelessWidget {
   const BasicButton({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.child,
     this.active = true,
@@ -23,8 +23,8 @@ class BasicButton extends StatelessWidget {
             color: Colors.transparent,
             disabledColor: Colors.transparent,
             padding: const EdgeInsets.all(0),
-            minSize: 0,
             onPressed: onTap,
+            minimumSize: Size(0, 0),
             child: child,
           )
         : child;

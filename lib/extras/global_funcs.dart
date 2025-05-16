@@ -27,29 +27,29 @@ String dateToString(DateTime date) {
   int month = date.month;
   String formattedMonth = month.toString();
   if (month < 10) {
-    formattedMonth = "0" + formattedMonth;
+    formattedMonth = "0$formattedMonth";
   }
   late String formattedDay;
   if (date.day < 10) {
-    formattedDay = "0" + date.day.toString();
+    formattedDay = "0${date.day}";
   } else {
     formattedDay = date.day.toString();
   }
   late String formattedHour;
   if (date.hour < 10) {
-    formattedHour = "0" + date.hour.toString();
+    formattedHour = "0${date.hour}";
   } else {
     formattedHour = date.hour.toString();
   }
   late String formattedMinute;
   if (date.minute < 10) {
-    formattedMinute = "0" + date.minute.toString();
+    formattedMinute = "0${date.minute}";
   } else {
     formattedMinute = date.minute.toString();
   }
   late String formattedSecond;
   if (date.second < 10) {
-    formattedSecond = "0" + date.second.toString();
+    formattedSecond = "0${date.second}";
   } else {
     formattedSecond = date.second.toString();
   }

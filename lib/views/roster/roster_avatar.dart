@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
-import 'root.dart';
 
 class RosterAvatar extends StatelessWidget {
   const RosterAvatar(
-      {Key? key,
+      {super.key,
       required this.name,
       this.seed,
       this.size = 50,
       this.fontSize = 32,
-      this.overrideColor})
-      : super(key: key);
+      this.overrideColor});
   final String name;
   final String? seed;
   final double size;

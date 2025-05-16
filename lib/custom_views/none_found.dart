@@ -4,11 +4,11 @@ import 'package:flutter_svg/svg.dart';
 class NoneFound extends StatelessWidget {
   const NoneFound(
     this.message, {
-    Key? key,
+    super.key,
     this.color = Colors.blue,
     this.asset,
     this.textColor,
-  }) : super(key: key);
+  });
   final String message;
   final Color color;
   final String? asset;

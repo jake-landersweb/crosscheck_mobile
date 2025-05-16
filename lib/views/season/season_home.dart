@@ -1,4 +1,3 @@
-import 'package:crosscheck_sports/views/polls/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
@@ -6,16 +5,15 @@ import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../extras/root.dart';
 import '../../custom_views/root.dart' as cv;
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class SeasonHome extends StatefulWidget {
   const SeasonHome({
-    Key? key,
+    super.key,
     required this.team,
     required this.season,
     required this.teamUser,
     required this.seasonUser,
-  }) : super(key: key);
+  });
   final Team team;
   final Season season;
   final SeasonUserTeamFields teamUser;
@@ -103,43 +101,6 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
           )
         ],
       ),
-    );
-  }
-
-  Widget _polls(BuildContext context, DataModel dmodel) {
-    return cv.ListView<Widget>(
-      horizontalPadding: 0,
-      childPadding: const EdgeInsets.symmetric(horizontal: 16),
-      onChildTap: (context, i) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SeasonPolls(
-              team: widget.team,
-              season: widget.season,
-              teamUser: dmodel.tus!.user,
-              seasonUser: dmodel.currentSeasonUser,
-            ),
-          ),
-        );
-      },
-      children: [
-        Row(
-          children: [
-            Text(
-              "Polls",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 18,
-                color: CustomColors.textColor(context),
-              ),
-            ),
-            const SizedBox(height: 50),
-            const Spacer(),
-            const Icon(Icons.chevron_right_rounded),
-          ],
-        ),
-      ],
     );
   }
 

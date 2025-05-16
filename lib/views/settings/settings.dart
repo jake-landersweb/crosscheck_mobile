@@ -2,7 +2,6 @@ import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/views/tsce/root.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,9 +15,9 @@ import '../components/root.dart' as comp;
 
 class Settings extends StatefulWidget {
   const Settings({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
   final User user;
 
   @override
@@ -52,11 +51,6 @@ class _SettingsState extends State<Settings> {
       title: "",
       backgroundColor: CustomColors.backgroundColor(context),
       trailing: [_edit(context, dmodel)],
-      leading: [
-        cv.BackButton(
-          color: dmodel.color,
-        )
-      ],
       itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
       childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
       children: [

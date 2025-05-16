@@ -1,13 +1,11 @@
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/data/roster/roster_group.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
-import 'package:sprung/sprung.dart';
 import 'package:uuid/uuid.dart';
 
 class RGCU extends StatefulWidget {

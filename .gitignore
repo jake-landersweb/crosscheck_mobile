@@ -69,3 +69,5 @@ amplifytools.xcconfig
 **.sample
 hidden_assets/
 #amplify-do-not-edit-end
+
+.env

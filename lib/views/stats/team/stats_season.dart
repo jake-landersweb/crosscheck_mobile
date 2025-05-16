@@ -10,12 +10,12 @@ import '../../../custom_views/root.dart' as cv;
 
 class StatsSeason extends StatefulWidget {
   const StatsSeason({
-    Key? key,
+    super.key,
     required this.team,
     required this.teamUser,
     required this.season,
     this.seasonUser,
-  }) : super(key: key);
+  });
   final Team team;
   final SeasonUserTeamFields teamUser;
   final Season season;

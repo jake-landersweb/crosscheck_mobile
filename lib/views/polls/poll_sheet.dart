@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +10,13 @@ import '../components/root.dart' as comp;
 
 class PollSheet extends StatefulWidget {
   const PollSheet({
-    Key? key,
+    super.key,
     required this.poll,
     required this.team,
     required this.season,
     required this.email,
     required this.onCompletion,
-  }) : super(key: key);
+  });
   final Poll poll;
   final Team team;
   final Season season;

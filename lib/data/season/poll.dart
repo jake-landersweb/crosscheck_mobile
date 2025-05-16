@@ -1,4 +1,3 @@
-import 'package:crosscheck_sports/extras/global_funcs.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

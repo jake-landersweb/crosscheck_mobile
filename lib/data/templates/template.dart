@@ -1,5 +1,4 @@
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:flutter/material.dart';
 
 class TemplateName {
   late String id;

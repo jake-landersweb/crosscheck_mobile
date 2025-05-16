@@ -3,7 +3,6 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
 import 'root.dart' as cv;
 
 class TimezoneSelector extends StatefulWidget {

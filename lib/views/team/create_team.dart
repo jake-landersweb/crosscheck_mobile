@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +7,7 @@ import '../../extras/root.dart';
 import '../../custom_views/root.dart' as cv;
 
 class CreateTeam extends StatefulWidget {
-  const CreateTeam({Key? key}) : super(key: key);
+  const CreateTeam({super.key});
 
   @override
   _CreateTeamState createState() => _CreateTeamState();

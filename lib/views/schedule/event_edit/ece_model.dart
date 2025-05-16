@@ -3,7 +3,6 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
-import 'root.dart';
 import 'package:sprung/sprung.dart';
 
 class ECEModel extends ChangeNotifier {

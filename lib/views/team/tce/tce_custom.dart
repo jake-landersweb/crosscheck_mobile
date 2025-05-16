@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 
 class TCECUstom extends StatefulWidget {
-  const TCECUstom({Key? key}) : super(key: key);
+  const TCECUstom({super.key});
 
   @override
   _TCECUstomState createState() => _TCECUstomState();

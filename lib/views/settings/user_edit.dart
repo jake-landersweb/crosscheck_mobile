@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/main.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
@@ -13,9 +9,9 @@ import '../components/root.dart' as comp;
 
 class UserEdit extends StatefulWidget {
   const UserEdit({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
   final User user;
 
   @override

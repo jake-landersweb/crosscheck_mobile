@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:sprung/sprung.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +12,7 @@ import 'root.dart';
 
 class EventCell extends StatefulWidget {
   const EventCell({
-    Key? key,
+    super.key,
     required this.event,
     required this.email,
     required this.team,
@@ -22,7 +20,7 @@ class EventCell extends StatefulWidget {
     this.isExpaded = false,
     this.showStatus,
     required this.isUpcoming,
-  }) : super(key: key);
+  });
 
   final Event event;
   final String email;

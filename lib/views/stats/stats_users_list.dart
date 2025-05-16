@@ -1,20 +1,18 @@
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom_views/root.dart' as cv;
 
 class StatsUsersList extends StatefulWidget {
   const StatsUsersList({
-    Key? key,
+    super.key,
     required this.team,
     required this.statList,
     required this.available,
-  }) : super(key: key);
+  });
   final Team team;
   final List<UserStat> statList;
   final List<String> available;

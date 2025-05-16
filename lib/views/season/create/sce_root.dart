@@ -4,24 +4,20 @@ import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/views/season/create/sce_template.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/season/create/root.dart';
-import 'package:crosscheck_sports/views/season/create/sce_model.dart';
-import 'package:crosscheck_sports/views/season/create/sce_positions.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import '../../../client/root.dart';
 import '../../../data/root.dart';
 import '../../../extras/root.dart';
 import '../../../custom_views/root.dart' as cv;
-import 'package:flutter_switch/flutter_switch.dart';
-import 'package:flutter_svg/svg.dart';
 
 class SCERoot extends StatefulWidget {
   const SCERoot({
-    Key? key,
+    super.key,
     required this.team,
     required this.isCreate,
     this.season,
-  }) : super(key: key);
+  });
   final Team team;
   final bool isCreate;
   final Season? season;

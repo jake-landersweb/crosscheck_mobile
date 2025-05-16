@@ -28,7 +28,7 @@ import 'root.dart' as cv;
 /// ```
 class ListView<T> extends StatefulWidget {
   const ListView({
-    Key? key,
+    super.key,
     required this.children,
     this.childBuilder,
     this.backgroundColor,
@@ -51,7 +51,7 @@ class ListView<T> extends StatefulWidget {
     this.equality,
     this.preDelete,
     this.minHeight,
-  }) : super(key: key);
+  });
   final List<T> children;
   final Widget Function(BuildContext context, T item)? childBuilder;
   final Color? backgroundColor;
@@ -210,7 +210,7 @@ class _ListViewState<T> extends State<ListView<T>> {
 
 class _ListViewCell<T> extends StatefulWidget {
   const _ListViewCell({
-    Key? key,
+    super.key,
     required this.item,
     required this.child,
     required this.padding,
@@ -231,7 +231,7 @@ class _ListViewCell<T> extends StatefulWidget {
     required this.animateOpen,
     this.preDelete,
     this.minHeight,
-  }) : super(key: key);
+  });
   final T item;
   final Widget child;
   final EdgeInsets padding;

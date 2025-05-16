@@ -1,6 +1,4 @@
-import 'dart:collection';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:http/http.dart' as http;
 import '../client/env.dart' as env;
 
 class LinkPreview {

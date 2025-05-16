@@ -1,6 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
@@ -10,10 +9,10 @@ import '../../custom_views/root.dart' as cv;
 
 class TeamRoster extends StatefulWidget {
   const TeamRoster({
-    Key? key,
+    super.key,
     required this.team,
     this.teamUser,
-  }) : super(key: key);
+  });
   final Team team;
   final SeasonUserTeamFields? teamUser;
 

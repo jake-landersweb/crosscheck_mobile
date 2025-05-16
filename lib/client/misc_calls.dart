@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'root.dart';
 import '../data/root.dart';
-import '../extras/root.dart';
 
 extension MiscCalls on DataModel {
   Future<void> getVersion(double major, double minor,

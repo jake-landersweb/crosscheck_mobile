@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import 'root.dart';
 import '../client/root.dart';
-import '../extras/root.dart';
 
 class Dashboard extends StatefulWidget {
   static const String route = "/dashboard";
 
   const Dashboard({
-    Key? key,
+    super.key,
     required this.initPage,
-  }) : super(key: key);
+  });
 
   final String initPage;
 

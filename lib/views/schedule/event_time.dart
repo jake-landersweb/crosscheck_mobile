@@ -5,12 +5,12 @@ import '../../../custom_views/root.dart' as cv;
 
 class EventTime extends StatefulWidget {
   const EventTime({
-    Key? key,
+    super.key,
     required this.event,
     this.fontSize,
     this.fontWeight,
     this.color,
-  }) : super(key: key);
+  });
   final Event event;
   final double? fontSize;
   final FontWeight? fontWeight;

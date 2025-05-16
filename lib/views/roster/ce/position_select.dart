@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../root.dart';
+
 import '../../../custom_views/root.dart' as cv;
-import 'root.dart';
 
 class PositionSelect extends StatefulWidget {
   const PositionSelect({
-    Key? key,
+    super.key,
     required this.positions,
     required this.selection,
     required this.onSelect,
-  }) : super(key: key);
+  });
   final List<String> positions;
   final String selection;
   final Function(String) onSelect;
@@ -70,19 +69,19 @@ class _PositionSelectState extends State<PositionSelect> {
     );
   }
 
-  Widget _cell(BuildContext context, DataModel dmodel, String val) {
-    return cv.RoundedLabel(
-      val,
-      color: _internalTracker == val ? dmodel.color : Colors.transparent,
-      textColor: _internalTracker == val
-          ? Colors.white
-          : CustomColors.textColor(context),
-      onTap: () {
-        setState(() {
-          widget.onSelect(val);
-          _internalTracker = val;
-        });
-      },
-    );
-  }
+  // Widget _cell(BuildContext context, DataModel dmodel, String val) {
+  //   return cv.RoundedLabel(
+  //     val,
+  //     color: _internalTracker == val ? dmodel.color : Colors.transparent,
+  //     textColor: _internalTracker == val
+  //         ? Colors.white
+  //         : CustomColors.textColor(context),
+  //     onTap: () {
+  //       setState(() {
+  //         widget.onSelect(val);
+  //         _internalTracker = val;
+  //       });
+  //     },
+  //   );
+  // }
 }

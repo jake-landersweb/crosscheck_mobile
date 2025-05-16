@@ -8,7 +8,7 @@ import '../../../custom_views/root.dart' as cv;
 import 'root.dart';
 
 class RUCETeam extends StatefulWidget {
-  const RUCETeam({Key? key}) : super(key: key);
+  const RUCETeam({super.key});
 
   @override
   _RUCETeamState createState() => _RUCETeamState();

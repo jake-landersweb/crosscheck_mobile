@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sprung/sprung.dart';
 
@@ -10,10 +8,10 @@ class FloatingSheet extends StatelessWidget {
   final Color? backgroundColor;
 
   const FloatingSheet({
-    Key? key,
+    super.key,
     required this.child,
     this.backgroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +57,8 @@ Future<T> showFloatingSheet<T>({
     animationCurve: curve ?? Sprung(36),
     duration: const Duration(milliseconds: 500),
     containerWidget: (_, animation, child) => FloatingSheet(
-      child: child,
       backgroundColor: backgroundColor,
+      child: child,
     ),
     expand: false,
     useRootNavigator: useRootNavigator,

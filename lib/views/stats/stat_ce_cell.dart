@@ -4,11 +4,11 @@ import '../../custom_views/root.dart' as cv;
 
 class StatCECell extends StatefulWidget {
   const StatCECell({
-    Key? key,
+    super.key,
     required this.item,
     this.color = Colors.blue,
     required this.onTitleChange,
-  }) : super(key: key);
+  });
   final StatItem item;
   final Color color;
   final Function(String) onTitleChange;

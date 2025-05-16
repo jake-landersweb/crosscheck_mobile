@@ -1,18 +1,12 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
-import 'root.dart';
 import '../../../client/root.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
-import 'package:sprung/sprung.dart';
 
 class ECECustom extends StatefulWidget {
-  const ECECustom({Key? key}) : super(key: key);
+  const ECECustom({super.key});
 
   @override
   _ECECustomState createState() => _ECECustomState();

@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/schedule/event_edit/ece_location.dart';
 import 'root.dart';
 import '../../../client/root.dart';
 import '../../../data/root.dart';
@@ -11,7 +10,7 @@ import 'package:sprung/sprung.dart';
 
 class ECERoot extends StatefulWidget {
   const ECERoot({
-    Key? key,
+    super.key,
     required this.isCreate,
     required this.team,
     required this.season,
@@ -20,7 +19,7 @@ class ECERoot extends StatefulWidget {
     this.eventUsers,
     this.seasonUser,
     this.event,
-  }) : super(key: key);
+  });
   final bool isCreate;
   final Team team;
   final Season season;

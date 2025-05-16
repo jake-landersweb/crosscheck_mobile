@@ -1,9 +1,5 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
-import 'root.dart';
-
 import '../data/root.dart';
+import 'root.dart';
 
 extension StatCalls on DataModel {
   Future<void> teamStatsGet(

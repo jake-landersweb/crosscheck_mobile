@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
 
 class CustomFieldSelector extends StatefulWidget {

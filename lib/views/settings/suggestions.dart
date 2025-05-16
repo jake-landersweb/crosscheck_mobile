@@ -1,16 +1,15 @@
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/main.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
 
 class Suggestions extends StatefulWidget {
   const Suggestions({
-    Key? key,
+    super.key,
     required this.email,
-  }) : super(key: key);
+  });
   final String email;
 
   @override

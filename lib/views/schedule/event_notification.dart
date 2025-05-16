@@ -8,11 +8,11 @@ import '../components/root.dart' as comp;
 
 class EventNotification extends StatefulWidget {
   const EventNotification({
-    Key? key,
+    super.key,
     required this.teamId,
     required this.seasonId,
     required this.event,
-  }) : super(key: key);
+  });
   final String teamId;
   final String seasonId;
   final Event event;
@@ -22,7 +22,7 @@ class EventNotification extends StatefulWidget {
 }
 
 class _EventNotificationState extends State<EventNotification> {
-  List<int> _statuses = [0, 2];
+  final List<int> _statuses = [0, 2];
 
   bool _isLoading = false;
 

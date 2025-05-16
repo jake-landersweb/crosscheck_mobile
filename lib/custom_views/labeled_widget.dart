@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class LabeledWidget extends StatelessWidget {
   const LabeledWidget(
     this.label, {
-    Key? key,
+    super.key,
     required this.child,
     this.height,
     this.reversed = false,
     this.isExpanded = true,
-  }) : super(key: key);
+  });
   final String label;
   final Widget child;
   final double? height;

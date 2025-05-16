@@ -6,8 +6,6 @@ import 'package:crosscheck_sports/views/roster/from_season/fs_user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
-import '../../components/root.dart' as comp;
-import 'root.dart';
 
 class FSRoot extends StatefulWidget {
   const FSRoot({

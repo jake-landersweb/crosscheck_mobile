@@ -8,7 +8,7 @@ import '../../../custom_views/root.dart' as cv;
 import 'root.dart';
 
 class SCEStats extends StatefulWidget {
-  const SCEStats({Key? key}) : super(key: key);
+  const SCEStats({super.key});
 
   @override
   State<SCEStats> createState() => _SCEStatsState();

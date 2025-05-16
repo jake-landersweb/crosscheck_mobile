@@ -1,16 +1,9 @@
-import 'dart:io';
-
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/crosscheck_engine.dart';
-import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import 'package:crosscheck_sports/views/components/root.dart' as comp;
-import 'dart:math' as math;
 
 class CalendarAdvancedSettings extends StatelessWidget {
   const CalendarAdvancedSettings({

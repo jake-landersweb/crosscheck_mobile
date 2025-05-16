@@ -4,16 +4,15 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
-import 'package:sprung/sprung.dart';
 import '../../custom_views/root.dart' as cv;
 
 class StatsUsersEdit extends StatefulWidget {
   const StatsUsersEdit({
-    Key? key,
+    super.key,
     required this.team,
     required this.userStats,
     required this.completion,
-  }) : super(key: key);
+  });
   final Team team;
   final List<UserStat> userStats;
   final Future<void> Function(List<UserStat>) completion;

@@ -28,9 +28,9 @@ class TeamArguments {
 
 class CrosscheckEngine extends StatefulWidget {
   const CrosscheckEngine({
-    Key? key,
+    super.key,
     this.teamArgs,
-  }) : super(key: key);
+  });
   final TeamArguments? teamArgs;
 
   @override
@@ -72,7 +72,7 @@ class ScrollBehaviorModified extends ScrollBehavior {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -103,9 +103,9 @@ class _MyAppState extends State<MyApp> {
 // for allowing absoute reset when needed
 class RestartWidget extends StatefulWidget {
   const RestartWidget({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 
@@ -139,7 +139,7 @@ final GlobalKey<ScaffoldMessengerState> snackbarKey =
     GlobalKey<ScaffoldMessengerState>();
 
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +156,7 @@ class Home extends StatelessWidget {
           : (dmodel.tus!.team.isLight ? ThemeMode.light : ThemeMode.dark),
       // themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
+      // navigatorObservers: [NavigationLoggingObserver(logger)],
       onGenerateRoute: (settings) {
         return MaterialWithModalsPageRoute(
           settings: settings,
@@ -201,9 +202,9 @@ class Home extends StatelessWidget {
 
 class Index extends StatefulWidget {
   const Index({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 
@@ -233,7 +234,7 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
             if (dmodel.deepLink != null) {
               print("[BACKGROUND] deep link found");
               // go to dashboard while data loads in
-              dmodel.setScheduleIndex(0);
+              dmodel.setScheduleIndex(1);
               SchedulerBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).popUntil((route) => route.isFirst);
               });
@@ -270,6 +271,9 @@ class _IndexState extends State<Index> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.detached:
         print("app is detached");
+        break;
+      case AppLifecycleState.hidden:
+        // TODO: Handle this case.
         break;
     }
   }
@@ -361,14 +365,14 @@ class _NotificationWrapperState extends State<NotificationWrapper> {
 
 class StatusBar extends StatefulWidget {
   const StatusBar({
-    Key? key,
+    super.key,
     required this.backgroundColor,
     required this.opacity,
     required this.child,
     required this.completion,
     required this.duration,
     required this.animationTime,
-  }) : super(key: key);
+  });
 
   final Color backgroundColor;
   final double opacity;

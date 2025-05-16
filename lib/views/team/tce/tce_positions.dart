@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 
 class TCEPositions extends StatefulWidget {
-  const TCEPositions({Key? key}) : super(key: key);
+  const TCEPositions({super.key});
 
   @override
   _TCEPositionsState createState() => _TCEPositionsState();

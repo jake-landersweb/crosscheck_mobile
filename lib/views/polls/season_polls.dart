@@ -1,22 +1,19 @@
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:crosscheck_sports/views/polls/polls_ce/root.dart';
 import 'package:crosscheck_sports/views/polls/root.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
 
 class SeasonPolls extends StatefulWidget {
   const SeasonPolls({
-    Key? key,
+    super.key,
     required this.team,
     required this.season,
     required this.teamUser,
     this.seasonUser,
-  }) : super(key: key);
+  });
   final Team team;
   final Season season;
   final SeasonUserTeamFields teamUser;
@@ -48,6 +45,7 @@ class _SeasonPollsState extends State<SeasonPolls> {
       isLarge: true,
       itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
       refreshable: true,
+      leading: [cv.BackButton(color: dmodel.color)],
       onRefresh: () => _fetchPolls(dmodel),
       trailing: [
         cv.BasicButton(

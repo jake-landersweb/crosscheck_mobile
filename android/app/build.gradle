@@ -61,7 +61,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        minSdkVersion 28
+        minSdkVersion 34
     }
 
     signingConfigs {

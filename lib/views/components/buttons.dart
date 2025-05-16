@@ -4,14 +4,13 @@ import '../../custom_views/root.dart' as cv;
 
 class _ButtonBase extends StatelessWidget {
   const _ButtonBase({
-    Key? key,
     required this.title,
     required this.onTap,
     required this.backgroundColor,
     required this.textColor,
     this.isLoading,
     this.horizPadding = 0,
-  }) : super(key: key);
+  });
   final String title;
   final VoidCallback onTap;
   final Color backgroundColor;

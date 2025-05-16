@@ -4,7 +4,7 @@ class ScrollVelocityListener extends StatefulWidget {
   final Function(double) onVelocity;
   final Widget child;
 
-  ScrollVelocityListener({
+  const ScrollVelocityListener({super.key, 
     required this.onVelocity,
     required this.child,
   });

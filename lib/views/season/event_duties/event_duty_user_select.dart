@@ -1,8 +1,5 @@
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/data/season/season.dart';
-import 'package:crosscheck_sports/data/season/season_user.dart';
-import 'package:crosscheck_sports/data/team/team.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/roster/basic_roster_cell.dart';
 import 'package:flutter/material.dart';

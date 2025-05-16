@@ -1,10 +1,8 @@
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/polls/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/views/stats/team/root.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../root.dart';
 import '../../custom_views/root.dart' as cv;

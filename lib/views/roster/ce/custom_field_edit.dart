@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import '../../../custom_views/root.dart' as cv;
 
 class CustomFieldEdit extends StatefulWidget {
   const CustomFieldEdit({
-    Key? key,
+    super.key,
     required this.field,
     this.color = Colors.blue,
-  }) : super(key: key);
+  });
   final CustomField field;
   final Color color;
 

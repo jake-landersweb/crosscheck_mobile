@@ -6,7 +6,7 @@ import 'root.dart' as cv;
 
 class AnimatedList<T> extends StatefulWidget {
   const AnimatedList({
-    Key? key,
+    super.key,
     required this.children,
     required this.cellBuilder,
     this.padding = const EdgeInsets.all(16),
@@ -17,7 +17,7 @@ class AnimatedList<T> extends StatefulWidget {
     this.enabled = true,
     this.onRemove,
     this.cellColor,
-  }) : super(key: key);
+  });
 
   final List<T> children;
   final EdgeInsets padding;
@@ -48,7 +48,6 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
                 SwipeListCell<T>(
                   enabled: widget.enabled,
                   children: widget.children,
-                  child: widget.cellBuilder(context, widget.children[i]),
                   index: i,
                   padding: widget.padding,
                   childPadding: widget.childPadding,
@@ -67,6 +66,7 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
                       });
                     }
                   },
+                  child: widget.cellBuilder(context, widget.children[i]),
                 ),
                 if (i != widget.children.length - 1)
                   Padding(
@@ -98,7 +98,7 @@ class _AnimatedListState<T> extends State<AnimatedList<T>> {
 
 class SwipeListCell<T> extends StatefulWidget {
   const SwipeListCell({
-    Key? key,
+    super.key,
     required this.children,
     required this.index,
     required this.child,
@@ -110,7 +110,7 @@ class SwipeListCell<T> extends StatefulWidget {
     required this.allowTap,
     required this.enabled,
     this.cellColor,
-  }) : super(key: key);
+  });
   final List<T> children;
   final int index;
   final Widget child;
@@ -166,6 +166,7 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
             onPressed: (context) {
               _remove();
             },
+            backgroundColor: Colors.transparent,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: widget.buttonPadding),
               child: AspectRatio(
@@ -184,7 +185,6 @@ class _SwipeListCellState<T> extends State<SwipeListCell<T>>
                 ),
               ),
             ),
-            backgroundColor: Colors.transparent,
           ),
         ],
       ),

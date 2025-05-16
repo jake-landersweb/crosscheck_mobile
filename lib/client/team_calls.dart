@@ -2,15 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 
-import 'package:flutter/material.dart';
-
-import 'root.dart';
-
 import '../data/root.dart';
-import 'package:http/http.dart' as http;
+import 'root.dart';
 
 extension TeamCalls on DataModel {
   Future<void> teamGet(String teamId, Function(Team) completion,

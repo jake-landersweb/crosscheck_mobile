@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/data/indicator_item.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:crosscheck_sports/extras/global_funcs.dart';

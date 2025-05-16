@@ -13,14 +13,14 @@ import 'package:table_calendar/table_calendar.dart';
 
 class PollsRoot extends StatefulWidget {
   const PollsRoot({
-    Key? key,
+    super.key,
     this.poll,
     required this.team,
     required this.season,
     required this.users,
     this.pollUsers,
     required this.onAction,
-  }) : super(key: key);
+  });
   final Poll? poll;
   final Team team;
   final Season season;

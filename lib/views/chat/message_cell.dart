@@ -2,17 +2,18 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crosscheck_sports/data/link_preview.dart';
+import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/chat/root.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import '../../data/root.dart';
-import '../../custom_views/root.dart' as cv;
+
 import '../../client/root.dart';
+import '../../custom_views/root.dart' as cv;
+import '../../data/root.dart';
 
 class MessageCell extends StatefulWidget {
   const MessageCell({
@@ -121,6 +122,7 @@ class _MessageCellState extends State<MessageCell>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     DataModel dmodel = Provider.of<DataModel>(context);
     ChatModel cmodel = Provider.of<ChatModel>(context);
     return _body(context, dmodel, cmodel);

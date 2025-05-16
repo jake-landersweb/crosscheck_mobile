@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class BasicLabel extends StatelessWidget {
   const BasicLabel({
-    Key? key,
+    super.key,
     required this.label,
-  }) : super(key: key);
+  });
   final String label;
 
   @override

@@ -4,7 +4,6 @@ import 'package:crosscheck_sports/views/polls/polls_ce/root.dart';
 import 'package:crosscheck_sports/views/polls/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import '../../extras/root.dart';
@@ -13,13 +12,13 @@ import '../../../custom_views/root.dart' as cv;
 
 class PollDetail extends StatefulWidget {
   const PollDetail({
-    Key? key,
+    super.key,
     required this.poll,
     required this.team,
     required this.season,
     required this.teamUser,
     this.seasonUser,
-  }) : super(key: key);
+  });
   final Poll poll;
   final Team team;
   final Season season;
@@ -443,11 +442,10 @@ class _PollDetailState extends State<PollDetail> {
 
 class _PollChoiceCell extends StatefulWidget {
   const _PollChoiceCell({
-    Key? key,
     required this.title,
     required this.val,
     required this.totalVal,
-  }) : super(key: key);
+  });
   final String title;
   final int val;
   final int totalVal;

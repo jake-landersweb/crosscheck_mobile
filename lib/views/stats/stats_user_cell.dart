@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
@@ -8,11 +6,11 @@ import '../../custom_views/root.dart' as cv;
 
 class StatsUserCell extends StatefulWidget {
   const StatsUserCell({
-    Key? key,
+    super.key,
     required this.team,
     required this.userStat,
     this.currentStat = "",
-  }) : super(key: key);
+  });
   final Team team;
   final UserStat userStat;
   final String currentStat;

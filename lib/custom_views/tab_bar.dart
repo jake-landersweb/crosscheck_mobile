@@ -6,7 +6,7 @@ import 'core/root.dart' as cv;
 
 class TabBar extends StatefulWidget {
   const TabBar({
-    Key? key,
+    super.key,
     required this.index,
     required this.icons,
     this.titles,
@@ -15,7 +15,7 @@ class TabBar extends StatefulWidget {
     this.childBuilder,
     this.extraTapArgs,
     this.hasBadge,
-  }) : super(key: key);
+  });
   final int index;
   final List<IconData> icons;
   final List<String>? titles;
@@ -160,7 +160,6 @@ class _TabBarState extends State<TabBar> {
 
 class _TabBarItem extends StatefulWidget {
   const _TabBarItem({
-    super.key,
     required this.builder,
     required this.onTap,
   });

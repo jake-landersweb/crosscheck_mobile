@@ -1,8 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/extras/global_funcs.dart';
-import 'package:intl/intl.dart';
 import 'package:crosscheck_sports/extras/root.dart';
+import 'package:intl/intl.dart';
 
 class Message extends Model {
   late String roomId;
@@ -106,10 +105,10 @@ class Message extends Model {
     return DateFormat.jm().format(getDateTime());
   }
 
-  @override
-  String getId() {
-    return roomId;
-  }
+  // @override
+  // String getId() {
+  //   return roomId;
+  // }
 
   @override
   ModelType<Model> getInstanceType() {

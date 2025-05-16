@@ -5,7 +5,7 @@ import 'package:sprung/sprung.dart';
 import 'custom_views/root.dart' as cv;
 
 class IndicatorController extends StatefulWidget {
-  const IndicatorController({Key? key}) : super(key: key);
+  const IndicatorController({super.key});
 
   @override
   State<IndicatorController> createState() => _IndicatorControllerState();
@@ -58,14 +58,14 @@ class _IndicatorControllerState extends State<IndicatorController> {
 
 class StatusBar extends StatefulWidget {
   const StatusBar({
-    Key? key,
+    super.key,
     required this.backgroundColor,
     required this.opacity,
     required this.child,
     required this.completion,
     required this.duration,
     required this.animationTime,
-  }) : super(key: key);
+  });
 
   final Color backgroundColor;
   final double opacity;

@@ -6,14 +6,10 @@
 // import '../../../custom_views/root.dart' as cv;
 
 import 'package:crosscheck_sports/client/root.dart';
-import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/data/templates/template.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/season/create/sce_model.dart';
 import 'package:crosscheck_sports/views/tsce/tsce_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;

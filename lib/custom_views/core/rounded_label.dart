@@ -7,7 +7,7 @@ import 'loading_indicator.dart';
 class RoundedLabel extends StatefulWidget {
   const RoundedLabel(
     this.label, {
-    Key? key,
+    super.key,
     this.color,
     this.textColor,
     this.onTap,
@@ -19,7 +19,7 @@ class RoundedLabel extends StatefulWidget {
     this.width = double.infinity,
     this.isLoading,
     this.isAnimated = false,
-  }) : super(key: key);
+  });
 
   final String label;
   final Color? color;

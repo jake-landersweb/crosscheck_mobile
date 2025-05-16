@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/root.dart';
-import 'package:provider/provider.dart';
-import 'package:sprung/sprung.dart';
 import '../../custom_views/root.dart' as cv;
 
 class StatUserEditCell extends StatefulWidget {
   const StatUserEditCell({
-    Key? key,
+    super.key,
     required this.team,
     required this.userStat,
     required this.color,
-  }) : super(key: key);
+  });
   final Team team;
   final UserStat userStat;
   final Color color;

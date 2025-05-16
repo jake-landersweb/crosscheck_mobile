@@ -19,7 +19,7 @@ import 'root.dart' as cv;
 /// this.minusIconSize = 20,
 /// ```
 class NumberPicker extends StatefulWidget {
-  NumberPicker({
+  const NumberPicker({super.key, 
     this.initialValue = 0,
     required this.onMinusClick,
     required this.onPlusClick,

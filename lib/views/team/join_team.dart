@@ -1,10 +1,8 @@
 import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:crosscheck_sports/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../extras/root.dart';
@@ -13,9 +11,9 @@ import '../../custom_views/root.dart' as cv;
 
 class JoinTeam extends StatefulWidget {
   const JoinTeam({
-    Key? key,
+    super.key,
     required this.email,
-  }) : super(key: key);
+  });
   final String email;
 
   @override

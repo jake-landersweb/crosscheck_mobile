@@ -9,13 +9,13 @@ class CloseButton extends StatelessWidget {
   final bool useRoot;
 
   const CloseButton({
-    Key? key,
+    super.key,
     this.title = 'Close',
     this.color,
     this.showText = false,
     this.showIcon = true,
     this.useRoot = false,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return cv.BasicButton(

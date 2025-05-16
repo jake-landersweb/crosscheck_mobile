@@ -6,13 +6,11 @@ import 'package:crosscheck_sports/extras/extensions.dart';
 import 'package:crosscheck_sports/views/roster/from_excel/root.dart';
 import 'package:crosscheck_sports/views/roster/from_excel/su_excel_edit.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:url_launcher/url_launcher.dart';
-import '../../components/root.dart' as comp;
 import 'package:excel/excel.dart';
 
 class SUFromExcel extends StatefulWidget {

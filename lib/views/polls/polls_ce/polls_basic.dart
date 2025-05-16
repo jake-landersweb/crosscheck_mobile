@@ -2,8 +2,6 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/indicator_item.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'root.dart';
@@ -11,9 +9,9 @@ import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 
 class PollsBasic extends StatefulWidget {
   const PollsBasic({
-    Key? key,
+    super.key,
     required this.onAction,
-  }) : super(key: key);
+  });
   final VoidCallback onAction;
 
   @override

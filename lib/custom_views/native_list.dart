@@ -10,13 +10,13 @@ enum NativeListStyle { androidStyle, iOSStyle }
 // creats a SwiftUI list style that does NOT scroll
 class NativeList extends StatefulWidget {
   const NativeList({
-    Key? key,
+    super.key,
     required this.children,
     this.padding = const EdgeInsets.all(0),
     this.itemPadding = const EdgeInsets.fromLTRB(16, 4, 16, 4),
     this.style,
     this.color,
-  }) : super(key: key);
+  });
 
   final List<Widget> children;
   final EdgeInsets padding;

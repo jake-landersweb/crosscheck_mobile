@@ -10,7 +10,7 @@ import '../../../custom_views/root.dart' as cv;
 import 'dart:math' as math;
 
 class ECELocation extends StatefulWidget {
-  const ECELocation({Key? key}) : super(key: key);
+  const ECELocation({super.key});
 
   @override
   _ECELocationState createState() => _ECELocationState();

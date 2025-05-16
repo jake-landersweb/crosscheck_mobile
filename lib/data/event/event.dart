@@ -1,11 +1,13 @@
-import 'package:equatable/equatable.dart';
-import 'package:intl/intl.dart';
 import 'package:crosscheck_sports/data/event/event_location.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import 'package:uuid/uuid.dart';
-import '../../extras/root.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../extras/root.dart';
+
+// ignore: must_be_immutable
 class Event extends Equatable {
   late String eDescription;
   late String eventId;

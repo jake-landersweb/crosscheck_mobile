@@ -4,17 +4,17 @@ import '../../custom_views/root.dart' as cv;
 import '../../extras/root.dart';
 
 class EventMetaDataCell extends StatelessWidget {
-  EventMetaDataCell({
-    Key? key,
+  const EventMetaDataCell({
+    super.key,
     required this.title,
     this.child,
     required this.icon,
     this.onTap,
-  }) : super(key: key);
+  });
   final String title;
   final Widget? child;
   final IconData icon;
-  VoidCallback? onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

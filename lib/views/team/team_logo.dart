@@ -4,12 +4,12 @@ import '../../custom_views/root.dart' as cv;
 
 class TeamLogo extends StatefulWidget {
   const TeamLogo({
-    Key? key,
+    super.key,
     required this.url,
     this.size,
     this.color,
     this.borderRadius = 10,
-  }) : super(key: key);
+  });
   final String url;
   final double? size;
   final Color? color;

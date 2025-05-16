@@ -1,6 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:provider/provider.dart';
 import 'root.dart';
@@ -11,7 +10,7 @@ import '../components/root.dart' as comp;
 
 class RosterUserDetail extends StatefulWidget {
   const RosterUserDetail({
-    Key? key,
+    super.key,
     required this.team,
     this.season,
     required this.seasonUser,
@@ -21,7 +20,7 @@ class RosterUserDetail extends StatefulWidget {
     required this.onDelete,
     required this.isTeam,
     this.isSheet = false,
-  }) : super(key: key);
+  });
   final Team team;
   final Season? season;
   final SeasonUser seasonUser;
