@@ -12,13 +12,13 @@ var logger = Logger(
   formatter: kDebugMode ? LogFMTLogFormatter() : JSONLogFormatter(),
   level: kDebugMode ? LogLevel.debug : LogLevel.info,
   sinks: [
-    kDebugMode
-        ? ConsoleLogSink()
-        : OtelLogSink(
-            endpoint: OTEL_BACKEND_HOST,
-            apiKey: OTEL_BACKEND_API_KEY,
-            flushDuration: Duration(seconds: kDebugMode ? 5 : 30),
-          ),
+    ConsoleLogSink(),
+    if (!kDebugMode)
+      OtelLogSink(
+        endpoint: "$OTEL_BACKEND_HOST/v1/logs",
+        apiKey: OTEL_BACKEND_API_KEY,
+        flushDuration: Duration(seconds: 5),
+      ),
   ],
   attributes: {
     "sessionId": OTEL_SESSION_ID, // add a session id for the app session

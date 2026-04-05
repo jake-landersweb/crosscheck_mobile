@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/data/season/poll.dart';
+import 'package:crosscheck_sports/logger.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -172,6 +173,10 @@ class DataModel extends ChangeNotifier {
     // if (kDebugMode) {
     //   prefs.setString("email", "cbentley@hardwoodind.com");
     // }
+
+    if (prefs.containsKey("email")) {
+      logger.setAttribute("email", prefs.getString("email") ?? "");
+    }
 
     setLoadText("Fetching user information ...");
     if (prefs.containsKey("email") &&
