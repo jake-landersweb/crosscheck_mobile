@@ -5,6 +5,8 @@ import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../extras/root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 
 class SeasonHome extends StatefulWidget {
   const SeasonHome({
@@ -27,21 +29,18 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: widget.season.title,
       backgroundColor: CustomColors.backgroundColor(context),
-      color: dmodel.color,
-      leading: [
-        cv.BackButton(
-          color: dmodel.color,
-          title: "Close",
-          showIcon: false,
-          showText: true,
-        )
-      ],
-      trailing: [_edit(context, dmodel)],
+      leading: cv.BackButton(
+        color: dmodel.color,
+        title: "Close",
+        showIcon: false,
+        showText: true,
+      ),
+      trailing: _edit(context, dmodel),
       // onRefresh: () => _refreshAction(dmodel),
-      children: [_body(context, dmodel)],
+      child: _body(context, dmodel),
     );
   }
 
@@ -194,10 +193,9 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
         widget.teamUser.isTeamAdmin()) {
       return cv.BasicButton(
         onTap: () {
-          cv.cupertinoSheet(
+          showSnappingSheet(
             context: context,
-            wrapInNavigator: true,
-            builder: (context) => SCERoot(
+            child: SCERoot(
               team: widget.team,
               isCreate: false,
               season: widget.season,

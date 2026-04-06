@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
@@ -9,6 +7,10 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/container.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/style/root.dart';
 
 class TCERoot extends StatefulWidget {
   const TCERoot({
@@ -54,27 +56,39 @@ class _TCERootState extends State<TCERoot> {
       // we use `builder` to obtain a new `BuildContext` that has access to the provider
       builder: (context, child) {
         // No longer throws
-        return Container(
-          color: CustomColors.backgroundColor(context),
-          child: Stack(
+        return Scaffold(
+          backgroundColor: CustomColors.backgroundColor(context),
+          body: Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              cv.AppBar.sheet(
-                canScroll: false,
-                title: widget.isCreate ? "Create Team" : "Edit Team",
-                leading: [
-                  cv.BackButton(
-                    color: dmodel.color,
-                    showIcon: false,
-                    showText: true,
-                    title: "Cancel",
-                    useRoot: widget.useRoot,
-                  )
-                ],
+              Column(
                 children: [
-                  Expanded(
-                    child: _body(context, dmodel),
+                  Container(
+                    color: CustomColors.textColor(context).withValues(alpha: 0.05),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: SizedBox(
+                        height: XCThemeData.listItemHeight,
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: XCActionButton.cancel(
+                                onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                widget.isCreate ? "Create Team" : "Edit Team",
+                                style: XCTheme.of(context).text.label,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
+                  Expanded(child: _body(context, dmodel)),
                 ],
               ),
               _navigation(context, dmodel),
@@ -90,9 +104,9 @@ class _TCERootState extends State<TCERoot> {
     return Column(
       children: [
         Container(
-          color: CustomColors.textColor(context).withOpacity(0.05),
+          color: CustomColors.textColor(context).withValues(alpha: 0.05),
           child: Column(children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 8),
             tcemodel.status(context, dmodel, _controller),
             const SizedBox(height: 16),
           ]),
@@ -119,6 +133,10 @@ class _TCERootState extends State<TCERoot> {
   Widget _navigation(BuildContext context, DataModel dmodel) {
     TCEModel tcemodel = Provider.of<TCEModel>(context);
     return SafeArea(
+      top: false,
+      left: false,
+      right: false,
+      bottom: true,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
             16, 0, 16, MediaQuery.of(context).padding.bottom == 0 ? 10 : 0),
@@ -127,7 +145,11 @@ class _TCERootState extends State<TCERoot> {
             AnimatedOpacity(
               opacity: tcemodel.index == 0 ? 0 : 1,
               duration: const Duration(milliseconds: 300),
-              child: cv.BasicButton(
+              child: XCContainer.custom(
+                customRadius: 25,
+                height: 50,
+                width: 50,
+                color: XCTheme.of(context).cell,
                 onTap: () {
                   if (tcemodel.index != 0) {
                     _controller.previousPage(
@@ -135,64 +157,16 @@ class _TCERootState extends State<TCERoot> {
                         curve: Sprung.overDamped);
                   }
                 },
-                child: cv.GlassContainer(
-                  height: 50,
-                  width: 50,
-                  borderRadius: BorderRadius.circular(25),
-                  backgroundColor:
-                      CustomColors.textColor(context).withOpacity(0.1),
-                  child: Icon(
-                    Icons.chevron_left,
-                    color: CustomColors.textColor(context).withOpacity(0.7),
-                  ),
+                child: Icon(
+                  Icons.chevron_left,
+                  color: XCTheme.of(context).foregroundMuted,
                 ),
               ),
             ),
             const Spacer(),
-            cv.BasicButton(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 5,
-                    sigmaY: 5,
-                  ),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 700),
-                    curve: Sprung.overDamped,
-                    decoration: BoxDecoration(
-                      color: tcemodel.isAtEnd() && !tcemodel.isValidated().v1()
-                          ? Colors.red.withOpacity(0.3)
-                          : dmodel.color,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    width: tcemodel.isAtEnd()
-                        ? MediaQuery.of(context).size.width / 1.5
-                        : 50,
-                    height: 50,
-                    child: tcemodel.isAtEnd()
-                        ? Center(
-                            child: _isLoading
-                                ? const cv.LoadingIndicator(color: Colors.white)
-                                : Text(
-                                    tcemodel.isValidated().v2(),
-                                    softWrap: false,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: tcemodel.isValidated().v1()
-                                          ? Colors.white
-                                          : Colors.red[900],
-                                    ),
-                                  ),
-                          )
-                        : const Icon(
-                            Icons.chevron_right,
-                            color: Colors.white,
-                          ),
-                  ),
-                ),
-              ),
+            XCContainer.custom(
+              customRadius: 25,
+              height: 50,
               onTap: () {
                 if (tcemodel.isAtEnd()) {
                   if (tcemodel.isValidated().v1()) {
@@ -208,6 +182,45 @@ class _TCERootState extends State<TCERoot> {
                       curve: Sprung.overDamped);
                 }
               },
+              color: tcemodel.isAtEnd() && !tcemodel.isValidated().v1()
+                  ? Colors.red.withValues(alpha: 0.3)
+                  : dmodel.color,
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 700),
+                curve: Sprung.overDamped,
+                child: SizedBox(
+                  width: tcemodel.isAtEnd()
+                      ? MediaQuery.of(context).size.width / 1.5
+                      : 50,
+                  child: Center(
+                    child: tcemodel.isAtEnd()
+                        ? _isLoading
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                tcemodel.isValidated().v2(),
+                                softWrap: false,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: tcemodel.isValidated().v1()
+                                      ? Colors.white
+                                      : Colors.red[900],
+                                ),
+                              )
+                        : const Icon(
+                            Icons.chevron_right,
+                            color: Colors.white,
+                          ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

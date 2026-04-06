@@ -6,6 +6,7 @@ import 'root.dart';
 import '../../data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import '../components/root.dart' as comp;
 
 class RosterUserDetail extends StatefulWidget {
@@ -52,46 +53,41 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
-      hasSafeArea: widget.isSheet ? false : true,
-      barHeight: widget.isSheet ? 60 : 40,
-      leadingAlignment: widget.isSheet ? Alignment.centerLeft : null,
-      titleAlignment: widget.isSheet ? Alignment.center : null,
-      trailingAlignment: widget.isSheet ? Alignment.centerRight : null,
+    return HeaderBar(
       title: "",
       isLarge: false,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
       refreshable: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      color: dmodel.color,
-      leading: [cv.BackButton(color: dmodel.color)],
-      trailing: [_edit(context, dmodel)],
-      children: [
-        _body(context, dmodel),
-        const SizedBox(height: 16),
-        cv.ListView<Widget>(
-          horizontalPadding: 0,
-          childPadding: const EdgeInsets.symmetric(horizontal: 16),
-          children: [
-            cv.LabeledCell(
-              value: widget.seasonUser.email,
-              label: "Email",
-              clickable: true,
-            ),
-          ],
-        ),
-        if (widget.seasonUser.teamFields?.validationStatus != 1 &&
-            (widget.teamUser.isTeamAdmin() ||
-                (widget.appSeasonUser?.isSeasonAdmin() ?? false)))
-          _invite(context, dmodel),
-        if (widget.seasonUser.userFields != null) _userFields(context),
-        if (widget.seasonUser.seasonFields != null && !widget.isTeam)
-          _seasonFields(context)
-        else if (widget.seasonUser.teamFields != null && widget.isTeam)
-          _teamFields(context),
-        if (widget.teamUser.isTeamAdmin() || widget.seasonUser.isSeasonAdmin())
-          _delete(context, dmodel),
-      ],
+      leading: cv.BackButton(color: dmodel.color),
+      trailing: _edit(context, dmodel),
+      child: Column(
+        children: [
+          _body(context, dmodel),
+          const SizedBox(height: 16),
+          cv.ListView<Widget>(
+            horizontalPadding: 0,
+            childPadding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              cv.LabeledCell(
+                value: widget.seasonUser.email,
+                label: "Email",
+                clickable: true,
+              ),
+            ],
+          ),
+          if (widget.seasonUser.teamFields?.validationStatus != 1 &&
+              (widget.teamUser.isTeamAdmin() ||
+                  (widget.appSeasonUser?.isSeasonAdmin() ?? false)))
+            _invite(context, dmodel),
+          if (widget.seasonUser.userFields != null) _userFields(context),
+          if (widget.seasonUser.seasonFields != null && !widget.isTeam)
+            _seasonFields(context)
+          else if (widget.seasonUser.teamFields != null && widget.isTeam)
+            _teamFields(context),
+          if (widget.teamUser.isTeamAdmin() || widget.seasonUser.isSeasonAdmin())
+            _delete(context, dmodel),
+        ],
+      ),
     );
   }
 

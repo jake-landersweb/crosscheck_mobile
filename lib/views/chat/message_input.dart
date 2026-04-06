@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:crosscheck_sports/components/core/container.dart';
+import 'package:cupertino_native_better/cupertino_native_better.dart'
+    show LiquidGlassContainer, LiquidGlassConfig, CNGlassEffectShape;
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
@@ -45,148 +48,160 @@ class _MessageInputState extends State<MessageInput> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     ChatModel cmodel = Provider.of<ChatModel>(context);
+    final content = _buildContent(context, dmodel, cmodel);
+    final padded = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      child: content,
+    );
+    if (Platform.isIOS) {
+      return LiquidGlassContainer(
+        config: const LiquidGlassConfig(
+          shape: CNGlassEffectShape.rect,
+          cornerRadius: 20,
+        ),
+        child: padded,
+      );
+    }
+    return XCContainer.custom(
+      customRadius: 20,
+      innerPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      child: content,
+    );
+  }
+
+  Widget _buildContent(BuildContext context, DataModel dmodel, ChatModel cmodel) {
     return Column(
-      children: [
-        Divider(
-            color: Colors.white.withValues(alpha: 0.1),
-            height: 0.5,
-            indent: 0,
-            endIndent: 0),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 700),
-              curve: Sprung.overDamped,
-              height: cmodel.selectedImage == null && _videoPreview == null
-                  ? 0
-                  : 200,
-              child: cmodel.selectedImage == null && _videoPreview == null
-                  ? Container()
-                  : Stack(
-                      alignment: AlignmentDirectional.topEnd,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.file(
-                              _videoPreview != null
-                                  ? _videoPreview!
-                                  : File(cmodel.selectedImage!.path),
-                            ),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 700),
+            curve: Sprung.overDamped,
+            height: cmodel.selectedImage == null && _videoPreview == null
+                ? 0
+                : 200,
+            child: cmodel.selectedImage == null && _videoPreview == null
+                ? Container()
+                : Stack(
+                    alignment: AlignmentDirectional.topEnd,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(
+                            _videoPreview != null
+                                ? _videoPreview!
+                                : File(cmodel.selectedImage!.path),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: cv.BasicButton(
-                            onTap: () {
-                              setState(() {
-                                cmodel.selectedImage = null;
-                                _videoPreview = null;
-                                cmodel.selectedVideo = null;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white.withOpacity(0.5),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: Icon(
-                                  Icons.close_rounded,
-                                  color: Colors.black.withOpacity(0.5),
-                                  size: 18,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                cv.BasicButton(
-                  onTap: () {
-                    cv.showFloatingSheet(
-                      context: context,
-                      builder: (context) {
-                        return AssetSheet(
-                          onImageSelect: ((asset) {
-                            setState(() {
-                              cmodel.selectedVideo = null;
-                              _videoPreview = null;
-                              cmodel.selectedImage = asset;
-                            });
-                          }),
-                          onVideoSelect: (asset) {
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: cv.BasicButton(
+                          onTap: () {
                             setState(() {
                               cmodel.selectedImage = null;
-                              cmodel.selectedVideo = asset;
+                              _videoPreview = null;
+                              cmodel.selectedVideo = null;
                             });
-                            _loadVideoPreview(context, asset.path);
                           },
-                        );
-                      },
-                    );
-                  },
-                  child: SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: Center(
-                      child: Icon(
-                        Icons.add,
-                        color: dmodel.color,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withValues(alpha: 0.5),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Icon(
+                                Icons.close_rounded,
+                                color: Colors.black.withValues(alpha: 0.5),
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
+                    ],
+                  ),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              cv.BasicButton(
+                onTap: () {
+                  cv.showFloatingSheet(
+                    context: context,
+                    builder: (context) {
+                      return AssetSheet(
+                        onImageSelect: ((asset) {
+                          setState(() {
+                            cmodel.selectedVideo = null;
+                            _videoPreview = null;
+                            cmodel.selectedImage = asset;
+                          });
+                        }),
+                        onVideoSelect: (asset) {
+                          setState(() {
+                            cmodel.selectedImage = null;
+                            cmodel.selectedVideo = asset;
+                          });
+                          _loadVideoPreview(context, asset.path);
+                        },
+                      );
+                    },
+                  );
+                },
+                child: SizedBox(
+                  height: 40,
+                  width: 40,
+                  child: Center(
+                    child: Icon(
+                      Icons.add,
+                      color: dmodel.color,
                     ),
                   ),
                 ),
-                // text field
-                Expanded(
-                  child: cv.TextField2(
-                    autocorrect: true,
-                    controller: _controller,
-                    labelText: "Type here ...",
-                    showBackground: false,
-                    isLabeled: false,
-                    highlightColor: dmodel.color,
-                    maxLines: 3,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                  ),
+              ),
+              // text field
+              Expanded(
+                child: cv.TextField2(
+                  autocorrect: true,
+                  controller: _controller,
+                  labelText: "Type here ...",
+                  showBackground: false,
+                  isLabeled: false,
+                  highlightColor: dmodel.color,
+                  maxLines: 3,
+                  onChanged: (value) {
+                    setState(() {});
+                  },
                 ),
-                Opacity(
-                  opacity: (_controller.text.isEmpty && !cmodel.hasAsset())
-                      ? 0.5
-                      : 1,
-                  child: cv.BasicButton(
-                    onTap: () {
-                      if (_controller.text.isEmpty && !cmodel.hasAsset()) {
-                        print("text input was empty");
-                      } else {
-                        _sendMessage(context, dmodel, cmodel);
-                      }
-                    },
-                    child: SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Center(
-                          child: _sending
-                              ? cv.LoadingIndicator(color: dmodel.color)
-                              : Icon(Icons.send, color: dmodel.color),
-                        )),
-                  ),
+              ),
+              Opacity(
+                opacity: (_controller.text.isEmpty && !cmodel.hasAsset())
+                    ? 0.5
+                    : 1,
+                child: cv.BasicButton(
+                  onTap: () {
+                    if (_controller.text.isEmpty && !cmodel.hasAsset()) {
+                      print("text input was empty");
+                    } else {
+                      _sendMessage(context, dmodel, cmodel);
+                    }
+                  },
+                  child: SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Center(
+                        child: _sending
+                            ? cv.LoadingIndicator(color: dmodel.color)
+                            : Icon(Icons.send, color: dmodel.color),
+                      )),
                 ),
-              ],
-            ),
-          ],
-        ),
-      ],
+              ),
+            ],
+          ),
+        ],
     );
   }
 

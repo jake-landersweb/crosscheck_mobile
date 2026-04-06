@@ -1,4 +1,5 @@
 import 'package:crosscheck_sports/views/tsce/tsce_root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:crosscheck_sports/client/root.dart';
@@ -43,11 +44,9 @@ class _NoTeamState extends State<NoTeam> {
         comp.SubActionButton(
           title: "Create My Team",
           onTap: () {
-            cv.cupertinoSheet(
+            showSnappingSheet(
               context: context,
-              builder: (context) {
-                return TSCERoot(user: dmodel.user!);
-              },
+              child: TSCERoot(user: dmodel.user!),
             );
           },
         ),

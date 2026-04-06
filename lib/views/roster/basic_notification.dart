@@ -4,6 +4,7 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'root.dart';
 import '../components/root.dart' as comp;
 
@@ -40,22 +41,19 @@ class _BasicNotificationState extends State<BasicNotification> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Season-wide Blast",
-      color: dmodel.color,
-      itemBarPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       refreshable: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: [
-        cv.BackButton(
-          color: dmodel.color,
-          showText: true,
-          showIcon: false,
-          useRoot: true,
-          title: "Cancel",
-        ),
-      ],
-      children: [
+      leading: cv.BackButton(
+        color: dmodel.color,
+        showText: true,
+        showIcon: false,
+        useRoot: true,
+        title: "Cancel",
+      ),
+      child: Column(
+        children: [
         cv.ListView<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -171,7 +169,8 @@ class _BasicNotificationState extends State<BasicNotification> {
             },
           ),
         ),
-      ],
+        ],
+      ),
     );
   }
 

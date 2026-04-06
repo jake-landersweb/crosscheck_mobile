@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:crosscheck_sports/components/core/container.dart';
 import 'package:flutter/material.dart';
 import 'package:sprung/sprung.dart';
 import 'package:provider/provider.dart';
@@ -85,69 +86,62 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: widget.event.getColor() ?? CustomColors.cellColor(context),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _title(context, dmodel),
-            const SizedBox(height: 4),
-            if (widget.isUpcoming || widget.event.eventType != 1)
-              _detailCell(Icons.schedule, widget.event.getTime())
-            else
-              // _detailCell(Icons.scoreboard_outlined, widget.event.getScore()),
-              EventScoreCell(event: widget.event),
-            SizeTransition(
-              sizeFactor: _animation,
-              axis: Axis.vertical,
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 300),
-                opacity: _isOpen ? 1 : 0,
-                child: Column(
-                  children: _detailChildren(context, dmodel),
-                ),
+    return XCContainer(
+      color: widget.event.getColor(),
+      innerPadding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _title(context, dmodel),
+          const SizedBox(height: 4),
+          if (widget.isUpcoming || widget.event.eventType != 1)
+            _detailCell(Icons.schedule, widget.event.getTime())
+          else
+            EventScoreCell(event: widget.event),
+          SizeTransition(
+            sizeFactor: _animation,
+            axis: Axis.vertical,
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 300),
+              opacity: _isOpen ? 1 : 0,
+              child: Column(
+                children: _detailChildren(context, dmodel),
               ),
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                // if (_detailChildren(context, dmodel).isNotEmpty)
-                cv.BasicButton(
-                  onTap: () {
-                    _toggleContainer();
-                  },
-                  child: AnimatedRotation(
-                    duration: Duration(milliseconds: 550),
-                    curve: Sprung.overDamped,
-                    turns: _isOpen ? 0.25 : -0.25,
-                    child: Icon(
-                      Icons.chevron_left,
-                      color: widget.event.eventColor.isEmpty
-                          ? CustomColors.textColor(context).withOpacity(0.7)
-                          : Colors.white,
-                    ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              cv.BasicButton(
+                onTap: () {
+                  _toggleContainer();
+                },
+                child: AnimatedRotation(
+                  duration: Duration(milliseconds: 550),
+                  curve: Sprung.overDamped,
+                  turns: _isOpen ? 0.25 : -0.25,
+                  child: Icon(
+                    Icons.chevron_left,
+                    color: widget.event.eventColor.isEmpty
+                        ? CustomColors.textColor(context).withValues(alpha: 0.7)
+                        : Colors.white,
                   ),
                 ),
-                const Spacer(),
-                Text(
-                    "${widget.event.inCount} Going  ${widget.event.noResponse + widget.event.undecidedCount} Undecided",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: (widget.event.eventColor.isEmpty
-                              ? CustomColors.textColor(context)
-                              : Colors.white)
-                          .withOpacity(0.3),
-                    ))
-              ],
-            ),
-          ],
-        ),
+              ),
+              const Spacer(),
+              Text(
+                  "${widget.event.inCount} Going  ${widget.event.noResponse + widget.event.undecidedCount} Undecided",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    color: (widget.event.eventColor.isEmpty
+                            ? CustomColors.textColor(context)
+                            : Colors.white)
+                        .withValues(alpha: 0.3),
+                  ))
+            ],
+          ),
+        ],
       ),
     );
   }

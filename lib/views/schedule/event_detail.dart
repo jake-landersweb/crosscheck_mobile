@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/stats/team/root.dart';
 import 'package:provider/provider.dart';
 
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
 import '../../client/root.dart';
@@ -72,19 +74,15 @@ class _EventDetail2State extends State<EventDetail2> {
     return ChangeNotifierProvider(
       create: (context) => EventUserModel(),
       builder: ((context, child) {
-        return cv.AppBar(
+        return HeaderBar(
           title: widget.event.getTitle(),
           isLarge: true,
-          leading: [
-            cv.BackButton(color: _accentColor(dmodel)),
-          ],
+          leading: cv.BackButton(color: _accentColor(dmodel)),
           backgroundColor: CustomColors.backgroundColor(context),
-          trailing: [_editButton(context, dmodel)],
-          itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
-          childPadding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
-          children: [
-            _body(context, dmodel),
-          ],
+          trailing: _editButton(context, dmodel),
+          horizontalPadding: 16.0,
+          bottomPadding: 48.0,
+          child: _body(context, dmodel),
         );
       }),
     );
@@ -596,21 +594,18 @@ class _EventDetail2State extends State<EventDetail2> {
         (euModel.eventUsers != null || !widget.event.hasAttendance)) {
       return cv.BasicButton(
         onTap: () {
-          cv.cupertinoSheet(
+          showSnappingSheet(
               context: context,
-              wrapInNavigator: true,
-              builder: ((context) {
-                return ECERoot(
-                  isCreate: false,
-                  team: widget.team,
-                  season: widget.season,
-                  teamUser: dmodel.tus!.user,
-                  user: dmodel.user!,
-                  seasonUser: dmodel.currentSeasonUser,
-                  event: widget.event,
-                  eventUsers: euModel.eventUsers,
-                );
-              }));
+              child: ECERoot(
+                isCreate: false,
+                team: widget.team,
+                season: widget.season,
+                teamUser: dmodel.tus!.user,
+                user: dmodel.user!,
+                seasonUser: dmodel.currentSeasonUser,
+                event: widget.event,
+                eventUsers: euModel.eventUsers,
+              ));
         },
         child: Text(
           "Edit",
@@ -704,23 +699,17 @@ class _EventDetailState extends State<EventDetail> {
     return ChangeNotifierProvider(
       create: (context) => EventUserModel(),
       builder: ((context, child) {
-        return cv.AppBar(
+        return HeaderBar(
           title: widget.event.getTitle(),
           isLarge: true,
           backgroundColor: widget.event.getColor()?.lighten(0.1) ??
               CustomColors.backgroundColor(context),
-          color: _accentColor(dmodel),
-          leading: [
-            cv.BackButton(color: _accentColor(dmodel)),
-          ],
+          leading: cv.BackButton(color: _accentColor(dmodel)),
           titleColor: widget.event.eventColor.isEmpty ? null : Colors.white,
-          trailing: [_editButton(context, dmodel)],
-          itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
-          // titlePadding: const EdgeInsets.only(left: 8),
-          childPadding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
-          children: [
-            _body(context, dmodel),
-          ],
+          trailing: _editButton(context, dmodel),
+          horizontalPadding: 16.0,
+          bottomPadding: 48.0,
+          child: _body(context, dmodel),
         );
       }),
     );
@@ -1128,20 +1117,18 @@ class _EventDetailState extends State<EventDetail> {
       return cv.BasicButton(
         onTap: () {
           if (euModel.eventUsers != null || !widget.event.hasAttendance) {
-            cv.cupertinoSheet(
+            showSnappingSheet(
                 context: context,
-                builder: (context) {
-                  return ECERoot(
-                    isCreate: false,
-                    team: widget.team,
-                    season: widget.season,
-                    teamUser: dmodel.tus!.user,
-                    user: dmodel.user!,
-                    seasonUser: dmodel.currentSeasonUser,
-                    event: widget.event,
-                    eventUsers: euModel.eventUsers,
-                  );
-                });
+                child: ECERoot(
+                  isCreate: false,
+                  team: widget.team,
+                  season: widget.season,
+                  teamUser: dmodel.tus!.user,
+                  user: dmodel.user!,
+                  seasonUser: dmodel.currentSeasonUser,
+                  event: widget.event,
+                  eventUsers: euModel.eventUsers,
+                ));
           }
         },
         child: Text(

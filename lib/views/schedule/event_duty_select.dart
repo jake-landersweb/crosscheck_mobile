@@ -1,4 +1,5 @@
 import 'package:crosscheck_sports/client/root.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:crosscheck_sports/data/event_duties/event_duty_event_user.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/extensions.dart';
@@ -45,35 +46,32 @@ class _EventDutySelectState extends State<EventDutySelect> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Choose User",
-      leading: [cv.CloseButton(color: dmodel.color)],
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            if (_selected == null) {
-              dmodel
-                  .addIndicator(IndicatorItem.error("The user cannot be null"));
-            } else {
-              _save(context, dmodel);
-            }
-          },
-          child: _isLoading
-              ? cv.LoadingIndicator(color: dmodel.color)
-              : Text(
-                  "Save",
-                  style: TextStyle(
-                    color: _selected != null
-                        ? dmodel.color
-                        : CustomColors.textColor(context).withOpacity(0.5),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                  ),
+      leading: cv.CloseButton(color: dmodel.color),
+      trailing: cv.BasicButton(
+        onTap: () {
+          if (_selected == null) {
+            dmodel
+                .addIndicator(IndicatorItem.error("The user cannot be null"));
+          } else {
+            _save(context, dmodel);
+          }
+        },
+        child: _isLoading
+            ? cv.LoadingIndicator(color: dmodel.color)
+            : Text(
+                "Save",
+                style: TextStyle(
+                  color: _selected != null
+                      ? dmodel.color
+                      : CustomColors.textColor(context).withOpacity(0.5),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
                 ),
-        )
-      ],
-      children: [
-        cv.ListView<SeasonUser>(
+              ),
+      ),
+      child: cv.ListView<SeasonUser>(
           children: dmodel.seasonUsers!,
           color: dmodel.color,
           allowsSelect: true,
@@ -118,7 +116,6 @@ class _EventDutySelectState extends State<EventDutySelect> {
             );
           },
         ),
-      ],
     );
   }
 

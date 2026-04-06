@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/views/roster/from_season/fs_user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class FSRoot extends StatefulWidget {
   const FSRoot({
@@ -45,64 +46,60 @@ class _FSRootState extends State<FSRoot> {
 
   Widget _content(BuildContext context, DataModel dmodel) {
     FSModel fsmodel = Provider.of<FSModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "",
-      leading: [
-        cv.BackButton(
-          color: dmodel.color,
-          title: "Cancel",
-          showIcon: false,
-          showText: true,
-          useRoot: true,
-        ),
-      ],
-      trailing: [
-        cv.BasicButton(
-          onTap: () async {
-            if (fsmodel.selectedUsers.isNotEmpty) {
-              setState(() {
-                _isLoading = true;
-              });
-              await dmodel.seasonUserAddFromList(
-                widget.team.teamId,
-                widget.season.seasonId,
-                fsmodel.createBody(),
-                () async {
-                  Navigator.of(context, rootNavigator: true).pop();
-                  // refresh the data
-                  await dmodel.getBatchSeasonRoster(
-                    widget.team.teamId,
-                    widget.season.seasonId,
-                    (p0) => dmodel.setSeasonUsers(p0),
-                  );
-                },
-              );
-              setState(() {
-                _isLoading = false;
-              });
-            }
-          },
-          child: _isLoading
-              ? SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: cv.LoadingIndicator(color: dmodel.color),
-                )
-              : Text(
-                  "Add",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: fsmodel.selectedUsers.isEmpty
-                        ? FontWeight.w400
-                        : FontWeight.w600,
-                    color: fsmodel.selectedUsers.isEmpty
-                        ? CustomColors.textColor(context).withOpacity(0.5)
-                        : dmodel.color,
-                  ),
+      leading: cv.BackButton(
+        color: dmodel.color,
+        title: "Cancel",
+        showIcon: false,
+        showText: true,
+        useRoot: true,
+      ),
+      trailing: cv.BasicButton(
+        onTap: () async {
+          if (fsmodel.selectedUsers.isNotEmpty) {
+            setState(() {
+              _isLoading = true;
+            });
+            await dmodel.seasonUserAddFromList(
+              widget.team.teamId,
+              widget.season.seasonId,
+              fsmodel.createBody(),
+              () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                // refresh the data
+                await dmodel.getBatchSeasonRoster(
+                  widget.team.teamId,
+                  widget.season.seasonId,
+                  (p0) => dmodel.setSeasonUsers(p0),
+                );
+              },
+            );
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        },
+        child: _isLoading
+            ? SizedBox(
+                height: 25,
+                width: 25,
+                child: cv.LoadingIndicator(color: dmodel.color),
+              )
+            : Text(
+                "Add",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: fsmodel.selectedUsers.isEmpty
+                      ? FontWeight.w400
+                      : FontWeight.w600,
+                  color: fsmodel.selectedUsers.isEmpty
+                      ? CustomColors.textColor(context).withOpacity(0.5)
+                      : dmodel.color,
                 ),
-        ),
-      ],
-      children: [_body(context, dmodel, fsmodel)],
+              ),
+      ),
+      child: _body(context, dmodel, fsmodel),
     );
   }
 

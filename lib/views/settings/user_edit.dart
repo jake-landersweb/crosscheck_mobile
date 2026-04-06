@@ -6,6 +6,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class UserEdit extends StatefulWidget {
   const UserEdit({
@@ -56,127 +57,128 @@ class _UserEditState extends State<UserEdit> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Edit User",
-      childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
-      leading: [
-        cv.BackButton(
-          title: "Cancel",
-          color: dmodel.color,
-          showIcon: false,
-          useRoot: true,
-          showText: true,
-        ),
-      ],
-      children: [
-        cv.ListView(
-          childPadding: const EdgeInsets.symmetric(horizontal: 16),
-          horizontalPadding: 16,
-          children: [
-            _firstNameField(context, dmodel),
-            _lastNameField(context, dmodel),
-            _phoneField(context, dmodel),
-            _nicknameField(context, dmodel),
-          ],
-        ),
-        cv.Section(
-          "Notifications",
-          headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
-          child: Column(
+      horizontalPadding: 0,
+      bottomPadding: 48,
+      leading: cv.BackButton(
+        title: "Cancel",
+        color: dmodel.color,
+        showIcon: false,
+        useRoot: true,
+        showText: true,
+      ),
+      child: Column(
+        children: [
+          cv.ListView(
+            childPadding: const EdgeInsets.symmetric(horizontal: 16),
+            horizontalPadding: 16,
             children: [
-              cv.ListView(
-                childPadding: const EdgeInsets.symmetric(horizontal: 16),
-                horizontalPadding: 16,
-                children: [
-                  _emailField(context, dmodel),
-                ],
-              ),
-              const SizedBox(height: 8),
-              cv.ListView<MobileNotification>(
-                childPadding: const EdgeInsets.symmetric(horizontal: 16),
-                horizontalPadding: 16,
-                children: _mobileNotifications,
-                allowsDelete: true,
-                isAnimated: true,
-                animateOpen: false,
-                onDelete: (item) async {
-                  setState(() {
-                    _mobileNotifications
-                        .removeWhere((element) => element.token == item.token);
-                  });
-                },
-                childBuilder: (context, notif) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: cv.LabeledWidget(
-                          "${notif.deviceName ?? "Unknown Device"}${notif.deviceVersion != null ? " ${notif.deviceVersion}" : ""}",
-                          child: Row(
-                            children: [
-                              FlutterSwitch(
-                                value: notif.allow,
-                                height: 25,
-                                width: 50,
-                                toggleSize: 18,
-                                activeColor: dmodel.color,
-                                onToggle: (value) async {
-                                  setState(() {
-                                    notif.allow = value;
-                                  });
-                                },
-                              ),
-                              const Spacer(),
-                              if ((notif.token ?? "") == _token)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: dmodel.color,
-                                    ),
-                                    height: 7,
-                                    width: 7,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+              _firstNameField(context, dmodel),
+              _lastNameField(context, dmodel),
+              _phoneField(context, dmodel),
+              _nicknameField(context, dmodel),
             ],
           ),
-        ),
-        if (!_mobileNotifications.any((element) => element.token == _token) &&
-            (_token?.isNotEmpty ?? false))
-          Column(
-            children: [
-              const SizedBox(height: 8),
-              cv.ListView<Widget>(
-                onChildTap: (context, item) async {
-                  if (_token?.isNotEmpty ?? false) {
-                    // get the device information
-                    Map<String, dynamic> notif = await dmodel.getDeviceInfo();
-                    notif['token'] = _token;
-                    notif['allow'] = true;
+          cv.Section(
+            "Notifications",
+            headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
+            child: Column(
+              children: [
+                cv.ListView(
+                  childPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  horizontalPadding: 16,
+                  children: [
+                    _emailField(context, dmodel),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                cv.ListView<MobileNotification>(
+                  childPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  horizontalPadding: 16,
+                  children: _mobileNotifications,
+                  allowsDelete: true,
+                  isAnimated: true,
+                  animateOpen: false,
+                  onDelete: (item) async {
                     setState(() {
                       _mobileNotifications
-                          .add(MobileNotification.fromJson(notif));
+                          .removeWhere((element) => element.token == item.token);
                     });
-                  } else {
-                    dmodel.addIndicator(IndicatorItem.error(
-                        "Please enable notifications in the settings app"));
-                  }
-                },
-                children: const [Text("Add This Phone")],
-              ),
-            ],
+                  },
+                  childBuilder: (context, notif) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: cv.LabeledWidget(
+                            "${notif.deviceName ?? "Unknown Device"}${notif.deviceVersion != null ? " ${notif.deviceVersion}" : ""}",
+                            child: Row(
+                              children: [
+                                FlutterSwitch(
+                                  value: notif.allow,
+                                  height: 25,
+                                  width: 50,
+                                  toggleSize: 18,
+                                  activeColor: dmodel.color,
+                                  onToggle: (value) async {
+                                    setState(() {
+                                      notif.allow = value;
+                                    });
+                                  },
+                                ),
+                                const Spacer(),
+                                if ((notif.token ?? "") == _token)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: dmodel.color,
+                                      ),
+                                      height: 7,
+                                      width: 7,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        const SizedBox(height: 32),
-        _button(context, dmodel)
-      ],
+          if (!_mobileNotifications.any((element) => element.token == _token) &&
+              (_token?.isNotEmpty ?? false))
+            Column(
+              children: [
+                const SizedBox(height: 8),
+                cv.ListView<Widget>(
+                  onChildTap: (context, item) async {
+                    if (_token?.isNotEmpty ?? false) {
+                      // get the device information
+                      Map<String, dynamic> notif = await dmodel.getDeviceInfo();
+                      notif['token'] = _token;
+                      notif['allow'] = true;
+                      setState(() {
+                        _mobileNotifications
+                            .add(MobileNotification.fromJson(notif));
+                      });
+                    } else {
+                      dmodel.addIndicator(IndicatorItem.error(
+                          "Please enable notifications in the settings app"));
+                    }
+                  },
+                  children: const [Text("Add This Phone")],
+                ),
+              ],
+            ),
+          const SizedBox(height: 32),
+          _button(context, dmodel)
+        ],
+      ),
     );
   }
 

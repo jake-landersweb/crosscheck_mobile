@@ -1,4 +1,6 @@
-import 'dart:ui';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/container.dart';
+import 'package:crosscheck_sports/style/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'root.dart';
@@ -65,26 +67,54 @@ class _ECERootState extends State<ECERoot> {
             ),
       // we use `builder` to obtain a new `BuildContext` that has access to the provider
       builder: (context, child) {
-        // No longer throws
-        return Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            cv.AppBar.sheet(
-              canScroll: false,
-              title: widget.isCreate ? "Create Event" : "Edit Event",
-              leading: [
-                cv.BackButton(
-                  title: "Cancel",
-                  showIcon: false,
-                  showText: true,
-                  useRoot: true,
-                  color: dmodel.color,
-                ),
-              ],
-              children: [Expanded(child: _body(context, dmodel))],
-            ),
-            _navigation(context, dmodel),
-          ],
+        return Scaffold(
+          backgroundColor: CustomColors.backgroundColor(context),
+          body: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Column(
+                children: [
+                  Container(
+                    color: CustomColors.textColor(context)
+                        .withValues(alpha: 0.05),
+                    child: SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                        child: SizedBox(
+                          height: XCThemeData.listItemHeight,
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: XCActionButton.cancel(
+                                  onTap: () => Navigator.of(context,
+                                          rootNavigator: true)
+                                      .pop(),
+                                ),
+                              ),
+                              Center(
+                                child: Text(
+                                  widget.isCreate
+                                      ? "Create Event"
+                                      : "Edit Event",
+                                  style:
+                                      XCTheme.of(context).text.label,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(child: _body(context, dmodel)),
+                ],
+              ),
+              _navigation(context, dmodel),
+            ],
+          ),
         );
       },
     );
@@ -95,9 +125,9 @@ class _ECERootState extends State<ECERoot> {
     return Column(
       children: [
         Container(
-          color: CustomColors.textColor(context).withOpacity(0.05),
+          color: CustomColors.textColor(context).withValues(alpha: 0.05),
           child: Column(children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 8),
             scemodel.status(context, dmodel, _controller),
             const SizedBox(height: 16),
           ]),
@@ -135,7 +165,11 @@ class _ECERootState extends State<ECERoot> {
             AnimatedOpacity(
               opacity: ecemodel.index == 0 ? 0 : 1,
               duration: const Duration(milliseconds: 300),
-              child: cv.BasicButton(
+              child: XCContainer.custom(
+                customRadius: 25,
+                height: 50,
+                width: 50,
+                color: XCTheme.of(context).cell,
                 onTap: () {
                   if (ecemodel.index != 0) {
                     _controller.previousPage(
@@ -143,64 +177,19 @@ class _ECERootState extends State<ECERoot> {
                         curve: Sprung.overDamped);
                   }
                 },
-                child: cv.GlassContainer(
-                  height: 50,
-                  width: 50,
-                  borderRadius: BorderRadius.circular(25),
-                  backgroundColor:
-                      CustomColors.textColor(context).withOpacity(0.1),
-                  child: Icon(
-                    Icons.chevron_left,
-                    color: CustomColors.textColor(context).withOpacity(0.7),
-                  ),
+                child: Icon(
+                  Icons.chevron_left,
+                  color: XCTheme.of(context).foregroundMuted,
                 ),
               ),
             ),
             const Spacer(),
-            cv.BasicButton(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 5,
-                    sigmaY: 5,
-                  ),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 700),
-                    curve: Sprung.overDamped,
-                    decoration: BoxDecoration(
-                      color: ecemodel.isAtEnd() && !ecemodel.isValidated()
-                          ? Colors.red.withOpacity(0.3)
-                          : dmodel.color,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    width: ecemodel.isAtEnd()
-                        ? MediaQuery.of(context).size.width / 1.5
-                        : 50,
-                    height: 50,
-                    child: ecemodel.isAtEnd()
-                        ? Center(
-                            child: _isLoading
-                                ? const cv.LoadingIndicator(color: Colors.white)
-                                : Text(
-                                    ecemodel.buttonTitle(),
-                                    softWrap: false,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: ecemodel.isValidated()
-                                          ? Colors.white
-                                          : Colors.red[900],
-                                    ),
-                                  ),
-                          )
-                        : const Icon(
-                            Icons.chevron_right,
-                            color: Colors.white,
-                          ),
-                  ),
-                ),
-              ),
+            XCContainer.custom(
+              customRadius: 25,
+              height: 50,
+              color: ecemodel.isAtEnd() && !ecemodel.isValidated()
+                  ? Colors.red.withValues(alpha: 0.3)
+                  : dmodel.color,
               onTap: () {
                 if (ecemodel.isAtEnd()) {
                   if (ecemodel.isValidated()) {
@@ -212,6 +201,42 @@ class _ECERootState extends State<ECERoot> {
                       curve: Sprung.overDamped);
                 }
               },
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 700),
+                curve: Sprung.overDamped,
+                child: SizedBox(
+                  width: ecemodel.isAtEnd()
+                      ? MediaQuery.of(context).size.width / 1.5
+                      : 50,
+                  child: Center(
+                    child: ecemodel.isAtEnd()
+                        ? _isLoading
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                ecemodel.buttonTitle(),
+                                softWrap: false,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: ecemodel.isValidated()
+                                      ? Colors.white
+                                      : Colors.red[900],
+                                ),
+                              )
+                        : const Icon(
+                            Icons.chevron_right,
+                            color: Colors.white,
+                          ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

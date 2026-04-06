@@ -209,32 +209,25 @@ List<Map<String, dynamic>> _convertAttributes(Map<String, dynamic> data) {
     Map<String, dynamic> attribute = {"key": item.key};
 
     // check for correct runtime type
-    switch (item.value.runtimeType) {
-      case Map<String, dynamic>:
-        attribute["value"] = {"stringValue": logfmt(item.value)};
-        break;
-      case List:
-        attribute['value'] = {
-          "arrayValue": {"values": item.value}
-        };
-        break;
-      case String:
-        attribute['value'] = {"stringValue": item.value};
-        break;
-      case bool:
-        attribute['value'] = {"boolValue": item.value};
-        break;
-      case int:
-        attribute['value'] = {"intValue": item.value};
-        break;
-      case double:
-        attribute['value'] = {"doubleValue": item.value};
-        break;
-      case Null:
-        attribute["value"] = {"stringValue": "null"};
-        break;
-      default:
-        attribute["value"] = {"stringValue": item.value.toString()};
+    final v = item.value;
+    if (v is Map<String, dynamic>) {
+      attribute["value"] = {"stringValue": logfmt(v)};
+    } else if (v is List) {
+      attribute['value'] = {
+        "arrayValue": {"values": v}
+      };
+    } else if (v is String) {
+      attribute['value'] = {"stringValue": v};
+    } else if (v is bool) {
+      attribute['value'] = {"boolValue": v};
+    } else if (v is int) {
+      attribute['value'] = {"intValue": v};
+    } else if (v is double) {
+      attribute['value'] = {"doubleValue": v};
+    } else if (v == null) {
+      attribute["value"] = {"stringValue": "null"};
+    } else {
+      attribute["value"] = {"stringValue": v.toString()};
     }
 
     res.add(attribute);

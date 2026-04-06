@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class SUExcelEdit extends StatefulWidget {
   const SUExcelEdit({
@@ -42,10 +43,11 @@ class _SUExcelEditState extends State<SUExcelEdit> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Edit User",
-      trailing: [cv.CancelButton(color: dmodel.color, closeText: "Done")],
-      children: [
+      trailing: cv.CancelButton(color: dmodel.color, closeText: "Done"),
+      child: Column(
+        children: [
         cv.ListView<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.only(right: 16),
@@ -163,7 +165,8 @@ class _SUExcelEditState extends State<SUExcelEdit> {
             ),
           ],
         ),
-      ],
+        ],
+      ),
     );
   }
 }

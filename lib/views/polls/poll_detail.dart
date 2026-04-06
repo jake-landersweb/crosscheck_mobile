@@ -1,4 +1,5 @@
 import 'package:crosscheck_sports/client/root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:crosscheck_sports/views/polls/polls_ce/root.dart';
 import 'package:crosscheck_sports/views/polls/root.dart';
@@ -9,6 +10,7 @@ import 'package:sprung/sprung.dart';
 import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class PollDetail extends StatefulWidget {
   const PollDetail({
@@ -48,15 +50,12 @@ class _PollDetailState extends State<PollDetail> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Container(
       color: CustomColors.backgroundColor(context),
-      child: cv.AppBar(
+      child: HeaderBar(
         title: widget.poll.title,
-        itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
         isLarge: true,
-        leading: [cv.BackButton(color: _accentColor())],
-        trailing: [_editButton(context, dmodel)],
-        children: [
-          _body(context, dmodel),
-        ],
+        leading: cv.BackButton(color: _accentColor()),
+        trailing: _editButton(context, dmodel),
+        child: _body(context, dmodel),
       ),
     );
   }
@@ -373,24 +372,22 @@ class _PollDetailState extends State<PollDetail> {
         _users != null) {
       return cv.BasicButton(
         onTap: () {
-          cv.cupertinoSheet(
+          showSnappingSheet(
               context: context,
-              wrapInNavigator: true,
-              builder: (context) {
-                return PollsRoot(
-                  team: widget.team,
-                  season: widget.season,
-                  poll: widget.poll,
-                  pollUsers: _users!,
-                  users: dmodel.seasonUsers!,
-                  onAction: () async {
-                    await dmodel.getAllPolls(widget.team.teamId,
-                        widget.season.seasonId, dmodel.user!.email, (p0) {
-                      dmodel.setPolls(p0);
-                    });
-                  },
-                );
-              });
+              child: PollsRoot(
+                team: widget.team,
+                season: widget.season,
+                poll: widget.poll,
+                pollUsers: _users!,
+                users: dmodel.seasonUsers!,
+                onAction: () async {
+                  await dmodel.getAllPolls(widget.team.teamId,
+                      widget.season.seasonId, dmodel.user!.email, (p0) {
+                    dmodel.setPolls(p0);
+                  });
+                },
+              ),
+            );
         },
         child: Text(
           "Edit",

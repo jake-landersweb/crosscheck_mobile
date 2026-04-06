@@ -5,6 +5,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class StatsTeam extends StatefulWidget {
   const StatsTeam({
@@ -34,22 +35,14 @@ class _StatsTeamState extends State<StatsTeam> {
   Widget _content(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     StatsTeamModel smodel = Provider.of<StatsTeamModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "Team Stats",
       isLarge: true,
       backgroundColor: CustomColors.backgroundColor(context),
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
-      color: dmodel.color,
-      leading: [cv.BackButton(color: dmodel.color)],
-      // trailing: [
-      //   if (widget.teamUser.isTeamAdmin() && !smodel.isLoading)
-      //     _editButton(context, dmodel, smodel),
-      // ],
+      leading: cv.BackButton(color: dmodel.color),
       onRefresh: () => smodel.userStatsGet(
           widget.team.teamId, (userStats) => smodel.setUserStats(userStats)),
-      children: [
-        _body(context, dmodel, smodel),
-      ],
+      child: _body(context, dmodel, smodel),
     );
   }
 

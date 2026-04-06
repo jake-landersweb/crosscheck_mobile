@@ -4,6 +4,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class TSCECustomFields extends StatefulWidget {
   const TSCECustomFields({
@@ -35,47 +36,42 @@ class _TSCECustomFieldsState extends State<TSCECustomFields> {
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
 
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Edit Fields",
-      childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
-      leading: [
-        cv.CloseButton(
-          title: "Cancel",
-          showIcon: false,
-          showText: true,
-          useRoot: true,
-          color: dmodel.color,
-        ),
-      ],
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            widget.onCompletion(_fields);
-            if (widget.closeOnCompletion) {
-              Navigator.of(context, rootNavigator: true).pop();
-            }
-          },
-          child: Text(
-            "Save",
-            style: TextStyle(
-              fontSize: 18,
-              color: dmodel.color,
-            ),
+      horizontalPadding: 0.0,
+      bottomPadding: 48.0,
+      leading: cv.CloseButton(
+        title: "Cancel",
+        showIcon: false,
+        showText: true,
+        useRoot: true,
+        color: dmodel.color,
+      ),
+      trailing: cv.BasicButton(
+        onTap: () {
+          widget.onCompletion(_fields);
+          if (widget.closeOnCompletion) {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
+        },
+        child: Text(
+          "Save",
+          style: TextStyle(
+            fontSize: 18,
+            color: dmodel.color,
           ),
-        )
-      ],
-      children: [
-        CustomFieldCreate(
-          key: const ValueKey("this will never be seen muahahah"),
-          color: dmodel.color,
-          animateOpen: false,
-          valueLabelText: "Default Value",
-          customFields: _fields,
-          onAdd: () {
-            return CustomField(title: "", type: "S", value: "");
-          },
         ),
-      ],
+      ),
+      child: CustomFieldCreate(
+        key: const ValueKey("this will never be seen muahahah"),
+        color: dmodel.color,
+        animateOpen: false,
+        valueLabelText: "Default Value",
+        customFields: _fields,
+        onAdd: () {
+          return CustomField(title: "", type: "S", value: "");
+        },
+      ),
     );
   }
 }

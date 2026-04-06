@@ -5,6 +5,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/season/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:provider/provider.dart';
 
 class SyncCalendar extends StatefulWidget {
@@ -56,176 +57,174 @@ class _SyncCalendarState extends State<SyncCalendar> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Sync Calendar",
-      leading: [
-        cv.BasicButton(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Icon(Icons.close, color: dmodel.color),
-        ),
-      ],
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            if (_linkIsValid) {
-              _syncCalendar(dmodel);
-            }
-          },
-          child: _syncingCalendar
-              ? cv.LoadingIndicator(color: dmodel.color)
-              : Text(
-                  "Sync",
-                  style: TextStyle(
-                      color: _linkIsValid
-                          ? dmodel.color
-                          : CustomColors.textColor(context).withOpacity(0.5),
-                      fontSize: 18),
+      leading: cv.BasicButton(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Icon(Icons.close, color: dmodel.color),
+      ),
+      trailing: cv.BasicButton(
+        onTap: () {
+          if (_linkIsValid) {
+            _syncCalendar(dmodel);
+          }
+        },
+        child: _syncingCalendar
+            ? cv.LoadingIndicator(color: dmodel.color)
+            : Text(
+                "Sync",
+                style: TextStyle(
+                    color: _linkIsValid
+                        ? dmodel.color
+                        : CustomColors.textColor(context).withOpacity(0.5),
+                    fontSize: 18),
+              ),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Center(
+              child: Text(
+                "Note: Crosscheck calendar sync only supports games at this time.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: CustomColors.textColor(context).withOpacity(0.5),
                 ),
-        ),
-      ],
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Center(
-            child: Text(
-              "Note: Crosscheck calendar sync only supports games at this time.",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: CustomColors.textColor(context).withOpacity(0.5),
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Row(
-            children: const [
-              Expanded(
-                child: Center(
-                  child: Text(
-                    "Paste the url of an online webcal",
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        cv.TextField2(
-          value: _calendarUrl,
-          labelText: "Url",
-          hintText: "Calendar Url",
-          maxLines: 4,
-          labelEdgePadding: 16,
-          onChanged: (val) {
-            setState(() {
-              _linkIsValid = false;
-              _calendarUrl = val;
-              _events = null;
-            });
-          },
-        ),
-        CalendarAdvancedSettings(
-            timezone: _timezone,
-            onTimezoneChanged: (tz) {
-              setState(() {
-                _timezone = tz;
-                _linkIsValid = false;
-                _events = null;
-              });
-            },
-            parseOpponents: _parseOpponents,
-            onParseOpponentsChanged: (v) {
-              setState(() {
-                _parseOpponents = v;
-                _linkIsValid = false;
-                _events = null;
-              });
-            },
-            ignoreString: _ignoreString,
-            onIgnoreStringChanged: (v) {
-              setState(() {
-                _ignoreString = v;
-                _linkIsValid = false;
-                _events = null;
-              });
-            }),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 30,
-          child: Center(
-            child: _verifyingLink
-                ? cv.LoadingIndicator(color: dmodel.color)
-                : cv.BasicButton(
-                    onTap: () {
-                      _validateLink(dmodel);
-                    },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Row(
+              children: const [
+                Expanded(
+                  child: Center(
                     child: Text(
-                      "Load Calendar",
+                      "Paste the url of an online webcal",
                       style: TextStyle(
-                        color: dmodel.color,
                         fontSize: 18,
                       ),
                     ),
                   ),
+                ),
+              ],
+            ),
           ),
-        ),
-        if (_events != null)
-          cv.Section(
-            "Event Previews",
-            child: cv.ListView<Event>(
-              children: _events!,
-              horizontalPadding: 0,
-              childBuilder: (context, item) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_parseOpponents)
-                      RichText(
-                        text: TextSpan(
-                            text: "Opponent: ",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: CustomColors.textColor(context)
-                                  .withOpacity(0.5),
-                            ),
-                            children: [
-                              TextSpan(
-                                text: "\"${item.awayTeam?.title ?? ''}\"",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: CustomColors.textColor(context),
-                                ),
+          cv.TextField2(
+            value: _calendarUrl,
+            labelText: "Url",
+            hintText: "Calendar Url",
+            maxLines: 4,
+            labelEdgePadding: 16,
+            onChanged: (val) {
+              setState(() {
+                _linkIsValid = false;
+                _calendarUrl = val;
+                _events = null;
+              });
+            },
+          ),
+          CalendarAdvancedSettings(
+              timezone: _timezone,
+              onTimezoneChanged: (tz) {
+                setState(() {
+                  _timezone = tz;
+                  _linkIsValid = false;
+                  _events = null;
+                });
+              },
+              parseOpponents: _parseOpponents,
+              onParseOpponentsChanged: (v) {
+                setState(() {
+                  _parseOpponents = v;
+                  _linkIsValid = false;
+                  _events = null;
+                });
+              },
+              ignoreString: _ignoreString,
+              onIgnoreStringChanged: (v) {
+                setState(() {
+                  _ignoreString = v;
+                  _linkIsValid = false;
+                  _events = null;
+                });
+              }),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 30,
+            child: Center(
+              child: _verifyingLink
+                  ? cv.LoadingIndicator(color: dmodel.color)
+                  : cv.BasicButton(
+                      onTap: () {
+                        _validateLink(dmodel);
+                      },
+                      child: Text(
+                        "Load Calendar",
+                        style: TextStyle(
+                          color: dmodel.color,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+          if (_events != null)
+            cv.Section(
+              "Event Previews",
+              child: cv.ListView<Event>(
+                children: _events!,
+                horizontalPadding: 0,
+                childBuilder: (context, item) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_parseOpponents)
+                        RichText(
+                          text: TextSpan(
+                              text: "Opponent: ",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: CustomColors.textColor(context)
+                                    .withOpacity(0.5),
                               ),
-                            ]),
-                      )
-                    else
+                              children: [
+                                TextSpan(
+                                  text: "\"${item.awayTeam?.title ?? ''}\"",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: CustomColors.textColor(context),
+                                  ),
+                                ),
+                              ]),
+                        )
+                      else
+                        Text(
+                          item.getTitle(overrideTitle: true),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: CustomColors.textColor(context),
+                          ),
+                        ),
+                      const SizedBox(height: 4),
                       Text(
-                        item.getTitle(overrideTitle: true),
+                        "${item.getDate()} · ${item.getTime()}",
                         style: TextStyle(
                           fontSize: 18,
                           color: CustomColors.textColor(context),
                         ),
                       ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "${item.getDate()} · ${item.getTime()}",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: CustomColors.textColor(context),
-                      ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

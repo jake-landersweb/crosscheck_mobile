@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class TimezoneSelector extends StatefulWidget {
   const TimezoneSelector({
@@ -33,10 +34,11 @@ class _TimezoneSelectorState extends State<TimezoneSelector> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Select Timezone",
-      leading: [cv.CancelButton(color: dmodel.color)],
-      children: [
+      leading: cv.CancelButton(color: dmodel.color),
+      child: Column(
+        children: [
         cv.TextField2(
           value: _searchText,
           labelText: "Search",
@@ -119,7 +121,8 @@ class _TimezoneSelectorState extends State<TimezoneSelector> {
             },
           ),
         )
-      ],
+        ],
+      ),
     );
   }
 

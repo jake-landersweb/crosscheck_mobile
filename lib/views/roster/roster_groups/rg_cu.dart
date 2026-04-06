@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class RGCU extends StatefulWidget {
@@ -63,74 +64,70 @@ class _RGCUState extends State<RGCU> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     RGModel rgmodel = Provider.of<RGModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: widget.rosterGroup == null ? "New Group" : "Edit Group",
-      leading: [
-        cv.BackButton(
-          color: CustomColors.textColor(context).withOpacity(0.5),
-          title: "Cancel",
-          showIcon: false,
-          showText: true,
-          useRoot: true,
-        )
-      ],
-      trailing: [
-        cv.BasicButton(
-          onTap: () async {
-            if (_isValid()) {
-              if (widget.rosterGroup == null) {
-                // create the roster group
-                setState(() {
-                  _isLoading = true;
-                });
-                await rgmodel.createRosterGroup(context, dmodel, {
-                  "title": _title,
-                  "ids": _selected,
-                  "icon": _icon,
-                  "color": _iconColor,
-                  "description": _description,
-                });
-                setState(() {
-                  _isLoading = false;
-                });
-              } else {
-                // edit the roster group
-                setState(() {
-                  _isLoading = true;
-                });
-                await rgmodel
-                    .editRosterGroup(context, dmodel, widget.rosterGroup!, {
-                  "title": _title,
-                  "ids": _selected,
-                  "icon": _icon,
-                  "color": _iconColor,
-                  "description": _description,
-                });
-                setState(() {
-                  _isLoading = false;
-                });
-              }
+      leading: cv.BackButton(
+        color: CustomColors.textColor(context).withOpacity(0.5),
+        title: "Cancel",
+        showIcon: false,
+        showText: true,
+        useRoot: true,
+      ),
+      trailing: cv.BasicButton(
+        onTap: () async {
+          if (_isValid()) {
+            if (widget.rosterGroup == null) {
+              // create the roster group
+              setState(() {
+                _isLoading = true;
+              });
+              await rgmodel.createRosterGroup(context, dmodel, {
+                "title": _title,
+                "ids": _selected,
+                "icon": _icon,
+                "color": _iconColor,
+                "description": _description,
+              });
+              setState(() {
+                _isLoading = false;
+              });
+            } else {
+              // edit the roster group
+              setState(() {
+                _isLoading = true;
+              });
+              await rgmodel
+                  .editRosterGroup(context, dmodel, widget.rosterGroup!, {
+                "title": _title,
+                "ids": _selected,
+                "icon": _icon,
+                "color": _iconColor,
+                "description": _description,
+              });
+              setState(() {
+                _isLoading = false;
+              });
             }
-          },
-          child: _isLoading
-              ? SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: cv.LoadingIndicator(color: dmodel.color),
-                )
-              : Text(
-                  widget.rosterGroup == null ? "Create" : "Save",
-                  style: TextStyle(
-                    color: _isValid()
-                        ? dmodel.color
-                        : CustomColors.textColor(context).withOpacity(0.5),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+          }
+        },
+        child: _isLoading
+            ? SizedBox(
+                height: 25,
+                width: 25,
+                child: cv.LoadingIndicator(color: dmodel.color),
+              )
+            : Text(
+                widget.rosterGroup == null ? "Create" : "Save",
+                style: TextStyle(
+                  color: _isValid()
+                      ? dmodel.color
+                      : CustomColors.textColor(context).withOpacity(0.5),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                 ),
-        ),
-      ],
-      children: [_content(context, dmodel)],
+              ),
+      ),
+      child: _content(context, dmodel),
     );
   }
 

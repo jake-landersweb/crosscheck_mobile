@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import '../components/root.dart' as comp;
 
 class NoSeason extends StatefulWidget {
@@ -27,14 +28,13 @@ class _NoSeasonState extends State<NoSeason> {
             onTap: () {
               // create season
               if (dmodel.tus != null) {
-                cv.cupertinoSheet(
+                showSnappingSheet(
                     context: context,
-                    builder: (context) {
-                      return SCERoot(
-                        team: dmodel.tus!.team,
-                        isCreate: true,
-                      );
-                    });
+                    child: SCERoot(
+                      team: dmodel.tus!.team,
+                      isCreate: true,
+                    ),
+                  );
               } else {
                 dmodel.addIndicator(IndicatorItem.error(
                     "You have no loaded team data. How did that happen? Pull to refresh"));

@@ -1,9 +1,10 @@
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'root.dart' as cv;
 import 'dart:math' as math;
 
-enum ALType { nav, sheet, floating }
+enum ALType { nav, sheet, floating, snapping }
 
 class ActionListItem {
   ActionListItem({
@@ -56,6 +57,12 @@ class _ActionListState extends State<ActionList> {
               builder: (context) {
                 return item.view;
               },
+            );
+            break;
+          case cv.ALType.snapping:
+            showSnappingSheet(
+              context: context,
+              child: item.view,
             );
             break;
         }

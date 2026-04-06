@@ -6,6 +6,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import 'client/root.dart';
+import 'style/root.dart';
 import 'theme/root.dart';
 import 'views/root.dart';
 import 'custom_views/root.dart' as cv;
@@ -87,10 +88,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // for dismissing keybaord when tapping on the screen
-        WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+    return Listener(
+      onPointerDown: (_) {
+        final focus = FocusManager.instance.primaryFocus;
+        if (focus != null && focus.context != null) {
+          focus.unfocus();
+        }
       },
       child: const ScrollConfiguration(
         behavior: ScrollBehaviorModified(),
@@ -144,13 +147,21 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return MaterialApp(
+    final brightness = dmodel.tus == null
+        ? MediaQuery.platformBrightnessOf(context)
+        : (dmodel.tus!.team.isLight ? Brightness.light : Brightness.dark);
+    final xcThemeData = getXCColorScheme(context, brightness).copyWith(
+      primary: dmodel.color,
+    );
+    return XCTheme(
+      data: xcThemeData,
+      child: MaterialApp(
       title: 'Crosscheck Engine',
       scaffoldMessengerKey: snackbarKey,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      highContrastTheme: lightTheme,
-      highContrastDarkTheme: darkTheme,
+      theme: xcColorSchemeLight.copyWith(primary: dmodel.color).getTheme(),
+      darkTheme: xcColorSchemeDark.copyWith(primary: dmodel.color).getTheme(),
+      highContrastTheme: xcColorSchemeLight.copyWith(primary: dmodel.color).getTheme(),
+      highContrastDarkTheme: xcColorSchemeDark.copyWith(primary: dmodel.color).getTheme(),
       themeMode: dmodel.tus == null
           ? ThemeMode.system
           : (dmodel.tus!.team.isLight ? ThemeMode.light : ThemeMode.dark),
@@ -196,6 +207,7 @@ class Home extends StatelessWidget {
       //   // so that bottom notifications are shown over all screens
       //   return child == null ? Container() : NotificationWrapper(child: child);
       // },
+    ),
     );
   }
 }

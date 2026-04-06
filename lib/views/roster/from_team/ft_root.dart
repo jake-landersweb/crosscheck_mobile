@@ -4,6 +4,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'root.dart';
 
 class FTRoot extends StatefulWidget {
@@ -44,55 +45,51 @@ class _FTRootState extends State<FTRoot> {
     FTModel ftmodel = Provider.of<FTModel>(context);
 
     if (widget.wrapInBar) {
-      return cv.AppBar.sheet(
+      return HeaderBar.sheet(
         title: "Add Team Users",
-        leading: [
-          cv.BackButton(
-            title: "Cancel",
-            color: dmodel.color,
-            showText: true,
-            showIcon: false,
-            useRoot: true,
-          ),
-        ],
-        trailing: [
-          cv.BasicButton(
-            onTap: () async {
-              if (ftmodel.selectedUsers.isNotEmpty) {
-                setState(() {
-                  _isLoading = true;
-                });
-                await widget.onCompletion(
-                  ftmodel.team.teamId,
-                  ftmodel.season.seasonId,
-                  ftmodel.createBody(),
-                );
-                setState(() {
-                  _isLoading = false;
-                });
-              }
-            },
-            child: _isLoading
-                ? SizedBox(
-                    height: 25,
-                    width: 25,
-                    child: cv.LoadingIndicator(color: dmodel.color),
-                  )
-                : Text(
-                    "Add",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: ftmodel.selectedUsers.isEmpty
-                          ? FontWeight.w400
-                          : FontWeight.w600,
-                      color: ftmodel.selectedUsers.isEmpty
-                          ? CustomColors.textColor(context).withOpacity(0.5)
-                          : dmodel.color,
-                    ),
+        leading: cv.BackButton(
+          title: "Cancel",
+          color: dmodel.color,
+          showText: true,
+          showIcon: false,
+          useRoot: true,
+        ),
+        trailing: cv.BasicButton(
+          onTap: () async {
+            if (ftmodel.selectedUsers.isNotEmpty) {
+              setState(() {
+                _isLoading = true;
+              });
+              await widget.onCompletion(
+                ftmodel.team.teamId,
+                ftmodel.season.seasonId,
+                ftmodel.createBody(),
+              );
+              setState(() {
+                _isLoading = false;
+              });
+            }
+          },
+          child: _isLoading
+              ? SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: cv.LoadingIndicator(color: dmodel.color),
+                )
+              : Text(
+                  "Add",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: ftmodel.selectedUsers.isEmpty
+                        ? FontWeight.w400
+                        : FontWeight.w600,
+                    color: ftmodel.selectedUsers.isEmpty
+                        ? CustomColors.textColor(context).withOpacity(0.5)
+                        : dmodel.color,
                   ),
-          ),
-        ],
-        children: const [FTHome()],
+                ),
+        ),
+        child: const FTHome(),
       );
     } else {
       return const FTHome();

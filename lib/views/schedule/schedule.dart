@@ -1,7 +1,15 @@
+import 'dart:io';
 import 'dart:developer';
+import 'package:crosscheck_sports/components/adaptive/icon/adaptive_icon.dart';
+import 'package:crosscheck_sports/components/adaptive/tab_bar/tab_bar_insets.dart';
+import 'package:crosscheck_sports/components/core/interactive.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import 'package:crosscheck_sports/views/schedule/notifications_view.dart';
 import 'package:crosscheck_sports/views/season/future_warning.dart';
 import 'package:crosscheck_sports/views/team/team_model.dart';
+import 'package:cupertino_native_better/cupertino_native_better.dart'
+    show LiquidGlassContainer, LiquidGlassConfig, CNGlassEffectShape;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/views/root.dart';
@@ -71,6 +79,7 @@ class _ScheduleState extends State<Schedule> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
+    final tabBarHeight = TabBarInsets.of(context);
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -112,6 +121,15 @@ class _ScheduleState extends State<Schedule> {
           ),
         ),
         _header(context, dmodel),
+        // Floating add button above tab bar
+        if ((dmodel.currentSeasonUser?.isSeasonAdmin() ??
+                false || (dmodel.tus?.user.isTeamAdmin() ?? false)) &&
+            dmodel.seasonUsers != null)
+          Positioned(
+            right: 20,
+            bottom: tabBarHeight + 10,
+            child: _addButton(context, dmodel),
+          ),
       ],
     );
   }
@@ -175,21 +193,20 @@ class _ScheduleState extends State<Schedule> {
                       Stack(
                         alignment: Alignment.topRight,
                         children: [
-                          cv.BasicButton(
+                          XCActionButton.icon(
                             onTap: () {
                               if (dmodel.user != null) {
-                                cv.cupertinoSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return NotificationsView(
-                                          user: dmodel.user!);
-                                    });
+                                showSnappingSheet(
+                                  context: context,
+                                  child: NotificationsView(
+                                    user: dmodel.user!,
+                                  ),
+                                );
                               }
                             },
-                            child: Icon(
-                              Icons.notifications_outlined,
-                              color: dmodel.color,
-                              size: 28,
+                            icon: const AdaptiveIcon(
+                              icon: Icons.notifications_outlined,
+                              sfSymbol: 'bell',
                             ),
                           ),
                           if (dmodel.user?.notifications.isNotEmpty ?? false)
@@ -211,42 +228,6 @@ class _ScheduleState extends State<Schedule> {
                             ),
                         ],
                       ),
-                      const SizedBox(width: 8),
-                      if ((dmodel.currentSeasonUser?.isSeasonAdmin() ??
-                              false ||
-                                  (dmodel.tus?.user.isTeamAdmin() ?? false)) &&
-                          dmodel.seasonUsers != null)
-                        cv.BasicButton(
-                          onTap: () {
-                            cv.cupertinoSheet(
-                                context: context,
-                                wrapInNavigator: true,
-                                builder: (context) {
-                                  return ECERoot(
-                                    isCreate: true,
-                                    team: dmodel.tus!.team,
-                                    season: dmodel.currentSeason!,
-                                    user: dmodel.user!,
-                                    teamUser: dmodel.tus!.user,
-                                    seasonUser: dmodel.currentSeasonUser,
-                                  );
-                                });
-                          },
-                          child: Icon(
-                            Icons.add,
-                            color: dmodel.color,
-                            size: 28,
-                          ),
-                        )
-                      else if (dmodel.seasonUsers == null &&
-                          !(dmodel.noTeam || dmodel.noSeason))
-                        SizedBox(
-                          height: 28,
-                          width: 28,
-                          child: cv.LoadingIndicator(
-                            color: dmodel.color,
-                          ),
-                        )
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -272,24 +253,20 @@ class _ScheduleState extends State<Schedule> {
       return cv.BasicButton(
         onTap: () {
           if (dmodel.currentSeason != null) {
-            cv.showFloatingSheet(
+            showSnappingSheet(
               context: context,
-              enableDrag: false,
-              builder: (context) {
-                return SeasonSelectAll(
-                  team: dmodel.tus!.team,
-                  onSelect: ((season, isPrevious) async {
-                    await FirebaseAnalytics.instance.logEvent(
-                      name: "change_season",
-                      parameters: {"platform": "mobile"},
-                    );
-                    dmodel.setCurrentSeason(season, isPrevious: isPrevious);
-                    dmodel.seasonUsers = null;
-                    // Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                  }),
-                );
-              },
+              child: SeasonSelectAll(
+                team: dmodel.tus!.team,
+                onSelect: ((season, isPrevious) async {
+                  await FirebaseAnalytics.instance.logEvent(
+                    name: "change_season",
+                    parameters: {"platform": "mobile"},
+                  );
+                  dmodel.setCurrentSeason(season, isPrevious: isPrevious);
+                  dmodel.seasonUsers = null;
+                  Navigator.of(context).pop();
+                }),
+              ),
             );
           }
         },
@@ -356,6 +333,60 @@ class _ScheduleState extends State<Schedule> {
         ],
       );
     }
+  }
+
+  Widget _addButton(BuildContext context, DataModel dmodel) {
+    const size = 56.0;
+    void onTap() {
+      showSnappingSheet(
+        context: context,
+        child: ECERoot(
+          isCreate: true,
+          team: dmodel.tus!.team,
+          season: dmodel.currentSeason!,
+          user: dmodel.user!,
+          teamUser: dmodel.tus!.user,
+          seasonUser: dmodel.currentSeasonUser,
+        ),
+      );
+    }
+
+    final icon = Icon(Icons.add, color: dmodel.color, size: 28);
+
+    if (Platform.isIOS) {
+      return GestureDetector(
+        onTap: onTap,
+        child: XCInteractive(
+          borderRadius: BorderRadius.circular(size / 2),
+          child: LiquidGlassContainer(
+            config: const LiquidGlassConfig(
+              shape: CNGlassEffectShape.circle,
+              interactive: true,
+            ),
+            child: SizedBox(
+              width: size,
+              height: size,
+              child: Center(child: icon),
+            ),
+          ),
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: onTap,
+      child: XCInteractive(
+        borderRadius: BorderRadius.circular(size / 2),
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: CustomColors.cellColor(context),
+          ),
+          child: Center(child: icon),
+        ),
+      ),
+    );
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
@@ -511,11 +542,9 @@ class _ScheduleHomeState extends State<ScheduleHome> {
                     childPadding: const EdgeInsets.symmetric(horizontal: 16),
                     onChildTap: ((context, item) {
                       if (item.useSheet) {
-                        cv.cupertinoSheet(
+                        showSnappingSheet(
                           context: context,
-                          builder: (context) {
-                            return item.view;
-                          },
+                          child: item.view,
                         );
                       } else {
                         cv.Navigate(context, item.view);

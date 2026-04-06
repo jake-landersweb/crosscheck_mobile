@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/views/stats/team/root.dart';
 import 'package:provider/provider.dart';
 import '../root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'dart:math' as math;
 
 class _MorePageItem {
@@ -43,10 +44,10 @@ class MorePages extends StatefulWidget {
 class _MorePagesState extends State<MorePages> {
   @override
   Widget build(BuildContext context) {
-    return cv.AppBar(
+    return HeaderBar(
       title: "More",
       isLarge: true,
-      children: [_body(context)],
+      child: _body(context),
     );
   }
 

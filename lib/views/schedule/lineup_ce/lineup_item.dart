@@ -2,6 +2,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import '../../../custom_views/root.dart' as cv;
 import '../../../data/root.dart';
 import '../../../client/root.dart';
@@ -89,18 +90,15 @@ class _LineupItemViewState extends State<LineupItemView> {
           onChildTap: ((context, i) {
             cv.cupertinoSheet(
               context: context,
-              builder: (context) => cv.AppBar.sheet(
+              builder: (context) => HeaderBar.sheet(
                 title: "Select User",
-                leading: [
-                  cv.BackButton(
-                    color: dmodel.color,
-                    showIcon: false,
-                    showText: true,
-                    title: "Cancel",
-                  ),
-                ],
-                children: [
-                  cv.ListView<SeasonUser>(
+                leading: cv.BackButton(
+                  color: dmodel.color,
+                  showIcon: false,
+                  showText: true,
+                  title: "Cancel",
+                ),
+                child: cv.ListView<SeasonUser>(
                     children: lmodel.eventUsers
                         .where((element) =>
                             !lmodel.usedIds.contains(element.email))
@@ -134,7 +132,6 @@ class _LineupItemViewState extends State<LineupItemView> {
                       lmodel.updateState();
                     },
                   ),
-                ],
               ),
             );
           }),

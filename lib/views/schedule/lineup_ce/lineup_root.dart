@@ -4,6 +4,7 @@ import 'package:crosscheck_sports/views/schedule/lineup_ce/old_lineups.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import '../../../custom_views/root.dart' as cv;
 import '../../../data/root.dart';
 import '../../../client/root.dart';
@@ -62,86 +63,83 @@ class _LineupRootState extends State<LineupRoot> {
 
   Widget _content(BuildContext context, DataModel dmodel) {
     LModel lmodel = Provider.of<LModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Lineup",
-      childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
-      leading: [
-        cv.BackButton(
-          color: dmodel.color,
-          title: "Cancel",
-          showIcon: false,
-          showText: true,
-          useRoot: true,
-        ),
-      ],
-      trailing: [
-        cv.BasicButton(
-          onTap: () async {
-            if (lmodel.lineupValid()) {
-              setState(() {
-                _isLoading = true;
-              });
-              if (lmodel.isCreate) {
-                await dmodel.createLineup(
-                  widget.team.teamId,
-                  widget.season.seasonId,
-                  widget.event.eventId,
-                  lmodel.lineup.toMap(),
-                  (lineup) {
-                    widget.onAction(lineup);
-                    dmodel.addIndicator(
-                        IndicatorItem.success("Successfully created lineup"));
-                    Navigator.of(context, rootNavigator: true).pop();
-                  },
-                  () {
-                    dmodel.addIndicator(IndicatorItem.error(
-                        "There was an issue creating the lineup"));
-                  },
-                );
-              } else {
-                await dmodel.updateLineup(
-                  widget.team.teamId,
-                  widget.season.seasonId,
-                  widget.event.eventId,
-                  lmodel.lineup.toMap(),
-                  (lineup) {
-                    widget.onAction(lineup);
-                    dmodel.addIndicator(
-                        IndicatorItem.success("Successfully updated lineup"));
-                    Navigator.of(context, rootNavigator: true).pop();
-                  },
-                  () {
-                    dmodel.addIndicator(IndicatorItem.error(
-                        "There was an issue updating the lineup"));
-                  },
-                );
-              }
-              setState(() {
-                _isLoading = false;
-              });
+      horizontalPadding: 0.0,
+      bottomPadding: 48.0,
+      leading: cv.BackButton(
+        color: dmodel.color,
+        title: "Cancel",
+        showIcon: false,
+        showText: true,
+        useRoot: true,
+      ),
+      trailing: cv.BasicButton(
+        onTap: () async {
+          if (lmodel.lineupValid()) {
+            setState(() {
+              _isLoading = true;
+            });
+            if (lmodel.isCreate) {
+              await dmodel.createLineup(
+                widget.team.teamId,
+                widget.season.seasonId,
+                widget.event.eventId,
+                lmodel.lineup.toMap(),
+                (lineup) {
+                  widget.onAction(lineup);
+                  dmodel.addIndicator(
+                      IndicatorItem.success("Successfully created lineup"));
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                () {
+                  dmodel.addIndicator(IndicatorItem.error(
+                      "There was an issue creating the lineup"));
+                },
+              );
+            } else {
+              await dmodel.updateLineup(
+                widget.team.teamId,
+                widget.season.seasonId,
+                widget.event.eventId,
+                lmodel.lineup.toMap(),
+                (lineup) {
+                  widget.onAction(lineup);
+                  dmodel.addIndicator(
+                      IndicatorItem.success("Successfully updated lineup"));
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                () {
+                  dmodel.addIndicator(IndicatorItem.error(
+                      "There was an issue updating the lineup"));
+                },
+              );
             }
-          },
-          child: _isLoading
-              ? SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: cv.LoadingIndicator(color: dmodel.color),
-                )
-              : Text(
-                  lmodel.isCreate ? "Create" : "Save",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: lmodel.lineupValid()
-                        ? FontWeight.w600
-                        : FontWeight.w400,
-                    color: lmodel.lineupValid()
-                        ? dmodel.color
-                        : CustomColors.textColor(context).withOpacity(0.5),
-                  ),
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        },
+        child: _isLoading
+            ? SizedBox(
+                height: 25,
+                width: 25,
+                child: cv.LoadingIndicator(color: dmodel.color),
+              )
+            : Text(
+                lmodel.isCreate ? "Create" : "Save",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: lmodel.lineupValid()
+                      ? FontWeight.w600
+                      : FontWeight.w400,
+                  color: lmodel.lineupValid()
+                      ? dmodel.color
+                      : CustomColors.textColor(context).withOpacity(0.5),
                 ),
-        ),
-      ],
-      children: [_body(context, dmodel, lmodel)],
+              ),
+      ),
+      child: _body(context, dmodel, lmodel),
     );
   }
 

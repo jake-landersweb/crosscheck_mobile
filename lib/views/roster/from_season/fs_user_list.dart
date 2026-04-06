@@ -5,6 +5,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class FSUserList extends StatefulWidget {
   const FSUserList({
@@ -48,14 +49,11 @@ class _FSUserListState extends State<FSUserList> {
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     FSModel fsmodel = Provider.of<FSModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: widget.season.title,
       backgroundColor: CustomColors.backgroundColor(context),
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
-      leading: [
-        cv.CloseButton(color: dmodel.color),
-      ],
-      children: [_body(context, dmodel, fsmodel)],
+      leading: cv.CloseButton(color: dmodel.color),
+      child: _body(context, dmodel, fsmodel),
     );
   }
 

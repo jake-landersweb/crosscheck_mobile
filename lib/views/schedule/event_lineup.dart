@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
 import '../../client/root.dart';
@@ -41,19 +42,17 @@ class _EventLineupState extends State<EventLineup> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "Lineup",
       isLarge: true,
       titleColor: widget.event.eventColor.isEmpty ? null : Colors.white,
       backgroundColor: widget.event.getColor()?.lighten(0.1) ??
           CustomColors.backgroundColor(context),
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
-      leading: [cv.BackButton(color: _accentColor(dmodel))],
-      trailing: [
-        if ((widget.teamUser.isTeamAdmin() ||
+      leading: cv.BackButton(color: _accentColor(dmodel)),
+      trailing: (widget.teamUser.isTeamAdmin() ||
                 (widget.seasonUser?.isSeasonAdmin() ?? false)) &&
-            _lineup != null)
-          cv.BasicButton(
+            _lineup != null
+          ? cv.BasicButton(
             onTap: () {
               cv.cupertinoSheet(
                   context: context,
@@ -80,9 +79,9 @@ class _EventLineupState extends State<EventLineup> {
                 color: _accentColor(dmodel),
               ),
             ),
-          ),
-      ],
-      children: [_body(context, dmodel)],
+          )
+          : null,
+      child: _body(context, dmodel),
     );
   }
 

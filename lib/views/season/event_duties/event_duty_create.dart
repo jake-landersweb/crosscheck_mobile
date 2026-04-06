@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/season/event_duties/event_duty_user_select.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:provider/provider.dart';
 
 class EventDutyCreate extends StatefulWidget {
@@ -40,48 +41,44 @@ class _EventDutyCreateState extends State<EventDutyCreate> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Event Duties",
-      leading: [
-        cv.BasicButton(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(
-            "Cancel",
-            style: TextStyle(
-              color: CustomColors.textColor(context).withOpacity(0.5),
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-            ),
+      leading: cv.BasicButton(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Text(
+          "Cancel",
+          style: TextStyle(
+            color: CustomColors.textColor(context).withOpacity(0.5),
+            fontWeight: FontWeight.w500,
+            fontSize: 18,
           ),
-        )
-      ],
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            var res = _isValid();
-            if (res.v1()) {
-              _save(context, dmodel);
-            } else {
-              dmodel.addIndicator(IndicatorItem.error(res.v2()));
-            }
-          },
-          child: _isSaving
-              ? cv.LoadingIndicator(color: dmodel.color)
-              : Text(
-                  "Save",
-                  style: TextStyle(
-                    color: _isValid().v1()
-                        ? dmodel.color
-                        : CustomColors.textColor(context).withOpacity(0.5),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                  ),
+        ),
+      ),
+      trailing: cv.BasicButton(
+        onTap: () {
+          var res = _isValid();
+          if (res.v1()) {
+            _save(context, dmodel);
+          } else {
+            dmodel.addIndicator(IndicatorItem.error(res.v2()));
+          }
+        },
+        child: _isSaving
+            ? cv.LoadingIndicator(color: dmodel.color)
+            : Text(
+                "Save",
+                style: TextStyle(
+                  color: _isValid().v1()
+                      ? dmodel.color
+                      : CustomColors.textColor(context).withOpacity(0.5),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
                 ),
-        )
-      ],
-      children: [_body(context, dmodel)],
+              ),
+      ),
+      child: _body(context, dmodel),
     );
   }
 

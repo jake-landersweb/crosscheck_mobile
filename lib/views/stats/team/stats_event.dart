@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/stats/team/root.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class StatsEvent extends StatefulWidget {
   const StatsEvent({
@@ -41,29 +42,27 @@ class _StatsEventState extends State<StatsEvent> {
   Widget _content(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     StatsEventModel smodel = Provider.of<StatsEventModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "",
       isLarge: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      // refreshable: true,
-      color: dmodel.color,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
-      leading: [cv.BackButton(color: dmodel.color)],
-      trailing: [
-        if (widget.seasonUser.isSeasonAdmin() && !smodel.isLoading)
-          _editButton(context, dmodel, smodel),
-      ],
+      leading: cv.BackButton(color: dmodel.color),
+      trailing: (widget.seasonUser.isSeasonAdmin() && !smodel.isLoading)
+          ? _editButton(context, dmodel, smodel)
+          : null,
       onRefresh: () => smodel.userStatsGet(
         widget.team.teamId,
         widget.season.seasonId,
         widget.event.eventId,
         (userStats) => smodel.setUserStats(userStats),
       ),
-      children: [
-        _title(context, dmodel),
-        const SizedBox(height: 16),
-        _body(context, dmodel, smodel),
-      ],
+      child: Column(
+        children: [
+          _title(context, dmodel),
+          const SizedBox(height: 16),
+          _body(context, dmodel, smodel),
+        ],
+      ),
     );
   }
 

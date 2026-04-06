@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:crosscheck_sports/components/adaptive/tab_bar/tab_bar_insets.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import 'package:crosscheck_sports/views/chat/message_input.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -138,6 +140,7 @@ class _SeasonChatState extends State<SeasonChat> {
   }
 
   Widget _chatHolder(BuildContext context, DataModel dmodel, ChatModel cmodel) {
+    final tabBarHeight = TabBarInsets.of(context);
     double offsetHeight;
     if (Platform.isAndroid) {
       offsetHeight = MediaQuery.of(context).viewInsets.bottom == 0 ? 18 : 0;
@@ -146,31 +149,34 @@ class _SeasonChatState extends State<SeasonChat> {
     }
     var keyboardPadding = MediaQuery.of(context).viewInsets.bottom -
         (MediaQuery.of(context).viewPadding.bottom + 40 + offsetHeight);
+    final effectiveKeyboardPadding = keyboardPadding < 0 ? 0.0 : keyboardPadding;
+
+    // Bottom offset for the floating input: tab bar + 10px gap + keyboard
+    final inputBottom = tabBarHeight + 10 + effectiveKeyboardPadding;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: false,
       body: Stack(
-        alignment: Alignment.topCenter,
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: _messageList(context, dmodel, cmodel),
-              ),
-              MessageInput(team: widget.team, season: widget.season),
-              // for artificial safe area, prevents screen jitter
-              SizedBox(height: offsetHeight.toDouble()),
-              // push view up to reveal keyboard
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                curve: Sprung.custom(damping: 36),
-                width: double.infinity,
-                height: keyboardPadding < 0 ? 0 : keyboardPadding,
-              ),
-            ],
+          // Message list fills the screen
+          Positioned.fill(
+            child: _messageList(context, dmodel, cmodel),
           ),
-          _topBar(context, dmodel, cmodel),
+          // Top bar overlay
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: _topBar(context, dmodel, cmodel),
+          ),
+          // Floating message input above tab bar
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: inputBottom,
+            child: MessageInput(team: widget.team, season: widget.season),
+          ),
         ],
       ),
     );
@@ -190,6 +196,9 @@ class _SeasonChatState extends State<SeasonChat> {
 
   Widget _messageList(
       BuildContext context, DataModel dmodel, ChatModel cmodel) {
+    final tabBarHeight = TabBarInsets.of(context);
+    // Approximate input height (~48) + 10px gap + tab bar
+    final bottomPad = 58.0 + 10 + tabBarHeight;
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -201,7 +210,7 @@ class _SeasonChatState extends State<SeasonChat> {
             controller: _scrollController,
             shrinkWrap: true,
             reverse: true,
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.fromLTRB(8, 0, 8, bottomPad),
             addAutomaticKeepAlives: true,
             children: [
               for (var message in cmodel.messages)
@@ -309,26 +318,23 @@ class _SeasonChatState extends State<SeasonChat> {
                         alignment: Alignment.bottomLeft,
                         child: cv.BasicButton(
                           onTap: () {
-                            cv.showFloatingSheet(
+                            showSnappingSheet(
                               context: context,
-                              builder: (context) {
-                                return SeasonSelectAll(
-                                  team: dmodel.tus!.team,
-                                  onSelect: ((season, isPrevious) async {
-                                    await FirebaseAnalytics.instance.logEvent(
-                                      name: "change_season",
-                                      parameters: {"platform": "mobile"},
-                                    );
-                                    dmodel.setCurrentSeason(season,
-                                        isPrevious: isPrevious);
-                                    dmodel.seasonUsers = null;
-
-                                    Navigator.of(context).pop();
-                                    cmodel.init(widget.team.teamId,
-                                        season.seasonId, dmodel);
-                                  }),
-                                );
-                              },
+                              child: SeasonSelectAll(
+                                team: dmodel.tus!.team,
+                                onSelect: ((season, isPrevious) async {
+                                  await FirebaseAnalytics.instance.logEvent(
+                                    name: "change_season",
+                                    parameters: {"platform": "mobile"},
+                                  );
+                                  dmodel.setCurrentSeason(season,
+                                      isPrevious: isPrevious);
+                                  dmodel.seasonUsers = null;
+                                  Navigator.of(context).pop();
+                                  cmodel.init(widget.team.teamId,
+                                      season.seasonId, dmodel);
+                                }),
+                              ),
                             );
                           },
                           child: Container(

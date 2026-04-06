@@ -71,3 +71,6 @@ hidden_assets/
 #amplify-do-not-edit-end
 
 .env
+
+# FVM Version Cache
+.fvm/

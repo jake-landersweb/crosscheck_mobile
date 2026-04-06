@@ -7,6 +7,7 @@ import 'package:crosscheck_sports/views/roster/roster_groups/rg_cu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class RosterGroups extends StatefulWidget {
   const RosterGroups({
@@ -54,23 +55,19 @@ class _RosterGroupsState extends State<RosterGroups> {
     RGModel rgmodel = Provider.of<RGModel>(context);
     if (widget.hasAppBar) {
       return Scaffold(
-        body: cv.AppBar(
+        body: HeaderBar(
           title: "Roster Groups",
-          itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
-          leading: [cv.BackButton(color: dmodel.color)],
-          color: dmodel.color,
+          leading: cv.BackButton(color: dmodel.color),
           onRefresh: () async => await rgmodel.getRosterGroups(dmodel),
           refreshable: true,
-          trailing: [
-            cv.BasicButton(
-              onTap: () => _create(context, dmodel, rgmodel),
-              child: Icon(
-                Icons.add,
-                color: dmodel.color,
-              ),
+          trailing: cv.BasicButton(
+            onTap: () => _create(context, dmodel, rgmodel),
+            child: Icon(
+              Icons.add,
+              color: dmodel.color,
             ),
-          ],
-          children: [_content(context, dmodel, rgmodel)],
+          ),
+          child: _content(context, dmodel, rgmodel),
         ),
       );
     } else {

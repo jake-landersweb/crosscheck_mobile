@@ -5,6 +5,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class StatsUsersEdit extends StatefulWidget {
   const StatsUsersEdit({
@@ -38,22 +39,17 @@ class _StatsUsersEditState extends State<StatsUsersEdit> {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        cv.AppBar(
+        HeaderBar(
           title: "Edit Stats",
           isLarge: true,
           backgroundColor: CustomColors.backgroundColor(context),
-          color: dmodel.color,
-          leading: [
-            cv.BackButton(
-              color: dmodel.color,
-              title: "Cancel",
-              showText: true,
-              showIcon: false,
-            )
-          ],
-          children: [
-            _body(context, dmodel),
-          ],
+          leading: cv.BackButton(
+            color: dmodel.color,
+            title: "Cancel",
+            showText: true,
+            showIcon: false,
+          ),
+          child: _body(context, dmodel),
         ),
         SafeArea(
           child: Padding(

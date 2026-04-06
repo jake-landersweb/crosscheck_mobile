@@ -2,6 +2,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
 import '../../client/root.dart';
@@ -46,19 +47,16 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Comment",
-      color: dmodel.color,
-      leading: [
-        cv.BackButton(
-          title: "Done",
-          showText: true,
-          useRoot: true,
-          color: dmodel.color,
-          showIcon: false,
-        )
-      ],
-      children: [
+      leading: cv.BackButton(
+        title: "Done",
+        showText: true,
+        useRoot: true,
+        color: dmodel.color,
+        showIcon: false,
+      ),
+      child: Column(children: [
         cv.Section(
           "Message",
           child: cv.ListView<Widget>(
@@ -84,7 +82,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
         ),
         const SizedBox(height: 16),
         _replyCell(context)
-      ],
+      ]),
     );
   }
 

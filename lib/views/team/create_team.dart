@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class CreateTeam extends StatefulWidget {
   const CreateTeam({super.key});
@@ -24,21 +25,17 @@ class _CreateTeamState extends State<CreateTeam> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "Create Team",
       isLarge: true,
       backgroundColor: CustomColors.backgroundColor(context),
-      // refreshable: true,
-      color: dmodel.color,
-      leading: [
-        cv.BackButton(
-          color: dmodel.color,
-          title: "Cancel",
-          showText: true,
-          showIcon: false,
-        )
-      ],
-      children: [_body(context, dmodel)],
+      leading: cv.BackButton(
+        color: dmodel.color,
+        title: "Cancel",
+        showText: true,
+        showIcon: false,
+      ),
+      child: _body(context, dmodel),
     );
   }
 

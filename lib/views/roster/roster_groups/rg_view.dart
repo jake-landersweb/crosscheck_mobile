@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/views/roster/roster_groups/rg_cu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class RGView extends StatefulWidget {
   const RGView({
@@ -29,33 +30,30 @@ class _RGViewState extends State<RGView> {
   Widget build(BuildContext context) {
     RGModel rgmodel = Provider.of<RGModel>(context);
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: widget.rosterGroup.title,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
-      leading: [cv.BackButton(color: dmodel.color)],
+      leading: cv.BackButton(color: dmodel.color),
       backgroundColor: CustomColors.backgroundColor(context),
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            cv.cupertinoSheet(
-                context: context,
-                builder: (context) {
-                  return ListenableProvider.value(
-                    value: rgmodel,
-                    child: RGCU(rosterGroup: widget.rosterGroup),
-                  );
-                });
-          },
-          child: Text(
-            "Edit",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: dmodel.color,
-            ),
+      trailing: cv.BasicButton(
+        onTap: () {
+          cv.cupertinoSheet(
+              context: context,
+              builder: (context) {
+                return ListenableProvider.value(
+                  value: rgmodel,
+                  child: RGCU(rosterGroup: widget.rosterGroup),
+                );
+              });
+        },
+        child: Text(
+          "Edit",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: dmodel.color,
           ),
         ),
-      ],
+      ),
       titleWidget: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -71,16 +69,7 @@ class _RGViewState extends State<RGView> {
           ),
         ],
       ),
-      // trailing: [
-      //   cv.BasicButton(
-      //     onTap: () => _create(context, rgmodel),
-      //     child: Icon(
-      //       Icons.add,
-      //       color: dmodel.color,
-      //     ),
-      //   ),
-      // ],
-      children: [_content(context, dmodel, rgmodel)],
+      child: _content(context, dmodel, rgmodel),
     );
   }
 

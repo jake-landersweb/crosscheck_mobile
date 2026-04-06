@@ -7,6 +7,7 @@ import 'package:crosscheck_sports/views/stats/team/root.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class StatsSeason extends StatefulWidget {
   const StatsSeason({
@@ -40,26 +41,20 @@ class _StatsSeasonState extends State<StatsSeason> {
   Widget _content(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
     StatsSeasonModel smodel = Provider.of<StatsSeasonModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "Season Stats",
       isLarge: true,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
       backgroundColor: CustomColors.backgroundColor(context),
-      // refreshable: true,
-      color: dmodel.color,
-      leading: [cv.BackButton(color: dmodel.color)],
-      trailing: [
-        if ((widget.seasonUser?.isSeasonAdmin() ?? false) && !smodel.isLoading)
-          _editButton(context, dmodel, smodel),
-      ],
+      leading: cv.BackButton(color: dmodel.color),
+      trailing: ((widget.seasonUser?.isSeasonAdmin() ?? false) && !smodel.isLoading)
+          ? _editButton(context, dmodel, smodel)
+          : null,
       refreshable: true,
       onRefresh: () => smodel.userStatsGet(
           widget.team.teamId,
           widget.season.seasonId,
           (userStats) => smodel.setUserStats(userStats)),
-      children: [
-        _body(context, dmodel, smodel),
-      ],
+      child: _body(context, dmodel, smodel),
     );
   }
 

@@ -1,5 +1,11 @@
+import 'dart:math' as math;
+
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import 'package:crosscheck_sports/custom_views/section.dart';
 import 'package:crosscheck_sports/views/polls/season_polls.dart';
+import 'package:crosscheck_sports/views/root.dart';
+import 'package:crosscheck_sports/views/roster/team_roster.dart';
 import 'package:crosscheck_sports/views/season/event_duties/event_duty_create.dart';
 import 'package:crosscheck_sports/views/season/future_warning.dart';
 import 'package:crosscheck_sports/views/season/season_info.dart';
@@ -7,21 +13,15 @@ import 'package:crosscheck_sports/views/stats/team/stats_season.dart';
 import 'package:crosscheck_sports/views/team/team_model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/views/root.dart';
-import 'package:crosscheck_sports/views/roster/team_roster.dart';
 import 'package:provider/provider.dart';
+
 import '../../client/root.dart';
+import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
 import '../../extras/root.dart';
-import '../../custom_views/root.dart' as cv;
-import 'dart:math' as math;
 
 class SeasonPage extends StatefulWidget {
-  const SeasonPage({
-    super.key,
-    required this.team,
-    required this.teamUser,
-  });
+  const SeasonPage({super.key, required this.team, required this.teamUser});
   final Team team;
   final SeasonUserTeamFields teamUser;
 
@@ -56,37 +56,37 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "",
       backgroundColor: CustomColors.backgroundColor(context),
-      childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
-      color: dmodel.color,
-      trailing: [
-        if (dmodel.currentSeasonUser?.isTeamAdmin() ??
-            dmodel.tus!.user.isTeamAdmin())
-          cv.BasicButton(
-            onTap: () {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) => SCERoot(
-                  team: widget.team,
-                  isCreate: false,
-                  season: dmodel.currentSeason!,
+      horizontalPadding: 0.0,
+      bottomPadding: 48.0,
+      trailing:
+          (dmodel.currentSeasonUser?.isTeamAdmin() ??
+              dmodel.tus!.user.isTeamAdmin())
+          ? cv.BasicButton(
+              onTap: () {
+                showSnappingSheet(
+                  context: context,
+                  child: SCERoot(
+                    team: widget.team,
+                    isCreate: false,
+                    season: dmodel.currentSeason!,
+                  ),
+                );
+              },
+              child: Text(
+                "Edit",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  color: dmodel.color,
                 ),
-              );
-            },
-            child: Text(
-              "Edit",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 18,
-                color: dmodel.color,
               ),
-            ),
-          )
-      ],
+            )
+          : null,
       // onRefresh: () => _refreshAction(dmodel),
-      children: [_body(context, dmodel)],
+      child: _body(context, dmodel),
     );
   }
 
@@ -179,33 +179,27 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
         const SizedBox(height: 8),
         Text(
           widget.team.title,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         // season selector
         cv.BasicButton(
           onTap: () {
             if (dmodel.currentSeason != null) {
-              cv.showFloatingSheet(
+              showSnappingSheet(
                 context: context,
-                builder: (context) {
-                  return SeasonSelectAll(
-                    team: dmodel.tus!.team,
-                    onSelect: ((season, isPrevious) async {
-                      await FirebaseAnalytics.instance.logEvent(
-                        name: "change_season",
-                        parameters: {"platform": "mobile"},
-                      );
-                      dmodel.setCurrentSeason(season, isPrevious: isPrevious);
-                      dmodel.seasonUsers = null;
-                      // Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    }),
-                  );
-                },
+                child: SeasonSelectAll(
+                  team: dmodel.tus!.team,
+                  onSelect: ((season, isPrevious) async {
+                    await FirebaseAnalytics.instance.logEvent(
+                      name: "change_season",
+                      parameters: {"platform": "mobile"},
+                    );
+                    dmodel.setCurrentSeason(season, isPrevious: isPrevious);
+                    dmodel.seasonUsers = null;
+                    Navigator.of(context).pop();
+                  }),
+                ),
               );
             }
           },
@@ -253,12 +247,7 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {
-            cv.cupertinoSheet(
-              context: context,
-              builder: (context) {
-                return item.view;
-              },
-            );
+            showSnappingSheet(context: context, child: item.view);
           }),
           childBuilder: (context, item) {
             return ConstrainedBox(
@@ -344,12 +333,7 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {
             if (item.isSheet) {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) {
-                  return item.view;
-                },
-              );
+              showSnappingSheet(context: context, child: item.view);
             } else {
               cv.Navigate(context, item.view);
             }
@@ -448,12 +432,7 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {
             if (item.isSheet) {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) {
-                  return item.view;
-                },
-              );
+              showSnappingSheet(context: context, child: item.view);
             } else {
               cv.Navigate(context, item.view);
             }
@@ -504,10 +483,7 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
                 title: "Create New Season",
                 icon: Icons.settings,
                 color: Colors.blue[400]!,
-                view: SCERoot(
-                  team: widget.team,
-                  isCreate: true,
-                ),
+                view: SCERoot(team: widget.team, isCreate: true),
                 wrapInNavigator: true,
                 isSheet: true,
               ),
@@ -534,12 +510,7 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {
             if (item.isSheet) {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) {
-                  return item.view;
-                },
-              );
+              showSnappingSheet(context: context, child: item.view);
             } else {
               cv.Navigate(context, item.view);
             }

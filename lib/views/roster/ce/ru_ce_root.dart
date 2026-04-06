@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'root.dart';
 
 class RUCERoot extends StatefulWidget {
@@ -61,12 +62,7 @@ class _RUCERootState extends State<RUCERoot> {
 
   Widget _body(BuildContext context, DataModel dmodel) {
     RUCEModel rmodel = Provider.of<RUCEModel>(context);
-    return cv.AppBar(
-      hasSafeArea: !widget.isSheet,
-      barHeight: widget.isSheet ? 60 : 40,
-      leadingAlignment: widget.isSheet ? Alignment.centerLeft : null,
-      titleAlignment: widget.isSheet ? Alignment.center : null,
-      trailingAlignment: widget.isSheet ? Alignment.centerRight : null,
+    return HeaderBar(
       title: widget.teamToSeason
           ? "Edit Season Fields"
           : widget.isCreate
@@ -75,55 +71,51 @@ class _RUCERootState extends State<RUCERoot> {
       isLarge: !widget.isSheet,
       refreshable: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      color: dmodel.color,
-      leading: [
-        if (widget.teamToSeason)
-          cv.BackButton(
-            color: dmodel.color,
-            title: "Cancel",
-            showIcon: false,
-            showText: true,
-          )
-        else
-          cv.BackButton(
-            color: dmodel.color,
-            showText: widget.teamToSeason ? false : true,
-            showIcon: widget.teamToSeason ? true : false,
-            title: "Cancel",
-            useRoot: widget.useRoot,
-          ),
-      ],
-      trailing: [
-        cv.BasicButton(
-          onTap: () => _onFunc(context, dmodel, rmodel),
-          child: _isLoading
-              ? SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: cv.LoadingIndicator(color: dmodel.color),
-                )
-              : Text(
-                  widget.teamToSeason
-                      ? "Save"
-                      : rmodel.isCreate
-                          ? "Create"
-                          : "Confirm",
-                  style: TextStyle(
-                    color: _isValid(rmodel)
-                        ? dmodel.color
-                        : CustomColors.textColor(context).withOpacity(0.5),
-                    fontSize: 18,
-                    fontWeight:
-                        _isValid(rmodel) ? FontWeight.w700 : FontWeight.w400,
-                  ),
+      leading: widget.teamToSeason
+          ? cv.BackButton(
+              color: dmodel.color,
+              title: "Cancel",
+              showIcon: false,
+              showText: true,
+            )
+          : cv.BackButton(
+              color: dmodel.color,
+              showText: widget.teamToSeason ? false : true,
+              showIcon: widget.teamToSeason ? true : false,
+              title: "Cancel",
+              useRoot: widget.useRoot,
+            ),
+      trailing: cv.BasicButton(
+        onTap: () => _onFunc(context, dmodel, rmodel),
+        child: _isLoading
+            ? SizedBox(
+                height: 25,
+                width: 25,
+                child: cv.LoadingIndicator(color: dmodel.color),
+              )
+            : Text(
+                widget.teamToSeason
+                    ? "Save"
+                    : rmodel.isCreate
+                        ? "Create"
+                        : "Confirm",
+                style: TextStyle(
+                  color: _isValid(rmodel)
+                      ? dmodel.color
+                      : CustomColors.textColor(context).withOpacity(0.5),
+                  fontSize: 18,
+                  fontWeight:
+                      _isValid(rmodel) ? FontWeight.w700 : FontWeight.w400,
                 ),
-        ),
-      ],
-      children: [
-        // user fields
-        if (!rmodel.isTeamToSeason) const RUCEUser(),
-        if (rmodel.season != null) const RUCESeason() else const RUCETeam(),
-      ],
+              ),
+      ),
+      child: Column(
+        children: [
+          // user fields
+          if (!rmodel.isTeamToSeason) const RUCEUser(),
+          if (rmodel.season != null) const RUCESeason() else const RUCETeam(),
+        ],
+      ),
     );
   }
 

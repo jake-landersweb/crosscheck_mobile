@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:excel/excel.dart';
 
@@ -52,30 +53,29 @@ class _SUFromExcelState extends State<SUFromExcel> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Upload Excel",
-      leading: [cv.CancelButton(color: dmodel.color)],
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            if (!_isLoading && _users.isNotEmpty) {
-              _onComplete(context);
-            }
-          },
-          child: _isLoading
-              ? cv.LoadingIndicator(color: dmodel.color)
-              : Text(
-                  widget.actionText,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: _users.isEmpty
-                        ? CustomColors.textColor(context).withOpacity(0.5)
-                        : dmodel.color,
-                  ),
+      leading: cv.CancelButton(color: dmodel.color),
+      trailing: cv.BasicButton(
+        onTap: () {
+          if (!_isLoading && _users.isNotEmpty) {
+            _onComplete(context);
+          }
+        },
+        child: _isLoading
+            ? cv.LoadingIndicator(color: dmodel.color)
+            : Text(
+                widget.actionText,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: _users.isEmpty
+                      ? CustomColors.textColor(context).withOpacity(0.5)
+                      : dmodel.color,
                 ),
-        )
-      ],
-      children: [
+              ),
+      ),
+      child: Column(
+        children: [
         cv.BasicButton(
           onTap: () {
             Clipboard.setData(const ClipboardData(
@@ -204,7 +204,8 @@ class _SUFromExcelState extends State<SUFromExcel> {
               },
             ),
           ),
-      ],
+        ],
+      ),
     );
   }
 

@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({
@@ -86,17 +87,15 @@ class _CreateAccountState extends State<CreateAccount> {
         ],
       );
     } else {
-      return cv.AppBar.sheet(
+      return HeaderBar.sheet(
         title: "",
-        leading: const [
-          cv.BackButton(
-            useRoot: true,
-            title: "Close",
-            showIcon: false,
-            showText: true,
-          )
-        ],
-        children: [_content(context, dmodel)],
+        leading: const cv.BackButton(
+          useRoot: true,
+          title: "Close",
+          showIcon: false,
+          showText: true,
+        ),
+        child: _content(context, dmodel),
       );
     }
   }

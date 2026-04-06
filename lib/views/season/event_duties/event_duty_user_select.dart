@@ -4,6 +4,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/roster/basic_roster_cell.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:provider/provider.dart';
 
 class EventDutyUserSelect extends StatefulWidget {
@@ -29,24 +30,23 @@ class _EventDutyUserSelectState extends State<EventDutyUserSelect> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Select Users",
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(
-            "Done",
-            style: TextStyle(
-              color: dmodel.color,
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
+      trailing: cv.BasicButton(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Text(
+          "Done",
+          style: TextStyle(
+            color: dmodel.color,
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
           ),
-        )
-      ],
-      children: [
+        ),
+      ),
+      child: Column(
+        children: [
         cv.BasicButton(
           onTap: () {
             widget.selectedUsers.clear();
@@ -176,7 +176,8 @@ class _EventDutyUserSelectState extends State<EventDutyUserSelect> {
             );
           },
         ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class TeamRoster extends StatefulWidget {
   const TeamRoster({
@@ -39,31 +40,31 @@ class _TeamRosterState extends State<TeamRoster> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "Team Roster",
       refreshable: true,
       isLarge: true,
       onRefresh: () => _fetchUsers(context, dmodel),
       backgroundColor: CustomColors.backgroundColor(context),
-      color: dmodel.color,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
-      trailing: [_createUser(context, dmodel)],
-      leading: [cv.BackButton(color: dmodel.color)],
-      children: [
-        if (_users != null && !_isLoading)
-          ChangeNotifierProvider<RosterSorting>(
-            create: (_) => RosterSorting(
-              team: dmodel.tus!.team,
-            ),
-            // we use `builder` to obtain a new `BuildContext` that has access to the provider
-            builder: (context, child) {
-              // No longer throws
-              return _body(context, dmodel);
-            },
-          )
-        else
-          const RosterLoading()
-      ],
+      trailing: _createUser(context, dmodel),
+      leading: cv.BackButton(color: dmodel.color),
+      child: Column(
+        children: [
+          if (_users != null && !_isLoading)
+            ChangeNotifierProvider<RosterSorting>(
+              create: (_) => RosterSorting(
+                team: dmodel.tus!.team,
+              ),
+              // we use `builder` to obtain a new `BuildContext` that has access to the provider
+              builder: (context, child) {
+                // No longer throws
+                return _body(context, dmodel);
+              },
+            )
+          else
+            const RosterLoading()
+        ],
+      ),
     );
   }
 

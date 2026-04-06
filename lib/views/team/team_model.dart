@@ -1,4 +1,5 @@
 import 'package:crosscheck_sports/client/root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/extensions.dart';
@@ -100,9 +101,9 @@ class _TeamModelState extends State<TeamModel> {
                   onTap: () async {
                     Navigator.of(context).pop();
                     await Future.delayed(const Duration(milliseconds: 500));
-                    cv.cupertinoSheet(
+                    showSnappingSheet(
                       context: context,
-                      builder: (context) => TCERoot(
+                      child: TCERoot(
                         user: dmodel.user!,
                         team: widget.team,
                         isCreate: false,

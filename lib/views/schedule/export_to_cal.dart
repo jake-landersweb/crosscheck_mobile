@@ -7,6 +7,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:uuid/uuid.dart';
 
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 import '../../extras/root.dart';
@@ -55,15 +56,12 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Calendar Export",
-      color: dmodel.color,
-      leading: [
-        cv.CancelButton(
-          color: CustomColors.textColor(context).withOpacity(0.5),
-        ),
-      ],
-      children: [
+      leading: cv.CancelButton(
+        color: CustomColors.textColor(context).withOpacity(0.5),
+      ),
+      child: Column(children: [
         cv.Section(
           "Information",
           child: cv.ListView<Widget>(
@@ -199,7 +197,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
           )
         else
           cv.LoadingIndicator(color: dmodel.color),
-      ],
+      ]),
     );
   }
 

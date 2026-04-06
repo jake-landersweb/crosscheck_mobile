@@ -10,6 +10,7 @@ import '../../extras/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 import '../root.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 import '../components/root.dart' as comp;
 
@@ -47,68 +48,70 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "",
       backgroundColor: CustomColors.backgroundColor(context),
-      trailing: [_edit(context, dmodel)],
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
-      childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
-      children: [
-        _userInfo(context, dmodel),
-        const SizedBox(height: 8),
-        if (dmodel.teamArgs == null)
+      trailing: _edit(context, dmodel),
+      horizontalPadding: 0,
+      bottomPadding: 48,
+      child: Column(
+        children: [
+          _userInfo(context, dmodel),
+          const SizedBox(height: 8),
+          if (dmodel.teamArgs == null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: _teams(context, dmodel),
+            ),
+          _notifications(context, dmodel),
+          const SizedBox(height: 32),
+          _feedback(context, dmodel),
+          const SizedBox(height: 8),
           Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: _teams(context, dmodel),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: comp.SubActionButton(
+              title: "Logout",
+              isLoading: _isLoading,
+              onTap: () => _showAlert(context, dmodel),
+            ),
           ),
-        _notifications(context, dmodel),
-        const SizedBox(height: 32),
-        _feedback(context, dmodel),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: comp.SubActionButton(
-            title: "Logout",
-            isLoading: _isLoading,
-            onTap: () => _showAlert(context, dmodel),
-          ),
-        ),
-        const SizedBox(height: 32),
-        _deleteAccount(context, dmodel),
-        const SizedBox(height: 100),
-        Text(
-          "Version $appVersionMajor.$appVersionMinor",
-          style: TextStyle(
-            color: CustomColors.textColor(context).withOpacity(0.3),
-            fontSize: 12,
-          ),
-        ),
-        const SizedBox(height: 16),
-        cv.BasicButton(
-          onTap: () async {
-            var uri = Uri.parse("https://crosschecksports.com/privacy-policy");
-            if (!await launchUrl(
-              uri,
-              webViewConfiguration: const WebViewConfiguration(
-                headers: {"Access-Control-Allow-Origin": "*"},
-              ),
-            )) {
-              dmodel.addIndicator(
-                IndicatorItem.error(
-                  "There was an issue viewing the privacy policy",
-                ),
-              );
-            }
-          },
-          child: Text(
-            "Privacy Policy",
+          const SizedBox(height: 32),
+          _deleteAccount(context, dmodel),
+          const SizedBox(height: 100),
+          Text(
+            "Version $appVersionMajor.$appVersionMinor",
             style: TextStyle(
-              color: CustomColors.textColor(context).withOpacity(0.5),
+              color: CustomColors.textColor(context).withOpacity(0.3),
               fontSize: 12,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          cv.BasicButton(
+            onTap: () async {
+              var uri = Uri.parse("https://crosschecksports.com/privacy-policy");
+              if (!await launchUrl(
+                uri,
+                webViewConfiguration: const WebViewConfiguration(
+                  headers: {"Access-Control-Allow-Origin": "*"},
+                ),
+              )) {
+                dmodel.addIndicator(
+                  IndicatorItem.error(
+                    "There was an issue viewing the privacy policy",
+                  ),
+                );
+              }
+            },
+            child: Text(
+              "Privacy Policy",
+              style: TextStyle(
+                color: CustomColors.textColor(context).withOpacity(0.5),
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -369,7 +372,7 @@ class _SettingsState extends State<Settings> {
                   icon: Icons.add_rounded,
                   view: TSCERoot(user: dmodel.user!),
                   color: Colors.blue,
-                  type: cv.ALType.sheet,
+                  type: cv.ALType.snapping,
                 ),
               ],
             ),

@@ -5,6 +5,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import '../../components/root.dart' as comp;
 
 class FTTeamUsers extends StatefulWidget {
@@ -19,58 +20,53 @@ class _FTTeamUsersState extends State<FTTeamUsers> {
   build(BuildContext context) {
     FTModel ftmodel = Provider.of<FTModel>(context);
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
         title: "Select Team Users",
-        color: dmodel.color,
-        trailing: [
-          cv.BackButton(
-            title: "Done",
-            color: dmodel.color,
-            showIcon: false,
-            showText: true,
-          ),
-        ],
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.8,
-            child: ftmodel.isLoading
-                ? const Center(child: cv.LoadingIndicator())
-                : ftmodel.users == null
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              "Issue finding Users",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18,
-                              ),
+        trailing: cv.BackButton(
+          title: "Done",
+          color: dmodel.color,
+          showIcon: false,
+          showText: true,
+        ),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: ftmodel.isLoading
+              ? const Center(child: cv.LoadingIndicator())
+              : ftmodel.users == null
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            "Issue finding Users",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 18,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: comp.SubActionButton(
-                                title: "Retry",
-                                backgroundColor:
-                                    CustomColors.sheetCell(context),
-                                onTap: () => ftmodel.fetchUsers(dmodel),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    : ChangeNotifierProvider<RosterSorting>(
-                        create: (_) => RosterSorting(
-                          team: ftmodel.team,
-                        ),
-                        // we use `builder` to obtain a new `BuildContext` that has access to the provider
-                        builder: (context, child) {
-                          // No longer throws
-                          return _body(context, dmodel, ftmodel);
-                        },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: comp.SubActionButton(
+                              title: "Retry",
+                              backgroundColor:
+                                  CustomColors.sheetCell(context),
+                              onTap: () => ftmodel.fetchUsers(dmodel),
+                            ),
+                          )
+                        ],
                       ),
-          ),
-        ]);
+                    )
+                  : ChangeNotifierProvider<RosterSorting>(
+                      create: (_) => RosterSorting(
+                        team: ftmodel.team,
+                      ),
+                      // we use `builder` to obtain a new `BuildContext` that has access to the provider
+                      builder: (context, child) {
+                        // No longer throws
+                        return _body(context, dmodel, ftmodel);
+                      },
+                    ),
+        ));
   }
 
   Widget _body(BuildContext context, DataModel dmodel, FTModel ftmodel) {

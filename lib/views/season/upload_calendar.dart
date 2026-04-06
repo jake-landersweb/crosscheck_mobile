@@ -8,6 +8,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:provider/provider.dart';
 
 class UploadCalendar extends StatefulWidget {
@@ -54,144 +55,142 @@ class _UploadCalendarState extends State<UploadCalendar> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Upload Calendar",
-      leading: [
-        cv.BasicButton(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Icon(Icons.close, color: dmodel.color),
-        ),
-      ],
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            if (_isLoaded) {
-              _upload(dmodel);
-            }
-          },
-          child: _isUploading
-              ? cv.LoadingIndicator(color: dmodel.color)
-              : Text(
-                  "Upload",
-                  style: TextStyle(
-                    color: _isLoaded
-                        ? dmodel.color
-                        : CustomColors.textColor(context).withOpacity(0.5),
-                    fontSize: 18,
-                  ),
+      leading: cv.BasicButton(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Icon(Icons.close, color: dmodel.color),
+      ),
+      trailing: cv.BasicButton(
+        onTap: () {
+          if (_isLoaded) {
+            _upload(dmodel);
+          }
+        },
+        child: _isUploading
+            ? cv.LoadingIndicator(color: dmodel.color)
+            : Text(
+                "Upload",
+                style: TextStyle(
+                  color: _isLoaded
+                      ? dmodel.color
+                      : CustomColors.textColor(context).withOpacity(0.5),
+                  fontSize: 18,
                 ),
-        ),
-      ],
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Center(
-            child: Text(
-              "Note: Crosscheck calendar upload only supports games at this time.",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: CustomColors.textColor(context).withOpacity(0.5),
+              ),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Center(
+              child: Text(
+                "Note: Crosscheck calendar upload only supports games at this time.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: CustomColors.textColor(context).withOpacity(0.5),
+                ),
               ),
             ),
           ),
-        ),
-        CalendarAdvancedSettings(
-          timezone: _timezone,
-          onTimezoneChanged: (tz) {
-            setState(() {
-              _timezone = tz;
-              _isLoaded = false;
-              _events = null;
-              _contents = null;
-            });
-          },
-          parseOpponents: _parseOpponents,
-          onParseOpponentsChanged: (v) {
-            setState(() {
-              _parseOpponents = v;
-              _isLoaded = false;
-              _events = null;
-              _contents = null;
-            });
-          },
-          ignoreString: _ignoreString,
-          onIgnoreStringChanged: (v) {
-            setState(() {
-              _ignoreString = v;
-              _isLoaded = false;
-              _events = null;
-              _contents = null;
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 30,
-          child: cv.BasicButton(
-            onTap: () {
-              _selectFile(dmodel);
+          CalendarAdvancedSettings(
+            timezone: _timezone,
+            onTimezoneChanged: (tz) {
+              setState(() {
+                _timezone = tz;
+                _isLoaded = false;
+                _events = null;
+                _contents = null;
+              });
             },
-            child: Center(
-              child: _loading
-                  ? cv.LoadingIndicator(color: dmodel.color)
-                  : Text("Select File:", style: TextStyle(color: dmodel.color)),
+            parseOpponents: _parseOpponents,
+            onParseOpponentsChanged: (v) {
+              setState(() {
+                _parseOpponents = v;
+                _isLoaded = false;
+                _events = null;
+                _contents = null;
+              });
+            },
+            ignoreString: _ignoreString,
+            onIgnoreStringChanged: (v) {
+              setState(() {
+                _ignoreString = v;
+                _isLoaded = false;
+                _events = null;
+                _contents = null;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 30,
+            child: cv.BasicButton(
+              onTap: () {
+                _selectFile(dmodel);
+              },
+              child: Center(
+                child: _loading
+                    ? cv.LoadingIndicator(color: dmodel.color)
+                    : Text("Select File:", style: TextStyle(color: dmodel.color)),
+              ),
             ),
           ),
-        ),
-        if (_events != null)
-          cv.Section(
-            "Event Previews",
-            child: cv.ListView<Event>(
-              children: _events!,
-              horizontalPadding: 0,
-              childBuilder: (context, item) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_parseOpponents)
-                      RichText(
-                        text: TextSpan(
-                            text: "Opponent: ",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: CustomColors.textColor(context)
-                                  .withOpacity(0.5),
-                            ),
-                            children: [
-                              TextSpan(
-                                text: "\"${item.awayTeam?.title ?? ''}\"",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: CustomColors.textColor(context),
-                                ),
+          if (_events != null)
+            cv.Section(
+              "Event Previews",
+              child: cv.ListView<Event>(
+                children: _events!,
+                horizontalPadding: 0,
+                childBuilder: (context, item) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_parseOpponents)
+                        RichText(
+                          text: TextSpan(
+                              text: "Opponent: ",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: CustomColors.textColor(context)
+                                    .withOpacity(0.5),
                               ),
-                            ]),
-                      )
-                    else
+                              children: [
+                                TextSpan(
+                                  text: "\"${item.awayTeam?.title ?? ''}\"",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: CustomColors.textColor(context),
+                                  ),
+                                ),
+                              ]),
+                        )
+                      else
+                        Text(
+                          item.getTitle(overrideTitle: true),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: CustomColors.textColor(context),
+                          ),
+                        ),
+                      const SizedBox(height: 4),
                       Text(
-                        item.getTitle(overrideTitle: true),
+                        "${item.getDate()} · ${item.getTime()}",
                         style: TextStyle(
                           fontSize: 18,
                           color: CustomColors.textColor(context),
                         ),
                       ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "${item.getDate()} · ${item.getTime()}",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: CustomColors.textColor(context),
-                      ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

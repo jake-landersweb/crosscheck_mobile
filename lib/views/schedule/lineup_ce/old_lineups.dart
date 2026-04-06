@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import '../../../custom_views/root.dart' as cv;
 import '../../../data/root.dart';
 import '../../../client/root.dart';
@@ -37,12 +38,11 @@ class _OldLineupsState extends State<OldLineups> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar.sheet(
+    return HeaderBar.sheet(
       title: "Old Lineups",
       backgroundColor: CustomColors.backgroundColor(context),
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
-      leading: [cv.BackButton(color: dmodel.color)],
-      children: [_body(context, dmodel)],
+      leading: cv.BackButton(color: dmodel.color),
+      child: _body(context, dmodel),
     );
   }
 

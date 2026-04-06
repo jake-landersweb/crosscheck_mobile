@@ -165,10 +165,24 @@ extension SeasonCalls on DataModel {
           name: "create_season",
           parameters: {"platform": "mobile"},
         );
+        // Save the new season's ID so it becomes selected after restart
+        try {
+          final seasonId = response['body']?['seasonId'];
+          if (seasonId != null) {
+            prefs.setString("seasonId", seasonId);
+          }
+        } catch (_) {}
         completion();
         print(response);
         addIndicator(IndicatorItem.success("Successfully created season"));
       } else if (response['status'] < 400) {
+        // Save the new season's ID even on partial success
+        try {
+          final seasonId = response['body']?['seasonId'];
+          if (seasonId != null) {
+            prefs.setString("seasonId", seasonId);
+          }
+        } catch (_) {}
         completion();
         addIndicator(IndicatorItem.error(
             "Your season was created, but " + response['message']));

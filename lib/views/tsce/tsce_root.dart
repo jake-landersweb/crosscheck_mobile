@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:ui';
-
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/crosscheck_engine.dart';
 import 'package:crosscheck_sports/data/root.dart';
@@ -9,6 +7,10 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/tsce/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/container.dart';
+import 'package:crosscheck_sports/style/root.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/root.dart' as comp;
 import 'package:provider/provider.dart';
@@ -47,26 +49,39 @@ class _TSCERootState extends State<TSCERoot> {
     return ChangeNotifierProvider(
       create: (context) => TSCEModel(email: widget.user.email),
       builder: (context, _) {
-        return Container(
-          color: CustomColors.backgroundColor(context),
-          child: Stack(
+        return Scaffold(
+          backgroundColor: CustomColors.backgroundColor(context),
+          body: Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              cv.AppBar.sheet(
-                canScroll: false,
-                title: "Create My Team",
-                leading: [
-                  cv.BackButton(
-                    color: dmodel.color,
-                    showIcon: false,
-                    showText: true,
-                    title: "Cancel",
-                  )
-                ],
+              Column(
                 children: [
-                  Expanded(
-                    child: _body(context, dmodel),
+                  Container(
+                    color: CustomColors.textColor(context).withValues(alpha: 0.05),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: SizedBox(
+                        height: XCThemeData.listItemHeight,
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: XCActionButton.cancel(
+                                onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                "Create My Team",
+                                style: XCTheme.of(context).text.label,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
+                  Expanded(child: _body(context, dmodel)),
                 ],
               ),
               _navigation(context, dmodel),
@@ -82,9 +97,9 @@ class _TSCERootState extends State<TSCERoot> {
     return Column(
       children: [
         Container(
-          color: CustomColors.textColor(context).withOpacity(0.05),
+          color: CustomColors.textColor(context).withValues(alpha: 0.05),
           child: Column(children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 8),
             model.status(context, dmodel, _controller),
             const SizedBox(height: 16),
           ]),
@@ -111,6 +126,10 @@ class _TSCERootState extends State<TSCERoot> {
   Widget _navigation(BuildContext context, DataModel dmodel) {
     TSCEModel model = Provider.of<TSCEModel>(context);
     return SafeArea(
+      top: false,
+      left: false,
+      right: false,
+      bottom: true,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
             16, 0, 16, MediaQuery.of(context).padding.bottom == 0 ? 10 : 0),
@@ -119,7 +138,11 @@ class _TSCERootState extends State<TSCERoot> {
             AnimatedOpacity(
               opacity: model.index == 0 ? 0 : 1,
               duration: const Duration(milliseconds: 300),
-              child: cv.BasicButton(
+              child: XCContainer.custom(
+                customRadius: 25,
+                height: 50,
+                width: 50,
+                color: XCTheme.of(context).cell,
                 onTap: () {
                   if (model.index != 0) {
                     _controller.previousPage(
@@ -128,64 +151,16 @@ class _TSCERootState extends State<TSCERoot> {
                     );
                   }
                 },
-                child: cv.GlassContainer(
-                  height: 50,
-                  width: 50,
-                  borderRadius: BorderRadius.circular(25),
-                  backgroundColor:
-                      CustomColors.textColor(context).withOpacity(0.1),
-                  child: Icon(
-                    Icons.chevron_left,
-                    color: CustomColors.textColor(context).withOpacity(0.7),
-                  ),
+                child: Icon(
+                  Icons.chevron_left,
+                  color: XCTheme.of(context).foregroundMuted,
                 ),
               ),
             ),
             const Spacer(),
-            cv.BasicButton(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 5,
-                    sigmaY: 5,
-                  ),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 700),
-                    curve: Sprung.overDamped,
-                    decoration: BoxDecoration(
-                      color: model.isAtEnd() && !model.isValidated().v1()
-                          ? Colors.red.withOpacity(0.3)
-                          : dmodel.color,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    width: model.isAtEnd()
-                        ? MediaQuery.of(context).size.width / 1.5
-                        : 50,
-                    height: 50,
-                    child: model.isAtEnd()
-                        ? Center(
-                            child: _isLoading
-                                ? const cv.LoadingIndicator(color: Colors.white)
-                                : Text(
-                                    model.isValidated().v2(),
-                                    softWrap: false,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: model.isValidated().v1()
-                                          ? Colors.white
-                                          : Colors.red[900],
-                                    ),
-                                  ),
-                          )
-                        : const Icon(
-                            Icons.chevron_right,
-                            color: Colors.white,
-                          ),
-                  ),
-                ),
-              ),
+            XCContainer.custom(
+              customRadius: 25,
+              height: 50,
               onTap: () {
                 if (model.isAtEnd()) {
                   if (model.isValidated().v1()) {
@@ -197,6 +172,45 @@ class _TSCERootState extends State<TSCERoot> {
                       curve: Sprung.overDamped);
                 }
               },
+              color: model.isAtEnd() && !model.isValidated().v1()
+                  ? Colors.red.withValues(alpha: 0.3)
+                  : dmodel.color,
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 700),
+                curve: Sprung.overDamped,
+                child: SizedBox(
+                  width: model.isAtEnd()
+                      ? MediaQuery.of(context).size.width / 1.5
+                      : 50,
+                  child: Center(
+                    child: model.isAtEnd()
+                        ? _isLoading
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                model.isValidated().v2(),
+                                softWrap: false,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: model.isValidated().v1()
+                                      ? Colors.white
+                                      : Colors.red[900],
+                                ),
+                              )
+                        : const Icon(
+                            Icons.chevron_right,
+                            color: Colors.white,
+                          ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -225,28 +239,30 @@ class _TSCERootState extends State<TSCERoot> {
         isDismissible: false,
         enableDrag: false,
         builder: (context) {
-          return cv.AppBar.sheet(
+          return HeaderBar.sheet(
             title: "Success!",
-            children: [
-              Center(
-                child: Text(
-                  "Horray, your team has been created! Now we need to restart the app for you, and you will be automatically loaded into your first season.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: CustomColors.textColor(context),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    "Horray, your team has been created! Now we need to restart the app for you, and you will be automatically loaded into your first season.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: CustomColors.textColor(context),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              comp.ActionButton(
-                color: CustomColors.fromHex(model.color),
-                title: "Restart App",
-                onTap: () {
-                  RestartWidget.restartApp(context);
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                comp.ActionButton(
+                  color: CustomColors.fromHex(model.color),
+                  title: "Restart App",
+                  onTap: () {
+                    RestartWidget.restartApp(context);
+                  },
+                ),
+              ],
+            ),
           );
         },
       );
@@ -260,27 +276,29 @@ class _TSCERootState extends State<TSCERoot> {
         isDismissible: false,
         enableDrag: false,
         builder: (context) {
-          return cv.AppBar.sheet(
+          return HeaderBar.sheet(
             title: "Uh Oh...",
-            children: [
-              Center(
-                child: Text(
-                  "There seemed to be an issue checking if your user account exists. A team member is on it, but restarting the app and trying again might work as well.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: CustomColors.textColor(context),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    "There seemed to be an issue checking if your user account exists. A team member is on it, but restarting the app and trying again might work as well.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: CustomColors.textColor(context),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              comp.SubActionButton(
-                title: "Restart App",
-                onTap: () {
-                  RestartWidget.restartApp(context);
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                comp.SubActionButton(
+                  title: "Restart App",
+                  onTap: () {
+                    RestartWidget.restartApp(context);
+                  },
+                ),
+              ],
+            ),
           );
         },
       );
@@ -294,27 +312,29 @@ class _TSCERootState extends State<TSCERoot> {
         isDismissible: false,
         enableDrag: false,
         builder: (context) {
-          return cv.AppBar.sheet(
+          return HeaderBar.sheet(
             title: "Uh Oh...",
-            children: [
-              Center(
-                child: Text(
-                  "Bad news, There was an issue creating your team and season. Good news, a team member is on it and will reach out to you immediately. Feel free to restart the app and try again.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: CustomColors.textColor(context),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    "Bad news, There was an issue creating your team and season. Good news, a team member is on it and will reach out to you immediately. Feel free to restart the app and try again.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: CustomColors.textColor(context),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              comp.SubActionButton(
-                title: "Restart App",
-                onTap: () {
-                  RestartWidget.restartApp(context);
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                comp.SubActionButton(
+                  title: "Restart App",
+                  onTap: () {
+                    RestartWidget.restartApp(context);
+                  },
+                ),
+              ],
+            ),
           );
         },
       );
@@ -327,28 +347,30 @@ class _TSCERootState extends State<TSCERoot> {
         isDismissible: false,
         enableDrag: false,
         builder: (context) {
-          return cv.AppBar.sheet(
+          return HeaderBar.sheet(
             title: "Team Created! But...",
-            children: [
-              Center(
-                child: Text(
-                  "Good news, your team and season was created! Bad news, there was an issue adding your players. A team member is on it and will reach out to you within 24 hours. Though, feel free to restart your app and try to add your players again in the 'more' tab on the homepage.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: CustomColors.textColor(context),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    "Good news, your team and season was created! Bad news, there was an issue adding your players. A team member is on it and will reach out to you within 24 hours. Though, feel free to restart your app and try to add your players again in the 'more' tab on the homepage.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: CustomColors.textColor(context),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              comp.ActionButton(
-                title: "Restart App",
-                color: CustomColors.fromHex(model.color),
-                onTap: () {
-                  RestartWidget.restartApp(context);
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                comp.ActionButton(
+                  title: "Restart App",
+                  color: CustomColors.fromHex(model.color),
+                  onTap: () {
+                    RestartWidget.restartApp(context);
+                  },
+                ),
+              ],
+            ),
           );
         },
       );
@@ -362,28 +384,30 @@ class _TSCERootState extends State<TSCERoot> {
         isDismissible: false,
         enableDrag: false,
         builder: (context) {
-          return cv.AppBar.sheet(
+          return HeaderBar.sheet(
             title: "Success! But...",
-            children: [
-              Center(
-                child: Text(
-                  "Good news, your team, season, and roster was created! Bad news, it appears there was an issue creating your stats. Everything will work normally except your stats will be broken. A team member is on it and will reach out to you within 24 hours.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: CustomColors.textColor(context),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    "Good news, your team, season, and roster was created! Bad news, it appears there was an issue creating your stats. Everything will work normally except your stats will be broken. A team member is on it and will reach out to you within 24 hours.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: CustomColors.textColor(context),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              comp.ActionButton(
-                title: "Restart App",
-                color: CustomColors.fromHex(model.color),
-                onTap: () {
-                  RestartWidget.restartApp(context);
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                comp.ActionButton(
+                  title: "Restart App",
+                  color: CustomColors.fromHex(model.color),
+                  onTap: () {
+                    RestartWidget.restartApp(context);
+                  },
+                ),
+              ],
+            ),
           );
         },
       );
@@ -397,28 +421,30 @@ class _TSCERootState extends State<TSCERoot> {
         isDismissible: false,
         enableDrag: false,
         builder: (context) {
-          return cv.AppBar.sheet(
+          return HeaderBar.sheet(
             title: "Success! But...",
-            children: [
-              Center(
-                child: Text(
-                  "Good news, you team, season, roster, and stats were created! But, there seemed to be a weird issue on our end fetching your new team. Restarting the app usually resolves this issue.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: CustomColors.textColor(context),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    "Good news, you team, season, roster, and stats were created! But, there seemed to be a weird issue on our end fetching your new team. Restarting the app usually resolves this issue.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: CustomColors.textColor(context),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              comp.ActionButton(
-                title: "Restart App",
-                color: CustomColors.fromHex(model.color),
-                onTap: () {
-                  RestartWidget.restartApp(context);
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                comp.ActionButton(
+                  title: "Restart App",
+                  color: CustomColors.fromHex(model.color),
+                  onTap: () {
+                    RestartWidget.restartApp(context);
+                  },
+                ),
+              ],
+            ),
           );
         },
       );
@@ -431,28 +457,30 @@ class _TSCERootState extends State<TSCERoot> {
       isDismissible: false,
       enableDrag: false,
       builder: (context) {
-        return cv.AppBar.sheet(
+        return HeaderBar.sheet(
           title: "Weird...",
-          children: [
-            Center(
-              child: Text(
-                "You have gotten an error we have not accounted for. A team member is on it and will reach out to you within a couple hours.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: CustomColors.textColor(context),
+          child: Column(
+            children: [
+              Center(
+                child: Text(
+                  "You have gotten an error we have not accounted for. A team member is on it and will reach out to you within a couple hours.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: CustomColors.textColor(context),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            comp.ActionButton(
-              title: "Restart App",
-              color: dmodel.color,
-              onTap: () {
-                RestartWidget.restartApp(context);
-              },
-            ),
-          ],
+              const SizedBox(height: 16),
+              comp.ActionButton(
+                title: "Restart App",
+                color: dmodel.color,
+                onTap: () {
+                  RestartWidget.restartApp(context);
+                },
+              ),
+            ],
+          ),
         );
       },
     );

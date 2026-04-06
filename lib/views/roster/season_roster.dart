@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'dart:math' as math;
 
 class SeasonRoster extends StatefulWidget {
@@ -25,16 +26,15 @@ class _SeasonRosterState extends State<SeasonRoster> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "Roster",
       isLarge: true,
       refreshable: true,
       backgroundColor: CustomColors.backgroundColor(context),
-      color: dmodel.color,
-      childPadding: const EdgeInsets.fromLTRB(16, 0, 16, 48),
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
-      leading: [cv.BackButton(color: dmodel.color)],
-      trailing: [_createUser(context, dmodel)],
+      horizontalPadding: 16.0,
+      bottomPadding: 48.0,
+      leading: cv.BackButton(color: dmodel.color),
+      trailing: _createUser(context, dmodel),
       onRefresh: () async {
         await dmodel.getBatchSeasonRoster(
           dmodel.tus!.team.teamId,
@@ -42,24 +42,26 @@ class _SeasonRosterState extends State<SeasonRoster> {
           (p0) => dmodel.setSeasonUsers(p0),
         );
       },
-      children: [
-        if (dmodel.currentSeason == null)
-          Center(child: Text("There is no season."))
-        else if (dmodel.seasonUsers != null)
-          ChangeNotifierProvider<RosterSorting>(
-            create: (_) => RosterSorting(
-              team: dmodel.tus!.team,
-              season: dmodel.currentSeason!,
-            ),
-            // we use `builder` to obtain a new `BuildContext` that has access to the provider
-            builder: (context, child) {
-              // No longer throws
-              return _body(context, dmodel);
-            },
-          )
-        else
-          const RosterLoading(),
-      ],
+      child: Column(
+        children: [
+          if (dmodel.currentSeason == null)
+            Center(child: Text("There is no season."))
+          else if (dmodel.seasonUsers != null)
+            ChangeNotifierProvider<RosterSorting>(
+              create: (_) => RosterSorting(
+                team: dmodel.tus!.team,
+                season: dmodel.currentSeason!,
+              ),
+              // we use `builder` to obtain a new `BuildContext` that has access to the provider
+              builder: (context, child) {
+                // No longer throws
+                return _body(context, dmodel);
+              },
+            )
+          else
+            const RosterLoading(),
+        ],
+      ),
     );
   }
 

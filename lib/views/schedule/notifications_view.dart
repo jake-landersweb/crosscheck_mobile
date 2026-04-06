@@ -1,4 +1,6 @@
 import 'package:crosscheck_sports/client/root.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/data/user/notif_alert.dart';
 import 'package:crosscheck_sports/extras/root.dart';
@@ -36,42 +38,24 @@ class _NotificationsViewState extends State<NotificationsView> {
       children: [
         IgnorePointer(
           ignoring: _isLoading,
-          child: cv.AppBar.sheet(
+          child: HeaderBar.sheet(
             title: "Notifications",
-            color: dmodel.color,
-            leading: [
-              cv.BackButton(
-                color: dmodel.color,
-                showIcon: false,
-                showText: true,
-                title: "Done",
-                useRoot: true,
-              ),
-            ],
-            trailing: [
-              cv.BasicButton(
-                onTap: () async {
-                  // clear all
-                  if (_notifs.isNotEmpty) {
-                    await _removeAll(dmodel);
-                  }
-                },
-                child: _isLoading
-                    ? const cv.LoadingIndicator()
-                    : Text(
-                        "Clear All",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: _notifs.isEmpty
-                              ? CustomColors.textColor(context).withOpacity(0.5)
-                              : dmodel.color,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-              ),
-            ],
-            childPadding: const EdgeInsets.fromLTRB(0, 16, 0, 48),
-            children: [
+            leading: XCActionButton.cancel(
+              onTap: () => Navigator.of(context).pop(),
+            ),
+            trailing: XCActionButton.text(
+              onTap: () async {
+                if (_notifs.isNotEmpty) {
+                  await _removeAll(dmodel);
+                }
+              },
+              title: "Clear All",
+              isLoading: _isLoading,
+              disabled: _notifs.isEmpty,
+            ),
+            horizontalPadding: 0.0,
+            bottomPadding: 48.0,
+            child: Column(children: [
               if (_notifs.isEmpty)
                 Center(
                   child: cv.NoneFound(
@@ -99,7 +83,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                     return _cell(context, item);
                   }),
                 ),
-            ],
+            ]),
           ),
         ),
         if (_isLoading)

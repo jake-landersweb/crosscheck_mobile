@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class SeasonInfo extends StatefulWidget {
   const SeasonInfo({super.key, required this.season});
@@ -19,47 +20,44 @@ class _SeasonInfoState extends State<SeasonInfo> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "Season Info",
       isLarge: true,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-      leading: [cv.BackButton(color: dmodel.color)],
-      children: [
-        Column(
-          children: [
-            _basic(context, dmodel),
-            if (widget.season.positions.isActive &&
-                widget.season.positions.available.isNotEmpty)
-              Column(
-                children: [
-                  const SizedBox(height: 16),
-                  _teamPositions(context, dmodel),
-                ],
-              ),
-            if (widget.season.customFields.isNotEmpty)
-              Column(
-                children: [
-                  const SizedBox(height: 16),
-                  _customFields(context, dmodel),
-                ],
-              ),
-            if (widget.season.customUserFields.isNotEmpty)
-              Column(
-                children: [
-                  const SizedBox(height: 16),
-                  _customUserFields(context, dmodel),
-                ],
-              ),
-            if (widget.season.stats.isActive)
-              Column(
-                children: [
-                  const SizedBox(height: 16),
-                  _stats(context, dmodel),
-                ],
-              ),
-          ],
-        ),
-      ],
+      leading: cv.BackButton(color: dmodel.color),
+      child: Column(
+        children: [
+          _basic(context, dmodel),
+          if (widget.season.positions.isActive &&
+              widget.season.positions.available.isNotEmpty)
+            Column(
+              children: [
+                const SizedBox(height: 16),
+                _teamPositions(context, dmodel),
+              ],
+            ),
+          if (widget.season.customFields.isNotEmpty)
+            Column(
+              children: [
+                const SizedBox(height: 16),
+                _customFields(context, dmodel),
+              ],
+            ),
+          if (widget.season.customUserFields.isNotEmpty)
+            Column(
+              children: [
+                const SizedBox(height: 16),
+                _customUserFields(context, dmodel),
+              ],
+            ),
+          if (widget.season.stats.isActive)
+            Column(
+              children: [
+                const SizedBox(height: 16),
+                _stats(context, dmodel),
+              ],
+            ),
+        ],
+      ),
     );
   }
 

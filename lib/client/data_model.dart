@@ -206,7 +206,15 @@ class DataModel extends ChangeNotifier {
           color = CustomColors.fromHex(tus!.team.color);
         }
         forceSchedule = false;
-        setCurrentSeason(tus!.seasons.first);
+        // Select the saved season if it exists in the list
+        final savedSeasonId = prefs.getString("seasonId");
+        final matchingSeason = savedSeasonId != null
+            ? tus!.seasons.cast<Season?>().firstWhere(
+                (s) => s!.seasonId == savedSeasonId,
+                orElse: () => null,
+              )
+            : null;
+        setCurrentSeason(matchingSeason ?? tus!.seasons.first);
         await clearNotificationBadges(prefs.getString("email")!);
       } else {
         // let fallback method try

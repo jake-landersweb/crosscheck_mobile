@@ -1,10 +1,12 @@
 import 'package:crosscheck_sports/client/root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 import 'package:crosscheck_sports/views/polls/polls_ce/root.dart';
 import 'package:crosscheck_sports/views/polls/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
 
 class SeasonPolls extends StatefulWidget {
   const SeasonPolls({
@@ -40,39 +42,31 @@ class _SeasonPollsState extends State<SeasonPolls> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.AppBar(
+    return HeaderBar(
       title: "Polls",
       isLarge: true,
-      itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 16, 8),
       refreshable: true,
-      leading: [cv.BackButton(color: dmodel.color)],
+      leading: cv.BackButton(color: dmodel.color),
       onRefresh: () => _fetchPolls(dmodel),
-      trailing: [
-        cv.BasicButton(
-          onTap: () {
-            cv.cupertinoSheet(
-                context: context,
-                wrapInNavigator: true,
-                builder: (context) {
-                  return PollsRoot(
-                    team: dmodel.tus!.team,
-                    season: dmodel.currentSeason!,
-                    users: dmodel.seasonUsers!,
-                    onAction: () async => await _fetchPolls(dmodel),
-                  );
-                });
-          },
-          child: Icon(
-            Icons.add,
-            color: dmodel.color,
-            size: 28,
-          ),
-        )
-      ],
-      color: dmodel.color,
-      children: [
-        _body(context, dmodel),
-      ],
+      trailing: cv.BasicButton(
+        onTap: () {
+          showSnappingSheet(
+              context: context,
+              child: PollsRoot(
+                team: dmodel.tus!.team,
+                season: dmodel.currentSeason!,
+                users: dmodel.seasonUsers!,
+                onAction: () async => await _fetchPolls(dmodel),
+              ),
+            );
+        },
+        child: Icon(
+          Icons.add,
+          color: dmodel.color,
+          size: 28,
+        ),
+      ),
+      child: _body(context, dmodel),
     );
   }
 
