@@ -6,8 +6,8 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/stats/team/root.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class StatsSeason extends StatefulWidget {
   const StatsSeason({
@@ -45,7 +45,7 @@ class _StatsSeasonState extends State<StatsSeason> {
       title: "Season Stats",
       isLarge: true,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       trailing: ((widget.seasonUser?.isSeasonAdmin() ?? false) && !smodel.isLoading)
           ? _editButton(context, dmodel, smodel)
           : null,
@@ -77,8 +77,8 @@ class _StatsSeasonState extends State<StatsSeason> {
 
   Widget _editButton(
       BuildContext context, DataModel dmodel, StatsSeasonModel smodel) {
-    return cv.BasicButton(
-      onTap: () {
+    return XCActionButton.edit(
+        onTap: () {
         showMaterialModalBottomSheet(
           context: context,
           builder: (context) {
@@ -92,15 +92,7 @@ class _StatsSeasonState extends State<StatsSeason> {
           },
         );
       },
-      child: Text(
-        "Edit",
-        style: TextStyle(
-          color: dmodel.color,
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
+      );
   }
 
   Future<void> _updateUsers(BuildContext context, DataModel dmodel,

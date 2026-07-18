@@ -4,7 +4,10 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:provider/provider.dart';
 import '../root.dart';
 import '../../../custom_views/root.dart' as cv;
-import '../../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class RUCEPre extends StatefulWidget {
   const RUCEPre({
@@ -26,9 +29,11 @@ class _RUCEPreState extends State<RUCEPre> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Select",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: Column(
         children: [
           cv.DynamicSelector<String>(
@@ -47,15 +52,15 @@ class _RUCEPreState extends State<RUCEPre> {
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: comp.ActionButton(
+            child: XCWideButton.primary(
               title: "Continue",
               color: dmodel.color,
               onTap: () {
                 Navigator.of(context).pop();
                 if (_selection == "Create new") {
-                  cv.cupertinoSheet(
-                      context: context,
-                      builder: (context) {
+                  showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
                         return RUCERoot(
                           team: widget.team,
                           season: widget.season,
@@ -77,11 +82,12 @@ class _RUCEPreState extends State<RUCEPre> {
                             );
                           },
                         );
-                      });
+                      }),
+    );
                 } else {
-                  cv.cupertinoSheet(
-                      context: context,
-                      builder: (context) {
+                  showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
                         return FTRoot(
                           team: widget.team,
                           season: widget.season,
@@ -99,7 +105,8 @@ class _RUCEPreState extends State<RUCEPre> {
                             // add the user to this list
                           },
                         );
-                      });
+                      }),
+    );
                 }
               },
             ),

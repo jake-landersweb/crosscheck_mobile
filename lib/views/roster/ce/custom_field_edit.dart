@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class CustomFieldEdit extends StatefulWidget {
   const CustomFieldEdit({
@@ -32,17 +34,16 @@ class _CustomFieldEditState extends State<CustomFieldEdit> {
   }
 
   Widget _stringCell(BuildContext context) {
-    return cv.TextField2(
-      labelText: widget.field.getTitle(),
-      value: widget.field.getValue(),
-      onChanged: (value) {
+    return XCField(
+              labelText: widget.field.getTitle(),
+              value: widget.field.getValue(),
+              onChanged: (value) {
         setState(() {
           widget.field.setValue(value);
         });
       },
-      isLabeled: true,
-      fieldPadding: EdgeInsets.zero,
-    );
+              isLabeled: true,
+            );
   }
 
   Widget _intCell(BuildContext context) {
@@ -59,7 +60,7 @@ class _CustomFieldEditState extends State<CustomFieldEdit> {
   }
 
   Widget _boolCell(BuildContext context) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       widget.field.getTitle(),
       child: Row(
         children: [

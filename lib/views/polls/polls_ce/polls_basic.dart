@@ -6,6 +6,16 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'root.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/adaptive/confirm_dialog/adaptive_confirm_dialog.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class PollsBasic extends StatefulWidget {
   const PollsBasic({
@@ -30,57 +40,53 @@ class _PollsBasicState extends State<PollsBasic> {
       children: [
         Column(
           children: [
-            cv.Section(
+            XCSection(
               "Date",
               headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
-              child: cv.ListView<Widget>(
+              child: XCCellList<Widget>(
                 childPadding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   _pollDate(context, dmodel, pmodel),
                 ],
               ),
             ),
-            cv.Section(
+            XCSection(
               "Title - Required",
               headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
-              child: cv.ListView<Widget>(
+              child: XCCellList<Widget>(
                 childPadding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
-                  cv.TextField2(
-                    labelText: "Title",
-                    hintText: "Where for dinner tonight?",
-                    highlightColor: dmodel.color,
-                    onChanged: (value) {
+                  XCField(
+              labelText: "Title",
+              hintText: "Where for dinner tonight?",
+              onChanged: (value) {
                       setState(() {
                         pmodel.poll.title = value;
                       });
                     },
-                    showBackground: false,
-                    value: pmodel.poll.title,
-                    isLabeled: false,
-                  ),
+              value: pmodel.poll.title,
+              isLabeled: false,
+            ),
                 ],
               ),
             ),
-            cv.Section(
+            XCSection(
               "Description",
               headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
-              child: cv.ListView<Widget>(
+              child: XCCellList<Widget>(
                 childPadding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
-                  cv.TextField2(
-                    labelText: "Please select your favorite place!",
-                    isLabeled: false,
-                    maxLines: 5,
-                    highlightColor: dmodel.color,
-                    onChanged: (value) {
+                  XCField(
+              labelText: "Please select your favorite place!",
+              isLabeled: false,
+              maxLines: 5,
+              onChanged: (value) {
                       setState(() {
                         pmodel.poll.description = value;
                       });
                     },
-                    showBackground: false,
-                    value: pmodel.poll.description,
-                  ),
+              value: pmodel.poll.description,
+            ),
                 ],
               ),
             ),
@@ -89,23 +95,23 @@ class _PollsBasicState extends State<PollsBasic> {
             if (!pmodel.isCreate)
               Padding(
                 padding: const EdgeInsets.all(32.0),
-                child: cv.RoundedLabel(
-                  "Delete",
-                  color: Colors.red.withOpacity(0.5),
-                  textColor: Colors.white,
+                child: XCWideButton.destructive(
+                  title: "Delete",
                   isLoading: _isloading,
                   onTap: () {
-                    cv.showAlert(
-                        context: context,
-                        title: "Are You Sure",
-                        body: const Text(
-                            "Are you sure you want to delete this poll? This action cannot be reversed"),
-                        cancelText: "Cancel",
-                        onCancel: () {},
-                        submitText: "Delete",
-                        submitBolded: true,
-                        submitColor: Colors.red,
-                        onSubmit: () => _deletePoll(context, pmodel, dmodel));
+                    AdaptiveConfirmDialog.show(
+                      context,
+                      title: "Are You Sure",
+                      message:
+                          "Are you sure you want to delete this poll? This action cannot be reversed",
+                      cancelLabel: "Cancel",
+                      confirmLabel: "Delete",
+                      isDestructive: true,
+                    ).then((confirmed) {
+                      if (confirmed) {
+                        _deletePoll(context, pmodel, dmodel);
+                      }
+                    });
                   },
                 ),
               )
@@ -116,16 +122,16 @@ class _PollsBasicState extends State<PollsBasic> {
   }
 
   Widget _pollDate(BuildContext context, DataModel dmodel, PollsModel pmodel) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       "Poll Date",
       child: Row(
         children: [
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.showFloatingSheet(
-                context: context,
-                builder: (context) => _datePicker(context, dmodel, pmodel),
-              );
+              showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) => _datePicker(context, dmodel, pmodel)),
+    );
             },
             child: Material(
               color: CustomColors.textColor(context).withOpacity(0.2),
@@ -141,12 +147,12 @@ class _PollsBasicState extends State<PollsBasic> {
             ),
           ),
           const SizedBox(width: 7),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.showFloatingSheet(
-                context: context,
-                builder: (context) => _timePicker(context, dmodel, pmodel),
-              );
+              showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) => _timePicker(context, dmodel, pmodel)),
+    );
             },
             child: Material(
               color: CustomColors.textColor(context).withOpacity(0.2),
@@ -170,9 +176,11 @@ class _PollsBasicState extends State<PollsBasic> {
 
   Widget _datePicker(
       BuildContext context, DataModel dmodel, PollsModel pmodel) {
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Event Date",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: SfDateRangePicker(
         todayHighlightColor: dmodel.color,
         selectionColor: dmodel.color,
@@ -201,9 +209,11 @@ class _PollsBasicState extends State<PollsBasic> {
 
   Widget _timePicker(
       BuildContext context, DataModel dmodel, PollsModel pmodel) {
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Event Time",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: cv.TimePicker(
         initialDate: pmodel.time,
         timePickerMode: cv.TimePickerMode.text,

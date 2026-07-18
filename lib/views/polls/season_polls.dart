@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import '../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class SeasonPolls extends StatefulWidget {
   const SeasonPolls({
@@ -46,9 +48,9 @@ class _SeasonPollsState extends State<SeasonPolls> {
       title: "Polls",
       isLarge: true,
       refreshable: true,
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       onRefresh: () => _fetchPolls(dmodel),
-      trailing: cv.BasicButton(
+      trailing: Clickable(
         onTap: () {
           showSnappingSheet(
               context: context,

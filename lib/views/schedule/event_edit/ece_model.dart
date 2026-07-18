@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../../data/root.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:sprung/sprung.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class ECEModel extends ChangeNotifier {
   late bool isCreate;
@@ -75,7 +75,7 @@ class ECEModel extends ChangeNotifier {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          cv.BasicButton(
+          Clickable(
               onTap: () {
                 controller.animateToPage(
                   0,
@@ -86,7 +86,7 @@ class ECEModel extends ChangeNotifier {
               },
               child: _cell(context, dmodel, "Basic Info", 0, Icons.lightbulb)),
           _spacer(context, dmodel),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
               controller.animateToPage(
                 1,
@@ -98,7 +98,7 @@ class ECEModel extends ChangeNotifier {
             child: _cell(context, dmodel, "Custom", 1, Icons.settings),
           ),
           _spacer(context, dmodel),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
               controller.animateToPage(
                 2,
@@ -110,7 +110,7 @@ class ECEModel extends ChangeNotifier {
             child: _cell(context, dmodel, "Users", 2, Icons.person),
           ),
           _spacer(context, dmodel),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
               controller.animateToPage(
                 3,

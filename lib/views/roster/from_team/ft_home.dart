@@ -2,8 +2,10 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
-import '../../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class FTHome extends StatefulWidget {
   const FTHome({super.key});
@@ -20,9 +22,9 @@ class _FTHomeState extends State<FTHome> {
       mainAxisSize: MainAxisSize.max,
       children: [
         // list of users
-        cv.Section(
+        XCSection(
           "Selected Users",
-          child: cv.ListView<SeasonUser>(
+          child: XCCellList<SeasonUser>(
             children: ftmodel.selectedUsers,
             childPadding: const EdgeInsets.all(8),
             horizontalPadding: 0,
@@ -56,18 +58,16 @@ class _FTHomeState extends State<FTHome> {
         ),
         // button to show model to add more users
         const SizedBox(height: 16),
-        comp.SubActionButton(
+        XCWideButton.neutral(
           title: "Select Team Users",
           onTap: () {
-            cv.cupertinoSheet(
-              context: context,
-              builder: (context) {
-                return ListenableProvider.value(
+            showSnappingSheet(
+      context: context,
+      child: ListenableProvider.value(
                   value: ftmodel,
                   child: const FTTeamUsers(),
-                );
-              },
-            );
+                ),
+    );
           },
         ),
       ],

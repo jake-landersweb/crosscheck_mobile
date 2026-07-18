@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import '../../custom_views/root.dart' as cv;
-import '../components/root.dart' as comp;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class UserEdit extends StatefulWidget {
   const UserEdit({
@@ -61,16 +65,12 @@ class _UserEditState extends State<UserEdit> {
       title: "Edit User",
       horizontalPadding: 0,
       bottomPadding: 48,
-      leading: cv.BackButton(
-        title: "Cancel",
-        color: dmodel.color,
-        showIcon: false,
-        useRoot: true,
-        showText: true,
-      ),
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
       child: Column(
         children: [
-          cv.ListView(
+          XCCellList(
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             horizontalPadding: 16,
             children: [
@@ -80,12 +80,12 @@ class _UserEditState extends State<UserEdit> {
               _nicknameField(context, dmodel),
             ],
           ),
-          cv.Section(
+          XCSection(
             "Notifications",
             headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
             child: Column(
               children: [
-                cv.ListView(
+                XCCellList(
                   childPadding: const EdgeInsets.symmetric(horizontal: 16),
                   horizontalPadding: 16,
                   children: [
@@ -93,7 +93,7 @@ class _UserEditState extends State<UserEdit> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                cv.ListView<MobileNotification>(
+                XCCellList<MobileNotification>(
                   childPadding: const EdgeInsets.symmetric(horizontal: 16),
                   horizontalPadding: 16,
                   children: _mobileNotifications,
@@ -110,7 +110,7 @@ class _UserEditState extends State<UserEdit> {
                     return Row(
                       children: [
                         Expanded(
-                          child: cv.LabeledWidget(
+                          child: XCLabeledWidget(
                             "${notif.deviceName ?? "Unknown Device"}${notif.deviceVersion != null ? " ${notif.deviceVersion}" : ""}",
                             child: Row(
                               children: [
@@ -155,7 +155,7 @@ class _UserEditState extends State<UserEdit> {
             Column(
               children: [
                 const SizedBox(height: 8),
-                cv.ListView<Widget>(
+                XCCellList<Widget>(
                   onChildTap: (context, item) async {
                     if (_token?.isNotEmpty ?? false) {
                       // get the device information
@@ -183,57 +183,53 @@ class _UserEditState extends State<UserEdit> {
   }
 
   Widget _firstNameField(BuildContext context, DataModel dmodel) {
-    return cv.TextField2(
-      labelText: "First Name",
-      isLabeled: true,
-      showBackground: false,
-      value: _firstName,
-      onChanged: (value) {
+    return XCField(
+              labelText: "First Name",
+              isLabeled: true,
+              value: _firstName,
+              onChanged: (value) {
         setState(() {
           _firstName = value;
         });
       },
-    );
+            );
   }
 
   Widget _lastNameField(BuildContext context, DataModel dmodel) {
-    return cv.TextField2(
-      labelText: "Last Name",
-      isLabeled: true,
-      showBackground: false,
-      value: _lastName,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Last Name",
+              isLabeled: true,
+              value: _lastName,
+              onChanged: (value) {
         _lastName = value;
       },
-    );
+            );
   }
 
   Widget _phoneField(BuildContext context, DataModel dmodel) {
-    return cv.TextField2(
-      labelText: "Phone",
-      isLabeled: true,
-      showBackground: false,
-      value: _phone,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Phone",
+              isLabeled: true,
+              value: _phone,
+              onChanged: (value) {
         _phone = value;
       },
-    );
+            );
   }
 
   Widget _nicknameField(BuildContext context, DataModel dmodel) {
-    return cv.TextField2(
-      labelText: "Nickname",
-      isLabeled: true,
-      showBackground: false,
-      value: _nickname,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Nickname",
+              isLabeled: true,
+              value: _nickname,
+              onChanged: (value) {
         _nickname = value;
       },
-    );
+            );
   }
 
   Widget _emailField(BuildContext context, DataModel dmodel) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       "Emails",
       child: Row(
         children: [
@@ -256,7 +252,7 @@ class _UserEditState extends State<UserEdit> {
   }
 
   // Widget _phoneNotifField(BuildContext context, DataModel dmodel) {
-  //   return cv.LabeledWidget(
+  //   return XCLabeledWidget(
   //     "Phone Notifications",
   //     child: Row(
   //       children: [
@@ -294,7 +290,7 @@ class _UserEditState extends State<UserEdit> {
   Widget _button(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32.0),
-      child: comp.ActionButton(
+      child: XCWideButton.primary(
         title: "Confirm",
         color: dmodel.color,
         onTap: () => _action(context, dmodel),

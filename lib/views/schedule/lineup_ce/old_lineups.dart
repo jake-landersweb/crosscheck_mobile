@@ -7,6 +7,9 @@ import '../../../data/root.dart';
 import '../../../client/root.dart';
 import '../../../extras/root.dart';
 import '../root.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class OldLineups extends StatefulWidget {
   const OldLineups({
@@ -41,14 +44,14 @@ class _OldLineupsState extends State<OldLineups> {
     return HeaderBar.sheet(
       title: "Old Lineups",
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.cancel(),
       child: _body(context, dmodel),
     );
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
     if (_isLoading) {
-      return Center(child: cv.LoadingIndicator(color: dmodel.color));
+      return Center(child: XCLoadingIndicator(color: dmodel.color));
     } else if (_lineups == null) {
       return cv.NoneFound(
         "There was an issue getting the lineups",
@@ -56,7 +59,7 @@ class _OldLineupsState extends State<OldLineups> {
         color: widget.event.getColor() ?? dmodel.color,
       );
     } else {
-      return cv.ListView<Lineup>(
+      return XCCellList<Lineup>(
         children: _lineups!.where((element) => element.event != null).toList(),
         horizontalPadding: 0,
         onChildTap: ((context, item) {

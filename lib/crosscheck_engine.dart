@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import 'client/root.dart';
 import 'style/root.dart';
-import 'theme/root.dart';
 import 'views/root.dart';
 import 'custom_views/root.dart' as cv;
 

@@ -15,6 +15,11 @@ import '../../client/root.dart';
 import '../../extras/root.dart';
 import '../root.dart';
 import 'package:flutter/services.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 // import 'package:device_calendar/device_calendar.dart' as cal;
 
@@ -77,7 +82,7 @@ class _EventDetail2State extends State<EventDetail2> {
         return HeaderBar(
           title: widget.event.getTitle(),
           isLarge: true,
-          leading: cv.BackButton(color: _accentColor(dmodel)),
+          leading: XCActionButton.back(),
           backgroundColor: CustomColors.backgroundColor(context),
           trailing: _editButton(context, dmodel),
           horizontalPadding: 16.0,
@@ -133,7 +138,7 @@ class _EventDetail2State extends State<EventDetail2> {
             child: Column(
               children: [
                 for (var i = 0; i < _eventDutyUsers.length; i++)
-                  cv.Section(
+                  XCSection(
                     dmodel.eventDuties[i].title,
                     child: Container(
                       decoration: BoxDecoration(
@@ -143,11 +148,11 @@ class _EventDetail2State extends State<EventDetail2> {
                       width: double.infinity,
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: cv.BasicButton(
+                          child: Clickable(
                             onTap: () {
-                              cv.cupertinoSheet(
-                                context: context,
-                                builder: (context) => EventDutySelect(
+                              showSnappingSheet(
+      context: context,
+      child: EventDutySelect(
                                   team: widget.team,
                                   season: widget.season,
                                   event: widget.event,
@@ -159,10 +164,11 @@ class _EventDetail2State extends State<EventDetail2> {
                                     });
                                   },
                                 ),
-                              );
+    );
                             },
-                            active: dmodel.currentSeasonUser?.isTeamAdmin() ??
-                                dmodel.tus!.user.isTeamAdmin(),
+                            disabled: !(dmodel.currentSeasonUser
+                                    ?.isTeamAdmin() ??
+                                dmodel.tus!.user.isTeamAdmin()),
                             child: _eventDutyUsers[i] != null
                                 ? Row(
                                     children: [
@@ -223,7 +229,7 @@ class _EventDetail2State extends State<EventDetail2> {
                 ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
-                child: cv.BasicButton(
+                child: Clickable(
                   onTap: () {
                     if (euModel.eventUsers != null) {
                       cv.Navigate(
@@ -426,7 +432,7 @@ class _EventDetail2State extends State<EventDetail2> {
   Widget _stats(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             cv.Navigate(
               context,
@@ -474,19 +480,17 @@ class _EventDetail2State extends State<EventDetail2> {
           ),
         ),
         const SizedBox(height: 8),
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
                 false || dmodel.tus!.user.isTeamAdmin()) {
-              cv.showFloatingSheet(
-                context: context,
-                builder: (context) {
-                  return EventScore(
+              showSnappingSheet(
+      context: context,
+      child: EventScore(
                       team: widget.team,
                       season: widget.season,
-                      event: widget.event);
-                },
-              );
+                      event: widget.event),
+    );
             }
           },
           child: Container(
@@ -532,18 +536,16 @@ class _EventDetail2State extends State<EventDetail2> {
       children: [
         if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
             false || dmodel.tus!.user.isTeamAdmin())
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.showFloatingSheet(
-                context: context,
-                builder: (context) {
-                  return EventNotification(
+              showSnappingSheet(
+      context: context,
+      child: EventNotification(
                     teamId: widget.team.teamId,
                     seasonId: widget.season.seasonId,
                     event: widget.event,
-                  );
-                },
-              );
+                  ),
+    );
             },
             child: Container(
               decoration: BoxDecoration(
@@ -592,7 +594,7 @@ class _EventDetail2State extends State<EventDetail2> {
     EventUserModel euModel = Provider.of<EventUserModel>(context);
     if ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) &&
         (euModel.eventUsers != null || !widget.event.hasAttendance)) {
-      return cv.BasicButton(
+      return XCActionButton.edit(
         onTap: () {
           showSnappingSheet(
               context: context,
@@ -607,14 +609,6 @@ class _EventDetail2State extends State<EventDetail2> {
                 eventUsers: euModel.eventUsers,
               ));
         },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: _accentColor(dmodel),
-          ),
-        ),
       );
     } else {
       return Container(height: 0);
@@ -704,7 +698,7 @@ class _EventDetailState extends State<EventDetail> {
           isLarge: true,
           backgroundColor: widget.event.getColor()?.lighten(0.1) ??
               CustomColors.backgroundColor(context),
-          leading: cv.BackButton(color: _accentColor(dmodel)),
+          leading: XCActionButton.back(),
           titleColor: widget.event.eventColor.isEmpty ? null : Colors.white,
           trailing: _editButton(context, dmodel),
           horizontalPadding: 16.0,
@@ -726,7 +720,7 @@ class _EventDetailState extends State<EventDetail> {
         if (widget.event.eventType == 1 && euModel.eventUsers != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: cv.BasicButton(
+            child: Clickable(
               onTap: () {
                 cv.Navigate(
                   context,
@@ -796,7 +790,7 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   Widget _detail2(BuildContext context, DataModel dmodel) {
-    return cv.ListView<Widget>(
+    return XCCellList<Widget>(
       backgroundColor: widget.event.cellColor(context),
       horizontalPadding: 0,
       childPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -831,7 +825,7 @@ class _EventDetailState extends State<EventDetail> {
             iconSize: 28,
             defaultIconColor: _accentColor(dmodel).withOpacity(0.5),
           ),
-        // cv.BasicButton(
+        // Clickable(
         //   onTap: () async {
         //     await initializeTimeZone();
         //     final loc = getLocation("America/Los_Angeles");
@@ -894,7 +888,7 @@ class _EventDetailState extends State<EventDetail> {
 
   Widget _detailCell2(
       BuildContext context, DataModel dmodel, IconData icon, String value) {
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         Clipboard.setData(ClipboardData(text: value));
         dmodel.addIndicator(IndicatorItem.success("Successfully copied!"));
@@ -930,13 +924,13 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   Widget _customFields(BuildContext context, DataModel dmodel) {
-    return cv.ListView<CustomField>(
+    return XCCellList<CustomField>(
       backgroundColor: widget.event.cellColor(context),
       horizontalPadding: 0,
       children: widget.event.customFields,
       childPadding: const EdgeInsets.symmetric(horizontal: 16),
       childBuilder: (context, i) {
-        return cv.LabeledCell(
+        return XCLabeledCell(
           label: i.getTitle(),
           value: i.getValue(),
           textColor: widget.event.textColor(context),
@@ -946,7 +940,7 @@ class _EventDetailState extends State<EventDetail> {
   }
 
   Widget _stats(BuildContext context, DataModel dmodel) {
-    return cv.ListView<Tuple<IconData, String>>(
+    return XCCellList<Tuple<IconData, String>>(
       children: [
         if (dmodel.currentSeason!.hasStats)
           Tuple(Icons.bar_chart, "Statistics"),
@@ -970,15 +964,13 @@ class _EventDetailState extends State<EventDetail> {
         } else {
           if (dmodel.currentSeasonUser?.isSeasonAdmin() ??
               false || dmodel.tus!.user.isTeamAdmin()) {
-            cv.showFloatingSheet(
-              context: context,
-              builder: (context) {
-                return EventScore(
+            showSnappingSheet(
+      context: context,
+      child: EventScore(
                     team: widget.team,
                     season: widget.season,
-                    event: widget.event);
-              },
-            );
+                    event: widget.event),
+    );
           }
         }
       },
@@ -1023,22 +1015,20 @@ class _EventDetailState extends State<EventDetail> {
             false || dmodel.tus!.user.isTeamAdmin())
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: cv.ListView<Widget>(
+            child: XCCellList<Widget>(
               backgroundColor: widget.event.cellColor(context),
               horizontalPadding: 0,
               borderRadius: 10,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChildTap: (context, p1) {
-                cv.showFloatingSheet(
-                  context: context,
-                  builder: (context) {
-                    return EventNotification(
+                showSnappingSheet(
+      context: context,
+      child: EventNotification(
                       teamId: widget.team.teamId,
                       seasonId: widget.season.seasonId,
                       event: widget.event,
-                    );
-                  },
-                );
+                    ),
+    );
               },
               children: [
                 Row(
@@ -1114,7 +1104,7 @@ class _EventDetailState extends State<EventDetail> {
   Widget _editButton(BuildContext context, DataModel dmodel) {
     EventUserModel euModel = Provider.of<EventUserModel>(context);
     if (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) {
-      return cv.BasicButton(
+      return XCActionButton.edit(
         onTap: () {
           if (euModel.eventUsers != null || !widget.event.hasAttendance) {
             showSnappingSheet(
@@ -1131,14 +1121,6 @@ class _EventDetailState extends State<EventDetail> {
                 ));
           }
         },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: _accentColor(dmodel),
-          ),
-        ),
       );
     } else {
       return Container(height: 0);
@@ -1302,10 +1284,9 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
                               stringToDate(widget.event.eDate)
                                   .isAfter(DateTime.now())) ||
                           dmodel.currentSeasonUser!.isSeasonAdmin()) {
-                        cv.showFloatingSheet(
-                          context: context,
-                          builder: (context) {
-                            return StatusSelectSheet(
+                        showSnappingSheet(
+      context: context,
+      child: StatusSelectSheet(
                               email: user.email,
                               teamId: widget.team.teamId,
                               event: widget.event,
@@ -1314,9 +1295,8 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
                               completion: () {
                                 _getUsers(dmodel, euModel);
                               },
-                            );
-                          },
-                        );
+                            ),
+    );
                       }
                     },
                   ),
@@ -1337,12 +1317,11 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
-                  child: cv.BasicButton(
+                  child: Clickable(
                     onTap: () {
-                      cv.cupertinoSheet(
-                          context: context,
-                          builder: (context) {
-                            return UserCommentSheet(
+                      showSnappingSheet(
+      context: context,
+      child: UserCommentSheet(
                               user: user,
                               event: widget.event,
                               email: widget.email,
@@ -1352,8 +1331,8 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
                                 // refresh user data when added reply
                                 _getUsers(dmodel, euModel);
                               },
-                            );
-                          });
+                            ),
+    );
                     },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
@@ -1438,7 +1417,7 @@ class _EventDetailUsersState extends State<EventDetailUsers> {
           fields[index].getValue()) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: cv.LabeledCell(
+          child: XCLabeledCell(
             label: fields[index].getTitle(),
             value: fields[index].getValue(),
           ),

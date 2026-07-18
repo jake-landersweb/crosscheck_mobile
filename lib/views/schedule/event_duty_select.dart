@@ -5,8 +5,11 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/extensions.dart';
 import 'package:crosscheck_sports/views/roster/basic_roster_cell.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:provider/provider.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class EventDutySelect extends StatefulWidget {
   const EventDutySelect({
@@ -48,8 +51,8 @@ class _EventDutySelectState extends State<EventDutySelect> {
     var dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Choose User",
-      leading: cv.CloseButton(color: dmodel.color),
-      trailing: cv.BasicButton(
+      leading: XCActionButton.cancel(),
+      trailing: Clickable(
         onTap: () {
           if (_selected == null) {
             dmodel
@@ -59,7 +62,7 @@ class _EventDutySelectState extends State<EventDutySelect> {
           }
         },
         child: _isLoading
-            ? cv.LoadingIndicator(color: dmodel.color)
+            ? XCLoadingIndicator(color: dmodel.color)
             : Text(
                 "Save",
                 style: TextStyle(
@@ -71,7 +74,7 @@ class _EventDutySelectState extends State<EventDutySelect> {
                 ),
               ),
       ),
-      child: cv.ListView<SeasonUser>(
+      child: XCCellList<SeasonUser>(
           children: dmodel.seasonUsers!,
           color: dmodel.color,
           allowsSelect: true,

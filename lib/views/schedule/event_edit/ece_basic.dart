@@ -9,6 +9,17 @@ import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:sprung/sprung.dart';
 import '../../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/adaptive/confirm_dialog/adaptive_confirm_dialog.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class ECEBasic extends StatefulWidget {
   const ECEBasic({super.key});
@@ -42,13 +53,13 @@ class _ECEBasicState extends State<ECEBasic> {
       child: Column(
         children: [
           if (ecemodel.isCreate)
-            cv.Section(
+            XCSection(
               "Type",
               color: dmodel.color,
               helperView: (context) {
                 return Column(
                   children: const [
-                    cv.Section(
+                    XCSection(
                       "Type",
                       child: Text(
                           "Games will store extra information like opponent name, score, and stats for all users. The other types will be more basic of a shape."),
@@ -68,7 +79,7 @@ class _ECEBasicState extends State<ECEBasic> {
                 },
               ),
             ),
-          cv.Section(
+          XCSection(
             "Required",
             child: Column(
               children: [
@@ -82,7 +93,7 @@ class _ECEBasicState extends State<ECEBasic> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: cv.LabeledWidget(
+                        child: XCLabeledWidget(
                           "Auto-Sync",
                           child: Row(
                             children: [
@@ -126,11 +137,11 @@ class _ECEBasicState extends State<ECEBasic> {
                     !ecemodel.event.autoUpdateFromSync)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: cv.Section(
+                    child: XCSection(
                       "Previous Opponents",
                       allowsCollapse: true,
                       initOpen: false,
-                      child: cv.ListView<String>(
+                      child: XCCellList<String>(
                         animateOpen: true,
                         isAnimated: true,
                         childPadding: EdgeInsets.zero,
@@ -144,7 +155,7 @@ class _ECEBasicState extends State<ECEBasic> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: cv.BasicButton(
+                                  child: Clickable(
                                     onTap: () {
                                       setState(() {
                                         ecemodel.event.overrideTitle = false;
@@ -183,7 +194,7 @@ class _ECEBasicState extends State<ECEBasic> {
                                     ),
                                   ),
                                 ),
-                                cv.BasicButton(
+                                Clickable(
                                   onTap: () async {
                                     await ecemodel.removeOpponentTitle(
                                       dmodel,
@@ -202,7 +213,7 @@ class _ECEBasicState extends State<ECEBasic> {
                                     child: AspectRatio(
                                       aspectRatio: 1,
                                       child: ecemodel.loadingOpponent == item
-                                          ? cv.LoadingIndicator(
+                                          ? XCLoadingIndicator(
                                               color: dmodel.color)
                                           : Icon(
                                               Icons.close,
@@ -230,12 +241,12 @@ class _ECEBasicState extends State<ECEBasic> {
     return Row(
       children: [
         Expanded(
-          child: cv.BasicButton(
+          child: Clickable(
             onTap: () {
-              cv.showFloatingSheet(
-                context: context,
-                builder: (context) => _datePicker(context, dmodel, ecemodel),
-              );
+              showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) => _datePicker(context, dmodel, ecemodel)),
+    );
             },
             child: Container(
               constraints: const BoxConstraints(minHeight: 50),
@@ -265,12 +276,12 @@ class _ECEBasicState extends State<ECEBasic> {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: cv.BasicButton(
+          child: Clickable(
             onTap: () {
-              cv.showFloatingSheet(
-                context: context,
-                builder: (context) => _timePicker(context, dmodel, ecemodel),
-              );
+              showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) => _timePicker(context, dmodel, ecemodel)),
+    );
             },
             child: Container(
               constraints: const BoxConstraints(minHeight: 50),
@@ -315,23 +326,19 @@ class _ECEBasicState extends State<ECEBasic> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: (ecemodel.event.eventType == 1 && !ecemodel.event.overrideTitle)
-            ? cv.TextField2(
-                labelText: "Opponent",
-                controller: ecemodel.titleController,
-                showBackground: false,
-                fieldPadding: EdgeInsets.zero,
-                isLabeled: true,
-                onChanged: (value) {},
-              )
-            : cv.TextField2(
-                labelText: "Title",
-                controller: ecemodel.titleController,
-                showBackground: false,
-                fieldPadding: EdgeInsets.zero,
-                isLabeled: true,
-                value: ecemodel.event.eTitle,
-                onChanged: (value) {},
-              ),
+            ? XCField(
+              labelText: "Opponent",
+              controller: ecemodel.titleController,
+              isLabeled: true,
+              onChanged: (value) {},
+            )
+            : XCField(
+              labelText: "Title",
+              controller: ecemodel.titleController,
+              isLabeled: true,
+              value: ecemodel.event.eTitle,
+              onChanged: (value) {},
+            ),
       ),
     );
   }
@@ -339,28 +346,28 @@ class _ECEBasicState extends State<ECEBasic> {
   Widget _config(BuildContext context, DataModel dmodel, ECEModel ecemodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: cv.Section(
+      child: XCSection(
         "Config",
         color: dmodel.color,
         helperView: (context) {
           return Column(
             children: const [
-              cv.Section(
+              XCSection(
                 "Send Auto Check-in Reminders",
                 child: Text(
                     "If this is true, then emails will be sent to all the users on the event 2 days and 1 day before the event to check in. But don't worry, you can send check in reminders manually by status later."),
               ),
-              cv.Section(
+              XCSection(
                 "Track Attendance",
                 child: Text(
                     "If this is false, no users will be on this event, and it will serve more as a reminder."),
               ),
-              cv.Section(
+              XCSection(
                 "Show Attendance",
                 child: Text(
                     "If track attendance is true, this will let you control whether your users can see the roster of this event and their statuses or not."),
               ),
-              cv.Section(
+              XCSection(
                 "Home Team (game only)",
                 child: Text(
                     "Gives you extra control on the ordering of your game title."),
@@ -368,28 +375,29 @@ class _ECEBasicState extends State<ECEBasic> {
             ],
           );
         },
-        child: cv.ListView<Widget>(
+        child: XCCellList<Widget>(
           horizontalPadding: 0,
           childPadding: EdgeInsets.zero,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: cv.TextField2(
-                labelText: "Description",
-                enabled: !ecemodel.event.autoUpdateFromSync,
-                onChanged: (value) {
-                  setState(() {
-                    ecemodel.event.eDescription = value;
-                  });
-                },
-                showBackground: false,
-                value: ecemodel.event.eDescription,
-                isLabeled: true,
+              child: IgnorePointer(
+                ignoring: ecemodel.event.autoUpdateFromSync,
+                child: XCField(
+                  labelText: "Description",
+                  onChanged: (value) {
+                    setState(() {
+                      ecemodel.event.eDescription = value;
+                    });
+                  },
+                  value: ecemodel.event.eDescription,
+                  isLabeled: true,
+                ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: cv.LabeledWidget(
+              child: XCLabeledWidget(
                 "Send Auto Check-in Reminders",
                 child: Row(
                   children: [
@@ -413,7 +421,7 @@ class _ECEBasicState extends State<ECEBasic> {
             if (ecemodel.isCreate)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: cv.LabeledWidget(
+                child: XCLabeledWidget(
                   "Track Attendance",
                   child: Row(
                     children: [
@@ -441,7 +449,7 @@ class _ECEBasicState extends State<ECEBasic> {
                 curve: Sprung.overDamped,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: cv.LabeledWidget(
+                  child: XCLabeledWidget(
                     "Show Attendance",
                     child: Row(
                       children: [
@@ -467,7 +475,7 @@ class _ECEBasicState extends State<ECEBasic> {
                 !ecemodel.event.autoUpdateFromSync)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: cv.LabeledWidget(
+                child: XCLabeledWidget(
                   "Home Team",
                   child: Row(
                     children: [
@@ -497,21 +505,22 @@ class _ECEBasicState extends State<ECEBasic> {
   Widget _delete(BuildContext context, DataModel dmodel, ECEModel ecemodel) {
     return Padding(
       padding: const EdgeInsets.all(32),
-      child: comp.DestructionButton(
+      child: XCWideButton.destructive(
         title: "Delete",
         isLoading: _isLoading,
         onTap: () {
-          cv.showAlert(
-            context: context,
+          AdaptiveConfirmDialog.show(
+            context,
             title: "Delete Event",
-            body: const Text("Are you sure you want to delete?"),
-            cancelText: "Cancel",
-            cancelBolded: true,
-            onCancel: () {},
-            submitText: "Delete",
-            submitColor: Colors.red,
-            onSubmit: () => _deleteAction(context, dmodel, ecemodel),
-          );
+            message: "Are you sure you want to delete?",
+            cancelLabel: "Cancel",
+            confirmLabel: "Delete",
+            isDestructive: true,
+          ).then((confirmed) {
+            if (confirmed) {
+              _deleteAction(context, dmodel, ecemodel);
+            }
+          });
         },
       ),
     );
@@ -519,9 +528,11 @@ class _ECEBasicState extends State<ECEBasic> {
 
   Widget _datePicker(
       BuildContext context, DataModel dmodel, ECEModel ecemodel) {
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Event Date",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: SfDateRangePicker(
         todayHighlightColor: dmodel.color,
         selectionColor: dmodel.color,
@@ -550,9 +561,11 @@ class _ECEBasicState extends State<ECEBasic> {
 
   Widget _timePicker(
       BuildContext context, DataModel dmodel, ECEModel ecemodel) {
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Event Time",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: cv.TimePicker(
         initialDate: ecemodel.eventDate,
         timePickerMode: cv.TimePickerMode.text,

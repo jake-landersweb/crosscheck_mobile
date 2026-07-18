@@ -3,8 +3,11 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:provider/provider.dart';
-import '../../custom_views/root.dart' as cv;
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class EventNotification extends StatefulWidget {
   const EventNotification({
@@ -29,12 +32,14 @@ class _EventNotificationState extends State<EventNotification> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Send Reminder",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: Column(
         children: [
-          const cv.Section(
+          const XCSection(
             "About",
             child: Text(
               "This will send a check in reminder to all of the users on this event corresponding to the statuses below. Based on their notification preferences, it will send an email, phone notification, or both.",
@@ -44,7 +49,7 @@ class _EventNotificationState extends State<EventNotification> {
               ),
             ),
           ),
-          cv.Section(
+          XCSection(
             "Select Statuses",
             child: Container(
               decoration: BoxDecoration(
@@ -76,7 +81,7 @@ class _EventNotificationState extends State<EventNotification> {
   }
 
   Widget _statusItem(BuildContext context, DataModel dmodel, int status) {
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         if (_statuses.contains(status)) {
           setState(() {
@@ -113,7 +118,7 @@ class _EventNotificationState extends State<EventNotification> {
   }
 
   Widget _button(BuildContext context, DataModel dmodel) {
-    return comp.ActionButton(
+    return XCWideButton.primary(
       title: _buttonText(),
       color: _buttonText() == "Send Message"
           ? dmodel.color

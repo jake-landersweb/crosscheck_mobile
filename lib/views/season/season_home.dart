@@ -4,9 +4,12 @@ import 'package:provider/provider.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
 import '../../extras/root.dart';
-import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class SeasonHome extends StatefulWidget {
   const SeasonHome({
@@ -32,12 +35,7 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
     return HeaderBar.sheet(
       title: widget.season.title,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(
-        color: dmodel.color,
-        title: "Close",
-        showIcon: false,
-        showText: true,
-      ),
+      leading: XCActionButton.back(),
       trailing: _edit(context, dmodel),
       // onRefresh: () => _refreshAction(dmodel),
       child: _body(context, dmodel),
@@ -66,33 +64,33 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
   }
 
   Widget _basic(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Basic Info",
       child: Column(
         children: [
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Title",
                 value: widget.season.title,
               ),
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Status",
                 value: widget.season.status(),
               ),
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Timezone",
                 value: widget.season.timezone,
               ),
               if (widget.season.website != "")
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "Website",
                   value: widget.season.website,
                 ),
               if (widget.season.calendarUrl != "")
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "Calendar",
                   value: widget.season.calendarUrl,
                 ),
@@ -104,16 +102,16 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
   }
 
   Widget _teamPositions(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Positions",
       allowsCollapse: true,
       initOpen: true,
-      child: cv.ListView<String>(
+      child: XCCellList<String>(
         children: widget.season.positions.available,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         horizontalPadding: 0,
         childBuilder: (context, position) {
-          return cv.LabeledCell(
+          return XCLabeledCell(
             label: position == widget.season.positions.defaultPosition
                 ? position == widget.season.positions.mvp
                     ? "Mvp Default"
@@ -129,16 +127,16 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
   }
 
   Widget _customFields(BuildContext context) {
-    return cv.Section(
+    return XCSection(
       "Custom Fields",
       allowsCollapse: true,
       initOpen: true,
-      child: cv.ListView<CustomField>(
+      child: XCCellList<CustomField>(
         children: widget.season.customFields,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         horizontalPadding: 0,
         childBuilder: (context, i) {
-          return cv.LabeledCell(
+          return XCLabeledCell(
             height: cellHeight,
             label: i.getTitle(),
             value: i.getValue(),
@@ -149,16 +147,16 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
   }
 
   Widget _customUserFields(BuildContext context) {
-    return cv.Section(
+    return XCSection(
       "Custom User Fields",
       allowsCollapse: true,
       initOpen: true,
-      child: cv.ListView<CustomField>(
+      child: XCCellList<CustomField>(
         children: widget.season.customUserFields,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         horizontalPadding: 0,
         childBuilder: (context, i) {
-          return cv.LabeledCell(
+          return XCLabeledCell(
             height: cellHeight,
             label: i.getTitle(),
             value: "Default: ${i.getValue()}",
@@ -169,16 +167,16 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
   }
 
   Widget _stats(BuildContext context) {
-    return cv.Section(
+    return XCSection(
       "Stats",
       allowsCollapse: true,
       initOpen: true,
-      child: cv.ListView<StatItem>(
+      child: XCCellList<StatItem>(
         children: widget.season.stats.stats,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         horizontalPadding: 0,
         childBuilder: (context, i) {
-          return cv.LabeledCell(
+          return XCLabeledCell(
             height: cellHeight,
             label: "",
             value: i.getTitle(),
@@ -191,7 +189,7 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
   Widget _edit(BuildContext context, DataModel dmodel) {
     if ((widget.seasonUser?.isSeasonAdmin() ?? false) ||
         widget.teamUser.isTeamAdmin()) {
-      return cv.BasicButton(
+      return XCActionButton.edit(
         onTap: () {
           showSnappingSheet(
             context: context,
@@ -202,14 +200,6 @@ class _SeasonHomeState extends State<SeasonHome> with TickerProviderStateMixin {
             ),
           );
         },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
-            color: dmodel.color,
-          ),
-        ),
       );
     } else {
       return Container();

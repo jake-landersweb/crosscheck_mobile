@@ -6,6 +6,12 @@ import 'package:provider/provider.dart';
 import '../root.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class RUCETeam extends StatefulWidget {
   const RUCETeam({super.key});
@@ -22,11 +28,11 @@ class _RUCETeamState extends State<RUCETeam> {
     return Column(
       children: [
         // normal fields
-        cv.Section(
+        XCSection(
           "Player Fields",
           child: Column(
             children: [
-              cv.ListView<Widget>(
+              XCCellList<Widget>(
                 childPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 horizontalPadding: 0,
                 children: [
@@ -48,27 +54,25 @@ class _RUCETeamState extends State<RUCETeam> {
   }
 
   Widget _note(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField2(
-      labelText: "Note",
-      isLabeled: true,
-      showBackground: false,
-      value: rmodel.teamFields.teamUserNote,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Note",
+              isLabeled: true,
+              value: rmodel.teamFields.teamUserNote,
+              onChanged: (value) {
         rmodel.teamFields.teamUserNote = value;
       },
-    );
+            );
   }
 
   Widget _pos(BuildContext context, DataModel dmodel, RUCEModel rmodel) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       "Position",
       isExpanded: false,
-      child: cv.BasicButton(
+      child: Clickable(
         onTap: () {
-          cv.showFloatingSheet(
-            context: context,
-            builder: (context) {
-              return PositionSelect(
+          showSnappingSheet(
+      context: context,
+      child: PositionSelect(
                 positions: rmodel.team.positions.available,
                 selection: rmodel.teamFields.pos,
                 onSelect: (pos) {
@@ -76,9 +80,8 @@ class _RUCETeamState extends State<RUCETeam> {
                     rmodel.teamFields.pos = pos;
                   });
                 },
-              );
-            },
-          );
+              ),
+    );
         },
         child: Container(
           decoration: BoxDecoration(
@@ -104,40 +107,37 @@ class _RUCETeamState extends State<RUCETeam> {
   }
 
   Widget _jerseySize(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField2(
-      labelText: "Jersey Size",
-      isLabeled: true,
-      showBackground: false,
-      value: rmodel.teamFields.jerseySize,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Jersey Size",
+              isLabeled: true,
+              value: rmodel.teamFields.jerseySize,
+              onChanged: (value) {
         rmodel.teamFields.jerseySize = value;
       },
-    );
+            );
   }
 
   Widget _jerseyNumber(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField2(
-      labelText: "Jersey Number",
-      keyboardType: TextInputType.number,
-      isLabeled: true,
-      showBackground: false,
-      value: rmodel.teamFields.jerseyNumber,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Jersey Number",
+              keyboardType: TextInputType.number,
+              isLabeled: true,
+              value: rmodel.teamFields.jerseyNumber,
+              onChanged: (value) {
         rmodel.teamFields.jerseyNumber = value;
       },
-    );
+            );
   }
 
   Widget _userType(BuildContext context, DataModel dmodel, RUCEModel rmodel) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       "User Type",
       isExpanded: false,
-      child: cv.BasicButton(
+      child: Clickable(
         onTap: () {
-          cv.showFloatingSheet(
-            context: context,
-            builder: (context) {
-              return cv.ModelSelector<int>(
+          showSnappingSheet(
+      context: context,
+      child: cv.ModelSelector<int>(
                 title: "User Type",
                 selections: const [1, 2, 3],
                 titles: const ["Player", "Manager", "Owner"],
@@ -148,9 +148,8 @@ class _RUCETeamState extends State<RUCETeam> {
                 }),
                 initialSelection: rmodel.teamFields.teamUserType,
                 color: dmodel.color,
-              );
-            },
-          );
+              ),
+    );
         },
         child: Container(
           decoration: BoxDecoration(
@@ -178,7 +177,7 @@ class _RUCETeamState extends State<RUCETeam> {
     return Column(
       children: [
         const SizedBox(height: 8),
-        cv.ListView<CustomField>(
+        XCCellList<CustomField>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             childBuilder: (context, i) {

@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:provider/provider.dart';
-import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'root.dart';
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class BasicNotification extends StatefulWidget {
   const BasicNotification({
@@ -45,37 +48,29 @@ class _BasicNotificationState extends State<BasicNotification> {
       title: "Season-wide Blast",
       refreshable: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(
-        color: dmodel.color,
-        showText: true,
-        showIcon: false,
-        useRoot: true,
-        title: "Cancel",
-      ),
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
       child: Column(
         children: [
-        cv.ListView<Widget>(
+        XCCellList<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            cv.TextField2(
+            XCField(
               labelText: "Subject",
-              showBackground: false,
               charLimit: 75,
               showCharacters: true,
-              highlightColor: dmodel.color,
               onChanged: (p0) {
                 setState(() {
                   _subject = p0;
                 });
               },
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Body",
               hintText: "Body (Only shows in emails)",
-              showBackground: false,
               maxLines: 5,
-              highlightColor: dmodel.color,
               onChanged: (p0) {
                 setState(() {
                   _body = p0;
@@ -87,20 +82,20 @@ class _BasicNotificationState extends State<BasicNotification> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: _buttonText() == "Send"
-              ? comp.ActionButton(
+              ? XCWideButton.primary(
                   title: _buttonText(),
                   color: dmodel.color,
                   isLoading: _isLoading,
                   onTap: () => _sendNotification(context, dmodel),
                 )
-              : comp.DestructionButton(
+              : XCWideButton.destructive(
                   title: _buttonText(),
                   onTap: () {},
                 ),
         ),
-        cv.Section(
+        XCSection(
           "Users",
-          child: cv.ListView<SeasonUser>(
+          child: XCCellList<SeasonUser>(
             children: sortSeasonUsers(
               widget.users,
               showNicknames: dmodel.tus!.team.showNicknames,

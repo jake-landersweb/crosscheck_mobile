@@ -4,7 +4,7 @@ import 'package:crosscheck_sports/views/shared/positions_create.dart';
 import 'package:provider/provider.dart';
 import '../../../client/root.dart';
 import '../../../data/root.dart';
-import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class SCEPositions extends StatefulWidget {
   const SCEPositions({
@@ -26,14 +26,14 @@ class _SCEPositionsState extends State<SCEPositions> {
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       children: [
-        cv.Section(
+        XCSection(
           "Positions",
           headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
           color: dmodel.color,
           helperView: (context) {
             return Column(
               children: const [
-                cv.Section(
+                XCSection(
                   "Positions",
                   child: Text(
                       "Positions can be created and removed at ease, and give you a way to keep track of your users positions. Select a position to choose a default, and your rosters can be sorted later based on these positions."),

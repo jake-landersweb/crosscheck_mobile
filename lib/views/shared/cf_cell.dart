@@ -4,6 +4,12 @@ import 'package:provider/provider.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class CustomFieldField extends StatefulWidget {
   const CustomFieldField({
@@ -29,18 +35,20 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
     return Column(
       children: [
         if (widget.isCreate)
-          cv.LabeledWidget(
+          XCLabeledWidget(
             "Type",
             isExpanded: false,
-            child: cv.BasicButton(
+            child: Clickable(
               onTap: () {
-                cv.showFloatingSheet(
-                  context: context,
-                  builder: (context) {
-                    return cv.Sheet(
-                      title: "Select Type",
-                      color: dmodel.color,
-                      child: cv.DynamicSelector<String>(
+                showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
+                    return HeaderBar.sheet(
+      title: "Select Type",
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      child: cv.DynamicSelector<String>(
                         selectorStyle: cv.DynamicSelectorStyle.list,
                         selections: const ["S", "I", "B"],
                         color: dmodel.color,
@@ -74,9 +82,9 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
                           Navigator.of(context).pop();
                         },
                       ),
-                    );
-                  },
-                );
+    );
+                  }),
+    );
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -134,19 +142,17 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
         //   },
         // ),
         if (widget.isCreate)
-          cv.TextField2(
-            fieldPadding: const EdgeInsets.all(0),
-            showBackground: false,
-            value: widget.item.getTitle(),
-            isLabeled: true,
-            maxLines: 1,
-            labelText: "Title",
-            onChanged: (value) {
+          XCField(
+              value: widget.item.getTitle(),
+              isLabeled: true,
+              maxLines: 1,
+              labelText: "Title",
+              onChanged: (value) {
               widget.item.setTitle(value);
             },
-          ),
+            ),
         // else
-        //   cv.LabeledWidget("Title", child: Text(widget.item.getTitle())),
+        //   XCLabeledWidget("Title", child: Text(widget.item.getTitle())),
         ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 50),
           child: Center(
@@ -160,20 +166,17 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
   Widget _valField(BuildContext context) {
     switch (widget.item.getType()) {
       case "S":
-        return cv.TextField2(
-          fieldPadding: const EdgeInsets.all(0),
-          showBackground: false,
-          isLabeled: true,
-          maxLines: 1,
-          value: widget.item.getValue(),
-          labelText:
-              widget.isCreate ? widget.valueLabelText : widget.item.getTitle(),
-          onChanged: (value) {
+        return XCField(
+              isLabeled: true,
+              maxLines: 1,
+              value: widget.item.getValue(),
+              labelText: widget.isCreate ? widget.valueLabelText : widget.item.getTitle(),
+              onChanged: (value) {
             widget.item.setValue(value);
           },
-        );
+            );
       case "I":
-        return cv.LabeledWidget(
+        return XCLabeledWidget(
           widget.isCreate ? widget.valueLabelText : widget.item.getTitle(),
           child: cv.NumberTextField(
             label: "",
@@ -190,7 +193,7 @@ class _CustomFieldFieldState extends State<CustomFieldField> {
         // add model selector for all values in value field
         return Text("CREATE ME PLEASE FOR THE LOVE OF GOD");
       default:
-        return cv.LabeledWidget(
+        return XCLabeledWidget(
           widget.isCreate ? widget.valueLabelText : widget.item.getTitle(),
           child: Row(
             children: [

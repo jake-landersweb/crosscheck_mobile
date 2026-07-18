@@ -4,8 +4,8 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class StatsTeam extends StatefulWidget {
   const StatsTeam({
@@ -39,7 +39,7 @@ class _StatsTeamState extends State<StatsTeam> {
       title: "Team Stats",
       isLarge: true,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       onRefresh: () => smodel.userStatsGet(
           widget.team.teamId, (userStats) => smodel.setUserStats(userStats)),
       child: _body(context, dmodel, smodel),
@@ -64,7 +64,7 @@ class _StatsTeamState extends State<StatsTeam> {
 
   // Widget _editButton(
   //     BuildContext context, DataModel dmodel, StatsTeamModel smodel) {
-  //   return cv.BasicButton(
+  //   return Clickable(
   //     onTap: () {
   //       cv.showAlert(
   //           context: context,

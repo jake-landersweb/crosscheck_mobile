@@ -12,6 +12,8 @@ import 'package:sprung/sprung.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class ChatHome extends StatelessWidget {
   const ChatHome({
@@ -229,7 +231,7 @@ class _SeasonChatState extends State<SeasonChat> {
               if (cmodel.moreMessages) const SizedBox(height: 16),
               // for fetching more messages
               if (cmodel.moreMessages)
-                cv.BasicButton(
+                Clickable(
                   onTap: () {
                     if (cmodel.room != null) {
                       cmodel.getMessages(cmodel.room!.roomId);
@@ -244,7 +246,7 @@ class _SeasonChatState extends State<SeasonChat> {
                     width: MediaQuery.of(context).size.width / 3,
                     child: Center(
                       child: cmodel.isFetchingMessages
-                          ? const cv.LoadingIndicator()
+                          ? const XCLoadingIndicator()
                           : const Text("Get More"),
                     ),
                   ),
@@ -265,7 +267,7 @@ class _SeasonChatState extends State<SeasonChat> {
             child: Padding(
               key: const ValueKey("Button"),
               padding: const EdgeInsets.all(8.0),
-              child: cv.BasicButton(
+              child: Clickable(
                 onTap: () {
                   _scrollController.animateTo(
                     0,
@@ -316,7 +318,7 @@ class _SeasonChatState extends State<SeasonChat> {
                     Expanded(
                       child: Align(
                         alignment: Alignment.bottomLeft,
-                        child: cv.BasicButton(
+                        child: Clickable(
                           onTap: () {
                             showSnappingSheet(
                               context: context,
@@ -359,7 +361,7 @@ class _SeasonChatState extends State<SeasonChat> {
                     const SizedBox(width: 8),
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: cv.BasicButton(
+                      child: Clickable(
                         onTap: () {
                           // update the user to the clicked value
                           _updateUserNotifs(dmodel);
@@ -368,7 +370,7 @@ class _SeasonChatState extends State<SeasonChat> {
                             ? const SizedBox(
                                 height: 25,
                                 width: 25,
-                                child: cv.LoadingIndicator(),
+                                child: XCLoadingIndicator(),
                               )
                             : _showNotifBell
                                 ? Icon(

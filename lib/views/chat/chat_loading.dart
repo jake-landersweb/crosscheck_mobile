@@ -3,6 +3,8 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:provider/provider.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
 
 class ChatLoading extends StatelessWidget {
   const ChatLoading({super.key});
@@ -35,7 +37,7 @@ class ChatLoading extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            cv.BasicButton(
+                            Clickable(
                               onTap: () {},
                               child: SizedBox(
                                 height: 40,
@@ -50,15 +52,13 @@ class ChatLoading extends StatelessWidget {
                             ),
                             // text field
                             Expanded(
-                              child: cv.TextField2(
-                                autocorrect: true,
-                                labelText: "Type here ...",
-                                showBackground: false,
-                                isLabeled: false,
-                                highlightColor: dmodel.color,
-                                maxLines: 1,
-                                onChanged: (value) {},
-                              ),
+                              child: XCField(
+              autocorrect: true,
+              labelText: "Type here ...",
+              isLabeled: false,
+              maxLines: 1,
+              onChanged: (value) {},
+            ),
                             ),
                             Opacity(
                               opacity: 0.5,

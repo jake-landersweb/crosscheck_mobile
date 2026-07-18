@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'root.dart';
 import '../../data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 enum RosterListType { navigator, selector, none }
 
@@ -47,7 +47,7 @@ class _RosterListState extends State<RosterList> {
 
   @override
   Widget build(BuildContext context) {
-    return cv.ListView(
+    return XCCellList(
       horizontalPadding: 0,
       childPadding: const EdgeInsets.all(8),
       color: Colors.transparent,

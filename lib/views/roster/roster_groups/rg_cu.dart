@@ -5,9 +5,14 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:uuid/uuid.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class RGCU extends StatefulWidget {
   const RGCU({
@@ -66,14 +71,10 @@ class _RGCUState extends State<RGCU> {
     RGModel rgmodel = Provider.of<RGModel>(context);
     return HeaderBar.sheet(
       title: widget.rosterGroup == null ? "New Group" : "Edit Group",
-      leading: cv.BackButton(
-        color: CustomColors.textColor(context).withOpacity(0.5),
-        title: "Cancel",
-        showIcon: false,
-        showText: true,
-        useRoot: true,
-      ),
-      trailing: cv.BasicButton(
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
+      trailing: Clickable(
         onTap: () async {
           if (_isValid()) {
             if (widget.rosterGroup == null) {
@@ -114,7 +115,7 @@ class _RGCUState extends State<RGCU> {
             ? SizedBox(
                 height: 25,
                 width: 25,
-                child: cv.LoadingIndicator(color: dmodel.color),
+                child: XCLoadingIndicator(color: dmodel.color),
               )
             : Text(
                 widget.rosterGroup == null ? "Create" : "Save",
@@ -135,12 +136,11 @@ class _RGCUState extends State<RGCU> {
     RGModel rgmodel = Provider.of<RGModel>(context);
     return Column(
       children: [
-        cv.ListView<Widget>(
+        XCCellList<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            cv.TextField2(
-              showBackground: false,
+            XCField(
               value: _title,
               labelText: "Title",
               onChanged: (value) {
@@ -149,8 +149,7 @@ class _RGCUState extends State<RGCU> {
                 });
               },
             ),
-            cv.TextField2(
-              showBackground: false,
+            XCField(
               value: _description,
               labelText: "Description",
               maxLines: 2,
@@ -163,7 +162,7 @@ class _RGCUState extends State<RGCU> {
           ],
         ),
         const SizedBox(height: 16),
-        cv.Section(
+        XCSection(
           "Icon",
           child: Column(
             children: [
@@ -189,7 +188,7 @@ class _RGCUState extends State<RGCU> {
                   ),
                 ),
               const SizedBox(height: 16),
-              cv.BasicButton(
+              Clickable(
                 onTap: () {
                   showDialog(
                     context: context,
@@ -260,9 +259,9 @@ class _RGCUState extends State<RGCU> {
           ),
         ),
         const SizedBox(height: 16),
-        cv.Section(
+        XCSection(
           "Select Users",
-          child: cv.ListView<SeasonUser>(
+          child: XCCellList<SeasonUser>(
             children: sortSeasonUsers(
               rgmodel.seasonRoster,
               showNicknames: dmodel.tus!.team.showNicknames,
@@ -341,7 +340,7 @@ class _RGCUState extends State<RGCU> {
 
   Widget _iconCell(
       BuildContext context, DataModel dmodel, IconData icon, String label) {
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         setState(() {
           _icon = label;

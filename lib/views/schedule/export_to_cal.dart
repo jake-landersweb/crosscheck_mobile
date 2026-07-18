@@ -8,12 +8,18 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:uuid/uuid.dart';
 
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
-import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 import '../../extras/root.dart';
 import '../../data/root.dart';
-import '../components/root.dart' as comp;
 import 'package:device_calendar/device_calendar.dart' as cal;
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class ExportToCalendar extends StatefulWidget {
   const ExportToCalendar({
@@ -58,27 +64,24 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Calendar Export",
-      leading: cv.CancelButton(
-        color: CustomColors.textColor(context).withOpacity(0.5),
-      ),
+      leading: XCActionButton.cancel(),
       child: Column(children: [
-        cv.Section(
+        XCSection(
           "Information",
-          child: cv.ListView<Widget>(
+          child: XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              cv.TextField2(
-                showBackground: false,
-                value: _title,
-                labelText: "Title",
-                onChanged: (p0) {
+              XCField(
+              value: _title,
+              labelText: "Title",
+              onChanged: (p0) {
                   setState(() {
                     _title = p0;
                   });
                 },
-              ),
-              cv.BasicButton(
+            ),
+              Clickable(
                 onTap: () {
                   showDialog(
                     context: context,
@@ -111,7 +114,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
                     },
                   );
                 },
-                child: cv.LabeledWidget(
+                child: XCLabeledWidget(
                   "Color",
                   child: Row(
                     children: [
@@ -141,7 +144,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
         ),
         Padding(
           padding: const EdgeInsets.all(16),
-          child: comp.ActionButton(
+          child: XCWideButton.primary(
             onTap: () async => _exportToCalendar(context, dmodel),
             title: "Export",
             color: dmodel.color,
@@ -149,9 +152,9 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
           ),
         ),
         if (_events != null)
-          cv.Section(
+          XCSection(
             "Select Events",
-            child: cv.ListView<Event>(
+            child: XCCellList<Event>(
               children: _events!,
               horizontalPadding: 0,
               selected: _selectedEvents,
@@ -196,7 +199,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
             ),
           )
         else
-          cv.LoadingIndicator(color: dmodel.color),
+          XCLoadingIndicator(color: dmodel.color),
       ]),
     );
   }
@@ -252,7 +255,7 @@ class _ExportToCalendarState extends State<ExportToCalendar> {
   }
 
   Widget _customCell(String label, String value) {
-    return cv.LabeledCell(
+    return XCLabeledCell(
       label: label,
       value: value,
       height: 35,

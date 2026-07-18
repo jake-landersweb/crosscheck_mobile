@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
 
-import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 import '../../extras/root.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -26,42 +30,41 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
-      color: dmodel.color,
+    return HeaderBar.sheet(
       title: "Forgot Password",
-      child: cv.ListView<Widget>(
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      child: XCCellList<Widget>(
         showStyling: false,
         childPadding: EdgeInsets.zero,
         horizontalPadding: 0,
         hasDividers: false,
         children: [
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             backgroundColor: CustomColors.sheetCell(context),
             children: [
-              cv.TextField2(
-                labelText: "Email",
-                obscureText: false,
-                isLabeled: true,
-                showBackground: false,
-                highlightColor: dmodel.color,
-                icon: const Icon(Icons.email),
-                onChanged: (value) {
+              XCField(
+              labelText: "Email",
+              obscureText: false,
+              isLabeled: true,
+              icon: const Icon(Icons.email),
+              onChanged: (value) {
                   setState(() {
                     _email = value;
                   });
                 },
-              ),
+            ),
             ],
           ),
           const SizedBox(height: 16),
           Opacity(
             opacity: _sentCode ? 0.5 : 1,
-            child: cv.RoundedLabel(
-              "Send Reset Code",
+            child: XCWideButton.primary(
+              title: "Send Reset Code",
               color: dmodel.color,
-              textColor: Colors.white,
               isLoading: _isLoading,
               onTap: () {
                 if (!_isLoading && !_sentCode) {
@@ -85,76 +88,71 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   List<Widget> _codeInput(BuildContext context, DataModel dmodel) {
     return [
       const SizedBox(height: 16),
-      cv.ListView<Widget>(
+      XCCellList<Widget>(
         horizontalPadding: 0,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         backgroundColor: CustomColors.sheetCell(context),
         children: [
-          cv.TextField2(
-            labelText: "Code",
-            obscureText: false,
-            showBackground: false,
-            highlightColor: dmodel.color,
-            icon: const Icon(Icons.code),
-            onChanged: (value) {
+          XCField(
+              labelText: "Code",
+              obscureText: false,
+              icon: const Icon(Icons.code),
+              onChanged: (value) {
               setState(() {
                 _code = value;
               });
             },
-          ),
+            ),
         ],
       ),
       const SizedBox(height: 16),
-      cv.ListView<Widget>(
+      XCCellList<Widget>(
         horizontalPadding: 0,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         backgroundColor: CustomColors.sheetCell(context),
         children: [
-          cv.TextField2(
-            labelText: "New Password",
-            obscureText: true,
-            showBackground: false,
-            highlightColor: dmodel.color,
-            icon: const Icon(Icons.lock),
-            onChanged: (value) {
+          XCField(
+              labelText: "New Password",
+              obscureText: true,
+              icon: const Icon(Icons.lock),
+              onChanged: (value) {
               setState(() {
                 _password = value;
               });
             },
-          ),
+            ),
         ],
       ),
       const SizedBox(height: 16),
-      cv.ListView<Widget>(
+      XCCellList<Widget>(
         horizontalPadding: 0,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         backgroundColor: CustomColors.sheetCell(context),
         children: [
-          cv.TextField2(
-            labelText: "Confirm Password",
-            obscureText: true,
-            showBackground: false,
-            highlightColor: dmodel.color,
-            icon: const Icon(Icons.lock),
-            onChanged: (value) {
+          XCField(
+              labelText: "Confirm Password",
+              obscureText: true,
+              icon: const Icon(Icons.lock),
+              onChanged: (value) {
               setState(() {
                 _confirmPassword = value;
               });
             },
-          ),
+            ),
         ],
       ),
       const SizedBox(height: 16),
-      cv.RoundedLabel(_getPassButtonTitle(),
+      XCWideButton.primary(
+          title: _getPassButtonTitle(),
           color: _getPassButtonTitle() == "Reset Password"
               ? dmodel.color
               : Colors.red,
           isLoading: _isLoading,
-          textColor: Colors.white, onTap: () {
-        if (!_isLoading) {
-          _resetPassword(context, dmodel);
-        }
-      }),
+          onTap: () {
+            if (!_isLoading) {
+              _resetPassword(context, dmodel);
+            }
+          }),
     ];
   }
 

@@ -11,6 +11,12 @@ import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/adaptive/confirm_dialog/adaptive_confirm_dialog.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class PollDetail extends StatefulWidget {
   const PollDetail({
@@ -53,7 +59,7 @@ class _PollDetailState extends State<PollDetail> {
       child: HeaderBar(
         title: widget.poll.title,
         isLarge: true,
-        leading: cv.BackButton(color: _accentColor()),
+        leading: XCActionButton.back(),
         trailing: _editButton(context, dmodel),
         child: _body(context, dmodel),
       ),
@@ -72,9 +78,9 @@ class _PollDetailState extends State<PollDetail> {
         ),
         // description
         if (widget.poll.description.isNotEmpty)
-          cv.Section(
+          XCSection(
             "Description",
-            child: cv.ListView<Widget>(
+            child: XCCellList<Widget>(
               horizontalPadding: 0,
               children: [
                 Text(
@@ -93,7 +99,7 @@ class _PollDetailState extends State<PollDetail> {
                 (widget.seasonUser?.isSeasonAdmin() ?? false) ||
                 widget.teamUser.isTeamAdmin()) &&
             widget.poll.pollType != 3)
-          cv.Section(
+          XCSection(
             "Responses${_totalResponses == null ? "" : " - ${_totalResponses!}"}",
             child: Column(
               children: [
@@ -132,19 +138,20 @@ class _PollDetailState extends State<PollDetail> {
             widget.teamUser.isTeamAdmin())
           Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: cv.BasicButton(
+              child: Clickable(
                 onTap: () {
-                  cv.showAlert(
-                    context: context,
+                  AdaptiveConfirmDialog.show(
+                    context,
                     title: "Confirm",
-                    body: const Text(
-                        "Are you sure you want to send a notification to all people who have not repsonsed to this poll?"),
-                    cancelText: "Cancel",
-                    onCancel: () {},
-                    submitText: "Send",
-                    submitBolded: true,
-                    onSubmit: () => _sendReminder(dmodel),
-                  );
+                    message:
+                        "Are you sure you want to send a notification to all people who have not repsonsed to this poll?",
+                    cancelLabel: "Cancel",
+                    confirmLabel: "Send",
+                  ).then((confirmed) {
+                    if (confirmed) {
+                      _sendReminder(dmodel);
+                    }
+                  });
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -158,7 +165,7 @@ class _PollDetailState extends State<PollDetail> {
                       children: [
                         Expanded(
                           child: _notificationSending
-                              ? cv.LoadingIndicator(color: dmodel.color)
+                              ? XCLoadingIndicator(color: dmodel.color)
                               : Text(
                                   "Send Reminder",
                                   style: TextStyle(
@@ -185,7 +192,7 @@ class _PollDetailState extends State<PollDetail> {
   }
 
   Widget _usersList(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Users",
       child: _isLoading
           ? _usersLoading(context, dmodel)
@@ -197,11 +204,11 @@ class _PollDetailState extends State<PollDetail> {
                       children: [
                         if (widget.teamUser.isTeamAdmin() ||
                             (widget.seasonUser?.isSeasonAdmin() ?? false))
-                          cv.BasicButton(
+                          Clickable(
                             onTap: () {
-                              cv.showFloatingSheet(
-                                context: context,
-                                builder: (context) {
+                              showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
                                   return PollSheet(
                                     poll: widget.poll,
                                     team: widget.team,
@@ -210,8 +217,8 @@ class _PollDetailState extends State<PollDetail> {
                                     onCompletion: () =>
                                         _getUsers(context, dmodel),
                                   );
-                                },
-                              );
+                                }),
+    );
                             },
                             child: _userCell(
                               context,
@@ -370,7 +377,7 @@ class _PollDetailState extends State<PollDetail> {
   Widget _editButton(BuildContext context, DataModel dmodel) {
     if ((dmodel.currentSeasonUser?.isSeasonAdmin() ?? false) &&
         _users != null) {
-      return cv.BasicButton(
+      return XCActionButton.edit(
         onTap: () {
           showSnappingSheet(
               context: context,
@@ -389,26 +396,10 @@ class _PollDetailState extends State<PollDetail> {
               ),
             );
         },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: _accentColor(),
-          ),
-        ),
       );
     } else {
       return Container(height: 0);
     }
-  }
-
-  Color _accentColor() {
-    return widget.poll.color == null
-        ? CustomColors.textColor(context).withOpacity(0.5)
-        : Theme.of(context).brightness == Brightness.light
-            ? widget.poll.getColor()!.darken(0.3).withOpacity(0.7)
-            : widget.poll.getColor()!.lighten(0.1);
   }
 
   Future<void> _sendReminder(DataModel dmodel) async {

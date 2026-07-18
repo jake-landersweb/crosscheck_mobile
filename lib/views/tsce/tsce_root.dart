@@ -6,15 +6,15 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/tsce/root.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:crosscheck_sports/components/layer/action_button.dart';
 import 'package:crosscheck_sports/components/core/container.dart';
 import 'package:crosscheck_sports/style/root.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../components/root.dart' as comp;
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class TSCERoot extends StatefulWidget {
   const TSCERoot({
@@ -234,11 +234,9 @@ class _TSCERootState extends State<TSCERoot> {
       // save the teamId and let the user know the app needs to restart
       var prefs = await SharedPreferences.getInstance();
       prefs.setString("teamId", response.v2()!.teamId);
-      cv.cupertinoSheet(
-        context: context,
-        isDismissible: false,
-        enableDrag: false,
-        builder: (context) {
+      showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
           return HeaderBar.sheet(
             title: "Success!",
             child: Column(
@@ -254,7 +252,7 @@ class _TSCERootState extends State<TSCERoot> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                comp.ActionButton(
+                XCWideButton.primary(
                   color: CustomColors.fromHex(model.color),
                   title: "Restart App",
                   onTap: () {
@@ -264,18 +262,17 @@ class _TSCERootState extends State<TSCERoot> {
               ],
             ),
           );
-        },
-      );
+        }),
+      draggable: false,
+    );
       return;
     }
 
     // nothing was created
     if (response.v1() == 404) {
-      cv.cupertinoSheet(
-        context: context,
-        isDismissible: false,
-        enableDrag: false,
-        builder: (context) {
+      showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
           return HeaderBar.sheet(
             title: "Uh Oh...",
             child: Column(
@@ -291,7 +288,7 @@ class _TSCERootState extends State<TSCERoot> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                comp.SubActionButton(
+                XCWideButton.neutral(
                   title: "Restart App",
                   onTap: () {
                     RestartWidget.restartApp(context);
@@ -300,18 +297,17 @@ class _TSCERootState extends State<TSCERoot> {
               ],
             ),
           );
-        },
-      );
+        }),
+      draggable: false,
+    );
       return;
     }
 
     // there was an issue creating anything
     if (response.v1() == 501) {
-      cv.cupertinoSheet(
-        context: context,
-        isDismissible: false,
-        enableDrag: false,
-        builder: (context) {
+      showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
           return HeaderBar.sheet(
             title: "Uh Oh...",
             child: Column(
@@ -327,7 +323,7 @@ class _TSCERootState extends State<TSCERoot> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                comp.SubActionButton(
+                XCWideButton.neutral(
                   title: "Restart App",
                   onTap: () {
                     RestartWidget.restartApp(context);
@@ -336,17 +332,16 @@ class _TSCERootState extends State<TSCERoot> {
               ],
             ),
           );
-        },
-      );
+        }),
+      draggable: false,
+    );
       return;
     }
     // team, season, and admin stuff was created, but user objects were not
     if (response.v1() == 502 || response.v1() == 503) {
-      cv.cupertinoSheet(
-        context: context,
-        isDismissible: false,
-        enableDrag: false,
-        builder: (context) {
+      showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
           return HeaderBar.sheet(
             title: "Team Created! But...",
             child: Column(
@@ -362,7 +357,7 @@ class _TSCERootState extends State<TSCERoot> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                comp.ActionButton(
+                XCWideButton.primary(
                   title: "Restart App",
                   color: CustomColors.fromHex(model.color),
                   onTap: () {
@@ -372,18 +367,17 @@ class _TSCERootState extends State<TSCERoot> {
               ],
             ),
           );
-        },
-      );
+        }),
+      draggable: false,
+    );
       return;
     }
 
     // stats failed
     if (response.v1() == 504) {
-      cv.cupertinoSheet(
-        context: context,
-        isDismissible: false,
-        enableDrag: false,
-        builder: (context) {
+      showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
           return HeaderBar.sheet(
             title: "Success! But...",
             child: Column(
@@ -399,7 +393,7 @@ class _TSCERootState extends State<TSCERoot> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                comp.ActionButton(
+                XCWideButton.primary(
                   title: "Restart App",
                   color: CustomColors.fromHex(model.color),
                   onTap: () {
@@ -409,18 +403,17 @@ class _TSCERootState extends State<TSCERoot> {
               ],
             ),
           );
-        },
-      );
+        }),
+      draggable: false,
+    );
       return;
     }
 
     // could not fetch team?
     if (response.v1() == 505) {
-      cv.cupertinoSheet(
-        context: context,
-        isDismissible: false,
-        enableDrag: false,
-        builder: (context) {
+      showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
           return HeaderBar.sheet(
             title: "Success! But...",
             child: Column(
@@ -436,7 +429,7 @@ class _TSCERootState extends State<TSCERoot> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                comp.ActionButton(
+                XCWideButton.primary(
                   title: "Restart App",
                   color: CustomColors.fromHex(model.color),
                   onTap: () {
@@ -446,17 +439,16 @@ class _TSCERootState extends State<TSCERoot> {
               ],
             ),
           );
-        },
-      );
+        }),
+      draggable: false,
+    );
       return;
     }
 
     // show generic error
-    cv.cupertinoSheet(
+    showSnappingSheet(
       context: context,
-      isDismissible: false,
-      enableDrag: false,
-      builder: (context) {
+      child: Builder(builder: (context) {
         return HeaderBar.sheet(
           title: "Weird...",
           child: Column(
@@ -472,7 +464,7 @@ class _TSCERootState extends State<TSCERoot> {
                 ),
               ),
               const SizedBox(height: 16),
-              comp.ActionButton(
+              XCWideButton.primary(
                 title: "Restart App",
                 color: dmodel.color,
                 onTap: () {
@@ -482,7 +474,8 @@ class _TSCERootState extends State<TSCERoot> {
             ],
           ),
         );
-      },
+      }),
+      draggable: false,
     );
 
     setState(() {

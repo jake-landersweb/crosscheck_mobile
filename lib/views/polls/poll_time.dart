@@ -1,7 +1,7 @@
 import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:flutter/material.dart';
 import '../../extras/root.dart';
-import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class PollTime extends StatefulWidget {
   const PollTime({
@@ -29,7 +29,7 @@ class _PollTimeState extends State<PollTime> {
 
   @override
   Widget build(BuildContext context) {
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         setState(() {
           _showHours = !_showHours;

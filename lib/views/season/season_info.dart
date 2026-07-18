@@ -5,8 +5,11 @@ import 'package:crosscheck_sports/data/season/season.dart';
 import 'package:crosscheck_sports/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class SeasonInfo extends StatefulWidget {
   const SeasonInfo({super.key, required this.season});
@@ -23,7 +26,7 @@ class _SeasonInfoState extends State<SeasonInfo> {
     return HeaderBar(
       title: "Season Info",
       isLarge: true,
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       child: Column(
         children: [
           _basic(context, dmodel),
@@ -62,31 +65,31 @@ class _SeasonInfoState extends State<SeasonInfo> {
   }
 
   Widget _basic(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Basic",
       child: Column(
         children: [
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             horizontalPadding: 0,
             minHeight: 50,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Status",
                 value: widget.season.status(),
               ),
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Timezone",
                 value: widget.season.timezone,
               ),
               if (widget.season.website != "")
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "Website",
                   value: widget.season.website,
                   clickable: true,
                 ),
               if (widget.season.calendarUrl != "")
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "Calendar",
                   value: widget.season.calendarUrl,
                   clickable: true,
@@ -99,15 +102,15 @@ class _SeasonInfoState extends State<SeasonInfo> {
   }
 
   Widget _teamPositions(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Positions",
-      child: cv.ListView<String>(
+      child: XCCellList<String>(
         minHeight: 50,
         children: widget.season.positions.available,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         horizontalPadding: 0,
         childBuilder: (context, position) {
-          return cv.LabeledCell(
+          return XCLabeledCell(
             label: position == widget.season.positions.defaultPosition
                 ? position == widget.season.positions.mvp
                     ? "Mvp Default"
@@ -123,15 +126,15 @@ class _SeasonInfoState extends State<SeasonInfo> {
   }
 
   Widget _customFields(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Custom Fields",
-      child: cv.ListView<CustomField>(
+      child: XCCellList<CustomField>(
         minHeight: 50,
         children: widget.season.customFields,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         horizontalPadding: 0,
         childBuilder: (context, i) {
-          return cv.LabeledCell(
+          return XCLabeledCell(
             height: cellHeight,
             label: i.getTitle(),
             value: i.getValue(),
@@ -142,15 +145,15 @@ class _SeasonInfoState extends State<SeasonInfo> {
   }
 
   Widget _customUserFields(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Custom User Fields",
-      child: cv.ListView<CustomField>(
+      child: XCCellList<CustomField>(
         minHeight: 50,
         children: widget.season.customUserFields,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         horizontalPadding: 0,
         childBuilder: (context, i) {
-          return cv.LabeledCell(
+          return XCLabeledCell(
             height: cellHeight,
             label: i.getTitle(),
             value: "Default: ${i.getValue()}",
@@ -161,15 +164,15 @@ class _SeasonInfoState extends State<SeasonInfo> {
   }
 
   Widget _stats(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Stats",
-      child: cv.ListView<StatItem>(
+      child: XCCellList<StatItem>(
         minHeight: 50,
         children: widget.season.stats.stats,
         childPadding: const EdgeInsets.symmetric(horizontal: 16),
         horizontalPadding: 0,
         childBuilder: (context, i) {
-          return cv.LabeledCell(
+          return XCLabeledCell(
             height: cellHeight,
             label: "",
             value: i.getTitle(),

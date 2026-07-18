@@ -6,8 +6,11 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'root.dart';
 import '../../../client/root.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'dart:math' as math;
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class ECELocation extends StatefulWidget {
   const ECELocation({super.key});
@@ -36,39 +39,37 @@ class _ECELocationState extends State<ECELocation> {
   Widget _location(BuildContext context, DataModel dmodel, ECEModel ecemodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.Section(
+      child: XCSection(
         "Location",
         child: AbsorbPointer(
           absorbing: ecemodel.event.autoUpdateFromSync,
           child: Opacity(
             opacity: ecemodel.event.autoUpdateFromSync ? 0.5 : 1,
-            child: cv.ListView<Widget>(
+            child: XCCellList<Widget>(
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               horizontalPadding: 0,
               children: [
                 // location
-                cv.TextField2(
-                  labelText: "Name",
-                  onChanged: (value) {
+                XCField(
+              labelText: "Name",
+              onChanged: (value) {
                     setState(() {
                       ecemodel.event.eventLocation.name = value;
                     });
                   },
-                  showBackground: false,
-                  value: ecemodel.event.eventLocation.name ?? "",
-                  isLabeled: true,
-                ),
-                cv.TextField2(
-                  labelText: "Address",
-                  onChanged: (value) {
+              value: ecemodel.event.eventLocation.name ?? "",
+              isLabeled: true,
+            ),
+                XCField(
+              labelText: "Address",
+              onChanged: (value) {
                     setState(() {
                       ecemodel.event.eventLocation.address = value;
                     });
                   },
-                  showBackground: false,
-                  value: ecemodel.event.eventLocation.address ?? "",
-                  isLabeled: true,
-                ),
+              value: ecemodel.event.eventLocation.address ?? "",
+              isLabeled: true,
+            ),
               ],
             ),
           ),
@@ -128,7 +129,7 @@ class _ECELocationState extends State<ECELocation> {
   }
 
   Widget _color(BuildContext context, DataModel dmodel, ECEModel ecemodel) {
-    return cv.Section(
+    return XCSection(
       "Color:  ${ecemodel.event.eventColor == "" ? "None" : ecemodel.event.eventColor}",
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
       child: Padding(
@@ -153,7 +154,7 @@ class _ECELocationState extends State<ECELocation> {
               }),
             ),
             const SizedBox(height: 16),
-            cv.BasicButton(
+            Clickable(
               onTap: () {
                 showDialog(
                   context: context,
@@ -238,7 +239,7 @@ class _ECELocationState extends State<ECELocation> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             if (color == ecemodel.event.eventColor) {
               setState(() {

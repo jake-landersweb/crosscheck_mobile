@@ -5,9 +5,12 @@ import 'package:crosscheck_sports/views/roster/from_excel/su_excel_edit.dart';
 import 'package:crosscheck_sports/views/tsce/tsce_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
 import 'dart:math' as math;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class TSCERoster extends StatefulWidget {
   const TSCERoster({super.key});
@@ -46,11 +49,11 @@ class _TSCERosterState extends State<TSCERoster> {
             ),
           ),
           const SizedBox(height: 16),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) {
+              showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
                   return SUFromExcel(
                     actionText: "Save",
                     showPositionError: false,
@@ -66,8 +69,8 @@ class _TSCERosterState extends State<TSCERoster> {
                       dmodel.blockRefresh = false;
                     },
                   );
-                },
-              );
+                }),
+    );
             },
             child: comp.ListWrapper(
               child: Row(
@@ -107,20 +110,20 @@ class _TSCERosterState extends State<TSCERoster> {
             ),
           ),
           if (model.users.isNotEmpty)
-            cv.Section(
+            XCSection(
               "User Preivew",
               allowsCollapse: true,
               initOpen: true,
               animateOpen: true,
-              child: cv.ListView<SUExcel>(
+              child: XCCellList<SUExcel>(
                 children: model.users,
                 horizontalPadding: 0,
                 childBuilder: (context, item) =>
                     _userCell(context, model, item),
                 onChildTap: (context, item) {
-                  cv.cupertinoSheet(
-                    context: context,
-                    builder: (context) => SUExcelEdit(
+                  showSnappingSheet(
+      context: context,
+      child: SUExcelEdit(
                       user: item,
                       onEmailChanged: (v) => setState(
                         () => item.email = v,
@@ -153,7 +156,7 @@ class _TSCERosterState extends State<TSCERoster> {
                         () => item.note = v,
                       ),
                     ),
-                  );
+    );
                 },
               ),
             ),

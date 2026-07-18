@@ -5,7 +5,6 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/polls/polls_ce/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/action_button.dart';
 import 'package:crosscheck_sports/components/core/container.dart';
 import 'package:crosscheck_sports/style/root.dart';

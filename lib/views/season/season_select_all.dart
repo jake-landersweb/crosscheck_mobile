@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../client/root.dart';
-import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class SeasonSelectAll extends StatefulWidget {
   const SeasonSelectAll({
@@ -56,7 +56,7 @@ class _SeasonSelectAllState extends State<SeasonSelectAll> {
         onTap: () => Navigator.of(context).pop(),
       ),
       child: _isLoading
-          ? Center(child: cv.LoadingIndicator(color: dmodel.color))
+          ? Center(child: XCLoadingIndicator(color: dmodel.color))
           : _seasons == null
               ? Center(
                   child: Column(
@@ -71,7 +71,7 @@ class _SeasonSelectAllState extends State<SeasonSelectAll> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: comp.SubActionButton(
+                        child: XCWideButton.neutral(
                           title: "Retry",
                           onTap: () => _fetchSeasons(dmodel),
                         ),

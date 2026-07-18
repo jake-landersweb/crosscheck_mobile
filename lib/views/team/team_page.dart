@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
-import 'package:crosscheck_sports/custom_views/section.dart';
+
 import 'package:crosscheck_sports/views/polls/season_polls.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/roster/team_roster.dart';
@@ -19,6 +19,10 @@ import '../../client/root.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
 import '../../extras/root.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class SeasonPage extends StatefulWidget {
   const SeasonPage({super.key, required this.team, required this.teamUser});
@@ -64,8 +68,8 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
       trailing:
           (dmodel.currentSeasonUser?.isTeamAdmin() ??
               dmodel.tus!.user.isTeamAdmin())
-          ? cv.BasicButton(
-              onTap: () {
+          ? XCActionButton.edit(
+        onTap: () {
                 showSnappingSheet(
                   context: context,
                   child: SCERoot(
@@ -75,15 +79,7 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
                   ),
                 );
               },
-              child: Text(
-                "Edit",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                  color: dmodel.color,
-                ),
-              ),
-            )
+      )
           : null,
       // onRefresh: () => _refreshAction(dmodel),
       child: _body(context, dmodel),
@@ -126,11 +122,11 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
     return Column(
       children: [
         if (dmodel.tus!.user.isTeamAdmin())
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.showFloatingSheet(
-                context: context,
-                builder: (context) {
+              showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
                   return TeamModel(team: widget.team);
                   // return ImageUploader(
                   //   team: widget.team,
@@ -143,8 +139,8 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
                   //     });
                   //   },
                   // );
-                },
-              );
+                }),
+    );
             },
             child: TeamLogo(
               url: widget.team.image,
@@ -183,7 +179,7 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
         ),
         const SizedBox(height: 8),
         // season selector
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             if (dmodel.currentSeason != null) {
               showSnappingSheet(
@@ -241,9 +237,9 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
   Widget _edit(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: cv.Section(
+      child: XCSection(
         "Admin Control",
-        child: cv.ListView<_ActionItem>(
+        child: XCCellList<_ActionItem>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {
@@ -326,9 +322,9 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
   Widget _seasonInfo(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Section(
+      child: XCSection(
         "Season",
-        child: cv.ListView<_ActionItem>(
+        child: XCCellList<_ActionItem>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {
@@ -425,9 +421,9 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
   Widget _teamInfo(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Section(
+      child: XCSection(
         "Team",
-        child: cv.ListView<_ActionItem>(
+        child: XCCellList<_ActionItem>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {
@@ -503,9 +499,9 @@ class _SeasonPageState extends State<SeasonPage> with TickerProviderStateMixin {
   Widget _calendarInfo(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Section(
+      child: XCSection(
         "Calendar",
-        child: cv.ListView<_ActionItem>(
+        child: XCCellList<_ActionItem>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {

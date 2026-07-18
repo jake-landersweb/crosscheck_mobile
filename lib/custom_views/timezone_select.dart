@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class TimezoneSelector extends StatefulWidget {
   const TimezoneSelector({
@@ -36,17 +38,16 @@ class _TimezoneSelectorState extends State<TimezoneSelector> {
     var dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Select Timezone",
-      leading: cv.CancelButton(color: dmodel.color),
+      leading: XCActionButton.cancel(),
       child: Column(
         children: [
-        cv.TextField2(
+        XCField(
           value: _searchText,
           labelText: "Search",
           icon: Icon(
             Icons.search,
             color: dmodel.color,
           ),
-          highlightColor: dmodel.color,
           onChanged: (p0) {
             setState(() {
               _searchText = p0;

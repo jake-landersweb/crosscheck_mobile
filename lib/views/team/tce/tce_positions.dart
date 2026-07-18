@@ -3,7 +3,7 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/shared/positions_create.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class TCEPositions extends StatefulWidget {
   const TCEPositions({super.key});
@@ -28,13 +28,13 @@ class _TCEPositionsState extends State<TCEPositions> {
   }
 
   Widget _body(BuildContext context, TCEModel tcemodel, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Positions",
       color: dmodel.color,
       helperView: (context) {
         return Column(
           children: const [
-            cv.Section(
+            XCSection(
               "Positions",
               child: Text(
                   "Positions can be created and removed at ease, and give you a way to keep track of your users positions. Select a position to choose a default, and your rosters can be sorted later based on these positions."),

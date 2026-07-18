@@ -2,8 +2,11 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:provider/provider.dart';
-import '../../custom_views/root.dart' as cv;
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class Suggestions extends StatefulWidget {
   const Suggestions({
@@ -22,9 +25,11 @@ class _SuggestionsState extends State<Suggestions> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Send Feedback",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: Column(
         children: [
           const Text(
@@ -33,33 +38,32 @@ class _SuggestionsState extends State<Suggestions> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             horizontalPadding: 0,
             backgroundColor: CustomColors.textColor(context).withOpacity(0.1),
             children: [
-              cv.TextField2(
-                labelText: "Feedback",
-                isLabeled: false,
-                showBackground: false,
-                value: _feedback,
-                onChanged: (value) {
+              XCField(
+              labelText: "Feedback",
+              isLabeled: false,
+              value: _feedback,
+              onChanged: (value) {
                   setState(() {
                     _feedback = value;
                   });
                 },
-              ),
+            ),
             ],
           ),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: _buttonText() == "Send"
-                ? comp.ActionButton(
+                ? XCWideButton.primary(
                     color: dmodel.color,
                     title: _buttonText(),
                     onTap: () => _action(context, dmodel))
-                : comp.DestructionButton(
+                : XCWideButton.destructive(
                     title: _buttonText(),
                     onTap: () {},
                   ),

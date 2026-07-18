@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
-import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/field.dart';
 
 class StatCECell extends StatefulWidget {
   const StatCECell({
@@ -20,16 +20,15 @@ class StatCECell extends StatefulWidget {
 class _StatCECellState extends State<StatCECell> {
   @override
   Widget build(BuildContext context) {
-    return cv.TextField2(
-      fieldPadding: EdgeInsets.zero,
-      value: widget.item.getTitle(),
-      labelText: "Title",
-      onChanged: (value) {
+    return XCField(
+              value: widget.item.getTitle(),
+              labelText: "Title",
+              onChanged: (value) {
         setState(() {
           widget.onTitleChange(value);
         });
       },
-      isLabeled: true,
-    );
+              isLabeled: true,
+            );
   }
 }

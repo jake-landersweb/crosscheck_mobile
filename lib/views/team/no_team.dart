@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:provider/provider.dart';
-import '../components/root.dart' as comp;
 import '../../custom_views/root.dart' as cv;
 import 'root.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class NoTeam extends StatefulWidget {
   const NoTeam({super.key});
@@ -27,21 +27,19 @@ class _NoTeamState extends State<NoTeam> {
           asset: "assets/svg/road.svg",
         ),
         const SizedBox(height: 32),
-        comp.ActionButton(
+        XCWideButton.primary(
           color: dmodel.color,
           title: "Join Team",
           onTap: () {
             // join team
-            cv.showFloatingSheet(
-              context: context,
-              builder: (context) {
-                return JoinTeam(email: dmodel.user!.email);
-              },
-            );
+            showSnappingSheet(
+      context: context,
+      child: JoinTeam(email: dmodel.user!.email),
+    );
           },
         ),
         const SizedBox(height: 16),
-        comp.SubActionButton(
+        XCWideButton.neutral(
           title: "Create My Team",
           onTap: () {
             showSnappingSheet(

@@ -1,7 +1,7 @@
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
-import 'text_field.dart' as cv;
 import 'number_picker.dart' as cv;
+import 'package:crosscheck_sports/components/layer/field.dart';
 
 class NumberTextField extends StatefulWidget {
   const NumberTextField({
@@ -43,9 +43,8 @@ class _NumberTextFieldState extends State<NumberTextField> {
       children: [
         SizedBox(
           width: 75,
-          child: cv.TextField2(
+          child: XCField(
             labelText: "Score",
-            highlightColor: widget.color,
             controller: _controller,
             isLabeled: false,
             onChanged: (val) {

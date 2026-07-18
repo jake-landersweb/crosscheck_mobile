@@ -10,8 +10,11 @@ import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import '../../data/root.dart';
-import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class MessageInput extends StatefulWidget {
   const MessageInput({
@@ -97,7 +100,7 @@ class _MessageInputState extends State<MessageInput> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8),
-                        child: cv.BasicButton(
+                        child: Clickable(
                           onTap: () {
                             setState(() {
                               cmodel.selectedImage = null;
@@ -127,11 +130,11 @@ class _MessageInputState extends State<MessageInput> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              cv.BasicButton(
+              Clickable(
                 onTap: () {
-                  cv.showFloatingSheet(
-                    context: context,
-                    builder: (context) {
+                  showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
                       return AssetSheet(
                         onImageSelect: ((asset) {
                           setState(() {
@@ -148,8 +151,8 @@ class _MessageInputState extends State<MessageInput> {
                           _loadVideoPreview(context, asset.path);
                         },
                       );
-                    },
-                  );
+                    }),
+    );
                 },
                 child: SizedBox(
                   height: 40,
@@ -164,24 +167,22 @@ class _MessageInputState extends State<MessageInput> {
               ),
               // text field
               Expanded(
-                child: cv.TextField2(
-                  autocorrect: true,
-                  controller: _controller,
-                  labelText: "Type here ...",
-                  showBackground: false,
-                  isLabeled: false,
-                  highlightColor: dmodel.color,
-                  maxLines: 3,
-                  onChanged: (value) {
+                child: XCField(
+              autocorrect: true,
+              controller: _controller,
+              labelText: "Type here ...",
+              isLabeled: false,
+              maxLines: 3,
+              onChanged: (value) {
                     setState(() {});
                   },
-                ),
+            ),
               ),
               Opacity(
                 opacity: (_controller.text.isEmpty && !cmodel.hasAsset())
                     ? 0.5
                     : 1,
-                child: cv.BasicButton(
+                child: Clickable(
                   onTap: () {
                     if (_controller.text.isEmpty && !cmodel.hasAsset()) {
                       print("text input was empty");
@@ -194,7 +195,7 @@ class _MessageInputState extends State<MessageInput> {
                       width: 40,
                       child: Center(
                         child: _sending
-                            ? cv.LoadingIndicator(color: dmodel.color)
+                            ? XCLoadingIndicator(color: dmodel.color)
                             : Icon(Icons.send, color: dmodel.color),
                       )),
                 ),

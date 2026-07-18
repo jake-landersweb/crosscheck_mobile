@@ -1,10 +1,11 @@
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'core/basic_button.dart' as cv;
-import 'floating_sheet.dart' as cv;
-import 'listview.dart' as cv;
-import 'sheet.dart' as cv;
-import 'section.dart' as cv;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 enum DynamicSelectorStyle { segmented, list, dynamic }
 
@@ -70,7 +71,7 @@ class _DynamicSelectorState<T> extends State<DynamicSelector<T>> {
   @override
   Widget build(BuildContext context) {
     if (widget.isLabeled) {
-      return cv.Section(
+      return XCSection(
         widget.title!,
         child: _body(context),
       );
@@ -100,15 +101,18 @@ class _DynamicSelectorState<T> extends State<DynamicSelector<T>> {
     } else {
       return cv.BasicButton(
         onTap: () {
-          cv.showFloatingSheet(
-              context: context,
-              builder: (context) {
-                return cv.Sheet(
-                  title: widget.title ?? "Select",
-                  color: widget.color,
-                  child: child,
-                );
-              });
+          showSnappingSheet(
+            context: context,
+            child: Builder(builder: (context) {
+              return HeaderBar.sheet(
+                title: widget.title ?? "Select",
+                trailing: XCActionButton.cancel(
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+                child: child,
+              );
+            }),
+          );
         },
         child: Text(
           widget.title ?? "Select",
@@ -127,7 +131,7 @@ class _DynamicSelectorState<T> extends State<DynamicSelector<T>> {
   }
 
   Widget _listSelector(BuildContext context) {
-    return cv.ListView<T>(
+    return XCCellList<T>(
       children: widget.selections,
       horizontalPadding: 0,
       showStyling: false,

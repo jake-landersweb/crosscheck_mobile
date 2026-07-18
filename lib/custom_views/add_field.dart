@@ -1,7 +1,7 @@
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
-import 'text_field.dart' as cv;
 import 'core/basic_button.dart' as cv;
+import 'package:crosscheck_sports/components/layer/field.dart';
 
 /// ```dart
 /// Key? key,
@@ -78,10 +78,9 @@ class _AddFieldState extends State<AddField> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: cv.TextField2(
+                  child: XCField(
                     labelText: widget.labelText,
                     controller: _controller,
-                    showBackground: false,
                     charLimit: widget.limit,
                     showCharacters: widget.limit != null,
                     onChanged: (value) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../data/root.dart';
 import 'root.dart';
-import '../../custom_views/root.dart' as cv;
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class CustomFieldCreate extends StatefulWidget {
   const CustomFieldCreate({
@@ -38,7 +38,7 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        cv.ListView<CustomField>(
+        XCCellList<CustomField>(
           allowsDelete: widget.enabled,
           isAnimated: true,
           backgroundColor: widget.cellColor,
@@ -68,7 +68,7 @@ class _CustomFieldCreateState extends State<CustomFieldCreate> {
         if (widget.isCreate)
           Padding(
             padding: const EdgeInsets.fromLTRB(32, 16, 32, 0),
-            child: comp.SubActionButton(
+            child: XCWideButton.neutral(
               title: "Add New",
               onTap: () {
                 setState(() {

@@ -6,6 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'root.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class PollsUsers extends StatefulWidget {
   const PollsUsers({super.key});
@@ -36,24 +42,26 @@ class _PollsUsersState extends State<PollsUsers> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: [
-          cv.Section(
+          XCSection(
             "Roster Group",
             child: cv.ListAppearance(
               onTap: () {
-                cv.showFloatingSheet(
-                    context: context,
-                    builder: (context) {
-                      return cv.Sheet(
-                        title: "Roster Groups",
-                        color: dmodel.color,
-                        child: RosterGroups(
+                showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
+                      return HeaderBar.sheet(
+      title: "Roster Groups",
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      child: RosterGroups(
                           team: pmodel.team,
                           season: pmodel.season,
                           seasonRoster: pmodel.users,
                           hasAppBar: false,
                           animateOnAppear: true,
                           loadingOverride: Center(
-                            child: cv.LoadingIndicator(color: dmodel.color),
+                            child: XCLoadingIndicator(color: dmodel.color),
                           ),
                           onSelect: (rg) {
                             pmodel.addUsers = [];
@@ -70,8 +78,9 @@ class _PollsUsersState extends State<PollsUsers> {
                             Navigator.of(context).pop();
                           },
                         ),
-                      );
-                    });
+    );
+                    }),
+    );
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -93,9 +102,9 @@ class _PollsUsersState extends State<PollsUsers> {
               ),
             ),
           ),
-          cv.Section(
+          XCSection(
             "Select Users",
-            child: cv.ListView<SeasonUser>(
+            child: XCCellList<SeasonUser>(
               children: sortSeasonUsers(pmodel.users,
                   showNicknames: pmodel.team.showNicknames)
                 ..sort((a, b) {

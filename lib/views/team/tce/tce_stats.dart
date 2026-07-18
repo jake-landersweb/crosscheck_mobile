@@ -28,7 +28,7 @@
   // }
 
   // Widget _body(BuildContext context, TCEModel tcemodel, DataModel dmodel) {
-  //   return cv.Section(
+  //   return XCSection(
   //     "Stats",
   //     headerPadding: const EdgeInsets.fromLTRB(32, 8, 16, 4),
   //     child: StatCEList(

@@ -8,6 +8,12 @@ import 'package:flutter/material.dart';
 
 import '../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class RosterSorting extends ChangeNotifier {
   late Team _team;
@@ -119,11 +125,10 @@ class RosterSorting extends ChangeNotifier {
         Stack(
           alignment: Alignment.centerRight,
           children: [
-            cv.TextField2(
+            XCField(
               labelText: "Search ...",
               controller: _controller,
               isLabeled: false,
-              highlightColor: dmodel.color,
               onChanged: (value) {
                 notifyListeners();
               },
@@ -131,7 +136,7 @@ class RosterSorting extends ChangeNotifier {
             if (_controller.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: cv.BasicButton(
+                child: Clickable(
                   onTap: () {
                     _controller.text = "";
                     notifyListeners();
@@ -144,7 +149,7 @@ class RosterSorting extends ChangeNotifier {
               ),
           ],
         ),
-        cv.Section(
+        XCSection(
           "Filter",
           allowsCollapse: true,
           initOpen: false,
@@ -152,15 +157,17 @@ class RosterSorting extends ChangeNotifier {
             children: [
               Row(
                 children: [
-                  cv.BasicButton(
+                  Clickable(
                     onTap: () {
-                      cv.showFloatingSheet(
-                          context: context,
-                          builder: (context) {
-                            return cv.Sheet(
-                              title: "Select Position",
-                              color: dmodel.color,
-                              child: cv.DynamicSelector<String>(
+                      showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
+                            return HeaderBar.sheet(
+      title: "Select Position",
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      child: cv.DynamicSelector<String>(
                                 selectorStyle: cv.DynamicSelectorStyle.list,
                                 color: dmodel.color,
                                 selections: isSeason
@@ -174,8 +181,9 @@ class RosterSorting extends ChangeNotifier {
                                 selectedLogic: (context, item) =>
                                     item == _currentPosition,
                               ),
-                            );
-                          });
+    );
+                          }),
+    );
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -197,7 +205,7 @@ class RosterSorting extends ChangeNotifier {
                     ),
                   ),
                   const Spacer(),
-                  cv.BasicButton(
+                  Clickable(
                     onTap: () {
                       _currentPosition = "";
                       notifyListeners();
@@ -283,7 +291,7 @@ class RosterSorting extends ChangeNotifier {
           ),
         ),
         const SizedBox(height: 8),
-        cv.Section(
+        XCSection(
           "Sort",
           allowsCollapse: true,
           initOpen: false,
@@ -295,12 +303,11 @@ class RosterSorting extends ChangeNotifier {
                   // custom field selector
                   Row(
                     children: [
-                      cv.BasicButton(
+                      Clickable(
                         onTap: () {
-                          cv.showFloatingSheet(
-                            context: context,
-                            builder: (context) {
-                              return CustomFieldSelector(
+                          showSnappingSheet(
+      context: context,
+      child: CustomFieldSelector(
                                 customFields: isSeason
                                     ? _season!.customUserFields
                                     : _team.customUserFields,
@@ -313,9 +320,8 @@ class RosterSorting extends ChangeNotifier {
                                   }
                                   notifyListeners();
                                 },
-                              );
-                            },
-                          );
+                              ),
+    );
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -343,7 +349,7 @@ class RosterSorting extends ChangeNotifier {
                             alignment: Alignment.centerRight,
                             child: sortCF == null
                                 ? Container()
-                                : cv.BasicButton(
+                                : Clickable(
                                     onTap: () {
                                       _sortCFAsc = !_sortCFAsc;
                                       notifyListeners();

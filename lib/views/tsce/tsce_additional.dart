@@ -9,6 +9,11 @@ import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
 import 'dart:math' as math;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/sheet_navigator.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class _CFPageItem {
   _CFPageItem({
@@ -53,7 +58,7 @@ class _TSCEAdditionalState extends State<TSCEAdditional> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          cv.Section(
+          XCSection(
             "Positions",
             allowsCollapse: true,
             initOpen: true,
@@ -124,7 +129,7 @@ class _TSCEAdditionalState extends State<TSCEAdditional> {
             ),
           ),
           const SizedBox(height: 16),
-          cv.Section(
+          XCSection(
             "Stats",
             allowsCollapse: true,
             initOpen: true,
@@ -132,7 +137,7 @@ class _TSCEAdditionalState extends State<TSCEAdditional> {
             helperView: (context) {
               return Column(
                 children: const [
-                  cv.Section(
+                  XCSection(
                     "Stats",
                     child: Text(
                         "Stats can be added and removed at will, and these stats will be tracked for every game you create. But, if you remove a stat from this list later, every user will lose this stat field forever, and the information cannot be re-attained."),
@@ -142,11 +147,11 @@ class _TSCEAdditionalState extends State<TSCEAdditional> {
             },
             child: Column(
               children: [
-                cv.ListView<Widget>(
+                XCCellList<Widget>(
                   horizontalPadding: 0,
                   childPadding: const EdgeInsets.symmetric(horizontal: 16),
                   children: [
-                    cv.LabeledWidget(
+                    XCLabeledWidget(
                       "Allow Stats",
                       child: Row(
                         children: [
@@ -178,20 +183,17 @@ class _TSCEAdditionalState extends State<TSCEAdditional> {
             ),
           ),
           const SizedBox(height: 16),
-          cv.Section(
+          XCSection(
             "Custom Fields",
-            child: cv.ListView<_CFPageItem>(
+            child: XCCellList<_CFPageItem>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChildTap: ((context, item) {
                 if (item.useSheet) {
-                  cv.cupertinoSheet(
-                    context: context,
-                    wrapInNavigator: true,
-                    builder: (context) {
-                      return item.view;
-                    },
-                  );
+                  showSnappingSheet(
+      context: context,
+      child: SheetNavigator(child: item.view),
+    );
                 } else {
                   cv.Navigate(context, item.view);
                 }

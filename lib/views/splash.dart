@@ -3,7 +3,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -35,7 +35,7 @@ class SplashScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  cv.LoadingIndicator(color: dmodel.color),
+                  XCLoadingIndicator(color: dmodel.color),
                   const SizedBox(height: 16),
                   Text(
                     dmodel.loadText,

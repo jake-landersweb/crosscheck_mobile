@@ -4,9 +4,11 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
 import '../root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'root.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class RUCERoot extends StatefulWidget {
   const RUCERoot({
@@ -71,27 +73,14 @@ class _RUCERootState extends State<RUCERoot> {
       isLarge: !widget.isSheet,
       refreshable: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: widget.teamToSeason
-          ? cv.BackButton(
-              color: dmodel.color,
-              title: "Cancel",
-              showIcon: false,
-              showText: true,
-            )
-          : cv.BackButton(
-              color: dmodel.color,
-              showText: widget.teamToSeason ? false : true,
-              showIcon: widget.teamToSeason ? true : false,
-              title: "Cancel",
-              useRoot: widget.useRoot,
-            ),
-      trailing: cv.BasicButton(
+      leading: XCActionButton.cancel(),
+      trailing: Clickable(
         onTap: () => _onFunc(context, dmodel, rmodel),
         child: _isLoading
             ? SizedBox(
                 height: 25,
                 width: 25,
-                child: cv.LoadingIndicator(color: dmodel.color),
+                child: XCLoadingIndicator(color: dmodel.color),
               )
             : Text(
                 widget.teamToSeason

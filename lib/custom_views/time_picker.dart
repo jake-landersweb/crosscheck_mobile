@@ -2,8 +2,8 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
-import 'text_field.dart' as cv;
 import 'core/basic_button.dart' as cv;
+import 'package:crosscheck_sports/components/layer/field.dart';
 
 enum TimePickerMode { text, spinner }
 
@@ -108,17 +108,14 @@ class _TimePickerState extends State<TimePicker> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: cv.TextField2(
+                          child: XCField(
                             key: const ValueKey("Hour"),
                             controller: _hourController,
                             labelText: "",
-                            showBackground: false,
-                            fieldPadding: EdgeInsets.zero,
                             textAlign: TextAlign.center,
                             isLabeled: false,
                             keyboardType: TextInputType.number,
                             charLimit: 2,
-                            highlightColor: widget.accentColor,
                             formatters: [
                               FilteringTextInputFormatter.digitsOnly,
                               _HourTextInputFormatter(),
@@ -169,17 +166,14 @@ class _TimePickerState extends State<TimePicker> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: cv.TextField2(
+                          child: XCField(
                             key: const ValueKey("Min"),
                             controller: _minController,
                             labelText: "",
-                            showBackground: false,
-                            fieldPadding: EdgeInsets.zero,
                             textAlign: TextAlign.center,
                             isLabeled: false,
                             keyboardType: TextInputType.number,
                             charLimit: 2,
-                            highlightColor: widget.accentColor,
                             formatters: [
                               FilteringTextInputFormatter.digitsOnly,
                               _MinuteTextInputFormatter(),

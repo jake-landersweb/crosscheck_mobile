@@ -8,6 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class EventDutyCreate extends StatefulWidget {
   const EventDutyCreate({
@@ -43,20 +49,8 @@ class _EventDutyCreateState extends State<EventDutyCreate> {
     var dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Event Duties",
-      leading: cv.BasicButton(
-        onTap: () {
-          Navigator.of(context).pop();
-        },
-        child: Text(
-          "Cancel",
-          style: TextStyle(
-            color: CustomColors.textColor(context).withOpacity(0.5),
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
-          ),
-        ),
-      ),
-      trailing: cv.BasicButton(
+      leading: XCActionButton.cancel(),
+      trailing: Clickable(
         onTap: () {
           var res = _isValid();
           if (res.v1()) {
@@ -66,7 +60,7 @@ class _EventDutyCreateState extends State<EventDutyCreate> {
           }
         },
         child: _isSaving
-            ? cv.LoadingIndicator(color: dmodel.color)
+            ? XCLoadingIndicator(color: dmodel.color)
             : Text(
                 "Save",
                 style: TextStyle(
@@ -91,7 +85,7 @@ class _EventDutyCreateState extends State<EventDutyCreate> {
             color: dmodel.color,
           ),
           const SizedBox(height: 16),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
               _init();
             },
@@ -117,11 +111,11 @@ class _EventDutyCreateState extends State<EventDutyCreate> {
       );
     }
     if (_isLoading) {
-      return cv.LoadingIndicator(color: dmodel.color);
+      return XCLoadingIndicator(color: dmodel.color);
     }
     return Column(
       children: [
-        cv.ListView<EventDuty>(
+        XCCellList<EventDuty>(
           allowsDelete: true,
           isAnimated: true,
           backgroundColor: CustomColors.cellColor(context),
@@ -142,24 +136,22 @@ class _EventDutyCreateState extends State<EventDutyCreate> {
             return Row(
               children: [
                 Expanded(
-                  child: cv.TextField2(
-                    labelText: "",
-                    hintText: "Title (Bottle Duty) ...",
-                    value: item.title,
-                    fieldPadding: EdgeInsets.zero,
-                    highlightColor: dmodel.color,
-                    onChanged: (v) {
+                  child: XCField(
+              labelText: "",
+              hintText: "Title (Bottle Duty) ...",
+              value: item.title,
+              onChanged: (v) {
                       setState(() {
                         item.title = v;
                       });
                     },
-                  ),
+            ),
                 ),
-                cv.BasicButton(
+                Clickable(
                   onTap: () {
-                    cv.cupertinoSheet(
-                      context: context,
-                      builder: (context) => EventDutyUserSelect(
+                    showSnappingSheet(
+      context: context,
+      child: EventDutyUserSelect(
                         team: widget.team,
                         season: widget.season,
                         seasonUsers: widget.seasonUsers,
@@ -168,7 +160,7 @@ class _EventDutyCreateState extends State<EventDutyCreate> {
                           setState(() {});
                         },
                       ),
-                    );
+    );
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -185,7 +177,7 @@ class _EventDutyCreateState extends State<EventDutyCreate> {
           },
         ),
         const SizedBox(height: 16),
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             setState(() {
               _eventDuties.add(

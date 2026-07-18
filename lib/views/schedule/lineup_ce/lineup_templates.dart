@@ -3,10 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
-import '../../../custom_views/root.dart' as cv;
 import '../../../data/root.dart';
 import '../../../client/root.dart';
 import '../../../extras/root.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class _LineupHolder {
   late String title;
@@ -111,13 +112,13 @@ class _LineupTemplatesState extends State<LineupTemplates> {
     return HeaderBar.sheet(
       title: "Lineup Templates",
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.cancel(),
       child: _body(context, dmodel),
     );
   }
 
   Widget _body(BuildContext context, DataModel dmodel) {
-    return cv.ListView<_LineupHolder>(
+    return XCCellList<_LineupHolder>(
       horizontalPadding: 0,
       children: _templates,
       onChildTap: ((context, item) {

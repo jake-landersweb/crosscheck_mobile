@@ -1,13 +1,17 @@
 import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import 'package:crosscheck_sports/views/components/buttons.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/roster/roster_groups/rg_cu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class RosterGroups extends StatefulWidget {
   const RosterGroups({
@@ -57,10 +61,10 @@ class _RosterGroupsState extends State<RosterGroups> {
       return Scaffold(
         body: HeaderBar(
           title: "Roster Groups",
-          leading: cv.BackButton(color: dmodel.color),
+          leading: XCActionButton.back(),
           onRefresh: () async => await rgmodel.getRosterGroups(dmodel),
           refreshable: true,
-          trailing: cv.BasicButton(
+          trailing: Clickable(
             onTap: () => _create(context, dmodel, rgmodel),
             child: Icon(
               Icons.add,
@@ -99,7 +103,7 @@ class _RosterGroupsState extends State<RosterGroups> {
                     color: dmodel.color,
                   ),
                   const SizedBox(height: 16),
-                  ActionButton(
+                  XCWideButton.primary(
                     title: "Create Roster Group",
                     color: dmodel.color,
                     horizPadding: 16,
@@ -123,7 +127,7 @@ class _RosterGroupsState extends State<RosterGroups> {
   }
 
   Widget _rgList(BuildContext context, DataModel dmodel, RGModel rgmodel) {
-    return cv.ListView<RosterGroup>(
+    return XCCellList<RosterGroup>(
       horizontalPadding: 0,
       children: rgmodel.rosterGroups!
         ..sort((a, b) => a.created.compareTo(b.created)),
@@ -228,13 +232,12 @@ class _RosterGroupsState extends State<RosterGroups> {
   }
 
   void _create(BuildContext context, DataModel dmodel, RGModel rgmodel) {
-    cv.cupertinoSheet(
-        context: context,
-        builder: (context) {
-          return ListenableProvider.value(
+    showSnappingSheet(
+      context: context,
+      child: ListenableProvider.value(
             value: rgmodel,
             child: const RGCU(),
-          );
-        });
+          ),
+    );
   }
 }

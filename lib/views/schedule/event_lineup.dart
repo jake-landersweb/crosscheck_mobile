@@ -7,6 +7,11 @@ import '../../data/root.dart';
 import '../../client/root.dart';
 import '../../extras/root.dart';
 import '../root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class EventLineup extends StatefulWidget {
   const EventLineup({
@@ -48,16 +53,15 @@ class _EventLineupState extends State<EventLineup> {
       titleColor: widget.event.eventColor.isEmpty ? null : Colors.white,
       backgroundColor: widget.event.getColor()?.lighten(0.1) ??
           CustomColors.backgroundColor(context),
-      leading: cv.BackButton(color: _accentColor(dmodel)),
+      leading: XCActionButton.back(),
       trailing: (widget.teamUser.isTeamAdmin() ||
                 (widget.seasonUser?.isSeasonAdmin() ?? false)) &&
             _lineup != null
-          ? cv.BasicButton(
-            onTap: () {
-              cv.cupertinoSheet(
-                  context: context,
-                  builder: (context) {
-                    return LineupRoot(
+          ? XCActionButton.edit(
+        onTap: () {
+              showSnappingSheet(
+      context: context,
+      child: LineupRoot(
                       team: widget.team,
                       season: widget.season,
                       event: widget.event,
@@ -68,18 +72,10 @@ class _EventLineupState extends State<EventLineup> {
                           _lineup = lineup;
                         });
                       },
-                    );
-                  });
+                    ),
+    );
             },
-            child: Text(
-              "Edit",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 18,
-                color: _accentColor(dmodel),
-              ),
-            ),
-          )
+      )
           : null,
       child: _body(context, dmodel),
     );
@@ -87,7 +83,7 @@ class _EventLineupState extends State<EventLineup> {
 
   Widget _body(BuildContext context, DataModel dmodel) {
     if (_isLoading) {
-      return Center(child: cv.LoadingIndicator(color: dmodel.color));
+      return Center(child: XCLoadingIndicator(color: dmodel.color));
     } else if (_lineup == null) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -104,10 +100,9 @@ class _EventLineupState extends State<EventLineup> {
               child: cv.ListAppearance(
                 backgroundColor: widget.event.cellColor(context),
                 onTap: () {
-                  cv.cupertinoSheet(
-                      context: context,
-                      builder: (context) {
-                        return LineupRoot(
+                  showSnappingSheet(
+      context: context,
+      child: LineupRoot(
                           team: widget.team,
                           season: widget.season,
                           event: widget.event,
@@ -117,8 +112,8 @@ class _EventLineupState extends State<EventLineup> {
                               _lineup = lineup;
                             });
                           },
-                        );
-                      });
+                        ),
+    );
                 },
                 child: Text(
                   "Create Lineup",
@@ -147,10 +142,10 @@ class _EventLineupState extends State<EventLineup> {
   }
 
   Widget _lineupCell(BuildContext context, DataModel dmodel, LineupItem item) {
-    return cv.Section(
+    return XCSection(
       item.title,
       textColor: widget.event.textColor(context),
-      child: cv.ListView<String>(
+      child: XCCellList<String>(
         horizontalPadding: 0,
         children: item.ids,
         backgroundColor: widget.event.cellColor(context),
@@ -210,7 +205,4 @@ class _EventLineupState extends State<EventLineup> {
     });
   }
 
-  Color _accentColor(DataModel dmodel) {
-    return widget.event.eventColor.isEmpty ? dmodel.color : Colors.white;
-  }
 }

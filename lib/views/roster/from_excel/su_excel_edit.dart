@@ -4,8 +4,11 @@ import 'package:crosscheck_sports/views/roster/from_excel/root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class SUExcelEdit extends StatefulWidget {
   const SUExcelEdit({
@@ -45,85 +48,77 @@ class _SUExcelEditState extends State<SUExcelEdit> {
     var dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Edit User",
-      trailing: cv.CancelButton(color: dmodel.color, closeText: "Done"),
+      trailing: XCActionButton.cancel(),
       child: Column(
         children: [
-        cv.ListView<Widget>(
+        XCCellList<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.only(right: 16),
           children: [
-            cv.TextField2(
+            XCField(
               labelText: "Email",
               maxLines: 2,
               value: widget.user.email,
-              highlightColor: dmodel.color,
               icon: const Icon(Icons.email_rounded),
               onChanged: widget.onEmailChanged,
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Name",
               maxLines: 2,
               value: widget.user.name,
-              highlightColor: dmodel.color,
               icon: const Icon(Icons.person_rounded),
               onChanged: widget.onNameChanged,
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Phone",
               maxLines: 2,
               value: widget.user.phone,
-              highlightColor: dmodel.color,
               icon: const Icon(Icons.phone_rounded),
               onChanged: widget.onPhoneChanged,
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Nickname",
               maxLines: 2,
               value: widget.user.nickname,
-              highlightColor: dmodel.color,
               icon: const Icon(Icons.person_rounded),
               onChanged: widget.onNicknameChanged,
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Position",
               maxLines: 2,
               value: widget.user.position,
-              highlightColor: dmodel.color,
               icon: const Icon(Icons.location_on_rounded),
               onChanged: widget.onPositionChanged,
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Jersey Size",
               maxLines: 2,
               value: widget.user.jerseySize,
-              highlightColor: dmodel.color,
               icon: const Icon(Icons.format_size_rounded),
               onChanged: widget.onJerseySizeChanged,
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Jersey Number",
               maxLines: 2,
               value: widget.user.jerseyNumber,
-              highlightColor: dmodel.color,
               icon: const Icon(Icons.looks_3_rounded),
               onChanged: widget.onJerseyNumberChanged,
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Note",
               maxLines: 2,
               value: widget.user.note,
-              highlightColor: dmodel.color,
               icon: const Icon(Icons.description_rounded),
               onChanged: widget.onNoteChanged,
             ),
           ],
         ),
         const SizedBox(height: 16),
-        cv.ListView<Widget>(
+        XCCellList<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            cv.LabeledWidget(
+            XCLabeledWidget(
               "Is a Manager",
               child: Row(
                 children: [
@@ -143,7 +138,7 @@ class _SUExcelEditState extends State<SUExcelEdit> {
                 ],
               ),
             ),
-            cv.LabeledWidget(
+            XCLabeledWidget(
               "Is a Sub",
               child: Row(
                 children: [

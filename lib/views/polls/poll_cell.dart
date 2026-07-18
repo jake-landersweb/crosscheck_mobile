@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class PollCell extends StatefulWidget {
   const PollCell({
@@ -42,7 +43,7 @@ class _PollCellState extends State<PollCell> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // title
-            cv.BasicButton(
+            Clickable(
               onTap: () {
                 cv.Navigate(
                   context,

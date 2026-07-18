@@ -4,8 +4,12 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 
-import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class CreateTeam extends StatefulWidget {
   const CreateTeam({super.key});
@@ -29,12 +33,7 @@ class _CreateTeamState extends State<CreateTeam> {
       title: "Create Team",
       isLarge: true,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(
-        color: dmodel.color,
-        title: "Cancel",
-        showText: true,
-        showIcon: false,
-      ),
+      leading: XCActionButton.back(),
       child: _body(context, dmodel),
     );
   }
@@ -42,12 +41,11 @@ class _CreateTeamState extends State<CreateTeam> {
   Widget _body(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
-        cv.Section(
+        XCSection(
           "Required",
-          child: cv.NativeList(children: [
-            cv.TextField2(
+          child: XCCellList<Widget>(horizontalPadding: 0, children: [
+            XCField(
               labelText: "Title",
-              fieldPadding: const EdgeInsets.all(0),
               onChanged: (value) {
                 setState(() {
                   _title = value;
@@ -56,23 +54,21 @@ class _CreateTeamState extends State<CreateTeam> {
             )
           ]),
         ),
-        cv.Section(
+        XCSection(
           "Optional",
-          child: cv.NativeList(children: [
-            cv.TextField2(
+          child: XCCellList<Widget>(horizontalPadding: 0, children: [
+            XCField(
               labelText: "Color (hex string)",
               textCapitalization: TextCapitalization.none,
-              fieldPadding: const EdgeInsets.all(0),
               onChanged: (value) {
                 setState(() {
                   _color = value;
                 });
               },
             ),
-            cv.TextField2(
+            XCField(
               labelText: "Website (url)",
               textCapitalization: TextCapitalization.none,
-              fieldPadding: const EdgeInsets.all(0),
               onChanged: (value) {
                 setState(() {
                   _website = value;
@@ -82,11 +78,10 @@ class _CreateTeamState extends State<CreateTeam> {
           ]),
         ),
         const SizedBox(height: 16),
-        cv.RoundedLabel(
-          "Create Team",
+        XCWideButton.primary(
+          title: "Create Team",
           isLoading: _isLoading,
           color: dmodel.color,
-          textColor: Colors.white,
           onTap: () {
             if (_title.isEmpty) {
               dmodel.addIndicator(IndicatorItem.error("Title cannot be empty"));

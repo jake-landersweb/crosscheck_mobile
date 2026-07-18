@@ -6,10 +6,8 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/action_button.dart';
 import 'package:crosscheck_sports/components/core/container.dart';
-import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:crosscheck_sports/style/root.dart';
 
 class TCERoot extends StatefulWidget {

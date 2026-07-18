@@ -8,6 +8,11 @@ import 'package:crosscheck_sports/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'dart:math' as math;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class SeasonRoster extends StatefulWidget {
   const SeasonRoster({super.key});
@@ -33,7 +38,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
       backgroundColor: CustomColors.backgroundColor(context),
       horizontalPadding: 16.0,
       bottomPadding: 48.0,
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       trailing: _createUser(context, dmodel),
       onRefresh: () async {
         await dmodel.getBatchSeasonRoster(
@@ -75,7 +80,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
             (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false))
           Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
-            child: cv.BasicButton(
+            child: Clickable(
               onTap: () {
                 if (dmodel.seasonUsers != null) {
                   cv.Navigate(
@@ -142,17 +147,14 @@ class _SeasonRosterState extends State<SeasonRoster> {
             dmodel.tus!.user.isTeamAdmin())
           Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
-            child: cv.ListView<_RosterCreateObject>(
+            child: XCCellList<_RosterCreateObject>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
               onChildTap: ((context, item) {
-                cv.cupertinoSheet(
-                  context: context,
-                  wrapInNavigator: item.wrapInNavigator,
-                  builder: (context) {
-                    return item.child;
-                  },
-                );
+                showSnappingSheet(
+      context: context,
+      child: item.child,
+    );
               }),
               childBuilder: ((context, item) {
                 return ConstrainedBox(
@@ -287,7 +289,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
           smodel,
         ),
         if (_invited(context, dmodel, smodel).isNotEmpty)
-          cv.Section(
+          XCSection(
             "Invited",
             child: _rosterList(
               context,
@@ -297,7 +299,7 @@ class _SeasonRosterState extends State<SeasonRoster> {
             ),
           ),
         if (_notValidated(context, dmodel, smodel).isNotEmpty)
-          cv.Section(
+          XCSection(
             "Not Validated",
             child: _rosterList(
               context,
@@ -424,16 +426,15 @@ class _SeasonRosterState extends State<SeasonRoster> {
     } else {
       return Row(
         children: [
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.cupertinoSheet(
-                  context: context,
-                  builder: (context) {
-                    return BasicNotification(
+              showSnappingSheet(
+      context: context,
+      child: BasicNotification(
                       team: dmodel.tus!.team,
                       users: dmodel.seasonUsers!,
-                    );
-                  });
+                    ),
+    );
             },
             child: Icon(Icons.mail_outline_rounded, color: dmodel.color),
           ),
@@ -512,7 +513,7 @@ class _RosterCreateObject {
 //         ),
 //       ],
 //       children: [
-//         cv.Section(
+//         XCSection(
 //           "New User",
 //           child: cv.RoundedLabel(
 //             "Create User",
@@ -526,7 +527,7 @@ class _RosterCreateObject {
 //           ),
 //         ),
 //         const SizedBox(height: 16),
-//         cv.Section(
+//         XCSection(
 //           "Existing Users",
 //           child: cv.RoundedLabel(
 //             "Team Roster List",
@@ -538,11 +539,11 @@ class _RosterCreateObject {
 //         ),
 //         const SizedBox(height: 16),
 //         if (_selectedTeamUsers.isNotEmpty)
-//           cv.Section(
+//           XCSection(
 //             "Selected Users",
 //             child: Column(
 //               children: [
-//                 cv.ListView<SeasonUser>(
+//                 XCCellList<SeasonUser>(
 //                   children: _selectedTeamUsers,
 //                   horizontalPadding: 0,
 //                   childPadding: const EdgeInsets.all(8),
@@ -705,7 +706,7 @@ class _RosterCreateObject {
 //       backgroundColor: CustomColors.backgroundColor(context),
 //       color: dmodel.color,
 //       itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
-//       leading: [cv.BackButton(color: dmodel.color)],
+//       leading: [XCActionButton.back()],
 //       children: [
 //         if (_isLoading)
 //           const RosterLoading()

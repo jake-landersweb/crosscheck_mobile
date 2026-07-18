@@ -4,9 +4,13 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/season/root.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class SyncCalendar extends StatefulWidget {
   const SyncCalendar({
@@ -59,20 +63,20 @@ class _SyncCalendarState extends State<SyncCalendar> {
     var dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Sync Calendar",
-      leading: cv.BasicButton(
+      leading: Clickable(
         onTap: () {
           Navigator.of(context).pop();
         },
         child: Icon(Icons.close, color: dmodel.color),
       ),
-      trailing: cv.BasicButton(
+      trailing: Clickable(
         onTap: () {
           if (_linkIsValid) {
             _syncCalendar(dmodel);
           }
         },
         child: _syncingCalendar
-            ? cv.LoadingIndicator(color: dmodel.color)
+            ? XCLoadingIndicator(color: dmodel.color)
             : Text(
                 "Sync",
                 style: TextStyle(
@@ -114,20 +118,19 @@ class _SyncCalendarState extends State<SyncCalendar> {
               ],
             ),
           ),
-          cv.TextField2(
-            value: _calendarUrl,
-            labelText: "Url",
-            hintText: "Calendar Url",
-            maxLines: 4,
-            labelEdgePadding: 16,
-            onChanged: (val) {
+          XCField(
+              value: _calendarUrl,
+              labelText: "Url",
+              hintText: "Calendar Url",
+              maxLines: 4,
+              onChanged: (val) {
               setState(() {
                 _linkIsValid = false;
                 _calendarUrl = val;
                 _events = null;
               });
             },
-          ),
+            ),
           CalendarAdvancedSettings(
               timezone: _timezone,
               onTimezoneChanged: (tz) {
@@ -158,8 +161,8 @@ class _SyncCalendarState extends State<SyncCalendar> {
             height: 30,
             child: Center(
               child: _verifyingLink
-                  ? cv.LoadingIndicator(color: dmodel.color)
-                  : cv.BasicButton(
+                  ? XCLoadingIndicator(color: dmodel.color)
+                  : Clickable(
                       onTap: () {
                         _validateLink(dmodel);
                       },
@@ -174,9 +177,9 @@ class _SyncCalendarState extends State<SyncCalendar> {
             ),
           ),
           if (_events != null)
-            cv.Section(
+            XCSection(
               "Event Previews",
-              child: cv.ListView<Event>(
+              child: XCCellList<Event>(
                 children: _events!,
                 horizontalPadding: 0,
                 childBuilder: (context, item) {

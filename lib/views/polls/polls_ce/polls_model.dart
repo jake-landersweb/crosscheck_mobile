@@ -3,8 +3,8 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:sprung/sprung.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class PollsModel extends ChangeNotifier {
   int index = 0;
@@ -43,7 +43,7 @@ class PollsModel extends ChangeNotifier {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          cv.BasicButton(
+          Clickable(
               onTap: () {
                 controller.animateToPage(
                   0,
@@ -54,7 +54,7 @@ class PollsModel extends ChangeNotifier {
               },
               child: _cell(context, dmodel, "Basic Info", 0, Icons.lightbulb)),
           _spacer(context, dmodel),
-          cv.BasicButton(
+          Clickable(
               onTap: () {
                 controller.animateToPage(
                   1,
@@ -66,7 +66,7 @@ class PollsModel extends ChangeNotifier {
               child: _cell(
                   context, dmodel, "Choices", 1, Icons.format_list_bulleted)),
           _spacer(context, dmodel),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
               controller.animateToPage(
                 2,

@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
-import '../../../custom_views/root.dart' as cv;
 import '../../../data/root.dart';
 import '../../../client/root.dart';
 import '../../../extras/root.dart';
 import '../root.dart';
-import 'package:crosscheck_sports/views/components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class LineupRoot extends StatefulWidget {
   const LineupRoot({
@@ -67,14 +71,10 @@ class _LineupRootState extends State<LineupRoot> {
       title: "Lineup",
       horizontalPadding: 0.0,
       bottomPadding: 48.0,
-      leading: cv.BackButton(
-        color: dmodel.color,
-        title: "Cancel",
-        showIcon: false,
-        showText: true,
-        useRoot: true,
-      ),
-      trailing: cv.BasicButton(
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
+      trailing: Clickable(
         onTap: () async {
           if (lmodel.lineupValid()) {
             setState(() {
@@ -124,7 +124,7 @@ class _LineupRootState extends State<LineupRoot> {
             ? SizedBox(
                 height: 25,
                 width: 25,
-                child: cv.LoadingIndicator(color: dmodel.color),
+                child: XCLoadingIndicator(color: dmodel.color),
               )
             : Text(
                 lmodel.isCreate ? "Create" : "Save",
@@ -149,28 +149,26 @@ class _LineupRootState extends State<LineupRoot> {
         if (lmodel.isCreate)
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: cv.ListView<String>(
+            child: XCCellList<String>(
               children: const ["Old Lineups", "Lineup Templates"],
               onChildTap: ((context, item) {
                 if (item == "Old Lineups") {
-                  cv.cupertinoSheet(
-                      context: context,
-                      builder: (context) {
-                        return OldLineups(
+                  showSnappingSheet(
+      context: context,
+      child: OldLineups(
                           team: widget.team,
                           season: widget.season,
                           event: widget.event,
                           onSelect: (lineup) => lmodel.updateLineup(lineup),
-                        );
-                      });
+                        ),
+    );
                 } else if (item == "Lineup Templates") {
-                  cv.cupertinoSheet(
-                      context: context,
-                      builder: (context) {
-                        return LineupTemplates(
+                  showSnappingSheet(
+      context: context,
+      child: LineupTemplates(
                           onSelect: (lineup) => lmodel.updateLineup(lineup),
-                        );
-                      });
+                        ),
+    );
                 }
               }),
               childBuilder: ((context, item) {
@@ -196,7 +194,7 @@ class _LineupRootState extends State<LineupRoot> {
               }),
             ),
           ),
-        cv.ListView<LineupItem>(
+        XCCellList<LineupItem>(
           // showStyling: false,
           children: lmodel.lineup.lineupItems,
           allowsDelete: true,
@@ -212,7 +210,7 @@ class _LineupRootState extends State<LineupRoot> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(32, 16, 32, 0),
-          child: comp.SubActionButton(
+          child: XCWideButton.neutral(
             title: "Add Line",
             onTap: () => lmodel.addLineupItem(),
           ),

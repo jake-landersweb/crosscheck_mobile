@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class TSCEBasic extends StatefulWidget {
   const TSCEBasic({super.key});
@@ -37,41 +41,39 @@ class _TSCEBasicState extends State<TSCEBasic> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          cv.Section(
+          XCSection(
             "Required",
-            child: cv.ListView<Widget>(
+            child: XCCellList<Widget>(
               childPadding: const EdgeInsets.only(right: 16),
               horizontalPadding: 0,
               minHeight: 50,
               children: [
                 Center(
-                  child: cv.TextField2(
-                    labelText: "Team Name",
-                    controller: model.teamName,
-                    highlightColor: dmodel.color,
-                    onChanged: (v) {},
-                  ),
+                  child: XCField(
+              labelText: "Team Name",
+              controller: model.teamName,
+              onChanged: (v) {},
+            ),
                 ),
                 Center(
-                  child: cv.TextField2(
-                    labelText: "Season",
-                    hintText: "First Season Name",
-                    highlightColor: dmodel.color,
-                    controller: model.seasonName,
-                    onChanged: (v) {},
-                  ),
+                  child: XCField(
+              labelText: "Season",
+              hintText: "First Season Name",
+              controller: model.seasonName,
+              onChanged: (v) {},
+            ),
                 ),
               ],
             ),
           ),
-          cv.Section(
+          XCSection(
             "Optional Info",
-            child: cv.ListView<Widget>(
+            child: XCCellList<Widget>(
               childPadding: const EdgeInsets.only(right: 16),
               horizontalPadding: 0,
               minHeight: 50,
               children: [
-                cv.BasicButton(
+                Clickable(
                   onTap: () {
                     showDialog(
                       context: context,
@@ -201,36 +203,34 @@ class _TSCEBasicState extends State<TSCEBasic> {
                   ),
                 ),
                 Center(
-                  child: cv.TextField2(
-                    labelText: "Website",
-                    highlightColor: dmodel.color,
-                    onChanged: (v) {
+                  child: XCField(
+              labelText: "Website",
+              onChanged: (v) {
                       setState(() {
                         model.website = v;
                       });
                     },
-                  ),
+            ),
                 ),
                 Center(
-                  child: cv.TextField2(
-                    labelText: "Notes",
-                    highlightColor: dmodel.color,
-                    onChanged: (v) {
+                  child: XCField(
+              labelText: "Notes",
+              onChanged: (v) {
                       setState(() {
                         model.seasonNote = v;
                       });
                     },
-                  ),
+            ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) => TimezoneSelector(
+              showSnappingSheet(
+      context: context,
+      child: TimezoneSelector(
                   initTimezone: model.timezone,
                   onSelect: (v) {
                     setState(() {
@@ -238,7 +238,7 @@ class _TSCEBasicState extends State<TSCEBasic> {
                     });
                   },
                 ),
-              );
+    );
             },
             child: comp.ListWrapper(
               child: Text(

@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
-import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
 import '../../client/root.dart';
 import '../../extras/root.dart';
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class UserCommentSheet extends StatefulWidget {
   const UserCommentSheet({
@@ -46,20 +49,15 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
 
   @override
   Widget build(BuildContext context) {
-    DataModel dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Comment",
-      leading: cv.BackButton(
-        title: "Done",
-        showText: true,
-        useRoot: true,
-        color: dmodel.color,
-        showIcon: false,
-      ),
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
       child: Column(children: [
-        cv.Section(
+        XCSection(
           "Message",
-          child: cv.ListView<Widget>(
+          child: XCCellList<Widget>(
             horizontalPadding: 0,
             children: [
               Text(
@@ -69,9 +67,9 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
             ],
           ),
         ),
-        cv.Section(
+        XCSection(
           "Comments",
-          child: cv.ListView<StatusReply>(
+          child: XCCellList<StatusReply>(
             childPadding: const EdgeInsets.all(8),
             horizontalPadding: 0,
             childBuilder: (context, value) {
@@ -137,15 +135,13 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        cv.ListView<Widget>(
+        XCCellList<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            cv.TextField2(
-              fieldPadding: EdgeInsets.zero,
+            XCField(
               controller: controller,
               maxLines: 5,
-              showBackground: false,
               labelText: "New Comment",
               onChanged: (value) {},
             ),
@@ -153,7 +149,7 @@ class _UserCommentSheetState extends State<UserCommentSheet> {
         ),
         Padding(
             padding: const EdgeInsets.all(16.0),
-            child: comp.ActionButton(
+            child: XCWideButton.primary(
               title: "Post Reply",
               color: dmodel.color,
               isLoading: _isLoading,

@@ -7,7 +7,6 @@ import 'root.dart';
 import '../../../client/root.dart';
 import '../../../data/root.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:sprung/sprung.dart';
 
 class ECERoot extends StatefulWidget {

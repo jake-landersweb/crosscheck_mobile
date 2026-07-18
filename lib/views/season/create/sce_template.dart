@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class SCETemplates extends StatefulWidget {
   const SCETemplates({super.key});
@@ -78,7 +79,7 @@ class _SCETemplatesState extends State<SCETemplates> {
           const SizedBox(height: 16),
           if (smodel.seasonTemplates == null)
             cv.LoadingWrapper(
-              child: cv.ListView<int>(
+              child: XCCellList<int>(
                 horizontalPadding: 0,
                 minHeight: 50,
                 childPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -92,7 +93,7 @@ class _SCETemplatesState extends State<SCETemplates> {
               ),
             )
           else
-            cv.ListView<TemplateName>(
+            XCCellList<TemplateName>(
               horizontalPadding: 0,
               minHeight: 50,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -133,7 +134,7 @@ class _SCETemplatesState extends State<SCETemplates> {
           const SizedBox(height: 16),
           if (smodel.names == null)
             cv.LoadingWrapper(
-              child: cv.ListView<int>(
+              child: XCCellList<int>(
                 horizontalPadding: 0,
                 minHeight: 50,
                 childPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -147,7 +148,7 @@ class _SCETemplatesState extends State<SCETemplates> {
               ),
             )
           else
-            cv.ListView<TemplateName>(
+            XCCellList<TemplateName>(
               horizontalPadding: 0,
               minHeight: 50,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),

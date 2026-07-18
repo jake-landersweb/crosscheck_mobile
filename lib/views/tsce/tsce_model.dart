@@ -4,8 +4,8 @@ import 'package:crosscheck_sports/data/templates/template.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/roster/from_excel/su_excel.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:sprung/sprung.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class TSCEModel extends ChangeNotifier {
   late String email;
@@ -86,7 +86,7 @@ class TSCEModel extends ChangeNotifier {
 
   Widget _cell(BuildContext context, DataModel dmodel,
       PageController controller, String title, int status, IconData icon) {
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         controller.animateToPage(
           status,

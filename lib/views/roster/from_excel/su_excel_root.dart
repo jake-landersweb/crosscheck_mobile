@@ -9,10 +9,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:excel/excel.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class SUFromExcel extends StatefulWidget {
   const SUFromExcel({
@@ -55,15 +60,15 @@ class _SUFromExcelState extends State<SUFromExcel> {
     var dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Upload Excel",
-      leading: cv.CancelButton(color: dmodel.color),
-      trailing: cv.BasicButton(
+      leading: XCActionButton.cancel(),
+      trailing: Clickable(
         onTap: () {
           if (!_isLoading && _users.isNotEmpty) {
             _onComplete(context);
           }
         },
         child: _isLoading
-            ? cv.LoadingIndicator(color: dmodel.color)
+            ? XCLoadingIndicator(color: dmodel.color)
             : Text(
                 widget.actionText,
                 style: TextStyle(
@@ -76,7 +81,7 @@ class _SUFromExcelState extends State<SUFromExcel> {
       ),
       child: Column(
         children: [
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             Clipboard.setData(const ClipboardData(
                 text: "https://crosschecksports.com/docs/roster-form"));
@@ -94,7 +99,7 @@ class _SUFromExcelState extends State<SUFromExcel> {
           ),
         ),
         const SizedBox(height: 16),
-        cv.ListView<Tuple3<String, IconData, Color>>(
+        XCCellList<Tuple3<String, IconData, Color>>(
           children: [
             Tuple3("Download Template", Icons.newspaper_rounded, Colors.green),
             Tuple3("Upload Template", Icons.upload_rounded, Colors.grey),
@@ -150,24 +155,24 @@ class _SUFromExcelState extends State<SUFromExcel> {
               height: 30,
               child: AspectRatio(
                 aspectRatio: 1,
-                child: cv.LoadingIndicator(color: dmodel.color),
+                child: XCLoadingIndicator(color: dmodel.color),
               ),
             ),
           ),
         if (_users.isNotEmpty)
-          cv.Section(
+          XCSection(
             "User Preivew",
             allowsCollapse: true,
             initOpen: true,
             animateOpen: true,
-            child: cv.ListView<SUExcel>(
+            child: XCCellList<SUExcel>(
               children: _users,
               horizontalPadding: 0,
               childBuilder: (context, item) => _userCell(context, item),
               onChildTap: (context, item) {
-                cv.cupertinoSheet(
-                  context: context,
-                  builder: (context) => SUExcelEdit(
+                showSnappingSheet(
+      context: context,
+      child: SUExcelEdit(
                     user: item,
                     onEmailChanged: (v) => setState(
                       () => item.email = v,
@@ -200,7 +205,7 @@ class _SUFromExcelState extends State<SUFromExcel> {
                       () => item.note = v,
                     ),
                   ),
-                );
+    );
               },
             ),
           ),

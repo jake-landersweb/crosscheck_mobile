@@ -3,6 +3,8 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class CustomFieldSelector extends StatefulWidget {
   const CustomFieldSelector({
@@ -35,9 +37,11 @@ class _CustomFieldSelectorState extends State<CustomFieldSelector> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Select Field",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: cv.DynamicSelector<CustomField>(
         color: dmodel.color,
         selections: widget.customFields,

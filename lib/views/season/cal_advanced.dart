@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class CalendarAdvancedSettings extends StatelessWidget {
   const CalendarAdvancedSettings({
@@ -26,21 +31,21 @@ class CalendarAdvancedSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.Section(
+    return XCSection(
       "Advanced Settings",
       allowsCollapse: true,
       initOpen: false,
       child: Column(
         children: [
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) => cv.TimezoneSelector(
+              showSnappingSheet(
+      context: context,
+      child: cv.TimezoneSelector(
                   initTimezone: timezone,
                   onSelect: (tz) => onTimezoneChanged(tz),
                 ),
-              );
+    );
             },
             child: Container(
               constraints: const BoxConstraints(
@@ -52,7 +57,7 @@ class CalendarAdvancedSettings extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: cv.LabeledCell(
+                child: XCLabeledCell(
                   label: "Time zone",
                   value: timezone,
                 ),
@@ -79,7 +84,7 @@ class CalendarAdvancedSettings extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: cv.LabeledWidget(
+              child: XCLabeledWidget(
                 "Parse Opponents",
                 child: Row(
                   children: [
@@ -109,14 +114,15 @@ class CalendarAdvancedSettings extends StatelessWidget {
           const SizedBox(height: 8),
           Opacity(
             opacity: parseOpponents ? 1 : 0.5,
-            child: cv.TextField2(
-              value: ignoreString,
-              labelText: "Ignore",
-              labelEdgePadding: 16,
-              hintText: "Ignore String",
-              enabled: parseOpponents,
-              maxLines: 4,
-              onChanged: (val) => onIgnoreStringChanged(val),
+            child: IgnorePointer(
+              ignoring: !parseOpponents,
+              child: XCField(
+                value: ignoreString,
+                labelText: "Ignore",
+                hintText: "Ignore String",
+                maxLines: 4,
+                onChanged: (val) => onIgnoreStringChanged(val),
+              ),
             ),
           ),
         ],

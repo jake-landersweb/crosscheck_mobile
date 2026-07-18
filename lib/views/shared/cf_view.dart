@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/root.dart';
 import 'root.dart';
-import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class CustomFieldView extends StatefulWidget {
   const CustomFieldView({
@@ -21,8 +21,10 @@ class CustomFieldView extends StatefulWidget {
 class _CustomFieldViewState extends State<CustomFieldView> {
   @override
   Widget build(BuildContext context) {
-    return cv.NativeList(
-      color: widget.cellColor,
+    return XCCellList<Widget>(
+      backgroundColor: widget.cellColor,
+      horizontalPadding: 0,
+      childPadding: EdgeInsets.zero,
       children: [
         for (var i in widget.customFields)
           CustomFieldField(

@@ -5,6 +5,7 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class StatsUsersList extends StatefulWidget {
   const StatsUsersList({
@@ -69,7 +70,7 @@ class _StatsUsersListState extends State<StatsUsersList> {
         crossAxisCount: 2,
         itemCount: widget.available.length,
         builder: (context, i) {
-          return cv.BasicButton(
+          return Clickable(
             onTap: () {
               if (_filterValue == widget.available[i]) {
                 setState(() {

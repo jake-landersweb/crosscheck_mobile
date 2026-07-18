@@ -1,7 +1,7 @@
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:flutter/material.dart';
 import '../../extras/root.dart';
-import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class EventTime extends StatefulWidget {
   const EventTime({
@@ -32,7 +32,7 @@ class _EventTimeState extends State<EventTime> {
 
   @override
   Widget build(BuildContext context) {
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         setState(() {
           _showHours = !_showHours;

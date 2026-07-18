@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class TSCETemplates extends StatefulWidget {
   const TSCETemplates({super.key});
@@ -75,7 +76,7 @@ class _TSCETemplatesState extends State<TSCETemplates> {
           const SizedBox(height: 16),
           if (model.names == null)
             cv.LoadingWrapper(
-              child: cv.ListView<int>(
+              child: XCCellList<int>(
                 horizontalPadding: 0,
                 minHeight: 50,
                 childPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -89,7 +90,7 @@ class _TSCETemplatesState extends State<TSCETemplates> {
               ),
             )
           else
-            cv.ListView<TemplateName>(
+            XCCellList<TemplateName>(
               horizontalPadding: 0,
               minHeight: 50,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../custom_views/root.dart' as cv;
 import '../../extras/root.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class EventMetaDataCell extends StatelessWidget {
   const EventMetaDataCell({
@@ -18,8 +18,9 @@ class EventMetaDataCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return cv.BasicButton(
-      onTap: onTap,
+    return Clickable(
+      onTap: onTap ?? () {},
+      showTap: onTap != null,
       child: Row(
         children: [
           Icon(icon, color: CustomColors.textColor(context)),

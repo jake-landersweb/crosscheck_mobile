@@ -3,8 +3,9 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class TSCECustomFields extends StatefulWidget {
   const TSCECustomFields({
@@ -40,14 +41,10 @@ class _TSCECustomFieldsState extends State<TSCECustomFields> {
       title: "Edit Fields",
       horizontalPadding: 0.0,
       bottomPadding: 48.0,
-      leading: cv.CloseButton(
-        title: "Cancel",
-        showIcon: false,
-        showText: true,
-        useRoot: true,
-        color: dmodel.color,
-      ),
-      trailing: cv.BasicButton(
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
+      trailing: Clickable(
         onTap: () {
           widget.onCompletion(_fields);
           if (widget.closeOnCompletion) {

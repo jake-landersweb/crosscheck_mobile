@@ -7,6 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class TeamRoster extends StatefulWidget {
   const TeamRoster({
@@ -47,7 +51,7 @@ class _TeamRosterState extends State<TeamRoster> with TickerProviderStateMixin {
       onRefresh: () => _fetchUsers(context, dmodel),
       backgroundColor: CustomColors.backgroundColor(context),
       trailing: _createUser(context, dmodel),
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       child: Column(
         children: [
           if (_users != null && !_isLoading)
@@ -76,13 +80,13 @@ class _TeamRosterState extends State<TeamRoster> with TickerProviderStateMixin {
         const SizedBox(height: 8),
         _rosterBase(context, dmodel, _active(context, dmodel, smodel), smodel),
         if (_invited(context, dmodel, smodel).isNotEmpty)
-          cv.Section(
+          XCSection(
             "Invited",
             child: _rosterBase(
                 context, dmodel, _invited(context, dmodel, smodel), smodel),
           ),
         if (_notValidated(context, dmodel, smodel).isNotEmpty)
-          cv.Section(
+          XCSection(
             "Non Validated",
             child: _rosterBase(context, dmodel,
                 _notValidated(context, dmodel, smodel), smodel),
@@ -185,11 +189,11 @@ class _TeamRosterState extends State<TeamRoster> with TickerProviderStateMixin {
 
   Widget _createUser(BuildContext context, DataModel dmodel) {
     if (widget.teamUser?.isTeamAdmin() ?? false) {
-      return cv.BasicButton(
+      return Clickable(
         onTap: () {
-          cv.cupertinoSheet(
-            context: context,
-            builder: (context) {
+          showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) {
               return RUCERoot(
                 team: dmodel.tus!.team,
                 isSheet: true,
@@ -202,8 +206,8 @@ class _TeamRosterState extends State<TeamRoster> with TickerProviderStateMixin {
                   });
                 },
               );
-            },
-          );
+            }),
+    );
         },
         child: Icon(Icons.add, color: dmodel.color),
       );

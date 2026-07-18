@@ -7,9 +7,12 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class UploadCalendar extends StatefulWidget {
   const UploadCalendar({
@@ -57,20 +60,20 @@ class _UploadCalendarState extends State<UploadCalendar> {
     var dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Upload Calendar",
-      leading: cv.BasicButton(
+      leading: Clickable(
         onTap: () {
           Navigator.of(context).pop();
         },
         child: Icon(Icons.close, color: dmodel.color),
       ),
-      trailing: cv.BasicButton(
+      trailing: Clickable(
         onTap: () {
           if (_isLoaded) {
             _upload(dmodel);
           }
         },
         child: _isUploading
-            ? cv.LoadingIndicator(color: dmodel.color)
+            ? XCLoadingIndicator(color: dmodel.color)
             : Text(
                 "Upload",
                 style: TextStyle(
@@ -128,21 +131,21 @@ class _UploadCalendarState extends State<UploadCalendar> {
           const SizedBox(height: 16),
           SizedBox(
             height: 30,
-            child: cv.BasicButton(
+            child: Clickable(
               onTap: () {
                 _selectFile(dmodel);
               },
               child: Center(
                 child: _loading
-                    ? cv.LoadingIndicator(color: dmodel.color)
+                    ? XCLoadingIndicator(color: dmodel.color)
                     : Text("Select File:", style: TextStyle(color: dmodel.color)),
               ),
             ),
           ),
           if (_events != null)
-            cv.Section(
+            XCSection(
               "Event Previews",
-              child: cv.ListView<Event>(
+              child: XCCellList<Event>(
                 children: _events!,
                 horizontalPadding: 0,
                 childBuilder: (context, item) {

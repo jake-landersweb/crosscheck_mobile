@@ -10,6 +10,9 @@ import '../../data/root.dart';
 import '../../client/root.dart';
 import '../../extras/root.dart';
 import 'root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class EventCell extends StatefulWidget {
   const EventCell({
@@ -112,7 +115,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
           const SizedBox(height: 8),
           Row(
             children: [
-              cv.BasicButton(
+              Clickable(
                 onTap: () {
                   _toggleContainer();
                 },
@@ -151,7 +154,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: cv.BasicButton(
+          child: Clickable(
             onTap: () {
               cv.Navigate(
                 context,
@@ -195,18 +198,16 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
                   if (stringToDate(widget.event.eDate)
                           .isAfter(DateTime.now()) ||
                       (dmodel.currentSeasonUser?.isSeasonAdmin() ?? false)) {
-                    cv.showFloatingSheet(
-                      context: context,
-                      builder: (context) {
-                        return StatusSelectSheet(
+                    showSnappingSheet(
+      context: context,
+      child: StatusSelectSheet(
                           email: widget.email,
                           teamId: widget.team.teamId,
                           event: widget.event,
                           isUpcoming: widget.isUpcoming,
                           season: widget.season,
-                        );
-                      },
-                    );
+                        ),
+    );
                   }
                 }
               },
@@ -284,7 +285,7 @@ class _EventCellState extends State<EventCell> with TickerProviderStateMixin {
   }
 
   Widget _customCell(String label, String value) {
-    return cv.LabeledCell(
+    return XCLabeledCell(
       label: label,
       value: value,
       height: 35,

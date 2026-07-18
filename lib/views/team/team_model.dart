@@ -7,9 +7,13 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/team/tce/image_uploader.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class TeamModel extends StatefulWidget {
   const TeamModel({
@@ -26,9 +30,11 @@ class _TeamModelState extends State<TeamModel> {
   @override
   Widget build(BuildContext context) {
     var dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.zero,
@@ -37,11 +43,11 @@ class _TeamModelState extends State<TeamModel> {
             children: [
               if (dmodel.currentSeasonUser?.isTeamAdmin() ??
                   dmodel.tus!.user.isTeamAdmin())
-                cv.BasicButton(
+                Clickable(
                   onTap: () {
-                    cv.cupertinoSheet(
-                      context: context,
-                      builder: (context) => ImageUploader(
+                    showSnappingSheet(
+      context: context,
+      child: ImageUploader(
                         team: widget.team,
                         imgIsUrl: widget.team.image.contains(
                             "https://crosscheck-sports.s3.amazonaws.com"),
@@ -52,7 +58,7 @@ class _TeamModelState extends State<TeamModel> {
                           });
                         },
                       ),
-                    );
+    );
                   },
                   child: Stack(
                     alignment: Alignment.center,
@@ -97,7 +103,7 @@ class _TeamModelState extends State<TeamModel> {
             Column(
               children: [
                 const SizedBox(height: 16),
-                cv.BasicButton(
+                Clickable(
                   onTap: () async {
                     Navigator.of(context).pop();
                     await Future.delayed(const Duration(milliseconds: 500));
@@ -149,9 +155,9 @@ class _TeamModelState extends State<TeamModel> {
                 ),
               ],
             ),
-          cv.Section(
+          XCSection(
             "My Teams",
-            child: cv.ListView(
+            child: XCCellList(
               color: dmodel.color,
               horizontalPadding: 0,
               children: dmodel.user!.teams.map((e) => e.title).toList(),

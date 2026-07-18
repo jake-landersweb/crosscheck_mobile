@@ -11,8 +11,15 @@ import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 import '../root.dart';
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
 
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/adaptive/confirm_dialog/adaptive_confirm_dialog.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class Settings extends StatefulWidget {
   const Settings({
@@ -69,7 +76,7 @@ class _SettingsState extends State<Settings> {
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: comp.SubActionButton(
+            child: XCWideButton.neutral(
               title: "Logout",
               isLoading: _isLoading,
               onTap: () => _showAlert(context, dmodel),
@@ -86,7 +93,7 @@ class _SettingsState extends State<Settings> {
             ),
           ),
           const SizedBox(height: 16),
-          cv.BasicButton(
+          Clickable(
             onTap: () async {
               var uri = Uri.parse("https://crosschecksports.com/privacy-policy");
               if (!await launchUrl(
@@ -151,10 +158,10 @@ class _SettingsState extends State<Settings> {
           ),
           const SizedBox(height: 16),
           // basic info fields
-          cv.Section(
+          XCSection(
             "Basic Info",
             // headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
-            child: cv.ListView<Tuple3<String, String, bool>>(
+            child: XCCellList<Tuple3<String, String, bool>>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
@@ -169,7 +176,7 @@ class _SettingsState extends State<Settings> {
                   Tuple3("Nickname", widget.user.nickname, false),
               ],
               childBuilder: (context, item) {
-                return cv.LabeledCell(
+                return XCLabeledCell(
                   label: item.v1,
                   value: item.v2,
                   clickable: item.v3,
@@ -219,18 +226,18 @@ class _SettingsState extends State<Settings> {
   }
 
   Widget _notifications(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Emails",
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
-            cv.ListView<Widget>(
+            XCCellList<Widget>(
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               horizontalPadding: 0,
               children: [
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: (widget.user.emailNotifications ?? false)
                       ? "True"
                       : "False",
@@ -241,10 +248,10 @@ class _SettingsState extends State<Settings> {
             if (widget.user.mobileNotifications.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: cv.Section(
+                child: XCSection(
                   "Phone Notifications",
                   // headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
-                  child: cv.ListView<MobileNotification>(
+                  child: XCCellList<MobileNotification>(
                     childPadding: const EdgeInsets.symmetric(horizontal: 16),
                     children: widget.user
                         .getMobileNotifications(dmodel.teamArgs?.teamId),
@@ -275,7 +282,7 @@ class _SettingsState extends State<Settings> {
                               ),
                             ),
                           Expanded(
-                            child: cv.LabeledCell(
+                            child: XCLabeledCell(
                               label: notif.allow ? "True" : "False",
                               value:
                                   "${notif.deviceName ?? "Unknown Device"}${notif.deviceVersion != null ? " ${notif.deviceVersion}" : ""}",
@@ -294,7 +301,7 @@ class _SettingsState extends State<Settings> {
   }
 
   Widget _teams(BuildContext context, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Teams",
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
       child: Column(
@@ -326,7 +333,7 @@ class _SettingsState extends State<Settings> {
           //     selectorStyle: cv.DynamicSelectorStyle.list,
           //   ),
           // ),
-          cv.ListView(
+          XCCellList(
             color: dmodel.color,
             children: widget.user.teams.map((e) => e.title).toList(),
             childBuilder: (context, String item) {
@@ -428,43 +435,31 @@ class _SettingsState extends State<Settings> {
   }
 
   void _showAlert(BuildContext context, DataModel dmodel) {
-    cv.showAlert(
-      context: context,
+    AdaptiveConfirmDialog.show(
+      context,
       title: "Are You Sure?",
-      body: const Center(
-        child: Text(
-          "You will have to re-login to access your data.",
-          textAlign: TextAlign.center,
-        ),
-      ),
-      cancelText: "Cancel",
-      onCancel: () {},
-      submitText: "Log Out",
-      onSubmit: () => _logoutAction(context, dmodel),
-      submitColor: Colors.red,
-    );
+      message: "You will have to re-login to access your data.",
+      cancelLabel: "Cancel",
+      confirmLabel: "Log Out",
+      isDestructive: true,
+    ).then((confirmed) {
+      if (confirmed) {
+        _logoutAction(context, dmodel);
+      }
+    });
   }
 
   Widget _edit(BuildContext context, DataModel dmodel) {
     if (dmodel.user == null) {
       return Container();
     } else {
-      return cv.BasicButton(
+      return XCActionButton.edit(
         onTap: () {
-          cv.cupertinoSheet(
-              context: context,
-              builder: (context) {
-                return UserEdit(user: widget.user.clone());
-              });
+          showSnappingSheet(
+            context: context,
+            child: UserEdit(user: widget.user.clone()),
+          );
         },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
-            color: dmodel.color,
-          ),
-        ),
       );
     }
   }
@@ -472,14 +467,12 @@ class _SettingsState extends State<Settings> {
   Widget _feedback(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: comp.ActionButton(
+      child: XCWideButton.primary(
         color: dmodel.color,
         onTap: () {
-          cv.showFloatingSheet(
+          showSnappingSheet(
             context: context,
-            builder: (context) {
-              return Suggestions(email: widget.user.email);
-            },
+            child: Suggestions(email: widget.user.email),
           );
         },
         title: "Have suggestions?",
@@ -488,31 +481,22 @@ class _SettingsState extends State<Settings> {
   }
 
   Widget _deleteAccount(BuildContext context, DataModel dmodel) {
-    return cv.BasicButton(
-      onTap: () => cv.showAlert(
-        context: context,
+    return Clickable(
+      onTap: () => AdaptiveConfirmDialog.show(
+        context,
         title: "Are you sure?",
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Text(
-              "You are requesting to delete your account. Your account will remain active for 15 days after this request",
-            ),
-            Text(
-                "If there has been no more activity within those 15 days, your account and data will be permenetly deleted from our databases.")
-          ],
-        ),
-        cancelText: "Cancel",
-        cancelBolded: true,
-        onCancel: () {},
-        submitText: "I am sure",
-        onSubmit: () async {
+        message:
+            "You are requesting to delete your account. Your account will remain active for 15 days after this request. If there has been no more activity within those 15 days, your account and data will be permenetly deleted from our databases.",
+        cancelLabel: "Cancel",
+        confirmLabel: "I am sure",
+        isDestructive: true,
+      ).then((confirmed) async {
+        if (confirmed) {
           await dmodel.deleteAccount(widget.user.email, () {
             _logoutAction(context, dmodel);
           }, () {});
-        },
-        submitColor: Colors.red,
-      ),
+        }
+      }),
       child: Text(
         "Delete Account",
         style: TextStyle(

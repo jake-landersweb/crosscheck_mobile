@@ -3,6 +3,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'root.dart' as cv;
 import 'dart:math' as math;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 enum ALType { nav, sheet, floating, snapping }
 
@@ -35,7 +36,7 @@ class ActionList extends StatefulWidget {
 class _ActionListState extends State<ActionList> {
   @override
   Widget build(BuildContext context) {
-    return cv.ListView<ActionListItem>(
+    return XCCellList<ActionListItem>(
       horizontalPadding: 0,
       childPadding: const EdgeInsets.symmetric(horizontal: 16),
       onChildTap: ((context, item) {
@@ -44,21 +45,7 @@ class _ActionListState extends State<ActionList> {
             cv.Navigate(context, item.view);
             break;
           case cv.ALType.sheet:
-            cv.cupertinoSheet(
-              context: context,
-              builder: (context) {
-                return item.view;
-              },
-            );
-            break;
           case cv.ALType.floating:
-            cv.showFloatingSheet(
-              context: context,
-              builder: (context) {
-                return item.view;
-              },
-            );
-            break;
           case cv.ALType.snapping:
             showSnappingSheet(
               context: context,

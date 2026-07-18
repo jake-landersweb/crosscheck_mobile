@@ -20,9 +20,11 @@ import '../../client/root.dart';
 import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../../custom_views/root.dart' as cv;
-import '../components/root.dart' as comp;
 import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class Schedule extends StatefulWidget {
   const Schedule({super.key});
@@ -164,13 +166,12 @@ class _ScheduleState extends State<Schedule> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (dmodel.tus != null)
-                              cv.BasicButton(
+                              Clickable(
                                 onTap: () {
-                                  cv.showFloatingSheet(
-                                    context: context,
-                                    builder: (context) =>
-                                        TeamModel(team: dmodel.tus!.team),
-                                  );
+                                  showSnappingSheet(
+      context: context,
+      child: TeamModel(team: dmodel.tus!.team),
+    );
                                 },
                                 child: TeamLogo(
                                   url: dmodel.tus!.team.image,
@@ -250,7 +251,7 @@ class _ScheduleState extends State<Schedule> {
     if (dmodel.noSeason || dmodel.noTeam) {
       return Container();
     } else {
-      return cv.BasicButton(
+      return Clickable(
         onTap: () {
           if (dmodel.currentSeason != null) {
             showSnappingSheet(
@@ -310,7 +311,7 @@ class _ScheduleState extends State<Schedule> {
     } else {
       return Row(
         children: [
-          cv.BasicButton(
+          Clickable(
             onTap: () => dmodel.toggleScheduleTitle(),
             child: Container(
               decoration: BoxDecoration(
@@ -537,7 +538,7 @@ class _ScheduleHomeState extends State<ScheduleHome> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  cv.ListView<_MorePageItem>(
+                  XCCellList<_MorePageItem>(
                     horizontalPadding: 0,
                     childPadding: const EdgeInsets.symmetric(horizontal: 16),
                     onChildTap: ((context, item) {
@@ -643,7 +644,7 @@ class _ScheduleHomeState extends State<ScheduleHome> {
                 if (dmodel.hasMoreUpcomingEvents)
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 2,
-                    child: comp.SubActionButton(
+                    child: XCWideButton.neutral(
                       title: "Get More",
                       isLoading: dmodel.isFetchingEvents,
                       onTap: () {
@@ -712,7 +713,7 @@ class _PreviousEventsState extends State<PreviousEvents> {
           if (dmodel.hasMorePreviousEvents)
             SizedBox(
               width: MediaQuery.of(context).size.width / 2,
-              child: comp.SubActionButton(
+              child: XCWideButton.neutral(
                 title: "Get More",
                 isLoading: dmodel.isFetchingEvents,
                 onTap: () {

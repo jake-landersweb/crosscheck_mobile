@@ -6,6 +6,11 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class TCEBasic extends StatefulWidget {
   const TCEBasic({super.key});
@@ -33,16 +38,15 @@ class _TCEBasicState extends State<TCEBasic> {
   Widget _title(BuildContext context, TCEModel tcemodel, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.Section(
+      child: XCSection(
         "Title",
-        child: cv.ListView<Widget>(
+        child: XCCellList<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            cv.TextField2(
+            XCField(
               labelText: "Title (CANNOT CHANGE)",
               value: tcemodel.team.title,
-              showBackground: false,
               onChanged: (value) {
                 setState(() {
                   tcemodel.team.title = value;
@@ -56,7 +60,7 @@ class _TCEBasicState extends State<TCEBasic> {
   }
 
   Widget _body(BuildContext context, TCEModel tcemodel, DataModel dmodel) {
-    return cv.Section(
+    return XCSection(
       "Basic Info",
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 8, 4),
       allowsCollapse: true,
@@ -67,22 +71,22 @@ class _TCEBasicState extends State<TCEBasic> {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: const [
-            cv.Section(
+            XCSection(
               "Color",
               child: Text(
                   "The color will control the color you and your users see throughout the entire app. Make sure to be careful placing light colors on a light background, or a dark color on a dark background as this will impact your user's experience."),
             ),
-            cv.Section(
+            XCSection(
               "Light Background",
               child: Text(
                   "Whether the app will have a light or dark background. This will control what your users see as well, so if your logo looks better with a dark themed app control that here."),
             ),
-            cv.Section(
+            XCSection(
               "Show Nicknames",
               child: Text(
                   "Users have control over a nickname field, so if you would like all names to be replaced in app with these nicknames, control that here"),
             ),
-            cv.Section(
+            XCSection(
               "Note",
               child: Text(
                   "All of these fields can be changed later, so no need to commit now!"),
@@ -90,7 +94,7 @@ class _TCEBasicState extends State<TCEBasic> {
           ],
         );
       },
-      child: cv.ListView<Widget>(
+      child: XCCellList<Widget>(
         childPadding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
         children: [
           Row(
@@ -104,7 +108,7 @@ class _TCEBasicState extends State<TCEBasic> {
                       fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ),
-              cv.BasicButton(
+              Clickable(
                 onTap: () {
                   showDialog(
                     context: context,
@@ -146,17 +150,16 @@ class _TCEBasicState extends State<TCEBasic> {
               ),
             ],
           ),
-          cv.TextField2(
-            labelText: "Team Note",
-            value: tcemodel.team.teamNote,
-            fieldPadding: const EdgeInsets.all(0),
-            onChanged: (value) {
+          XCField(
+              labelText: "Team Note",
+              value: tcemodel.team.teamNote,
+              onChanged: (value) {
               setState(() {
                 tcemodel.team.teamNote = value;
               });
             },
-          ),
-          cv.LabeledWidget(
+            ),
+          XCLabeledWidget(
             "Light Background",
             child: Row(
               children: [
@@ -176,7 +179,7 @@ class _TCEBasicState extends State<TCEBasic> {
               ],
             ),
           ),
-          cv.LabeledWidget(
+          XCLabeledWidget(
             "Show Player Nicknames",
             child: Row(
               children: [

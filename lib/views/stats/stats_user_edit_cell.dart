@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class StatUserEditCell extends StatefulWidget {
   const StatUserEditCell({
@@ -50,7 +51,7 @@ class _StatUserEditCellState extends State<StatUserEditCell> {
           ],
         ),
         const SizedBox(height: 8),
-        cv.ListView<StatObject>(
+        XCCellList<StatObject>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: widget.userStat.stats,

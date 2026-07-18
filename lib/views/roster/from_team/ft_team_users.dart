@@ -4,9 +4,11 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
-import '../../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class FTTeamUsers extends StatefulWidget {
   const FTTeamUsers({super.key});
@@ -21,17 +23,12 @@ class _FTTeamUsersState extends State<FTTeamUsers> {
     FTModel ftmodel = Provider.of<FTModel>(context);
     DataModel dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
-        title: "Select Team Users",
-        trailing: cv.BackButton(
-          title: "Done",
-          color: dmodel.color,
-          showIcon: false,
-          showText: true,
-        ),
-        child: SizedBox(
+      title: "Select Team Users",
+      trailing: XCActionButton.cancel(),
+      child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.8,
           child: ftmodel.isLoading
-              ? const Center(child: cv.LoadingIndicator())
+              ? const Center(child: XCLoadingIndicator())
               : ftmodel.users == null
                   ? Center(
                       child: Column(
@@ -46,7 +43,7 @@ class _FTTeamUsersState extends State<FTTeamUsers> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: comp.SubActionButton(
+                            child: XCWideButton.neutral(
                               title: "Retry",
                               backgroundColor:
                                   CustomColors.sheetCell(context),
@@ -66,7 +63,8 @@ class _FTTeamUsersState extends State<FTTeamUsers> {
                         return _body(context, dmodel, ftmodel);
                       },
                     ),
-        ));
+        ),
+    );
   }
 
   Widget _body(BuildContext context, DataModel dmodel, FTModel ftmodel) {
@@ -86,7 +84,7 @@ class _FTTeamUsersState extends State<FTTeamUsers> {
               ),
             )
           else
-            cv.ListView<SeasonUser>(
+            XCCellList<SeasonUser>(
               children: smodel.users(ftmodel.users!,
                   showNicknames: dmodel.tus!.team.showNicknames),
               color: dmodel.color,

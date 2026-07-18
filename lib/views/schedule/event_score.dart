@@ -5,6 +5,12 @@ import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
 import '../../client/root.dart';
 import '../../extras/root.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class EventScore extends StatefulWidget {
   const EventScore({
@@ -37,15 +43,17 @@ class _EventScoreState extends State<EventScore> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Edit Score",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: Column(
         children: [
-          cv.Section(
+          XCSection(
             widget.event.homeTeam?.title ?? "Home Team",
             headerPadding: const EdgeInsets.fromLTRB(24, 8, 0, 4),
-            child: cv.ListView<Widget>(
+            child: XCCellList<Widget>(
               backgroundColor: CustomColors.sheetCell(context),
               horizontalPadding: 8,
               childPadding: EdgeInsets.zero,
@@ -65,10 +73,10 @@ class _EventScoreState extends State<EventScore> {
             ),
           ),
           const SizedBox(height: 16),
-          cv.Section(
+          XCSection(
             widget.event.awayTeam?.title ?? "Away Team",
             headerPadding: const EdgeInsets.fromLTRB(24, 8, 0, 4),
-            child: cv.ListView<Widget>(
+            child: XCCellList<Widget>(
               backgroundColor: CustomColors.sheetCell(context),
               horizontalPadding: 8,
               childPadding: EdgeInsets.zero,
@@ -88,10 +96,9 @@ class _EventScoreState extends State<EventScore> {
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: cv.RoundedLabel(
-              "Update Score",
+            child: XCWideButton.primary(
+              title: "Update Score",
               color: dmodel.color,
-              textColor: Colors.white,
               onTap: () {
                 _updateScore(context, dmodel);
               },
@@ -178,12 +185,10 @@ class __EventScoreFieldState extends State<_EventScoreField> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0),
-            child: cv.TextField2(
+            child: XCField(
               labelText: "Score",
-              highlightColor: widget.color,
               controller: _controller,
               isLabeled: false,
-              showBackground: false,
               onChanged: (val) {
                 var v = int.tryParse(val) ?? 0;
                 widget.onChange(v);

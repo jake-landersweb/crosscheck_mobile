@@ -4,8 +4,11 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
-import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class StatsUsersEdit extends StatefulWidget {
   const StatsUsersEdit({
@@ -43,12 +46,7 @@ class _StatsUsersEditState extends State<StatsUsersEdit> {
           title: "Edit Stats",
           isLarge: true,
           backgroundColor: CustomColors.backgroundColor(context),
-          leading: cv.BackButton(
-            color: dmodel.color,
-            title: "Cancel",
-            showText: true,
-            showIcon: false,
-          ),
+          leading: XCActionButton.back(),
           child: _body(context, dmodel),
         ),
         SafeArea(
@@ -64,14 +62,12 @@ class _StatsUsersEditState extends State<StatsUsersEdit> {
   Widget _body(BuildContext context, DataModel dmodel) {
     return Column(
       children: [
-        cv.ListView<Widget>(
+        XCCellList<Widget>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            cv.TextField2(
-              // fieldPadding: EdgeInsets.zero,
+            XCField(
               value: _filterText,
-              showBackground: false,
               labelText: "Search ...",
               onChanged: (value) {
                 setState(() {
@@ -112,17 +108,14 @@ class _StatsUsersEditState extends State<StatsUsersEdit> {
   }
 
   Widget _confirm(BuildContext context, DataModel dmodel) {
-    return cv.BasicButton(
+    return XCWideButton.primary(
+      title: "Confirm",
+      color: dmodel.color,
+      isLoading: isLoading,
       onTap: () {
         // send mutated list
         _waitForCompletion(context);
       },
-      child: cv.RoundedLabel(
-        "Confirm",
-        color: dmodel.color,
-        textColor: Colors.white,
-        isLoading: isLoading,
-      ),
     );
   }
 

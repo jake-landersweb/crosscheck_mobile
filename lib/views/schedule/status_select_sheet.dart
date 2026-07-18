@@ -8,6 +8,12 @@ import '../../extras/root.dart';
 import '../../client/root.dart';
 import '../../data/root.dart';
 import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class StatusSelectSheet extends StatefulWidget {
   const StatusSelectSheet({
@@ -60,9 +66,11 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Select Status",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: ConstrainedBox(
         constraints:
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 2),
@@ -133,7 +141,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
             //     ],
             //   ),
             if (_customFields.isNotEmpty)
-              cv.Section(
+              XCSection(
                 "Custom Fields",
                 child: CustomFieldCreate(
                   enabled: false,
@@ -149,28 +157,26 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
                 ),
               ),
             const SizedBox(height: 16),
-            cv.ListView<Widget>(
+            XCCellList<Widget>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               backgroundColor: CustomColors.sheetCell(context),
               children: [
-                cv.TextField2(
-                  fieldPadding: EdgeInsets.zero,
-                  controller: controller,
-                  showBackground: false,
-                  maxLines: 5,
-                  icon: Icon(Icons.description_rounded,
+                XCField(
+              controller: controller,
+              maxLines: 5,
+              icon: Icon(Icons.description_rounded,
                       color: CustomColors.textColor(context).withOpacity(0.2)),
-                  isLabeled: true,
-                  labelText: "Note",
-                  onChanged: (value) {},
-                ),
+              isLabeled: true,
+              labelText: "Note",
+              onChanged: (value) {},
+            ),
               ],
             ),
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: comp.ActionButton(
+              child: XCWideButton.primary(
                 title: "Set Status",
                 isLoading: _isLoading,
                 color: dmodel.color,
@@ -205,7 +211,7 @@ class _StatusSelectSheetState extends State<StatusSelectSheet> {
             //               fontWeight: FontWeight.w600,
             //             ),
             //           )
-            //         : const cv.LoadingIndicator(color: Colors.white),
+            //         : const XCLoadingIndicator(color: Colors.white),
             //   ),
             // ),
           ],

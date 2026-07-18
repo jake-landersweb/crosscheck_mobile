@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 
-import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class EventUserStatus extends StatefulWidget {
   const EventUserStatus({
@@ -30,7 +30,7 @@ class _EventUserStatusState extends State<EventUserStatus> {
   @override
   Widget build(BuildContext context) {
     if (widget.clickable) {
-      return cv.BasicButton(
+      return Clickable(
         onTap: widget.onTap,
         child: _child(context),
       );

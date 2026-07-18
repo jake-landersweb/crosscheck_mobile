@@ -3,8 +3,10 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../data/root.dart';
-import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class AssetSheet extends StatefulWidget {
   const AssetSheet({
@@ -24,10 +26,12 @@ class _AssetSheetState extends State<AssetSheet> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Select Type",
-      color: dmodel.color,
-      child: cv.ListView<Tuple<String, Widget>>(
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      child: XCCellList<Tuple<String, Widget>>(
         backgroundColor: CustomColors.sheetCell(context),
         childPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
         horizontalPadding: 0,

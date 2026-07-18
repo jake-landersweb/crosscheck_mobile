@@ -7,10 +7,8 @@ import 'package:sprung/sprung.dart';
 import '../../../client/root.dart';
 import '../../../data/root.dart';
 import '../../../extras/root.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/action_button.dart';
 import 'package:crosscheck_sports/components/core/container.dart';
-import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:crosscheck_sports/style/root.dart';
 
 class SCERoot extends StatefulWidget {

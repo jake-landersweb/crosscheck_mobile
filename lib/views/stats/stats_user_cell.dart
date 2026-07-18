@@ -3,6 +3,7 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:sprung/sprung.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class StatsUserCell extends StatefulWidget {
   const StatsUserCell({
@@ -63,7 +64,7 @@ class _StatsUserCellState extends State<StatsUserCell>
 
   @override
   Widget build(BuildContext context) {
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         _toggleContainer();
       },

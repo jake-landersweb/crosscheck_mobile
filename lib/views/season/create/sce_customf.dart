@@ -3,9 +3,9 @@ import 'package:crosscheck_sports/views/season/create/sce_model.dart';
 import 'package:provider/provider.dart';
 import '../../../client/root.dart';
 import '../../../data/root.dart';
-import '../../../custom_views/root.dart' as cv;
 import '../../shared/root.dart';
 import 'root.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class SCECustomF extends StatefulWidget {
   const SCECustomF({
@@ -63,7 +63,7 @@ class _SCECustomFState extends State<SCECustomF> {
   }
 
   Widget _customF(BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return cv.Section(
+    return XCSection(
       "Custom Fields",
       headerPadding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
       color: dmodel.color,
@@ -81,14 +81,14 @@ class _SCECustomFState extends State<SCECustomF> {
 
   Widget _customUserF(
       BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return cv.Section(
+    return XCSection(
       "Custom User Fields",
       headerPadding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
       color: dmodel.color,
       helperView: (context) {
         return Column(
           children: const [
-            cv.Section(
+            XCSection(
               "Custom User Fields",
               child: Text(
                   "These fields will show up on every user you add to your season, and give you the ability to add either a word, number, or true/false fields to users. These are completly customizable, and let you keep track of information on each user that may be lacking."),
@@ -111,14 +111,14 @@ class _SCECustomFState extends State<SCECustomF> {
 
   Widget _eventCustomF(
       BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return cv.Section(
+    return XCSection(
       "Custom Fields for Events Template",
       headerPadding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
       color: dmodel.color,
       helperView: (context) {
         return Column(
           children: const [
-            cv.Section(
+            XCSection(
               "Event Fields Template",
               child: Text(
                   "These are a tricky concept at first, but these control custom fields that will be auto added to every event you create, incase there is a field you always want present. But don't worry, you can add or remove these fields on each specific event."),
@@ -140,7 +140,7 @@ class _SCECustomFState extends State<SCECustomF> {
 
   Widget _eventCustomUserF(
       BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return cv.Section(
+    return XCSection(
       "Custom Fields for Event Users Template",
       headerPadding: const EdgeInsets.fromLTRB(16, 8, 0, 4),
       color: dmodel.color,
@@ -148,7 +148,7 @@ class _SCECustomFState extends State<SCECustomF> {
       helperView: (context) {
         return Column(
           children: const [
-            cv.Section(
+            XCSection(
               "Event Fields Template",
               child: Text(
                   "These are a tricky concept at first, but these fields will be auto added to every event user that is created. This gives you a convenient way to store fields you want on every event without having to add them each time. But don't worry, these fields can be added or removed on an event by event basis."),

@@ -7,6 +7,8 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:provider/provider.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class NotificationsView extends StatefulWidget {
   const NotificationsView({
@@ -64,7 +66,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                   ),
                 )
               else
-                cv.ListView<NotificationAlert>(
+                XCCellList<NotificationAlert>(
                   children: _notifs,
                   allowsDelete: true,
                   onChildTap: (context, item) =>
@@ -95,7 +97,7 @@ class _NotificationsViewState extends State<NotificationsView> {
             height: 50,
             width: 50,
             child: Center(
-              child: cv.LoadingIndicator(color: dmodel.color),
+              child: XCLoadingIndicator(color: dmodel.color),
             ),
           ),
       ],

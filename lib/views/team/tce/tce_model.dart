@@ -4,7 +4,7 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:sprung/sprung.dart';
-import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class TCEModel extends ChangeNotifier {
   late User user;
@@ -53,7 +53,7 @@ class TCEModel extends ChangeNotifier {
 
   Widget _cell(BuildContext context, DataModel dmodel,
       PageController controller, String title, int status, IconData icon) {
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         controller.animateToPage(
           status,

@@ -8,6 +8,11 @@ import 'package:flutter_svg/svg.dart';
 import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 import '../../extras/root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/container.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class Login extends StatefulWidget {
   static const String route = '/login';
@@ -156,21 +161,16 @@ class _LoginState extends State<Login> {
       color: Colors.transparent,
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-      child: cv.RoundedLabel(
-        "",
+      child: XCContainer(
         color: CustomColors.cellColor(context),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: cv.TextField2(
-            labelText: title,
-            obscureText: obscure,
-            keyboardType: keyboardType,
-            showBackground: false,
-            maxLines: 1,
-            highlightColor: dmodel.color,
-            icon: Icon(icon),
-            onChanged: (value) => onChanged(value),
-          ),
+        innerPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: XCField(
+          labelText: title,
+          obscureText: obscure,
+          keyboardType: keyboardType,
+          maxLines: 1,
+          icon: Icon(icon),
+          onChanged: (value) => onChanged(value),
         ),
       ),
     );
@@ -184,12 +184,10 @@ class _LoginState extends State<Login> {
           elevation: 2,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-          child: cv.RoundedLabel(
-            widget.isCreate ? "Create Account" : "Login",
+          child: XCWideButton.primary(
+            title: widget.isCreate ? "Create Account" : "Login",
             isLoading: _isLoading,
             color: dmodel.color,
-            textColor: Colors.white,
-            fontWeight: FontWeight.w600,
             onTap: () {
               if (_formIsValid(dmodel)) {
                 _action(dmodel);
@@ -200,15 +198,12 @@ class _LoginState extends State<Login> {
         const SizedBox(height: 32),
         if (!widget.isCreate)
           Center(
-            child: cv.BasicButton(
+            child: Clickable(
               onTap: () {
-                cv.showFloatingSheet(
-                  context: context,
-                  isDismissable: false,
-                  builder: (context) {
-                    return const ForgotPassword();
-                  },
-                );
+                showSnappingSheet(
+      context: context,
+      child: const ForgotPassword(),
+    );
               },
               child: Text(
                 "Forgot your password?",
@@ -238,7 +233,7 @@ class _LoginState extends State<Login> {
             child: Column(
               children: [
                 Center(
-                  child: cv.BasicButton(
+                  child: Clickable(
                     onTap: () {
                       if (widget.isCreate) {
                         cv.Navigate(

@@ -2,6 +2,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class RosterLoading extends StatefulWidget {
   const RosterLoading({super.key});
@@ -39,9 +40,9 @@ class _RosterLoadingState extends State<RosterLoading>
     return cv.LoadingWrapper(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: cv.NativeList(
-          padding: EdgeInsets.zero,
-          itemPadding: EdgeInsets.zero,
+        child: XCCellList<Widget>(
+          horizontalPadding: 0,
+          childPadding: EdgeInsets.zero,
           children: [
             for (int i = 0; i < 25; i++)
               Container(

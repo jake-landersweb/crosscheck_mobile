@@ -139,7 +139,7 @@ class XCActionButton extends StatelessWidget {
     if (title != null) return title;
     return switch (_type) {
       _InternalType.save => 'Save',
-      _InternalType.edit => 'Edit',
+      _InternalType.edit => 'Modify',
       _ => null,
     };
   }

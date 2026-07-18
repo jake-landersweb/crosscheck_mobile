@@ -7,6 +7,10 @@ import '../../../custom_views/root.dart' as cv;
 import '../../../data/root.dart';
 import '../../../client/root.dart';
 import '../../../extras/root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class LineupItemView extends StatefulWidget {
   const LineupItemView({
@@ -35,18 +39,15 @@ class _LineupItemViewState extends State<LineupItemView> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        cv.TextField2(
-          value: widget.item.title,
-          labelText: "Title",
-          backgroundColor: CustomColors.sheetCell(context),
-          highlightColor: dmodel.color,
-          showBackground: true,
-          onChanged: (p0) {
+        XCField(
+              value: widget.item.title,
+              labelText: "Title",
+              onChanged: (p0) {
             setState(() {
               widget.item.title = p0;
             });
           },
-        ),
+            ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(
@@ -81,24 +82,19 @@ class _LineupItemViewState extends State<LineupItemView> {
             ],
           ),
         ),
-        cv.ListView<int>(
+        XCCellList<int>(
           children: [for (var i = 0; i < _lineLength; i++) i],
           isAnimated: true,
           horizontalPadding: 0,
           backgroundColor: CustomColors.sheetCell(context),
           childPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           onChildTap: ((context, i) {
-            cv.cupertinoSheet(
-              context: context,
-              builder: (context) => HeaderBar.sheet(
-                title: "Select User",
-                leading: cv.BackButton(
-                  color: dmodel.color,
-                  showIcon: false,
-                  showText: true,
-                  title: "Cancel",
-                ),
-                child: cv.ListView<SeasonUser>(
+            showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) => HeaderBar.sheet(
+      title: "Select User",
+      leading: XCActionButton.cancel(),
+      child: XCCellList<SeasonUser>(
                     children: lmodel.eventUsers
                         .where((element) =>
                             !lmodel.usedIds.contains(element.email))
@@ -132,8 +128,8 @@ class _LineupItemViewState extends State<LineupItemView> {
                       lmodel.updateState();
                     },
                   ),
-              ),
-            );
+    )),
+    );
           }),
           childBuilder: (context, i) {
             var placeholder = Row(

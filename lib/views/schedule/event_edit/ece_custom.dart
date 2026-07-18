@@ -3,7 +3,7 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import '../../../client/root.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class ECECustom extends StatefulWidget {
   const ECECustom({super.key});
@@ -30,7 +30,7 @@ class _ECECustomState extends State<ECECustom> {
 
   Widget _customFields(
       BuildContext context, DataModel dmodel, ECEModel ecemodel) {
-    return cv.Section(
+    return XCSection(
       "Custom Fields",
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
       child: CustomFieldCreate(
@@ -46,14 +46,14 @@ class _ECECustomState extends State<ECECustom> {
 
   Widget _customUserFields(
       BuildContext context, DataModel dmodel, ECEModel ecemodel) {
-    return cv.Section(
+    return XCSection(
       "Custom User Fields",
       headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
       color: dmodel.color,
       helperView: (context) {
         return Column(
           children: const [
-            cv.Section(
+            XCSection(
               "Custom User Fields",
               child: Text(
                   "These fields will show up on every user you add to your event, and give you the ability to add either a word, number, or true/false fields to users. These are completly customizable, and let you keep track of information on each user that may be lacking."),

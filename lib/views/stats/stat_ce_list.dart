@@ -3,6 +3,8 @@ import 'package:crosscheck_sports/client/root.dart';
 import 'package:crosscheck_sports/data/root.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class StatCEList extends StatefulWidget {
   const StatCEList({
@@ -27,7 +29,7 @@ class _StatCEListState extends State<StatCEList> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        cv.ListView(
+        XCCellList(
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           isAnimated: true,
           allowsDelete: true,
@@ -39,7 +41,7 @@ class _StatCEListState extends State<StatCEList> {
             });
           },
           childBuilder: (context, StatItem stat) {
-            return cv.LabeledCell(
+            return XCLabeledCell(
                 value:
                     "${stat.title[0].toUpperCase()}${stat.title.substring(1)}",
                 label: "");

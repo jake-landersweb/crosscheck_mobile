@@ -7,6 +7,7 @@ import 'package:crosscheck_sports/views/stats/team/root.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class StatsEvent extends StatefulWidget {
   const StatsEvent({
@@ -46,7 +47,7 @@ class _StatsEventState extends State<StatsEvent> {
       title: "",
       isLarge: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       trailing: (widget.seasonUser.isSeasonAdmin() && !smodel.isLoading)
           ? _editButton(context, dmodel, smodel)
           : null,
@@ -101,8 +102,8 @@ class _StatsEventState extends State<StatsEvent> {
 
   Widget _editButton(
       BuildContext context, DataModel dmodel, StatsEventModel smodel) {
-    return cv.BasicButton(
-      onTap: () {
+    return XCActionButton.edit(
+        onTap: () {
         cv.Navigate(
           context,
           StatsUsersEdit(
@@ -114,15 +115,7 @@ class _StatsEventState extends State<StatsEvent> {
           ),
         );
       },
-      child: Text(
-        "Edit",
-        style: TextStyle(
-          color: dmodel.color,
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
+      );
   }
 
   Future<void> _updateUsers(BuildContext context, DataModel dmodel,

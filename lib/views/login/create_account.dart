@@ -7,8 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../custom_views/root.dart' as cv;
-import '../components/root.dart' as comp;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({
@@ -88,15 +92,12 @@ class _CreateAccountState extends State<CreateAccount> {
       );
     } else {
       return HeaderBar.sheet(
-        title: "",
-        leading: const cv.BackButton(
-          useRoot: true,
-          title: "Close",
-          showIcon: false,
-          showText: true,
-        ),
-        child: _content(context, dmodel),
-      );
+      title: "",
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
+      child: _content(context, dmodel),
+    );
     }
   }
 
@@ -142,15 +143,12 @@ class _CreateAccountState extends State<CreateAccount> {
           Padding(
             padding: const EdgeInsets.only(top: 16.0),
             child: Center(
-              child: cv.BasicButton(
+              child: Clickable(
                 onTap: () {
-                  cv.showFloatingSheet(
-                    context: context,
-                    isDismissable: false,
-                    builder: (context) {
-                      return const ForgotPassword();
-                    },
-                  );
+                  showSnappingSheet(
+      context: context,
+      child: const ForgotPassword(),
+    );
                 },
                 child: Text(
                   "Forgot your password?",
@@ -177,14 +175,12 @@ class _CreateAccountState extends State<CreateAccount> {
           Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: Center(
-              child: cv.BasicButton(
+              child: Clickable(
                 onTap: () {
-                  cv.cupertinoSheet(
-                    context: context,
-                    builder: (context) {
-                      return const CreateAccount(isCreate: false);
-                    },
-                  );
+                  showSnappingSheet(
+      context: context,
+      child: const CreateAccount(isCreate: false),
+    );
                 },
                 child: Text(
                   "Have an account? Login",
@@ -232,21 +228,20 @@ class _CreateAccountState extends State<CreateAccount> {
       {bool obscure = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: cv.TextField2(
-        labelText: label,
-        icon: Icon(icon),
-        textCapitalization:
-            obscure ? TextCapitalization.none : TextCapitalization.words,
-        onChanged: onChanged,
-        obscureText: obscure,
-      ),
+      child: XCField(
+              labelText: label,
+              icon: Icon(icon),
+              textCapitalization: obscure ? TextCapitalization.none : TextCapitalization.words,
+              onChanged: onChanged,
+              obscureText: obscure,
+            ),
     );
   }
 
   Widget _actionButton(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: comp.ActionButton(
+      child: XCWideButton.primary(
         color: dmodel.color,
         title: widget.isCreate ? "Create Account" : "Login",
         isLoading: _isLoading,

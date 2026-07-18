@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'sheet.dart' as cv;
 import 'dynamic_selector.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class ModelSelector<T> extends StatefulWidget {
   const ModelSelector({
@@ -36,10 +37,11 @@ class _ModelSelectorState<T> extends State<ModelSelector<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: widget.title,
-      color: widget.color,
-      icon: Icons.remove,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: cv.DynamicSelector<T>(
         selectorStyle: cv.DynamicSelectorStyle.list,
         selections: widget.selections,

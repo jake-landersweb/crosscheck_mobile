@@ -3,7 +3,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:provider/provider.dart';
-import 'components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class Update extends StatelessWidget {
   const Update({super.key});
@@ -35,7 +35,7 @@ class Update extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(32.0),
-              child: comp.ActionButton(
+              child: XCWideButton.primary(
                 color: dmodel.color,
                 title: "Update",
                 onTap: () {

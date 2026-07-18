@@ -5,9 +5,14 @@ import 'package:provider/provider.dart';
 import 'root.dart';
 import '../../data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
-import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/adaptive/confirm_dialog/adaptive_confirm_dialog.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class RosterUserDetail extends StatefulWidget {
   const RosterUserDetail({
@@ -58,17 +63,17 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
       isLarge: false,
       refreshable: false,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       trailing: _edit(context, dmodel),
       child: Column(
         children: [
           _body(context, dmodel),
           const SizedBox(height: 16),
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              cv.LabeledCell(
+              XCLabeledCell(
                 value: widget.seasonUser.email,
                 label: "Email",
                 clickable: true,
@@ -97,7 +102,7 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: comp.ActionButton(
+          child: XCWideButton.primary(
             title: widget.seasonUser.teamFields!.validationStatus == 0
                 ? "Send Invite"
                 : "Re-send Invite",
@@ -139,32 +144,32 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
   }
 
   Widget _userFields(BuildContext context) {
-    return cv.Section(
+    return XCSection(
       "Personal Information",
       child: Column(
         children: [
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
               if (!widget.seasonUser.userFields!.firstName.isEmpty())
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "First Name",
                   value: widget.seasonUser.userFields!.firstName!,
                 ),
               if (!widget.seasonUser.userFields!.lastName.isEmpty())
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "Last Name",
                   value: widget.seasonUser.userFields!.lastName!,
                 ),
               if (!widget.seasonUser.userFields!.phone.isEmpty())
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "Phone",
                   value: widget.seasonUser.userFields!.phone!,
                   clickable: true,
                 ),
               if (!widget.seasonUser.userFields!.nickname.isEmpty())
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "Nickname",
                   value: widget.seasonUser.userFields!.nickname!,
                 )
@@ -176,30 +181,30 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
   }
 
   Widget _teamFields(BuildContext context) {
-    return cv.Section(
+    return XCSection(
       "Player Fields",
       child: Column(
         children: [
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              cv.LabeledCell(
+              XCLabeledCell(
                   label: "Position",
                   value: widget.seasonUser.teamFields!.pos.isEmpty
                       ? "None"
                       : widget.seasonUser.teamFields!.pos.capitalize()),
               if (!widget.seasonUser.teamFields!.teamUserNote.isEmpty())
-                cv.LabeledCell(
+                XCLabeledCell(
                     label: "Note",
                     value: widget.seasonUser.teamFields!.teamUserNote!),
-              cv.LabeledCell(
+              XCLabeledCell(
                   label: "Status",
                   value: widget.seasonUser.teamFields!.getValidationStatus()),
-              cv.LabeledCell(
+              XCLabeledCell(
                   label: "Jersey Size",
                   value: widget.seasonUser.teamFields!.jerseySize),
-              cv.LabeledCell(
+              XCLabeledCell(
                   label: "Jersey Number",
                   value: widget.seasonUser.teamFields!.jerseyNumber),
             ],
@@ -208,12 +213,12 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
           if (widget.seasonUser.teamFields!.customFields.isNotEmpty)
             const SizedBox(height: 8),
           if (widget.seasonUser.teamFields!.customFields.isNotEmpty)
-            cv.ListView<Widget>(
+            XCCellList<Widget>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 for (var i in widget.seasonUser.teamFields!.customFields)
-                  cv.LabeledCell(
+                  XCLabeledCell(
                     label: i.getTitle(),
                     value: i.getValue(),
                   )
@@ -225,44 +230,44 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
   }
 
   Widget _seasonFields(BuildContext context) {
-    return cv.Section(
+    return XCSection(
       "Player Fields",
       child: Column(
         children: [
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Position",
                 value: widget.seasonUser.seasonFields!.pos.isEmpty
                     ? "None"
                     : widget.seasonUser.seasonFields!.pos.capitalize(),
               ),
               if (!widget.seasonUser.seasonFields!.seasonUserNote.isEmpty())
-                cv.LabeledCell(
+                XCLabeledCell(
                   label: "Note",
                   value: widget.seasonUser.seasonFields!.seasonUserNote!,
                 ),
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Manager",
                 value: widget.seasonUser.seasonFields!.isManager
                     ? "True"
                     : "False",
               ),
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Is a Sub",
                 value: widget.seasonUser.seasonFields!.isSub ? "True" : "False",
               ),
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Jersey Size",
                 value: widget.seasonUser.seasonFields!.jerseySize,
               ),
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Jersey Number",
                 value: widget.seasonUser.seasonFields!.jerseyNumber,
               ),
-              cv.LabeledCell(
+              XCLabeledCell(
                 label: "Status",
                 value: widget.seasonUser.seasonFields!.getStatus(),
               ),
@@ -271,12 +276,12 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
           const SizedBox(height: 8),
           // custom fields
           if (widget.seasonUser.seasonFields!.customFields.isNotEmpty)
-            cv.ListView<Widget>(
+            XCCellList<Widget>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 for (var i in widget.seasonUser.seasonFields!.customFields)
-                  cv.LabeledCell(
+                  XCLabeledCell(
                     label: i.getTitle(),
                     value: i.getValue(),
                   )
@@ -290,13 +295,12 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
   Widget _edit(BuildContext context, DataModel dmodel) {
     if (widget.appSeasonUser?.isSeasonAdmin() ??
         widget.teamUser.isTeamAdmin()) {
-      return cv.BasicButton(
+      return XCActionButton.edit(
         onTap: () {
           if (widget.isSheet) {
-            cv.cupertinoSheet(
-              context: context,
-              builder: (context) {
-                return RUCERoot(
+            showSnappingSheet(
+      context: context,
+      child: RUCERoot(
                   team: widget.team,
                   season: widget.season,
                   user: widget.seasonUser,
@@ -306,14 +310,12 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
                   onFunction: (body) async {
                     await widget.onUserEdit(body);
                   },
-                );
-              },
-            );
+                ),
+    );
           } else {
-            cv.cupertinoSheet(
-                context: context,
-                builder: (context) {
-                  return RUCERoot(
+            showSnappingSheet(
+      context: context,
+      child: RUCERoot(
                     team: widget.team,
                     season: widget.season,
                     user: widget.seasonUser,
@@ -323,18 +325,10 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
                     onFunction: (body) async {
                       await widget.onUserEdit(body);
                     },
-                  );
-                });
+                  ),
+    );
           }
         },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: dmodel.color,
-          ),
-        ),
       );
     } else {
       return Container();
@@ -344,21 +338,22 @@ class _RosterUserDetailState extends State<RosterUserDetail> {
   Widget _delete(BuildContext context, DataModel dmodel) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: comp.DestructionButton(
+      child: XCWideButton.destructive(
           title: "Delete User",
           isLoading: _isLoading,
           onTap: () {
-            cv.showAlert(
-              context: context,
+            AdaptiveConfirmDialog.show(
+              context,
               title: "Are you Sure?",
-              body: const Text("This action cannot be undone."),
-              cancelText: "Cancel",
-              cancelBolded: true,
-              onCancel: () {},
-              submitText: "Delete",
-              submitColor: Colors.red,
-              onSubmit: () => _deleteFunc(context, dmodel),
-            );
+              message: "This action cannot be undone.",
+              cancelLabel: "Cancel",
+              confirmLabel: "Delete",
+              isDestructive: true,
+            ).then((confirmed) {
+              if (confirmed) {
+                _deleteFunc(context, dmodel);
+              }
+            });
           }),
     );
   }

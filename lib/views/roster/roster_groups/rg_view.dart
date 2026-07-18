@@ -5,8 +5,11 @@ import 'package:crosscheck_sports/views/root.dart';
 import 'package:crosscheck_sports/views/roster/roster_groups/rg_cu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class RGView extends StatefulWidget {
   const RGView({
@@ -32,27 +35,18 @@ class _RGViewState extends State<RGView> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return HeaderBar(
       title: widget.rosterGroup.title,
-      leading: cv.BackButton(color: dmodel.color),
+      leading: XCActionButton.back(),
       backgroundColor: CustomColors.backgroundColor(context),
-      trailing: cv.BasicButton(
+      trailing: XCActionButton.edit(
         onTap: () {
-          cv.cupertinoSheet(
-              context: context,
-              builder: (context) {
-                return ListenableProvider.value(
+          showSnappingSheet(
+      context: context,
+      child: ListenableProvider.value(
                   value: rgmodel,
                   child: RGCU(rosterGroup: widget.rosterGroup),
-                );
-              });
+                ),
+    );
         },
-        child: Text(
-          "Edit",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: dmodel.color,
-          ),
-        ),
       ),
       titleWidget: Row(
         mainAxisSize: MainAxisSize.min,
@@ -82,7 +76,7 @@ class _RGViewState extends State<RGView> {
         if (widget.rosterGroup.description.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
-            child: cv.ListView<List<String>>(
+            child: XCCellList<List<String>>(
               horizontalPadding: 0,
               children: [
                 // ["Title", widget.rosterGroup.title],
@@ -115,7 +109,7 @@ class _RGViewState extends State<RGView> {
               }),
             ),
           ),
-        cv.Section(
+        XCSection(
           "Users",
           child: RosterList(
             team: widget.team,

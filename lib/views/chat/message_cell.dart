@@ -12,8 +12,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../client/root.dart';
-import '../../custom_views/root.dart' as cv;
 import '../../data/root.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class MessageCell extends StatefulWidget {
   const MessageCell({
@@ -267,7 +267,7 @@ class _MessageCellState extends State<MessageCell>
           duration: const Duration(milliseconds: 300),
           curve: Sprung.overDamped,
           child: widget.message.presignedImgUrl != null
-              ? cv.BasicButton(
+              ? Clickable(
                   onTap: () => _openAssetView(context),
                   child: Hero(
                     tag: widget.message.img!,
@@ -296,7 +296,7 @@ class _MessageCellState extends State<MessageCell>
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width / 1.5,
           ),
-          child: cv.BasicButton(
+          child: Clickable(
             onTap: () => _openAssetView(context),
             child: Hero(
               tag: widget.message.video!,
@@ -337,7 +337,7 @@ class _MessageCellState extends State<MessageCell>
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width / 1.2,
       ),
-      child: cv.BasicButton(
+      child: Clickable(
         onTap: () => _launchUrl(dmodel),
         child: AnimatedSize(
           duration: const Duration(milliseconds: 700),

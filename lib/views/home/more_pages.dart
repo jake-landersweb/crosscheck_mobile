@@ -8,6 +8,9 @@ import '../root.dart';
 import '../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'dart:math' as math;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class _MorePageItem {
   _MorePageItem({
@@ -55,17 +58,15 @@ class _MorePagesState extends State<MorePages> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        cv.ListView<_MorePageItem>(
+        XCCellList<_MorePageItem>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           onChildTap: ((context, item) {
             if (item.useSheet) {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) {
-                  return item.view;
-                },
-              );
+              showSnappingSheet(
+      context: context,
+      child: item.view,
+    );
             } else {
               cv.Navigate(context, item.view);
             }
@@ -120,19 +121,17 @@ class _MorePagesState extends State<MorePages> {
           ],
         ),
         if (widget.team != null && widget.season != null)
-          cv.Section(
+          XCSection(
             "Season",
-            child: cv.ListView<_MorePageItem>(
+            child: XCCellList<_MorePageItem>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChildTap: ((context, item) {
                 if (item.useSheet) {
-                  cv.cupertinoSheet(
-                    context: context,
-                    builder: (context) {
-                      return item.view;
-                    },
-                  );
+                  showSnappingSheet(
+      context: context,
+      child: item.view,
+    );
                 } else {
                   cv.Navigate(context, item.view);
                 }
@@ -213,19 +212,17 @@ class _MorePagesState extends State<MorePages> {
             ),
           ),
         if (widget.team != null && widget.season != null)
-          cv.Section(
+          XCSection(
             "Calendar",
-            child: cv.ListView<_MorePageItem>(
+            child: XCCellList<_MorePageItem>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChildTap: ((context, item) {
                 if (item.useSheet) {
-                  cv.cupertinoSheet(
-                    context: context,
-                    builder: (context) {
-                      return item.view;
-                    },
-                  );
+                  showSnappingSheet(
+      context: context,
+      child: item.view,
+    );
                 } else {
                   cv.Navigate(context, item.view);
                 }

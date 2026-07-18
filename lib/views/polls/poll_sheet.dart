@@ -3,10 +3,12 @@ import 'package:crosscheck_sports/data/season/poll.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
-import '../../extras/root.dart';
 import '../../data/root.dart';
 import '../../../custom_views/root.dart' as cv;
-import '../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
 
 class PollSheet extends StatefulWidget {
   const PollSheet({
@@ -43,9 +45,11 @@ class _PollSheetState extends State<PollSheet> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Answer Poll",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -57,7 +61,7 @@ class _PollSheetState extends State<PollSheet> {
               duration: const Duration(milliseconds: 700),
               curve: Sprung.overDamped,
               opacity: _selections.isEmpty ? 0.5 : 1,
-              child: comp.ActionButton(
+              child: XCWideButton.primary(
                 onTap: () => _action(context, dmodel),
                 title: "Confirm",
                 color: dmodel.color,
@@ -103,14 +107,11 @@ class _PollSheetState extends State<PollSheet> {
   }
 
   Widget _response(BuildContext context, DataModel dmodel) {
-    return cv.TextField2(
-      labelText: "Response",
-      isLabeled: true,
-      backgroundColor: CustomColors.sheetCell(context),
-      highlightColor: dmodel.color,
-      value: _selections.isEmpty ? "" : _selections[0],
-      fieldPadding: const EdgeInsets.symmetric(horizontal: 16),
-      onChanged: (v) {
+    return XCField(
+              labelText: "Response",
+              isLabeled: true,
+              value: _selections.isEmpty ? "" : _selections[0],
+              onChanged: (v) {
         if (v.isEmpty) {
           setState(() {
             _selections = [];
@@ -127,7 +128,7 @@ class _PollSheetState extends State<PollSheet> {
           });
         }
       },
-    );
+            );
   }
 
   Future<void> _action(BuildContext context, DataModel dmodel) async {

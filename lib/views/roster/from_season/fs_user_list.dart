@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class FSUserList extends StatefulWidget {
   const FSUserList({
@@ -52,7 +55,7 @@ class _FSUserListState extends State<FSUserList> {
     return HeaderBar.sheet(
       title: widget.season.title,
       backgroundColor: CustomColors.backgroundColor(context),
-      leading: cv.CloseButton(color: dmodel.color),
+      leading: XCActionButton.cancel(),
       child: _body(context, dmodel, fsmodel),
     );
   }
@@ -60,7 +63,7 @@ class _FSUserListState extends State<FSUserList> {
   Widget _body(BuildContext context, DataModel dmodel, FSModel fsmodel) {
     if (_isLoading) {
       return cv.LoadingWrapper(
-        child: cv.ListView<int>(
+        child: XCCellList<int>(
           horizontalPadding: 0,
           children: [for (var i = 0; i < 10; i++) i],
           childBuilder: (context, item) {
@@ -79,7 +82,7 @@ class _FSUserListState extends State<FSUserList> {
     } else {
       return Column(
         children: [
-          cv.ListView<String>(
+          XCCellList<String>(
             children: const ["Select All", "Deselect All"],
             horizontalPadding: 0,
             childBuilder: ((context, item) {
@@ -107,9 +110,9 @@ class _FSUserListState extends State<FSUserList> {
               }
             },
           ),
-          cv.Section(
+          XCSection(
             "Users",
-            child: cv.ListView<SeasonUser>(
+            child: XCCellList<SeasonUser>(
               children: _users!,
               horizontalPadding: 0,
               allowsSelect: true,

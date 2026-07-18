@@ -7,7 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../extras/root.dart';
 
-import '../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class JoinTeam extends StatefulWidget {
   const JoinTeam({
@@ -28,38 +32,38 @@ class _JoinTeamState extends State<JoinTeam> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Join Team",
-      color: dmodel.color,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: Column(
         children: [
           const SizedBox(height: 16),
-          cv.ListView<Widget>(
+          XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.symmetric(horizontal: 16),
             backgroundColor: CustomColors.sheetCell(context),
             children: [
-              cv.TextField2(
-                labelText: "Team Code",
-                fieldPadding: const EdgeInsets.all(0),
-                showCharacters: true,
-                isLabeled: true,
-                showBackground: false,
-                value: _code,
-                charLimit: 6,
-                onChanged: (value) {
+              XCField(
+              labelText: "Team Code",
+              showCharacters: true,
+              isLabeled: true,
+              value: _code,
+              charLimit: 6,
+              onChanged: (value) {
                   setState(() {
                     _code = value;
                   });
                 },
-              ),
+            ),
             ],
           ),
           const SizedBox(height: 16),
           SizedBox(
             width: MediaQuery.of(context).size.width / 1.5,
-            child: cv.RoundedLabel(
-              "Join Team",
+            child: XCWideButton.primary(
+              title: "Join Team",
               isLoading: _isLoading,
               onTap: () {
                 if (_code == "") {
@@ -70,7 +74,6 @@ class _JoinTeamState extends State<JoinTeam> {
                 }
               },
               color: dmodel.color,
-              textColor: Colors.white,
             ),
           ),
         ],

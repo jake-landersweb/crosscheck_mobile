@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 import '../../data/root.dart';
-import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
 
 class PollButton extends StatefulWidget {
   const PollButton({
@@ -36,14 +37,13 @@ class _PollButtonState extends State<PollButton> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.BasicButton(
+    return Clickable(
       onTap: () {
         if (widget.poll.isFuture()) {
           if (widget.seasonUser != null) {
-            cv.showFloatingSheet(
-              context: context,
-              builder: (context) {
-                return PollSheet(
+            showSnappingSheet(
+      context: context,
+      child: PollSheet(
                   poll: widget.poll,
                   team: widget.team,
                   season: widget.season,
@@ -56,9 +56,8 @@ class _PollButtonState extends State<PollButton> {
                     });
                     widget.didChange();
                   },
-                );
-              },
-            );
+                ),
+    );
           }
         } else {
           dmodel.addIndicator(IndicatorItem.error("Cannot answer past polls"));

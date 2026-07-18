@@ -5,6 +5,10 @@ import '../../client/root.dart';
 import 'package:provider/provider.dart';
 import '../../extras/root.dart';
 import '../../views/components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
 
 class PositionsCreate extends StatefulWidget {
   const PositionsCreate({
@@ -25,7 +29,7 @@ class _PositionsCreateState extends State<PositionsCreate> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        cv.ListView(
+        XCCellList(
           children: widget.positions.available,
           isAnimated: true,
           horizontalPadding: widget.horizontalPadding,
@@ -120,14 +124,14 @@ class _PositionsCreateState extends State<PositionsCreate> {
         ),
         const SizedBox(height: 16),
         if (widget.positions.available.isNotEmpty)
-          cv.Section(
+          XCSection(
             "Most Valuable Position",
             headerPadding: const EdgeInsets.fromLTRB(32, 8, 0, 4),
             color: dmodel.color,
             helperView: (context) {
               return Column(
                 children: const [
-                  cv.Section(
+                  XCSection(
                     "Most Valuable Position",
                     child: Text(
                         "Sometimes you have a position on your team that events just cannot work without. This is where you define that. A small icon will show next to users who are this position, along with extra event functionality when a user with this position is checked in."),
@@ -135,12 +139,11 @@ class _PositionsCreateState extends State<PositionsCreate> {
                 ],
               );
             },
-            child: cv.BasicButton(
+            child: Clickable(
               onTap: () {
-                cv.showFloatingSheet(
-                    context: context,
-                    builder: (context) {
-                      return cv.ModelSelector<String>(
+                showSnappingSheet(
+      context: context,
+      child: cv.ModelSelector<String>(
                         title: "Select Position",
                         color: dmodel.color,
                         initialSelection: widget.positions.mvp,
@@ -151,8 +154,8 @@ class _PositionsCreateState extends State<PositionsCreate> {
                             widget.positions.setMVP(val);
                           });
                         },
-                      );
-                    });
+                      ),
+    );
               },
               child: comp.ListWrapper(
                 child: Text(

@@ -7,6 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class FSRoot extends StatefulWidget {
   const FSRoot({
@@ -48,14 +54,10 @@ class _FSRootState extends State<FSRoot> {
     FSModel fsmodel = Provider.of<FSModel>(context);
     return HeaderBar.sheet(
       title: "",
-      leading: cv.BackButton(
-        color: dmodel.color,
-        title: "Cancel",
-        showIcon: false,
-        showText: true,
-        useRoot: true,
-      ),
-      trailing: cv.BasicButton(
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
+      trailing: Clickable(
         onTap: () async {
           if (fsmodel.selectedUsers.isNotEmpty) {
             setState(() {
@@ -84,7 +86,7 @@ class _FSRootState extends State<FSRoot> {
             ? SizedBox(
                 height: 25,
                 width: 25,
-                child: cv.LoadingIndicator(color: dmodel.color),
+                child: XCLoadingIndicator(color: dmodel.color),
               )
             : Text(
                 "Add",
@@ -106,9 +108,9 @@ class _FSRootState extends State<FSRoot> {
   Widget _body(BuildContext context, DataModel dmodel, FSModel fsmodel) {
     if (fsmodel.isLoadingSeasons) {
       return cv.LoadingWrapper(
-        child: cv.Section(
+        child: XCSection(
           "Seasons",
-          child: cv.ListView<int>(
+          child: XCCellList<int>(
             horizontalPadding: 0,
             children: [for (var i = 0; i < 10; i++) i],
             childBuilder: (context, item) {
@@ -126,21 +128,21 @@ class _FSRootState extends State<FSRoot> {
     } else {
       return Column(
         children: [
-          cv.Section(
+          XCSection(
             "Seasons",
             allowsCollapse: true,
             initOpen: true,
-            child: cv.ListView<Season>(
+            child: XCCellList<Season>(
               horizontalPadding: 0,
               children: fsmodel.seasons!,
               onChildTap: ((context, item) {
-                cv.cupertinoSheet(
-                  context: context,
-                  builder: (context) => ListenableProvider.value(
+                showSnappingSheet(
+      context: context,
+      child: ListenableProvider.value(
                     value: fsmodel,
                     child: FSUserList(season: item),
                   ),
-                );
+    );
               }),
               childPadding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
               childBuilder: ((context, item) {
@@ -166,7 +168,7 @@ class _FSRootState extends State<FSRoot> {
               }),
             ),
           ),
-          cv.Section(
+          XCSection(
             "Selected Users",
             allowsCollapse: true,
             initOpen: true,
@@ -182,7 +184,7 @@ class _FSRootState extends State<FSRoot> {
                       ),
                     ),
                   )
-                : cv.ListView<SeasonUser>(
+                : XCCellList<SeasonUser>(
                     children: fsmodel.selectedUsers,
                     allowsDelete: true,
                     horizontalPadding: 0,

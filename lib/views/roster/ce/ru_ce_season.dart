@@ -7,6 +7,12 @@ import 'package:provider/provider.dart';
 import '../root.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'root.dart';
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class RUCESeason extends StatefulWidget {
   const RUCESeason({super.key});
@@ -23,11 +29,11 @@ class _RUCESeasonState extends State<RUCESeason> {
     return Column(
       children: [
         // normal fields
-        cv.Section(
+        XCSection(
           "PLayer Fields",
           child: Column(
             children: [
-              cv.ListView<Widget>(
+              XCCellList<Widget>(
                 horizontalPadding: 0,
                 childPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 children: [
@@ -50,19 +56,18 @@ class _RUCESeasonState extends State<RUCESeason> {
   }
 
   Widget _note(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField2(
-      labelText: "Note",
-      isLabeled: true,
-      showBackground: false,
-      value: rmodel.seasonFields!.seasonUserNote,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Note",
+              isLabeled: true,
+              value: rmodel.seasonFields!.seasonUserNote,
+              onChanged: (value) {
         rmodel.seasonFields!.seasonUserNote = value;
       },
-    );
+            );
   }
 
   Widget _isManager(BuildContext context, DataModel dmodel, RUCEModel rmodel) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       "Is Manager",
       child: SizedBox(
         height: 25,
@@ -88,7 +93,7 @@ class _RUCESeasonState extends State<RUCESeason> {
   }
 
   Widget _isSub(BuildContext context, DataModel dmodel, RUCEModel rmodel) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       "Is Sub",
       child: SizedBox(
         height: 25,
@@ -114,40 +119,37 @@ class _RUCESeasonState extends State<RUCESeason> {
   }
 
   Widget _jerseySize(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField2(
-      labelText: "Jersey Size",
-      isLabeled: true,
-      showBackground: false,
-      value: rmodel.seasonFields!.jerseySize,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Jersey Size",
+              isLabeled: true,
+              value: rmodel.seasonFields!.jerseySize,
+              onChanged: (value) {
         rmodel.seasonFields!.jerseySize = value;
       },
-    );
+            );
   }
 
   Widget _jerseyNumber(BuildContext context, RUCEModel rmodel) {
-    return cv.TextField2(
-      labelText: "Jersey Number",
-      keyboardType: TextInputType.number,
-      isLabeled: true,
-      showBackground: false,
-      value: rmodel.seasonFields!.jerseyNumber,
-      onChanged: (value) {
+    return XCField(
+              labelText: "Jersey Number",
+              keyboardType: TextInputType.number,
+              isLabeled: true,
+              value: rmodel.seasonFields!.jerseyNumber,
+              onChanged: (value) {
         rmodel.seasonFields!.jerseyNumber = value;
       },
-    );
+            );
   }
 
   Widget _pos(BuildContext context, DataModel dmodel, RUCEModel rmodel) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       "Position",
       isExpanded: false,
-      child: cv.BasicButton(
+      child: Clickable(
         onTap: () {
-          cv.showFloatingSheet(
-            context: context,
-            builder: (context) {
-              return PositionSelect(
+          showSnappingSheet(
+      context: context,
+      child: PositionSelect(
                 positions: rmodel.season!.positions.available,
                 selection: rmodel.seasonFields!.pos,
                 onSelect: (pos) {
@@ -155,9 +157,8 @@ class _RUCESeasonState extends State<RUCESeason> {
                     rmodel.seasonFields!.pos = pos;
                   });
                 },
-              );
-            },
-          );
+              ),
+    );
         },
         child: Container(
           decoration: BoxDecoration(
@@ -184,15 +185,14 @@ class _RUCESeasonState extends State<RUCESeason> {
   }
 
   Widget _status(BuildContext context, RUCEModel rmodel, DataModel dmodel) {
-    return cv.LabeledWidget(
+    return XCLabeledWidget(
       "Status",
       isExpanded: false,
-      child: cv.BasicButton(
+      child: Clickable(
         onTap: () {
-          cv.showFloatingSheet(
-            context: context,
-            builder: (context) {
-              return cv.ModelSelector<int>(
+          showSnappingSheet(
+      context: context,
+      child: cv.ModelSelector<int>(
                 title: "Select Status",
                 initialSelection: rmodel.seasonFields!.seasonUserStatus,
                 selections: const [1, -1],
@@ -203,9 +203,8 @@ class _RUCESeasonState extends State<RUCESeason> {
                     rmodel.seasonFields!.seasonUserStatus = val;
                   });
                 },
-              );
-            },
-          );
+              ),
+    );
         },
         child: Container(
           decoration: BoxDecoration(
@@ -233,7 +232,7 @@ class _RUCESeasonState extends State<RUCESeason> {
     return Column(
       children: [
         const SizedBox(height: 8),
-        cv.ListView<CustomField>(
+        XCCellList<CustomField>(
           horizontalPadding: 0,
           childPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
           childBuilder: (context, i) {

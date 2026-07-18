@@ -3,9 +3,11 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'root.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class FTRoot extends StatefulWidget {
   const FTRoot({
@@ -46,15 +48,11 @@ class _FTRootState extends State<FTRoot> {
 
     if (widget.wrapInBar) {
       return HeaderBar.sheet(
-        title: "Add Team Users",
-        leading: cv.BackButton(
-          title: "Cancel",
-          color: dmodel.color,
-          showText: true,
-          showIcon: false,
-          useRoot: true,
-        ),
-        trailing: cv.BasicButton(
+      title: "Add Team Users",
+      leading: XCActionButton.cancel(
+      onTap: () => Navigator.of(context, rootNavigator: true).pop(),
+    ),
+      trailing: Clickable(
           onTap: () async {
             if (ftmodel.selectedUsers.isNotEmpty) {
               setState(() {
@@ -74,7 +72,7 @@ class _FTRootState extends State<FTRoot> {
               ? SizedBox(
                   height: 25,
                   width: 25,
-                  child: cv.LoadingIndicator(color: dmodel.color),
+                  child: XCLoadingIndicator(color: dmodel.color),
                 )
               : Text(
                   "Add",
@@ -89,8 +87,8 @@ class _FTRootState extends State<FTRoot> {
                   ),
                 ),
         ),
-        child: const FTHome(),
-      );
+      child: const FTHome(),
+    );
     } else {
       return const FTHome();
     }

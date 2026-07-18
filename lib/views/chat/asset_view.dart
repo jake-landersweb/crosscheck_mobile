@@ -9,10 +9,14 @@ import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import 'package:video_player/video_player.dart';
 import '../../data/root.dart';
-import '../../custom_views/root.dart' as cv;
 import '../../client/root.dart';
 // import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class AssetView extends StatefulWidget {
   const AssetView({
@@ -182,12 +186,12 @@ class _AssetViewState extends State<AssetView> with TickerProviderStateMixin {
                         // actions
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: cv.BasicButton(
+                          child: Clickable(
                             onTap: () {
-                              cv.showFloatingSheet(
-                                context: context,
-                                builder: (context) => _sheet(context),
-                              );
+                              showSnappingSheet(
+      context: context,
+      child: Builder(builder: (context) => _sheet(context)),
+    );
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -204,7 +208,7 @@ class _AssetViewState extends State<AssetView> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        cv.BasicButton(
+                        Clickable(
                           onTap: () {
                             Navigator.of(context).pop();
                           },
@@ -254,7 +258,7 @@ class _AssetViewState extends State<AssetView> with TickerProviderStateMixin {
                   if (widget.message.img == null && _videoController == null)
                     Expanded(
                       child: Center(
-                        child: cv.LoadingIndicator(color: dmodel.color),
+                        child: XCLoadingIndicator(color: dmodel.color),
                       ),
                     ),
                 ],
@@ -353,10 +357,12 @@ class _AssetViewState extends State<AssetView> with TickerProviderStateMixin {
 
   Widget _sheet(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "",
-      color: dmodel.color,
-      child: cv.BasicButton(
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      child: Clickable(
         onTap: () async {
           // get the file from the cache key
           if (widget.message.img != null) {

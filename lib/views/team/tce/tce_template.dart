@@ -6,6 +6,7 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/root.dart';
 import 'package:provider/provider.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class TCETemplate extends StatefulWidget {
   const TCETemplate({super.key});
@@ -68,7 +69,7 @@ class _TCETemplateState extends State<TCETemplate> {
           const SizedBox(height: 16),
           if (tmodel.names == null)
             cv.LoadingWrapper(
-              child: cv.ListView<int>(
+              child: XCCellList<int>(
                 horizontalPadding: 0,
                 children: [for (var i = 0; i < 10; i++) i],
                 childBuilder: (context, item) {
@@ -80,7 +81,7 @@ class _TCETemplateState extends State<TCETemplate> {
               ),
             )
           else
-            cv.ListView<TemplateName>(
+            XCCellList<TemplateName>(
               horizontalPadding: 0,
               children: tmodel.names!,
               onChildTap: ((context, item) {
@@ -208,7 +209,7 @@ class _TCETemplateState extends State<TCETemplate> {
 //             color: widget.color,
 //             selectorStyle: cv.DynamicSelectorStyle.list,
 //           ),
-//           // cv.ListView(
+//           // XCCellList(
 //           //   children: [
 //           //     Tuple("None", Team.empty()),
 //           //     Tuple("Hockey", Team.hockey()),

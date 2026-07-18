@@ -6,6 +6,13 @@ import '../../../client/root.dart';
 import '../../../data/root.dart';
 import '../../../extras/root.dart';
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/snapping_sheet.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/adaptive/confirm_dialog/adaptive_confirm_dialog.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
 
 class SCEBasic extends StatefulWidget {
   const SCEBasic({
@@ -50,26 +57,24 @@ class _SCEBasicState extends State<SCEBasic> {
   Widget _required(BuildContext context, DataModel dmodel, SCEModel scemodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.Section(
+      child: XCSection(
         "Required",
-        child: cv.ListView<Widget>(
+        child: XCCellList<Widget>(
           childPadding: const EdgeInsets.symmetric(horizontal: 16),
           horizontalPadding: 0,
           children: [
             SizedBox(
               height: 50,
-              child: cv.TextField2(
-                labelText: "Title",
-                value: scemodel.title,
-                showBackground: false,
-                fieldPadding: EdgeInsets.zero,
-                isLabeled: true,
-                onChanged: (value) {
+              child: XCField(
+              labelText: "Title",
+              value: scemodel.title,
+              isLabeled: true,
+              onChanged: (value) {
                   setState(() {
                     scemodel.title = value;
                   });
                 },
-              ),
+            ),
             )
           ],
         ),
@@ -82,51 +87,47 @@ class _SCEBasicState extends State<SCEBasic> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: [
-          cv.Section(
+          XCSection(
             "Basic Info",
-            child: cv.ListView<Widget>(
+            child: XCCellList<Widget>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 SizedBox(
                   height: 50,
-                  child: cv.TextField2(
-                    value: scemodel.website,
-                    labelText: "Website (url)",
-                    showBackground: false,
-                    fieldPadding: EdgeInsets.zero,
-                    isLabeled: true,
-                    onChanged: (value) {
+                  child: XCField(
+              value: scemodel.website,
+              labelText: "Website (url)",
+              isLabeled: true,
+              onChanged: (value) {
                       setState(() {
                         scemodel.website = value;
                       });
                     },
-                  ),
+            ),
                 ),
                 SizedBox(
                   height: 50,
-                  child: cv.TextField2(
-                    value: scemodel.seasonNote,
-                    labelText: "Season Note",
-                    showBackground: false,
-                    fieldPadding: EdgeInsets.zero,
-                    isLabeled: true,
-                    onChanged: (value) {
+                  child: XCField(
+              value: scemodel.seasonNote,
+              labelText: "Season Note",
+              isLabeled: true,
+              onChanged: (value) {
                       setState(() {
                         scemodel.seasonNote = value;
                       });
                     },
-                  ),
+            ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 8),
-          cv.BasicButton(
+          Clickable(
             onTap: () {
-              cv.cupertinoSheet(
-                context: context,
-                builder: (context) => cv.TimezoneSelector(
+              showSnappingSheet(
+      context: context,
+      child: cv.TimezoneSelector(
                   initTimezone: scemodel.timezone,
                   onSelect: (tz) {
                     setState(() {
@@ -134,7 +135,7 @@ class _SCEBasicState extends State<SCEBasic> {
                     });
                   },
                 ),
-              );
+    );
             },
             child: Container(
               constraints: const BoxConstraints(
@@ -173,7 +174,7 @@ class _SCEBasicState extends State<SCEBasic> {
   Widget _status(BuildContext context, DataModel dmodel, SCEModel scemodel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: cv.Section(
+      child: XCSection(
         "Status",
         child: cv.SegmentedPicker(
           titles: const ["Past", "Active", "Future"],
@@ -190,24 +191,23 @@ class _SCEBasicState extends State<SCEBasic> {
   }
 
   Widget _delete(BuildContext context, DataModel dmodel, SCEModel scemodel) {
-    return cv.RoundedLabel(
-      "Delete",
+    return XCWideButton.destructive(
+      title: "Delete",
       isLoading: _isLoading,
-      color: Colors.red.withOpacity(0.5),
-      textColor: Colors.white,
       onTap: () {
-        cv.showAlert(
-          context: context,
+        AdaptiveConfirmDialog.show(
+          context,
           title: "Are you sure?",
-          body: const Text(
-              "Are you sure you want to delete this season? All events, users, and stats will be deleted. This is not advised, it is recommended to set this season to innactive rather than delete."),
-          cancelText: "Cancel",
-          cancelBolded: true,
-          onCancel: () => {},
-          submitText: "Delete",
-          submitColor: Colors.red,
-          onSubmit: () => _deleteAction(context, dmodel, scemodel),
-        );
+          message:
+              "Are you sure you want to delete this season? All events, users, and stats will be deleted. This is not advised, it is recommended to set this season to innactive rather than delete.",
+          cancelLabel: "Cancel",
+          confirmLabel: "Delete",
+          isDestructive: true,
+        ).then((confirmed) {
+          if (confirmed) {
+            _deleteAction(context, dmodel, scemodel);
+          }
+        });
       },
     );
   }

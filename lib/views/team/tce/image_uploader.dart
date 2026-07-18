@@ -9,7 +9,12 @@ import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import '../../../custom_views/root.dart' as cv;
 import 'package:image_picker/image_picker.dart';
-import '../../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
+import 'package:crosscheck_sports/components/layer/wide_button.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
 
 class ImageUploader extends StatefulWidget {
   const ImageUploader({
@@ -50,10 +55,12 @@ class _ImageUploaderState extends State<ImageUploader> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Upload Image",
-      color: dmodel.color,
-      child: cv.ListView<Widget>(
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
+      child: XCCellList<Widget>(
         showStyling: false,
         hasDividers: false,
         childPadding: EdgeInsets.zero,
@@ -82,7 +89,7 @@ class _ImageUploaderState extends State<ImageUploader> {
   }
 
   Widget _imageUploader(BuildContext context, DataModel dmodel) {
-    return cv.ListView<Widget>(
+    return XCCellList<Widget>(
       showStyling: false,
       hasDividers: false,
       childPadding: EdgeInsets.zero,
@@ -116,7 +123,7 @@ class _ImageUploaderState extends State<ImageUploader> {
                     },
                   ),
                   const SizedBox(height: 8),
-                  cv.BasicButton(
+                  Clickable(
                     onTap: () {
                       setState(() {
                         _currentImage = null;
@@ -145,7 +152,7 @@ class _ImageUploaderState extends State<ImageUploader> {
             ],
           ),
         const SizedBox(height: 16),
-        comp.SubActionButton(
+        XCWideButton.neutral(
           title: "Select New Image",
           backgroundColor: CustomColors.sheetCell(context),
           onTap: () {
@@ -162,18 +169,17 @@ class _ImageUploaderState extends State<ImageUploader> {
     return Column(
       children: [
         const SizedBox(height: 16),
-        cv.TextField2(
-          labelText: "Image Url",
-          value: _imageURL,
-          backgroundColor: CustomColors.sheetCell(context),
-          onChanged: (val) {
+        XCField(
+              labelText: "Image Url",
+              value: _imageURL,
+              onChanged: (val) {
             setState(() {
               _imageURL = val;
             });
           },
-        ),
+            ),
         const SizedBox(height: 8),
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             if (_linkIsValid) {
               setState(() {
@@ -220,7 +226,7 @@ class _ImageUploaderState extends State<ImageUploader> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Opacity(
             opacity: _linkIsValid ? 1 : 0.5,
-            child: comp.ActionButton(
+            child: XCWideButton.primary(
               title: "Save Image URL",
               color: dmodel.color,
               isLoading: _isLoading,
@@ -239,10 +245,9 @@ class _ImageUploaderState extends State<ImageUploader> {
   List<Widget> _afterUpload(BuildContext context, DataModel dmodel) {
     return [
       const SizedBox(height: 16),
-      cv.RoundedLabel(
-        "Confirm Upload",
+      XCWideButton.primary(
+        title: "Confirm Upload",
         color: dmodel.color,
-        textColor: Colors.white,
         isLoading: _isLoading,
         onTap: () {
           if (!_isLoading && _currentImage != null) {

@@ -77,9 +77,9 @@
 //       padding: const EdgeInsets.symmetric(horizontal: 16.0),
 //       child: scemodel.teamUsers.isEmpty
 //           ? Container()
-//           : cv.Section(
+//           : XCSection(
 //               "Team Users",
-//               child: cv.ListView<SeasonUser>(
+//               child: XCCellList<SeasonUser>(
 //                 children: scemodel.teamUsers,
 //                 childPadding: const EdgeInsets.all(8),
 //                 horizontalPadding: 0,
@@ -144,7 +144,7 @@
 //       isLarge: false,
 //       itemBarPadding: const EdgeInsets.fromLTRB(8, 0, 15, 8),
 //       leading: [
-//         cv.BackButton(color: dmodel.color),
+//         XCActionButton.back(),
 //       ],
 //       children: [
 //         if (_users != null)

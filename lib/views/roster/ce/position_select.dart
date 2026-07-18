@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../custom_views/root.dart' as cv;
+import 'package:crosscheck_sports/components/layer/header_bar.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class PositionSelect extends StatefulWidget {
   const PositionSelect({
@@ -32,10 +34,11 @@ class _PositionSelectState extends State<PositionSelect> {
   @override
   Widget build(BuildContext context) {
     DataModel dmodel = Provider.of<DataModel>(context);
-    return cv.Sheet(
+    return HeaderBar.sheet(
       title: "Select Position",
-      color: dmodel.color,
-      icon: Icons.remove,
+      trailing: XCActionButton.cancel(
+        onTap: () => Navigator.of(context).pop(),
+      ),
       child: cv.DynamicSelector<String>(
         selectorStyle: cv.DynamicSelectorStyle.list,
         selections: widget.positions,

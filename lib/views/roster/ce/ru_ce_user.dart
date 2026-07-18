@@ -4,9 +4,13 @@ import 'package:crosscheck_sports/extras/root.dart';
 import 'package:provider/provider.dart';
 import 'package:sprung/sprung.dart';
 import '../root.dart';
-import '../../../custom_views/root.dart' as cv;
 import 'root.dart';
 import 'package:async/async.dart';
+import 'package:crosscheck_sports/components/layer/field.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
+import 'package:crosscheck_sports/components/core/loading_indicator.dart';
 
 class RUCEUser extends StatefulWidget {
   const RUCEUser({super.key});
@@ -30,9 +34,9 @@ class _RUCEUserState extends State<RUCEUser> {
         _email(context, rmodel),
         // const SizedBox(height: 16),
         // first and last name
-        cv.Section(
+        XCSection(
           _foundUser ? "Information Found" : "Personal Information",
-          child: cv.ListView<Widget>(
+          child: XCCellList<Widget>(
             horizontalPadding: 0,
             childPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             children: [
@@ -60,18 +64,17 @@ class _RUCEUserState extends State<RUCEUser> {
   Widget _email(BuildContext context, RUCEModel rmodel) {
     DataModel dmodel = Provider.of<DataModel>(context);
     if (rmodel.isCreate) {
-      return cv.ListView<Widget>(
+      return XCCellList<Widget>(
         horizontalPadding: 0,
         childPadding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         children: [
           Row(
             children: [
               Expanded(
-                child: cv.TextField2(
-                  labelText: "Email",
-                  isLabeled: !_isLoading,
-                  showBackground: false,
-                  onChanged: (value) {
+                child: XCField(
+              labelText: "Email",
+              isLabeled: !_isLoading,
+              onChanged: (value) {
                     rmodel.email = value;
                     _timer ??= RestartableTimer(
                         const Duration(milliseconds: 500), () async {
@@ -89,13 +92,13 @@ class _RUCEUserState extends State<RUCEUser> {
                       _timer!.reset();
                     }
                   },
-                ),
+            ),
               ),
               if (_isLoading)
                 SizedBox(
                   height: 30,
                   width: 30,
-                  child: cv.LoadingIndicator(color: dmodel.color),
+                  child: XCLoadingIndicator(color: dmodel.color),
                 ),
             ],
           ),
@@ -108,7 +111,7 @@ class _RUCEUserState extends State<RUCEUser> {
 
   Widget _firstName(BuildContext context, RUCEModel rmodel) {
     if (_foundUser) {
-      return cv.LabeledWidget(
+      return XCLabeledWidget(
         "First Name",
         height: 50,
         child: Text(
@@ -120,21 +123,20 @@ class _RUCEUserState extends State<RUCEUser> {
         ),
       );
     } else {
-      return cv.TextField2(
-        labelText: "First Name",
-        isLabeled: true,
-        showBackground: false,
-        value: rmodel.userFields.firstName,
-        onChanged: (value) {
+      return XCField(
+              labelText: "First Name",
+              isLabeled: true,
+              value: rmodel.userFields.firstName,
+              onChanged: (value) {
           rmodel.userFields.firstName = value;
         },
-      );
+            );
     }
   }
 
   Widget _lastName(BuildContext context, RUCEModel rmodel) {
     if (_foundUser) {
-      return cv.LabeledWidget(
+      return XCLabeledWidget(
         "Last Name",
         height: 50,
         child: Text(
@@ -146,21 +148,20 @@ class _RUCEUserState extends State<RUCEUser> {
         ),
       );
     } else {
-      return cv.TextField2(
-        labelText: "Last Name",
-        isLabeled: true,
-        showBackground: false,
-        value: rmodel.userFields.lastName,
-        onChanged: (value) {
+      return XCField(
+              labelText: "Last Name",
+              isLabeled: true,
+              value: rmodel.userFields.lastName,
+              onChanged: (value) {
           rmodel.userFields.lastName = value;
         },
-      );
+            );
     }
   }
 
   Widget _phone(BuildContext context, RUCEModel rmodel) {
     if (_foundUser) {
-      return cv.LabeledWidget(
+      return XCLabeledWidget(
         "Phone",
         height: 50,
         child: Text(
@@ -172,21 +173,20 @@ class _RUCEUserState extends State<RUCEUser> {
         ),
       );
     } else {
-      return cv.TextField2(
-        labelText: "Phone",
-        isLabeled: true,
-        showBackground: false,
-        value: rmodel.userFields.phone,
-        onChanged: (value) {
+      return XCField(
+              labelText: "Phone",
+              isLabeled: true,
+              value: rmodel.userFields.phone,
+              onChanged: (value) {
           rmodel.userFields.phone = value;
         },
-      );
+            );
     }
   }
 
   Widget _nickname(BuildContext context, RUCEModel rmodel) {
     if (_foundUser) {
-      return cv.LabeledWidget(
+      return XCLabeledWidget(
         "Nickname",
         height: 50,
         child: Text(
@@ -198,15 +198,14 @@ class _RUCEUserState extends State<RUCEUser> {
         ),
       );
     } else {
-      return cv.TextField2(
-        labelText: "Nickname",
-        isLabeled: true,
-        showBackground: false,
-        value: rmodel.userFields.nickname,
-        onChanged: (value) {
+      return XCField(
+              labelText: "Nickname",
+              isLabeled: true,
+              value: rmodel.userFields.nickname,
+              onChanged: (value) {
           rmodel.userFields.nickname = value;
         },
-      );
+            );
     }
   }
 

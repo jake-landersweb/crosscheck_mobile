@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'root.dart';
 import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import '../../components/root.dart' as comp;
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/section.dart';
+import 'package:crosscheck_sports/components/core/labeled_row.dart';
 
 class PollsChoices extends StatefulWidget {
   const PollsChoices({super.key});
@@ -58,16 +61,16 @@ class _PollsChoicesState extends State<PollsChoices> {
                 },
               ),
             if (pmodel.isCreate && pmodel.poll.pollType != 3)
-              cv.Section(
+              XCSection(
                 "Choices",
                 child: _selection(context, pmodel),
               ),
             const SizedBox(height: 8),
-            cv.ListView<Widget>(
+            XCCellList<Widget>(
               horizontalPadding: 0,
               childPadding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
-                cv.LabeledWidget(
+                XCLabeledWidget(
                   "Show Responses",
                   child: Row(
                     children: [
@@ -87,7 +90,7 @@ class _PollsChoicesState extends State<PollsChoices> {
                     ],
                   ),
                 ),
-                cv.LabeledWidget(
+                XCLabeledWidget(
                   "Show Results",
                   child: Row(
                     children: [
@@ -119,7 +122,7 @@ class _PollsChoicesState extends State<PollsChoices> {
     DataModel dmodel = Provider.of<DataModel>(context);
     return Column(
       children: [
-        cv.ListView<String>(
+        XCCellList<String>(
           children: pmodel.poll.choices,
           horizontalPadding: 0,
           isAnimated: true,

@@ -3,9 +3,11 @@ import 'package:crosscheck_sports/data/root.dart';
 import 'package:crosscheck_sports/extras/root.dart';
 import 'package:crosscheck_sports/views/roster/basic_roster_cell.dart';
 import 'package:flutter/material.dart';
-import 'package:crosscheck_sports/custom_views/root.dart' as cv;
 import 'package:crosscheck_sports/components/layer/header_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:crosscheck_sports/components/core/clickable.dart';
+import 'package:crosscheck_sports/components/core/cell_list.dart';
+import 'package:crosscheck_sports/components/layer/action_button.dart';
 
 class EventDutyUserSelect extends StatefulWidget {
   const EventDutyUserSelect({
@@ -32,22 +34,10 @@ class _EventDutyUserSelectState extends State<EventDutyUserSelect> {
     var dmodel = Provider.of<DataModel>(context);
     return HeaderBar.sheet(
       title: "Select Users",
-      trailing: cv.BasicButton(
-        onTap: () {
-          Navigator.of(context).pop();
-        },
-        child: Text(
-          "Done",
-          style: TextStyle(
-            color: dmodel.color,
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-          ),
-        ),
-      ),
+      trailing: XCActionButton.cancel(),
       child: Column(
         children: [
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             widget.selectedUsers.clear();
             widget.selectedUsers.addAll(
@@ -96,7 +86,7 @@ class _EventDutyUserSelectState extends State<EventDutyUserSelect> {
           ),
         ),
         const SizedBox(height: 4),
-        cv.BasicButton(
+        Clickable(
           onTap: () {
             widget.selectedUsers.clear();
             widget.onSelect();
@@ -135,7 +125,7 @@ class _EventDutyUserSelectState extends State<EventDutyUserSelect> {
           ),
         ),
         const SizedBox(height: 16),
-        cv.ListView<String>(
+        XCCellList<String>(
           children: widget.seasonUsers.map((e) => e.email).toList(),
           color: dmodel.color,
           allowsSelect: true,
