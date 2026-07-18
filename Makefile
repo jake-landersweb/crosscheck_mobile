@@ -17,12 +17,12 @@ help:
 
 .PHONY: build-android
 build-android: ## Build the app for android and open the android build folder
-	@flutter build appbundle
+	@fvm flutter build appbundle
 
 
 .PHONY: build-ios
 build-ios: ## Build the app for ios and push to the app store
-	@flutter build ipa
+	@fvm flutter build ipa
 	$(MAKE) upload-ios
 
 
