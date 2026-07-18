@@ -8,6 +8,10 @@ Download it on the [Apple App Store](https://apps.apple.com/us/app/crosscheck-ho
 
 Download it on the [Google Play Store](https://play.google.com/store/apps/details?id=com.landersweb.pnflutter&hl=en_US&gl=US)
 
+## Flutter install
+
+use FVM: [https://fvm.app/documentation/guides/quick-reference](https://fvm.app/documentation/guides/quick-reference)
+
 ## About
 
 Crosscheck Sports is all about managing your team easily and effectively. This gives you a tool to manage your sports team, create seasons, events, games and practices while managing the attendance you will have at these events. Crosscheck Sports is focused on giving a world class roster management experience to team owners and managers, while also delivering a seamless and fluid UI for your team members to interact with. With an integrated chat and stat tracking system, take your team to the next level with Crosscheck Sports.
